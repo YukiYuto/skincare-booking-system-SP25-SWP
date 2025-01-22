@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace SkincareBookingSystem.Models.Domain
 {
     public class DurationItem
     {
-        public Guid ServiceID { get; set; }
-        [ForeignKey("ServiceID")]
+        public Guid ServiceId { get; set; }
+        [ForeignKey("ServiceId")]
         public virtual Services Services { get; set; } = null!;
 
-        public Guid DurationID { get; set; }
-        [ForeignKey("DurationID")]
-        public virtual Duration Duration { get; set; } = null!;
+        public Guid ServiceDurationId { get; set; }
+        [ForeignKey("ServiceDurationId")]
+        public virtual ServiceDuration ServiceDuration { get; set; } = null!;
     }
 }

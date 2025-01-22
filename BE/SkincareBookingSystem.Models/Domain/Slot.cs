@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace SkincareBookingSystem.Models.Domain
 {
     public class Slot : BaseEntity<string, string, string>
     {
         [Key]
-        public Guid SlotID { get; set; }
+        public Guid SlotId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        
+        public Guid TherapistScheduleId { get; set; }
+        [ForeignKey("TherapistScheduleId")]
+        public virtual TherapistSchedule TherapistSchedule { get; set; } = null!;
     }
 }

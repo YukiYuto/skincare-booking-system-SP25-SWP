@@ -9,12 +9,12 @@ namespace SkincareBookingSystem.Models.Domain
 {
     public class TypeItem
     {
-        public Guid ServiceID { get; set; }
-        [ForeignKey("ServiceID")]
+        public Guid ServiceId { get; set; }
+        [ForeignKey("ServiceId")]
         public virtual Services Services { get; set; } = null!;
 
-        public Guid ServiceTypeID { get; set; }
-        [ForeignKey("ServiceTypeID")]
+        public Guid ServiceTypeId { get; set; }
+        [ForeignKey("ServiceTypeId")]
         public virtual ServiceType ServiceType { get; set; } = null!;
     }
 }

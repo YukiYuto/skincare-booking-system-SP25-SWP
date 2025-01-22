@@ -11,12 +11,14 @@ namespace SkincareBookingSystem.Models.Domain
     public class Order : BaseEntity<string, string, string>
     {
         [Key]
-        public Guid OrderID { get; set; }
+        public Guid OrderId { get; set; }
 
-        public Guid CustomerID { get; set; }
-        [ForeignKey("CustomerID")]
+        public Guid CustomerId { get; set; }
+        [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; } = null!;
 
         public double TotalPrice { get; set; }
+        
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }
 }

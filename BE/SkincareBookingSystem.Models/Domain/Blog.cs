@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SkincareBookingSystem.Models.Domain
 {
     public class Blog : BaseEntity<string, string, string>
     {
         [Key] 
-        public Guid BlogID { get; set; }
+        public Guid BlogId { get; set; }
         [StringLength(30)] public string Title { get; set; } = null!;
         [StringLength(100)] public string Content { get; set; } = null!;
 
-        public Guid BlogCategoryID { get; set; }
-        [ForeignKey("BlogCategoryID")]
+        public Guid BlogCategoryId { get; set; }
+        [ForeignKey("BlogCategoryId")]
         public virtual BlogCategory BlogCategory { get; set; } = null!;
+        
+        public string AuthorId { get; set; } = null!;
+        [ForeignKey("AuthorId")] 
+        public virtual ApplicationUser ApplicationUser { get; set; } = null!;
 
         [StringLength(30)] public string Tags { get; set; } = null!;
-        public string? ImageUrl { get; set; }
+        [StringLength(500)]public string? ImageUrl { get; set; }
 
     }
 }
