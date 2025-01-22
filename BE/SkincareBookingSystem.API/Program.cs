@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.Models.Domain;
+using SkincareBookingSystem.Services.Mapping;
 using SkincareBookingSystem.Utilities.Constants;
 
 namespace SkincareBookingSystem.API
@@ -56,6 +57,9 @@ namespace SkincareBookingSystem.API
                     }
                 });
             });
+            
+            // Register AutoMapper
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
             var app = builder.Build();
 
