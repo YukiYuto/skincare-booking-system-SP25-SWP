@@ -54,7 +54,6 @@ coverage/
 # IDE specific
 .idea/
 *.iml
-*.sln*
 *.suo
 *.csproj
 
