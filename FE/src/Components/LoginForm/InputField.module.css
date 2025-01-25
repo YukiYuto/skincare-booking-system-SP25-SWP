@@ -1,0 +1,50 @@
+.inputContainer {
+    margin-bottom: 33px;
+  }
+  
+  .label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: rgb(0, 0, 0);
+  }
+  
+  .inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .input {
+    width: 100%;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    border: 3px solid rgb(210, 210, 210);
+    padding: 19px 24px;
+    font-size: 22px;
+    color: rgb(0, 0, 0);
+  }
+  
+  .input::placeholder {
+    color: rgb(210, 210, 210);
+  }
+  
+  .togglePassword {
+    position: absolute;
+    right: 21px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .eyeIcon {
+    width: 25px;
+    height: 20px;
+  }
+  
+  @media (max-width: 640px) {
+    .input {
+      font-size: 18px;
+    }
+  }
