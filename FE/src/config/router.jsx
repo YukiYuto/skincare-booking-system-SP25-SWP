@@ -1,7 +1,9 @@
+import React from "react";
+
 import { createBrowserRouter } from "react-router-dom";
 import { HomePage } from "../Pages/HomePage/HomePage";
 import { LoginPage } from "../Pages/LoginPage/LoginPage";
-// import Register from "../page/register";
+import RegisterPage from "../Pages/Register/RegisterPage";
 //import Member from "../page/member";
 //import Dashboard from "../page/admin/dashboard";
 //import Inventory from "../page/admin/inventory";
@@ -13,71 +15,69 @@ import { LoginPage } from "../Pages/LoginPage/LoginPage";
 //import Service from "../page/service";
 //import Stylist from "../page/stylist";
 //import StylistProfile from "../page/stylist-detail";
-//import Contact from "../page/contact"; 
-
+//import Contact from "../page/contact";
 
 export const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <HomePage />,
-    },
-    {
-        path: "login",
-        element: <LoginPage />,
-    },
-    {
-        path: "register",
-        //element: <Register />,
-    },
-    {
-        path: "member",
-        //element: <Member />,
-    },
-    {
-        path: "admin",
-        //element: <Admin />,
-        children: [
-            {
-                path: "dashboard",
-          //      element: <Dashboard />, // Component cho trang Dashboard
-            },
-            {
-                path: "services",
-           //     element: <Services />, // Component cho trang Dashboard
-            },
-            {
-                path: "inventory",
-             //   element: <Inventory />, // Component cho trang Inventory
-            },
-            {
-                path: "orders",
-              //  element: <Orders />, // Component cho trang Orders
-            },
-            {
-                path: "users",
-                //element: <Users />, // Component cho trang Users
-            },
-        ],
-    },
-    {
-        path: "product",
+  {
+    path: "/",
+    element: <HomePage />,
+  },
+  {
+    path: "login",
+    element: <LoginPage />,
+  },
+  {
+    path: "register",
+    element: <RegisterPage />,
+  },
+  {
+    path: "member",
+    //element: <Member />,
+  },
+  {
+    path: "admin",
+    //element: <Admin />,
+    children: [
+      {
+        path: "dashboard",
+        //      element: <Dashboard />, // Component cho trang Dashboard
+      },
+      {
+        path: "services",
+        //     element: <Services />, // Component cho trang Dashboard
+      },
+      {
+        path: "inventory",
+        //   element: <Inventory />, // Component cho trang Inventory
+      },
+      {
+        path: "orders",
+        //  element: <Orders />, // Component cho trang Orders
+      },
+      {
+        path: "users",
+        //element: <Users />, // Component cho trang Users
+      },
+    ],
+  },
+  {
+    path: "product",
     //    element: <Product />,
-    },
-    {
-        path: "service",
+  },
+  {
+    path: "service",
     //    element: <Service />,
-    },
-    {
-        path: "stylist",
-     //   element: <Stylist />,
-    },
-    {
-        path: "stylist/:id",
+  },
+  {
+    path: "stylist",
+    //   element: <Stylist />,
+  },
+  {
+    path: "stylist/:id",
     //    element: <StylistProfile />,
-    },
-    {
-        path: "contact",
-      //  element: <Contact />,
-    },
-
+  },
+  {
+    path: "contact",
+    //  element: <Contact />,
+  },
 ]);

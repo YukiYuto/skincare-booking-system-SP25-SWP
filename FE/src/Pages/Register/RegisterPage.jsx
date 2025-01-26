@@ -1,19 +1,20 @@
 import React from "react";
-import styles from "./LoginPage.module.css";
-import { LoginForm } from "../../Components/LoginForm/LoginForm";
+import styles from "./RegisterPage.module.css";
+import RegisterForm from "../../Components/RegisterForm/RegisterForm";
 import BrandLogo from "../../Components/BrandLogo/BrandLogo";
 
-export function LoginPage() {
+ function RegisterPage() {
   return (
-    <main className={styles.loginPage}>
+    <main className={styles.registerPage}>
       <div className={styles.container}>
         <div className={styles.brandColumn}>
           <BrandLogo />
         </div>
         <div className={styles.formColumn}>
-          <LoginForm />
+          <RegisterForm />
         </div>
       </div>
     </main>
   );
 }
+export default RegisterPage;
