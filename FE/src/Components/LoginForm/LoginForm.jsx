@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./LoginForm.module.css";
 import { InputField } from "../InputField/InputField";
 
 export function LoginForm() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handlePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Add your login logic here
+    console.log("Login form submitted with username:", username, "and password:", password);
+  };
+
   return (
-    <form className={styles.loginForm} aria-labelledby="login-title">
+    <form className={styles.loginForm} aria-labelledby="login-title" onSubmit={handleSubmit}>
       <h1 id="login-title" className={styles.loginTitle}>
         Login Account
       </h1>
@@ -14,14 +36,19 @@ export function LoginForm() {
         type="text"
         id="username"
         placeholder="Username"
+        value={username}
+        onChange={handleUsernameChange}
       />
 
       <InputField
         label="Password"
-        type="password"
+        type={isPasswordVisible ? "text" : "password"}
         id="password"
         placeholder="6+ characters"
+        value={password}
+        onChange={handlePasswordChange}
         showPasswordToggle
+        onPasswordVisibilityChange={handlePasswordVisibility}
       />
 
       <div className={styles.termsContainer}>

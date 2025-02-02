@@ -9,6 +9,7 @@ export function BrandLogo() {
         src={background1}
         alt="Scenic background"
         className={styles.backgroundImage}
+        loading="lazy"
       />
       <div className={styles.brandOverlay}>
         <span className={styles.brandHighlight}>Skin</span>

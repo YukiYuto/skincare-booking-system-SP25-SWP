@@ -1,103 +1,52 @@
 .brandContainer {
-    position: relative;
-    min-height: 656px;
-    border-radius: 30px;
-    overflow: hidden;
-  }
-  
-  .backgroundImage {
-    position: absolute;
-    inset: 0;
-    height: 100%;
-    width: 100%;
+  position: relative;
+  min-height: 656px;
+  border-radius: 30px;
+  overflow: hidden;
 }
 
-  
+.backgroundImage {
+  position: absolute;
+  inset: 0;
+  height: 100vh;
+  width: 100%;
+  object-fit: cover;
+}
+
+.brandOverlay {
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgb(229, 229, 229);
+  padding: 236px 70px;
+  display: flex;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  font: 500 80px Poppins, sans-serif;
+  color: rgb(21, 44, 91);
+  text-align: center;
+}
+
+.brandHighlight {
+  color: rgb(50, 82, 223);
+}
+
+@media (max-width: 991px) {
+  .brandContainer {
+    min-height: 400px;
+  }
+
   .brandOverlay {
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgb(229, 229, 229);
-    padding: 236px 70px;
-    display: flex;
-    justify-content: center;
-    backdrop-filter: blur(5px);
-    font: 500 80px Poppins, sans-serif;
-    color: rgb(21, 44, 91);
+    padding: 100px 20px;
+    font-size: 40px;
   }
-  
-  .brandHighlight {
-    color: rgb(50, 82, 223);
+}
+
+@media (max-width: 640px) {
+  .brandContainer {
+    min-height: 300px;
   }
-  
-  @media (max-width: 991px) {
-    .brandContainer {
-      min-height: 400px;
-    }
-  
-    .brandOverlay {
-      padding: 100px 20px;
-      font-size: 40px;
-    }
-  }
-  
-  @media (max-width: 640px) {
-    .brandContainer {
-      min-height: 300px;
-    }
-  
-    .brandOverlay {
-      padding: 80px 15px;
-      font-size: 32px;
-    }
-  }.brandContainer {
-    position: relative;
-    min-height: 656px;
-    border-radius: 30px;
-    overflow: hidden;
-  }
-  
-  .backgroundImage {
-    position: absolute;
-    inset: 0;
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-  }
-  
+
   .brandOverlay {
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgb(229, 229, 229);
-    padding: 236px 70px;
-    display: flex;
-    justify-content: center;
-    backdrop-filter: blur(5px);
-    font: 500 80px Poppins, sans-serif;
-    color: rgb(21, 44, 91);
+    padding: 80px 15px;
+    font-size: 32px;
   }
-  
-  .brandHighlight {
-    color: rgb(50, 82, 223);
-  }
-  
-  @media (max-width: 991px) {
-    .brandContainer {
-      min-height: 400px;
-    }
-  
-    .brandOverlay {
-      padding: 100px 20px;
-      font-size: 40px;
-    }
-  }
-  
-  @media (max-width: 640px) {
-    .brandContainer {
-      min-height: 300px;
-    }
-  
-    .brandOverlay {
-      padding: 80px 15px;
-      font-size: 32px;
-    }
-  }
+}

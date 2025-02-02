@@ -85,3 +85,4 @@ Generated\_Files/
 *.env.development.local
 *.env.test.local
 *.env.production.local
+/FE/.vite/deps

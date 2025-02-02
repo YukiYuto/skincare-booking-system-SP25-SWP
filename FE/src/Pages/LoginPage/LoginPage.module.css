@@ -1,37 +1,36 @@
 .loginPage {
-    background-color: rgb(250, 250, 250);
-    padding: 79px 80px;
-    min-height: 100vh;
-    display: flex;
+  background-color: rgb(250, 250, 250);
+  min-height: 100vh;
+  display: flex;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.brandColumn {
+  width: 61%;
+  height: 100%;
+}
+
+.formColumn {
+  width: 39%;
+}
+
+@media (max-width: 991px) {
+  .loginPage {
+    padding: 40px 20px;
   }
-  
+
   .container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    max-width: 1440px;
-    margin: 0 auto;
+    flex-direction: column;
   }
-  
-  .brandColumn {
-    width: 61%;
-  }
-  
+
+  .brandColumn,
   .formColumn {
-    width: 39%;
+    width: 100%;
   }
-  
-  @media (max-width: 991px) {
-    .loginPage {
-      padding: 40px 20px;
-    }
-  
-    .container {
-      flex-direction: column;
-    }
-  
-    .brandColumn,
-    .formColumn {
-      width: 100%;
-    }
-  }
+}
