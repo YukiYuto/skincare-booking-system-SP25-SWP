@@ -20,8 +20,10 @@ namespace SkincareBookingSystem.API
             // Configure DbContext with SQL Server  
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(
-                    builder.Configuration.GetConnectionString(StaticConnectionString.SqldbDefaultConnection));
+                //options.UseSqlServer(
+                //    builder.Configuration.GetConnectionString(StaticConnectionString.SqldbDefaultConnection));
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString(StaticConnectionString.PostgreSqlConnection));
             });
 
             // Configure Identity  
