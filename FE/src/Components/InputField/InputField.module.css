@@ -1,11 +1,11 @@
 .inputContainer {
-  margin-bottom: 33px;
+  margin-bottom: 12px;
   box-sizing: border-box;
 }
 
 .label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   font-size: 24px;
   color: #000;
   font-weight: bold;
@@ -27,6 +27,20 @@
   color: #000;
   box-sizing: border-box;
   transition: border-color 0.2s ease-in-out;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+input:invalid {
+  border: 2px solid red;
+}
+
+input:valid {
+  border: 2px solid green;
 }
 
 .input:focus {

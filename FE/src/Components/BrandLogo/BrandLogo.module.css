@@ -1,32 +1,34 @@
 .brandContainer {
   position: relative;
-  min-height: 656px;
-  border-radius: 30px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 
 .backgroundImage {
   position: absolute;
   inset: 0;
-  height: 100vh;
+  top: 0;
+  left: 0;
   width: 100%;
-  object-fit: cover;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 2%;
 }
 
 .brandOverlay {
-  background-color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgb(229, 229, 229);
-  padding: 236px 70px;
   display: flex;
+  align-items: center;
   justify-content: center;
+  background-color: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgb(229, 229, 229);
+  border-radius: 12px;
+  padding: 24px 72px;
   backdrop-filter: blur(5px);
-  font: 500 80px Poppins, sans-serif;
-  color: rgb(21, 44, 91);
-  text-align: center;
-}
-
-.brandHighlight {
-  color: rgb(50, 82, 223);
+  z-index: 1;
 }
 
 @media (max-width: 991px) {

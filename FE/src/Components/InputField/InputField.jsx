@@ -8,7 +8,10 @@ export function InputField({
   type,
   id,
   placeholder,
+  minLength,
+  maxLength,
   showPasswordToggle = false,
+  value,
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -28,6 +31,8 @@ export function InputField({
           placeholder={placeholder}
           className={styles.input}
           aria-label={label}
+          minLength={minLength}
+          maxLength={maxLength}
         />
         {showPasswordToggle && (
           <button
@@ -45,6 +50,11 @@ export function InputField({
           </button>
         )}
       </div>
+      <p className={styles.error}>
+        {value.length > 0 && (value.length < minLength || value.length > maxLength)
+          ? `Username phải từ ${minLength} đến ${maxLength} ký tự`
+          : ""}
+      </p>
     </div>
   );
 }

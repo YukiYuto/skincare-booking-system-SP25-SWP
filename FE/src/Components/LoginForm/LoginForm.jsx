@@ -15,18 +15,18 @@ export function LoginForm() {
     setPassword(event.target.value);
   };
 
-  const handlePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     // Add your login logic here
-    console.log("Login form submitted with username:", username, "and password:", password);
+    console.log(username, password);
   };
 
   return (
-    <form className={styles.loginForm} aria-labelledby="login-title" onSubmit={handleSubmit}>
+    <form
+      className={styles.loginForm}
+      aria-labelledby="login-title"
+      onSubmit={handleSubmit}
+    >
       <h1 id="login-title" className={styles.loginTitle}>
         Login Account
       </h1>
@@ -35,20 +35,23 @@ export function LoginForm() {
         label="Username"
         type="text"
         id="username"
-        placeholder="Username"
+        placeholder="3-15 characters"
         value={username}
         onChange={handleUsernameChange}
+        minLength={3}
+        maxLength={15}
       />
 
       <InputField
         label="Password"
         type={isPasswordVisible ? "text" : "password"}
         id="password"
-        placeholder="6+ characters"
+        placeholder="6-32 characters"
         value={password}
         onChange={handlePasswordChange}
         showPasswordToggle
-        onPasswordVisibilityChange={handlePasswordVisibility}
+        minLength={6}
+        maxLength={30}
       />
 
       <div className={styles.termsContainer}>

@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./BrandLogo.module.css";
 import background1 from "./background1.jpg";
+import Brand from '../Brand/Brand.jsx'
 
 export function BrandLogo() {
   return (
@@ -12,8 +13,7 @@ export function BrandLogo() {
         loading="lazy"
       />
       <div className={styles.brandOverlay}>
-        <span className={styles.brandHighlight}>Skin</span>
-        <span className={styles.brandText}>Care.</span>
+        <Brand/>
       </div>
     </div>
   );
