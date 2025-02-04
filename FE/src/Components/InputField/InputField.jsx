@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./InputField.module.css";
 import eyeOpen from "./eyeOpen.svg";
 import eyeClose from "./eyeClose.svg";

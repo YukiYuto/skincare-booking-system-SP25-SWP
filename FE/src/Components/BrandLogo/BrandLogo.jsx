@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./BrandLogo.module.css";
 import background1 from "./background1.jpg";
 import Brand from '../Brand/Brand.jsx'

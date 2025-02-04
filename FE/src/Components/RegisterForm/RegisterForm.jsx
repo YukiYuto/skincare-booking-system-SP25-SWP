@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import styles from "./registerForm.module.css";
 import { InputField } from "../InputField/InputField";
 
