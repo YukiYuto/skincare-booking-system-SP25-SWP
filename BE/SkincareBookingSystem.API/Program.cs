@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SkincareBookingSystem.API.Extensions;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Services.Mapping;
@@ -62,6 +63,9 @@ namespace SkincareBookingSystem.API
             
             // Register AutoMapper
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+            // Register services from Extensions
+            builder.Services.RegisterServices();
 
             var app = builder.Build();
 
