@@ -29,6 +29,7 @@
     "antd-img-crop": "^4.21.0",
     "antd-style": "^3.6.1",
     "aos": "^2.3.4",
+    "asp": "file:",
     "axios": "^1.6.5",
     "bootstrap": "^5.3.3",
     "caniuse-lite": "^1.0.30001667",
