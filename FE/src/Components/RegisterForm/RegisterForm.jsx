@@ -1,5 +1,6 @@
 import styles from "./registerForm.module.css";
 import { InputField } from "../InputField/InputField";
+import { useState } from "react";
 
 function RegisterForm() {
   const [name, setName] = useState("");
