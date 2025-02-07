@@ -12,6 +12,12 @@ public class AuthService : IAuthService
 {
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
+    
+    public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    {
+        _userManager = userManager;
+        _roleManager = roleManager;
+    }
     public Task<ResponseDto> SignUp(SignUpDto registerDto)
     {
         throw new NotImplementedException();
