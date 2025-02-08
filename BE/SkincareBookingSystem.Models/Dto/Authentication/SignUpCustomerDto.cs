@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SkincareBookingSystem.Models.Dto.Authentication
 {
-    public class SignUpDto
+    public class SignUpCustomerDto
     {
         [Required]
         [DataType(DataType.EmailAddress)]
@@ -40,5 +40,7 @@ namespace SkincareBookingSystem.Models.Dto.Authentication
 
         [Required]
         public int Age { get; set; }
+        
+        public Guid? SkinProfileId { get; set; }
     }
 }

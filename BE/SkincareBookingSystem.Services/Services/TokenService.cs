@@ -13,11 +13,13 @@ public class TokenService : ITokenService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly IRedisService _redisService;
 
-    public TokenService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+    public TokenService(UserManager<ApplicationUser> userManager, IConfiguration configuration,IRedisService redisService)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _redisService = redisService;
     }
 
     public async Task<string> GenerateJwtAccessTokenAsync(ApplicationUser user)
@@ -89,13 +91,11 @@ public class TokenService : ITokenService
         return Task.FromResult(refreshToken);
     }
     
-    public Task<bool> StoreRefreshToken(string userId, string refreshToken)
+    public async Task<bool> StoreRefreshToken(string userId, string refreshToken)
     {
-        throw new NotImplementedException();
-        
-            /*string redisKey = $"userId:{userId}:refreshToken";
+            string redisKey = $"userId:{userId}:refreshToken";
             var result = await _redisService.StoreString(redisKey, refreshToken);
-            return true;*/
+            return true;
     }
     
 }

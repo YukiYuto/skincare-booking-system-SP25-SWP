@@ -7,7 +7,9 @@ namespace SkincareBookingSystem.Services.IServices;
 
 public interface IAuthService
 {
-    Task<ResponseDto> SignUp(SignUpDto registerDto);
+    Task<ResponseDto> SignUpCustomer(SignUpCustomerDto signUpCustomerDto);
+    Task<ResponseDto> SignUpStaff(SignUpStaffDto signUpStaffDto);
+    Task<ResponseDto> SignUpSkinTherapist(SignUpSkinTherapistDto signUpSkinTherapistDto);
     Task<ResponseDto> SignIn(SignInDto signDto);
     Task<ResponseDto> SignInByGoogle(SignInByGoogleDto signInByGoogleDto);
     Task<ResponseDto> UpdateUserProfile(string userId, UpdateUserProfileDto updateUserProfileDto);

@@ -6,4 +6,5 @@ public class StaticUserRoles
     public const string Manager = "MANAGER";
     public const string Staff = "STAFF";
     public const string Customer = "CUSTOMER";
+    public const string SkinTherapist = "SKINTHERAPIST";
 }

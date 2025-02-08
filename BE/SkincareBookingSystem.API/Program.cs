@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SkincareBookingSystem.API.Extensions;
+using SkincareBookingSystem.API.Middlewares;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Services.Mapping;
@@ -61,11 +65,28 @@ namespace SkincareBookingSystem.API
                 });
             });
             
-            // Register AutoMapper
-            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+            // Add JWT Authentication
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                };
+            });
+
 
             // Register services from Extensions
-            builder.Services.RegisterServices();
+            builder.Services.RegisterServices(builder.Configuration);
 
             var app = builder.Build();
 
@@ -77,7 +98,9 @@ namespace SkincareBookingSystem.API
             {
                 app.UseDeveloperExceptionPage(); // Thêm dev page trong môi trường phát triển  
             }
-
+            
+            app.UseMiddleware<GlobalExceptionHandllingMiddleware>();
+            
             app.UseHttpsRedirection();
 
             // Kích hoạt Swagger middleware  
@@ -90,6 +113,7 @@ namespace SkincareBookingSystem.API
             app.UseSwagger();
             app.UseSwaggerUI();
 
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
 
