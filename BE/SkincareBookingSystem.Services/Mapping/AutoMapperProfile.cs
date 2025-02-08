@@ -2,7 +2,6 @@
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.BlogCategory;
 using SkincareBookingSystem.Utilities.Constants;
-using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Authentication;
 
 namespace SkincareBookingSystem.Services.Mapping;
@@ -29,9 +28,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => src.UpdatedBy))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticBlogStatus.Modified));
 
-    }
-    public AutoMapperProfile()
-    {
         CreateMap<SignUpDto, ApplicationUser>().ReverseMap();
     }
+    
 }
