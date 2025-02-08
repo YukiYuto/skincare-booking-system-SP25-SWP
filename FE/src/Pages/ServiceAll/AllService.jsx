@@ -4,14 +4,25 @@ import ServiceCard from "../../Components/ServiceCard/ServiceCard";
 import styles from "./AllService.module.css";
 
 const AllService = () => {
-  const [services, setServices] = useState([]);
+  const [service, setService] = useState([]);
+  const [serviceType, setServiceType] = useState([]);
   const [filter, setFilter] = useState("Most Popular");
 
   useEffect(() => {
     fetch("https://672741d4302d03037e702957.mockapi.io/Service")
       .then((response) => response.json())
-      .then((data) => setServices(data));
+      .then((data) => setService(data));
   }, []);
+
+  useEffect(() => { 
+    fetch("https://672741d4302d03037e702957.mockapi.io/ServiceType")
+    .then((response) => response.json()).then((data) => setServiceType(data));
+  }, []);
+
+  const getServiceTypeName = (id) => {
+    const type = serviceType.find(st => st.ServiceTypeID === id);
+    return type ? type.ServiceTypeName : 'Unknown';
+  };
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -20,25 +31,25 @@ const AllService = () => {
   const filteredServices = () => {
     switch (filter) {
       case "Most Popular":
-        return services.sort((a, b) => b.Popularity - a.Popularity);
+        return service.sort((a, b) => b.Popularity - a.Popularity);
       case "Price: Low to High":
-        return services.sort((a, b) => a.Price - b.Price);
+        return service.sort((a, b) => a.Price - b.Price);
       case "Price: High to Low":
-        return services.sort((a, b) => b.Price - a.Price);
+        return service.sort((a, b) => b.Price - a.Price);
       case "Name: A-Z":
-        return services.sort((a, b) =>
+        return service.sort((a, b) =>
           a.ServiceName.localeCompare(b.ServiceName)
         );
       case "Name: Z-A":
-        return services.sort((a, b) =>
+        return service.sort((a, b) =>
           b.ServiceName.localeCompare(a.ServiceName)
         );
       case "Oldest":
-        return services.sort((a, b) => a.createdAt - b.createdAt);
+        return service.sort((a, b) => a.createdAt - b.createdAt);
       case "Newest":
-        return services.sort((a, b) => b.createdAt - a.createdAt);
+        return service.sort((a, b) => b.createdAt - a.createdAt);
       default:
-        return services;
+        return service;
     }
   };
 

@@ -32,9 +32,9 @@ p {
 }
 
 :root {
-  --primary-color: #8BC6A4;     /* Soft Green/Teal */
-  --secondary-color: #FAFAF8;   /* Muted Beige/Peach */
-  --accent-color: #D4AF7F;      /* Light Gold */
-  --background-color: #F5E9E2;  /* Off-White */
-  --text-color: #333333;        /* Dark Gray */
+  --primary-color: #FFE8D4;
+  --secondary-color: #F4CFA1;
+  --accent-color: #C49E85;
+  --background-color: #F5E9E2;
+  --text-color: #6F4E37;
 }
