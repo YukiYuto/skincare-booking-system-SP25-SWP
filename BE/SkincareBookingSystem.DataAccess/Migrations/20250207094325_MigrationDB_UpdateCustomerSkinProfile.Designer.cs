@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SkincareBookingSystem.DataAccess.DBContext;
@@ -11,9 +12,11 @@ using SkincareBookingSystem.DataAccess.DBContext;
 namespace SkincareBookingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250207094325_MigrationDB_UpdateCustomerSkinProfile")]
+    partial class MigrationDB_UpdateCustomerSkinProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,10 +186,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<string>("FullName")
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
-
-                    b.Property<string>("Gender")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(200)
@@ -811,7 +810,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<Guid?>("TherapistScheduleId")
+                    b.Property<Guid>("TherapistScheduleId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("UserId")
@@ -862,27 +861,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.HasIndex("TherapistScheduleId");
 
                     b.ToTable("Slot");
-                });
-
-            modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Staff", b =>
-                {
-                    b.Property<Guid>("StaffId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("StaffCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("StaffId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Staff");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TestAnswer", b =>
@@ -1232,7 +1210,9 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                 {
                     b.HasOne("SkincareBookingSystem.Models.Domain.TherapistSchedule", "TherapistSchedule")
                         .WithMany()
-                        .HasForeignKey("TherapistScheduleId");
+                        .HasForeignKey("TherapistScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SkincareBookingSystem.Models.Domain.ApplicationUser", "ApplicationUser")
                         .WithMany()
@@ -1254,17 +1234,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("TherapistSchedule");
-                });
-
-            modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Staff", b =>
-                {
-                    b.HasOne("SkincareBookingSystem.Models.Domain.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TestAnswer", b =>

@@ -47,6 +47,8 @@ public class UnitOfWork : IUnitOfWork
     public ISkinTherapistRepository SkinTherapist { get; private set; }
 
     public ISlotRepository Slot { get; private set; }
+    
+    public IStaffRepository Staff { get; private set; }
 
     public ITestAnswerRepository TestAnswer { get; private set; }
 
@@ -80,6 +82,7 @@ public class UnitOfWork : IUnitOfWork
         SkinTest = new SkinTestRepository(_context);
         SkinTherapist = new SkinTherapistRepository(_context);
         Slot = new SlotRepository(_context);
+        Staff = new StaffRepository(_context);
         TestAnswer = new TestAnswerRepository(_context);
         TestQuestion = new TestQuestionRepository(_context);
         TherapistSchedule = new TherapistScheduleRepository(_context);
