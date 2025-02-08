@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./ServiceCard.module.css";
 import Go from "./go.svg";
 
-const SkincareServiceCard = ({ service }) => {
+const SkincareServiceCard = ({ service, Name }) => {
   return (
     <div className={styles.card}>
       <img
@@ -13,6 +13,7 @@ const SkincareServiceCard = ({ service }) => {
       <div className={styles.header}>
         <h2 className={styles.title}>{service.ServiceName}</h2>
       </div>
+        <p className={styles.serviceType}>{Name}</p>
       <div className={styles.content}>
         <p className={styles.description}>{service.Description}</p>
         <p className={styles.price}>{service.Price}$</p>

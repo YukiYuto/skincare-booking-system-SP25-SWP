@@ -24,7 +24,7 @@
 }
 
 .header {
-    height: calc(2 * 1em + 12px);
+    height: calc(2em + 12px);
     margin-bottom: 16px;
 }
 
@@ -32,6 +32,12 @@
     font-size: 1.25rem;
     font-weight: bold;
     color: #333333;
+}
+
+.serviceType {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
 .content {
@@ -64,7 +70,8 @@
 }
 
 .popularity img {
-    max-width: 12px;
-    height: 100%;
-    vertical-align: middle;
+    padding: 4px 2px;
+    max-width: 32px;
+    max-height: 24px;
+    background-color: var(--primary-color);
 }

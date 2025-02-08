@@ -1,55 +1,79 @@
 import React, { useEffect, useState } from "react";
 import Hero from "../../Components/Hero/Hero";
-import ServiceCard from "../../Components/ServiceCard/ServiceCard";
+import ServiceSort from "../../Components/ServiceSort/ServiceSort.jsx";
+import ServiceList from "../../Components/ServiceList/ServiceList.jsx";
 import styles from "./AllService.module.css";
 
 const AllService = () => {
-  const [service, setService] = useState([]);
-  const [serviceType, setServiceType] = useState([]);
+  const [services, setServices] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
   const [filter, setFilter] = useState("Most Popular");
+  const [selectedTypes, setSelectedTypes] = useState("");
 
   useEffect(() => {
-    fetch("https://672741d4302d03037e702957.mockapi.io/Service")
-      .then((response) => response.json())
-      .then((data) => setService(data));
+    const fetchServices = async () => {
+      try {
+        const [servicesData, serviceTypesData] = await Promise.all([
+          fetch("https://672741d4302d03037e702957.mockapi.io/Service").then(
+            (res) => res.json()
+          ),
+          fetch("https://672741d4302d03037e702957.mockapi.io/ServiceType").then(
+            (res) => res.json()
+          ),
+        ]);
+        setServices(servicesData);
+        setServiceTypes(serviceTypesData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchServices();
   }, []);
 
-  useEffect(() => { 
-    fetch("https://672741d4302d03037e702957.mockapi.io/ServiceType")
-    .then((response) => response.json()).then((data) => setServiceType(data));
-  }, []);
+  const handleFilterChange = (event) => setFilter(event.target.value);
 
-  const getServiceTypeName = (id) => {
-    const type = serviceType.find(st => st.ServiceTypeID === id);
-    return type ? type.ServiceTypeName : 'Unknown';
+  const toggleType = (typeID) => {
+    setSelectedTypes((prevSelected) => {
+      const typesArray = prevSelected.split(",").filter(Boolean);
+      if (typesArray.includes(typeID)) {
+        return typesArray.filter((id) => id !== typeID).join(",");
+      } else {
+        return [...typesArray, typeID].join(",");
+      }
+    });
   };
 
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
-  };
+  const getFilteredServices = () => {
+    let filtered = [...services];
 
-  const filteredServices = () => {
+    if (selectedTypes) {
+      const selectedArray = selectedTypes.split(",");
+      filtered = filtered.filter((service) =>
+        selectedArray.includes(service.ServiceTypeID.toString())
+      );
+    }
+
     switch (filter) {
       case "Most Popular":
-        return service.sort((a, b) => b.Popularity - a.Popularity);
+        return filtered.sort((a, b) => b.Popularity - a.Popularity);
       case "Price: Low to High":
-        return service.sort((a, b) => a.Price - b.Price);
+        return filtered.sort((a, b) => a.Price - b.Price);
       case "Price: High to Low":
-        return service.sort((a, b) => b.Price - a.Price);
+        return filtered.sort((a, b) => b.Price - a.Price);
       case "Name: A-Z":
-        return service.sort((a, b) =>
+        return filtered.sort((a, b) =>
           a.ServiceName.localeCompare(b.ServiceName)
         );
       case "Name: Z-A":
-        return service.sort((a, b) =>
+        return filtered.sort((a, b) =>
           b.ServiceName.localeCompare(a.ServiceName)
         );
       case "Oldest":
-        return service.sort((a, b) => a.createdAt - b.createdAt);
+        return filtered.sort((a, b) => a.createdAt - b.createdAt);
       case "Newest":
-        return service.sort((a, b) => b.createdAt - a.createdAt);
+        return filtered.sort((a, b) => b.createdAt - a.createdAt);
       default:
-        return service;
+        return filtered;
     }
   };
 
@@ -59,32 +83,34 @@ const AllService = () => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>Discover Our Services</h1>
-          <div>
-            <label>By </label>
-            <span>
-              <select
-                className={styles.by}
-                value={filter}
-                onChange={handleFilterChange}
-              >
-                <option>Most Popular</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Name: A-Z</option>
-                <option>Name: Z-A</option>
-                <option>Oldest</option>
-                <option>Newest</option>
-              </select>
-            </span>
-          </div>
+          <ServiceSort
+            filter={filter}
+            handleFilterChange={handleFilterChange}
+          />
         </div>
         <div className={styles.service}>
-          <div className={styles.filter}></div>
-          <div className={styles.itemList}>
-            {filteredServices().map((service) => (
-              <ServiceCard key={service.ID} service={service} />
-            ))}
+          <div className={styles.filter}>
+            <label>Filter by Type</label>
+            <ul>
+              {serviceTypes.map((type) => (
+                <li
+                  key={type.ID}
+                  onClick={() => toggleType(type.ID)}
+                  className={
+                    selectedTypes.includes(type.ID)
+                      ? styles.selected
+                      : styles.unselected
+                  }
+                >
+                  {type.Name}
+                </li>
+              ))}
+            </ul>
           </div>
+          <ServiceList
+            services={getFilteredServices()}
+            serviceTypes={serviceTypes}
+          />
         </div>
       </div>
     </>
