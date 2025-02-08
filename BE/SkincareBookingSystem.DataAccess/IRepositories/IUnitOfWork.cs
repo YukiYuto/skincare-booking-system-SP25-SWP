@@ -21,6 +21,7 @@ public interface IUnitOfWork
     ISkinTestRepository SkinTest { get; }
     ISkinTherapistRepository SkinTherapist { get; }
     ISlotRepository Slot { get; }
+    IStaffRepository Staff { get; }
     ITestAnswerRepository TestAnswer { get; }
     ITestQuestionRepository TestQuestion { get; }
     ITherapistScheduleRepository TherapistSchedule { get; }
