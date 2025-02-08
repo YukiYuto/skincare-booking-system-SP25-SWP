@@ -30,10 +30,12 @@ namespace SkincareBookingSystem.DataAccess.DBContext
         public DbSet<SkinTest> SkinTest { get; set; }
         public DbSet<SkinTherapist> SkinTherapist { get; set; }
         public DbSet<Slot> Slot { get; set; }
+        public DbSet<Staff> Staff { get; set; }
         public DbSet<TestAnswer> TestAnswer { get; set; }
         public DbSet<TestQuestion> TestQuestion { get; set; }
         public DbSet<TherapistSchedule> TherapistSchedules { get; set; }
         public DbSet<TypeItem> TypeItem { get; set; }
+
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
