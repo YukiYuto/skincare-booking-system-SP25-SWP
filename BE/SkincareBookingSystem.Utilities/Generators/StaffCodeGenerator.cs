@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace SkincareBookingSystem.Utilities.Generators
 {
-    public class StaffCodeGenerator
+    public static class StaffCodeGenerator
     {
-        private static int _counter = 0;
-
         // Method to generate the code.
         public static string GetStaffCode()
         {
@@ -17,16 +15,15 @@ namespace SkincareBookingSystem.Utilities.Generators
             int year = DateTime.Now.Year % 100;
 
             // Increment the counter for the next call.
-            _counter++;
-
+            
             // Format the code: "S-{last-two-digit-of-year}-xxxx".
-            return $"S{year:D2}-{_counter:D4}";
+            return $"S{year:D2}-{GetRandomCounter():D4}";
         }
 
-        // Optional: Reset the counter (for testing purposes or if needed).
-        public static void ResetCounter()
+        private static int GetRandomCounter()
         {
-            _counter = 0;
+            var random = new Random();
+            return random.Next(1, 9999);
         }
     }
 }

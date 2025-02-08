@@ -61,6 +61,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => false));
         
+        
         //SignUpStaffDto to ApplicationUser
         CreateMap<SignUpStaffDto, ApplicationUser>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))

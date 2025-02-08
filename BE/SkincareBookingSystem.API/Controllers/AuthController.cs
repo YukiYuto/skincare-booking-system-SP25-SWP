@@ -38,28 +38,18 @@ public class AuthController : ControllerBase
             });
         }
 
-        try
-        {
-            var result = await _authService.SignUpCustomer(signUpCustomerDto);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto
-            {
-                IsSuccess = false,
-                Message = e.Message
-            });
-        }
+        var result = await _authService.SignUpCustomer(signUpCustomerDto);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    
+
     /// <summary>
     /// 
     /// </summary>
     /// <param name="SignUpSkinTherapistDto"></param>
     /// <returns></returns>
-     [HttpPost("skin-therapists")]
-    public async Task<ActionResult<ResponseDto>> SignUpSkinTherapist([FromBody] SignUpSkinTherapistDto signUpSkinTherapistDto)
+    [HttpPost("skin-therapists")]
+    public async Task<ActionResult<ResponseDto>> SignUpSkinTherapist(
+        [FromBody] SignUpSkinTherapistDto signUpSkinTherapistDto)
     {
         if (!ModelState.IsValid)
         {
@@ -71,21 +61,10 @@ public class AuthController : ControllerBase
             });
         }
 
-        try
-        {
-            var result = await _authService.SignUpSkinTherapist(signUpSkinTherapistDto);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto
-            {
-                IsSuccess = false,
-                Message = e.Message
-            });
-        }
+        var result = await _authService.SignUpSkinTherapist(signUpSkinTherapistDto);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -104,21 +83,10 @@ public class AuthController : ControllerBase
             });
         }
 
-        try
-        {
-            var result = await _authService.SignUpStaff(signUpStaffDto);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto
-            {
-                IsSuccess = false,
-                Message = e.Message
-            });
-        }
+        var result = await _authService.SignUpStaff(signUpStaffDto);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    
+
     /// <summary>
     /// Sign up a customer
     /// </summary>
@@ -130,6 +98,4 @@ public class AuthController : ControllerBase
         var responseDto = await _authService.SignIn(signInDto);
         return StatusCode(responseDto.StatusCode, responseDto);
     }
-    
-    
 }

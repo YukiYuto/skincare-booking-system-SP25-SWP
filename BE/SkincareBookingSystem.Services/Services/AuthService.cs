@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Utilities.Constants;
+using SkincareBookingSystem.Utilities.Generators;
 
 namespace SkincareBookingSystem.Services.Services;
 
@@ -171,10 +172,12 @@ public class AuthService : IAuthService
             };
         }
         
-        Staff staff = new ();
-        staff = _mapperService.Map<SignUpStaffDto, Staff>(signUpStaffDto);
-        staff.UserId = newUser.Id; 
-        
+        Staff staff = new ()
+        {
+            UserId = newUser.Id,
+            StaffCode = StaffCodeGenerator.GetStaffCode()
+        };
+
         var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Staff);
 
         if (!isRoleExist)

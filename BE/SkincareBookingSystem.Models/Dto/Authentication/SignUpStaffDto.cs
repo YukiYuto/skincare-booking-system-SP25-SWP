@@ -35,6 +35,4 @@ public class SignUpStaffDto
 
     [Required]
     public int Age { get; set; }
-    
-    public string StaffCode { get; set; } = null!;
 }
