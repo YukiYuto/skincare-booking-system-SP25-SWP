@@ -12,6 +12,7 @@ namespace SkincareBookingSystem.API.Extensions
             // more services to be added here
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBlogCategoryService, BlogCategoryService>();
+            services.AddScoped<IServicesService, ServicesService>();
 
             // 3rd party services
             services.AddScoped<IAutoMapperService, AutoMapperService>();
