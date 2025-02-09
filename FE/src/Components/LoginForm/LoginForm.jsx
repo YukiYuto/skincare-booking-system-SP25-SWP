@@ -1,24 +1,72 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../services/authService";
 import styles from "./LoginForm.module.css";
-import { InputField } from "../InputField/InputField";
+import EmailInputField from "../InputField/Email/EmailInputField";
+import PasswordInputField from "../InputField/Password/PasswordInputField";
+import {
+  validateEmail,
+  validatePasswordLength,
+} from "../../utils/validationUtils";
+
 
 export function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleLoginDataChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    setErrors((prevErrors) => ({
+      // Reset errors for the field being updated
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+  const validateLoginForm = () => {
+    const emailError = validateEmail(loginData.email);
+    const passwordLengthError = validatePasswordLength(loginData.password);
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      email: validateEmail(loginData.email),
+      password: validatePasswordLength(loginData.password),
+    }));
+
+    return !emailError && !passwordLengthError;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Add your login logic here
-    console.log(username, password);
+    setErrors({ email: "", password: "" }); // Reset errors
+
+    // If form is invalid, return early
+    if (!validateLoginForm()) return;
+
+    // If form is valid, call the auth service to login
+    try {
+      await login(loginData);
+      // TODO: Replace the alert with a toast notification 
+      alert(`Login successful! Welcome, ${loginData.email}!`);
+      navigate("/");
+    } catch (error) {
+      console.error("Login error:", error.message);
+      alert(error.message || "Login failed. Please try again.");
+    }
   };
 
   return (
@@ -31,27 +79,20 @@ export function LoginForm() {
         Login Account
       </h1>
 
-      <InputField
-        label="Username"
-        type="text"
-        id="username"
-        placeholder="3-15 characters"
-        value={username}
-        onChange={handleUsernameChange}
-        minLength={3}
-        maxLength={15}
+      <EmailInputField
+        label="Email"
+        placeholder="Email address"
+        value={loginData.email}
+        onChange={handleLoginDataChange}
+        error={errors.email}
       />
 
-      <InputField
+      <PasswordInputField
         label="Password"
-        type={isPasswordVisible ? "text" : "password"}
-        id="password"
-        placeholder="6-32 characters"
-        value={password}
-        onChange={handlePasswordChange}
-        showPasswordToggle
-        minLength={6}
-        maxLength={30}
+        placeholder="8-32 characters"
+        value={loginData.password}
+        onChange={handleLoginDataChange}
+        error={errors.password}
       />
 
       <div className={styles.termsContainer}>
