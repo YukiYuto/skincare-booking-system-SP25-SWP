@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Utilities.Constants;
-using SkincareBookingSystem.Utilities.Generators;
 
 namespace SkincareBookingSystem.Services.Services;
 
@@ -72,56 +71,62 @@ public class AuthService : IAuthService
         ApplicationUser newUser;
         newUser = _mapperService.Map<SignUpCustomerDto, ApplicationUser>(signUpCustomerDto);
 
-        // Thêm người dùng mới vào database
-        var createUserResult = await _userManager.CreateAsync(newUser, signUpCustomerDto.Password);
-
-        // Kiểm tra lỗi khi tạo
-        if (!createUserResult.Succeeded)
+        using (var transaction = await _unitOfWork.BeginTransactionAsync())
         {
+            // Thêm người dùng mới vào database
+            var createUserResult = await _userManager.CreateAsync(newUser, signUpCustomerDto.Password);
+
+            // Kiểm tra lỗi khi tạo
+            if (!createUserResult.Succeeded)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Create user failed",
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Result = signUpCustomerDto
+                };
+            }
+
+            Customer customer = new();
+            customer = _mapperService.Map<SignUpCustomerDto, Customer>(signUpCustomerDto);
+            customer.UserId = newUser.Id;
+
+            var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Customer);
+
+            if (!isRoleExist)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Customer));
+            }
+
+            // Thêm role "Customer" cho người dùng
+            var isRoleAdded = await _userManager.AddToRoleAsync(newUser, StaticUserRoles.Customer);
+
+            if (!isRoleAdded.Succeeded)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Error adding role",
+                    IsSuccess = false,
+                    StatusCode = 500,
+                    Result = signUpCustomerDto
+                };
+            }
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _unitOfWork.Customer.AddAsync(customer);
+            await _unitOfWork.SaveAsync();
+
+            await transaction.CommitAsync();
+
             return new ResponseDto()
             {
-                Message = "Create user failed",
-                IsSuccess = false,
-                StatusCode = 400,
+                Message = "User created successfully",
+                IsSuccess = true,
+                StatusCode = 201,
                 Result = signUpCustomerDto
             };
         }
-        
-        Customer customer = new ();
-        customer = _mapperService.Map<SignUpCustomerDto, Customer>(signUpCustomerDto);
-        customer.UserId = newUser.Id; 
-
-        var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Customer);
-
-        if (!isRoleExist)
-        {
-            await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Customer));
-        }
-
-        // Thêm role "Customer" cho người dùng
-        var isRoleAdded = await _userManager.AddToRoleAsync(newUser, StaticUserRoles.Customer);
-
-        if (!isRoleAdded.Succeeded)
-        {
-            return new ResponseDto()
-            {
-                Message = "Error adding role",
-                IsSuccess = false,
-                StatusCode = 500,
-                Result = signUpCustomerDto
-            };
-        }
-
-        // Lưu thay đổi vào cơ sở dữ liệu
-        await _unitOfWork.Customer.AddAsync(customer);
-        await _unitOfWork.SaveAsync();
-        return new ResponseDto()
-        {
-            Message = "User created successfully",
-            IsSuccess = true,
-            StatusCode = 201,
-            Result = signUpCustomerDto
-        };
     }
 
     public async Task<ResponseDto> SignUpStaff(SignUpStaffDto signUpStaffDto)
@@ -157,58 +162,66 @@ public class AuthService : IAuthService
         ApplicationUser newUser;
         newUser = _mapperService.Map<SignUpStaffDto, ApplicationUser>(signUpStaffDto);
 
-        // Thêm người dùng mới vào database
-        var createUserResult = await _userManager.CreateAsync(newUser, signUpStaffDto.Password);
-
-        // Kiểm tra lỗi khi tạo
-        if (!createUserResult.Succeeded)
+        // Bắt đầu transaction qua UnitOfWork
+        using (var transaction = await _unitOfWork.BeginTransactionAsync())
         {
+            // Thêm người dùng mới vào database
+            var createUserResult = await _userManager.CreateAsync(newUser, signUpStaffDto.Password);
+
+            // Kiểm tra lỗi khi tạo
+            if (!createUserResult.Succeeded)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Create user failed",
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Result = signUpStaffDto
+                };
+            }
+
+            string staffCode = await _unitOfWork.Staff.GetNextStaffCodeAsync();
+            Staff staff = new()
+            {
+                UserId = newUser.Id,
+                StaffCode = staffCode
+            };
+
+            var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Staff);
+
+            if (!isRoleExist)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Staff));
+            }
+
+            // Thêm role "Customer" cho người dùng
+            var isRoleAdded = await _userManager.AddToRoleAsync(newUser, StaticUserRoles.Staff);
+
+            if (!isRoleAdded.Succeeded)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Error adding role",
+                    IsSuccess = false,
+                    StatusCode = 500,
+                    Result = signUpStaffDto
+                };
+            }
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _unitOfWork.Staff.AddAsync(staff);
+            await _unitOfWork.SaveAsync();
+
+            await transaction.CommitAsync();
+
             return new ResponseDto()
             {
-                Message = "Create user failed",
-                IsSuccess = false,
-                StatusCode = 400,
+                Message = "User created successfully",
+                IsSuccess = true,
+                StatusCode = 201,
                 Result = signUpStaffDto
             };
         }
-        
-        Staff staff = new ()
-        {
-            UserId = newUser.Id,
-            StaffCode = StaffCodeGenerator.GetStaffCode()
-        };
-
-        var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Staff);
-
-        if (!isRoleExist)
-        {
-            await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Staff));
-        }
-
-        // Thêm role "Customer" cho người dùng
-        var isRoleAdded = await _userManager.AddToRoleAsync(newUser, StaticUserRoles.Staff);
-
-        if (!isRoleAdded.Succeeded)
-        {
-            return new ResponseDto()
-            {
-                Message = "Error adding role",
-                IsSuccess = false,
-                StatusCode = 500,
-                Result = signUpStaffDto
-            };
-        }
-
-        // Lưu thay đổi vào cơ sở dữ liệu
-        await _unitOfWork.Staff.AddAsync(staff);
-        await _unitOfWork.SaveAsync();
-        return new ResponseDto()
-        {
-            Message = "User created successfully",
-            IsSuccess = true,
-            StatusCode = 201,
-            Result = signUpStaffDto
-        };
     }
 
 
@@ -245,57 +258,62 @@ public class AuthService : IAuthService
         ApplicationUser newUser;
         newUser = _mapperService.Map<SignUpSkinTherapistDto, ApplicationUser>(signUpSkinTherapistDto);
 
-        // Thêm người dùng mới vào database
-        var createUserResult = await _userManager.CreateAsync(newUser, signUpSkinTherapistDto.Password);
-
-        // Kiểm tra lỗi khi tạo
-        if (!createUserResult.Succeeded)
+        using (var transaction = await _unitOfWork.BeginTransactionAsync())
         {
+            // Thêm người dùng mới vào database
+            var createUserResult = await _userManager.CreateAsync(newUser, signUpSkinTherapistDto.Password);
+
+            // Kiểm tra lỗi khi tạo
+            if (!createUserResult.Succeeded)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Create user failed",
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Result = signUpSkinTherapistDto
+                };
+            }
+
+            SkinTherapist skinTherapist =
+                _mapperService.Map<SignUpSkinTherapistDto, SkinTherapist>(signUpSkinTherapistDto);
+
+            skinTherapist.UserId = newUser.Id;
+            var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.SkinTherapist);
+
+            if (!isRoleExist)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.SkinTherapist));
+            }
+
+            // Thêm role "Customer" cho người dùng
+            var isRoleAdded = await _userManager.AddToRoleAsync(newUser, StaticUserRoles.SkinTherapist);
+
+            if (!isRoleAdded.Succeeded)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Error adding role",
+                    IsSuccess = false,
+                    StatusCode = 500,
+                    Result = signUpSkinTherapistDto
+                };
+            }
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _unitOfWork.SkinTherapist.AddAsync(skinTherapist);
+            await _unitOfWork.SaveAsync();
+
+            await transaction.CommitAsync();
+
             return new ResponseDto()
             {
-                Message = "Create user failed",
-                IsSuccess = false,
-                StatusCode = 400,
+                Message = "User created successfully",
+                IsSuccess = true,
+                StatusCode = 201,
                 Result = signUpSkinTherapistDto
             };
         }
-        
-        //var user = await _userManager.FindByEmailAsync(signUpSkinTherapistDto.Email);
-
-         SkinTherapist skinTherapist = new ();
-         skinTherapist = _mapperService.Map<SignUpSkinTherapistDto, SkinTherapist>(signUpSkinTherapistDto);
-         skinTherapist.UserId = newUser.Id; 
-        var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.SkinTherapist);
-
-        if (!isRoleExist)
-        {
-            await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.SkinTherapist));
-        }
-
-        // Thêm role "Customer" cho người dùng
-        var isRoleAdded = await _userManager.AddToRoleAsync(newUser, StaticUserRoles.SkinTherapist);
-
-        if (!isRoleAdded.Succeeded)
-        {
-            return new ResponseDto()
-            {
-                Message = "Error adding role",
-                IsSuccess = false,
-                StatusCode = 500,
-                Result = signUpSkinTherapistDto
-            };
-        }
-
-        // Lưu thay đổi vào cơ sở dữ liệu
-        await _unitOfWork.SkinTherapist.AddAsync(skinTherapist);
-        await _unitOfWork.SaveAsync();
-        return new ResponseDto()
-        {
-            Message = "User created successfully",
-            IsSuccess = true,
-            StatusCode = 201,
-            Result = signUpSkinTherapistDto
-        };
     }
 
     public async Task<ResponseDto> SignIn(SignInDto signInDto)
@@ -376,9 +394,49 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
-    public Task<ResponseDto> FetchUserByToken(string token)
+    public async Task<ResponseDto> FetchUserByToken(string token)
     {
-        throw new NotImplementedException();
+        // Sử dụng GetPrincipalFromToken để lấy ClaimsPrincipal từ token
+        var principal = await _tokenService.GetPrincipalFromToken(token);
+
+        var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return new ResponseDto()
+            {
+                Message = "Invalid user",
+                StatusCode = 400,
+                IsSuccess = false,
+                Result = null
+            };
+        }
+
+        // Lấy role từ UserManager
+        var roles = await _userManager.GetRolesAsync(user);
+
+        // Tạo GetUserDto từ claims
+        var userDto = new GetUserDto
+        {
+            Id = user.Id,
+            FullName = principal.FindFirst("FullName")!.Value,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
+            Address = principal.FindFirst("Address")?.Value,
+            ImageUrl = principal.FindFirst("AvatarUrl")?.Value,
+            UserName = user.UserName,
+            Age = user.Age,
+            Roles = roles.ToList()
+        };
+
+        return new ResponseDto()
+        {
+            Message = "Get info successfully",
+            StatusCode = 200,
+            IsSuccess = true,
+            Result = userDto
+        };
     }
 
     public Task<ResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordDto)

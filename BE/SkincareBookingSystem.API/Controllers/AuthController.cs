@@ -98,4 +98,16 @@ public class AuthController : ControllerBase
         var responseDto = await _authService.SignIn(signInDto);
         return StatusCode(responseDto.StatusCode, responseDto);
     }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    [HttpGet("FetchUserByToken")]
+    public async Task<IActionResult> FetchUserByToken(string token)
+    {
+        var responseDto = await _authService.FetchUserByToken(token);
+        return StatusCode(responseDto.StatusCode, responseDto);
+    }
 }
