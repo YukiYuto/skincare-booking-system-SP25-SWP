@@ -57,9 +57,14 @@ export function InputField({
         )}
       </div>
       <p className={styles.error}>
+<<<<<<< Updated upstream
         {value.length > 0 &&
         (value.length < minLength || value.length > maxLength)
           ? `Username phải từ ${minLength} đến ${maxLength} ký tự`
+=======
+        {value.length > 0 && (value.length < minLength || value.length > maxLength)
+          ? `Nhập từ ${minLength} đến ${maxLength} ký tự`
+>>>>>>> Stashed changes
           : ""}
       </p>
     </div>
