@@ -1,6 +1,10 @@
 import validator from "validator";
 
 export const validateEmail = (email) => { 
+    if (!email) {
+        return 'Email is required';
+    }
+
     if (!validator.isEmail(email)) {
         return 'Please enter a valid email address';
     }
@@ -8,6 +12,9 @@ export const validateEmail = (email) => {
 }
 
 export const validatePasswordLength = (password) => {
+    if (!password) {
+        return 'Password cannot be empty';
+    }
     if (!validator.isLength(password, { min: 8, max: 32 })) {
         return 'Password must be between 8-32 characters long';
     }

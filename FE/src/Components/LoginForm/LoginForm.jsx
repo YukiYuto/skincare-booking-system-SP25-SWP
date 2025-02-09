@@ -9,7 +9,6 @@ import {
   validatePasswordLength,
 } from "../../utils/validationUtils";
 
-
 export function LoginForm() {
   const [loginData, setLoginData] = useState({
     email: "",
@@ -43,8 +42,8 @@ export function LoginForm() {
 
     setErrors((prevErrors) => ({
       ...prevErrors,
-      email: validateEmail(loginData.email),
-      password: validatePasswordLength(loginData.password),
+      email: emailError,
+      password: passwordLengthError,
     }));
 
     return !emailError && !passwordLengthError;
@@ -60,7 +59,7 @@ export function LoginForm() {
     // If form is valid, call the auth service to login
     try {
       await login(loginData);
-      // TODO: Replace the alert with a toast notification 
+      // TODO: Replace the alert with a toast notification
       alert(`Login successful! Welcome, ${loginData.email}!`);
       navigate("/");
     } catch (error) {
