@@ -3,22 +3,58 @@ import { InputField } from "../InputField/InputField";
 import { useState } from "react";
 
 function RegisterForm() {
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Add your registration logic here
-    console.log("Registration submitted:", {
-      name,
-      username,
-      phone,
-      email,
-      password,
-    });
+  const [registerData, setRegisterData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phoneNumber: "",
+    fullName: "",
+    address: "",
+    age: "",
+    skinProfileId: null,
+  });
+
+  const formatFullname = (fullName) => {
+    return fullName
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
+  const handleRegisterChange = (e) => {
+    const { name, value } = e.target;
+    setRegisterData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    const formattedFullname = formatFullname(registerData.fullName);
+    const api = "https://localhost:7037/api/Auth/customers";
+    
+    try {
+      const response = await axios.post(api, {
+        email: registerData.email,
+        password: registerData.password,
+        confirmPassword: registerData.confirmPassword,
+        phoneNumber: registerData.phoneNumber,
+        fullName: formattedFullname,
+        address: registerData.address,
+        age: Number(registerData.age),
+      });
+
+      console.log("Registration response:", response.data);
+      alert(`Registration successful! Welcome, ${response.data.formattedFullname}`);
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration error:", error.message);
+      console.log(error);
+      alert("Registration failed. Please try again.");
+    }
   };
 
   return (

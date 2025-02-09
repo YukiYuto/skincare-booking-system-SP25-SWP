@@ -7,17 +7,20 @@ export function InputField({
   label,
   type,
   id,
+  name,
   placeholder,
   minLength,
   maxLength,
   showPasswordToggle = false,
   value,
+  onChange,
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
+
 
   return (
     <div className={styles.inputContainer}>
@@ -28,11 +31,14 @@ export function InputField({
         <input
           type={showPasswordToggle && showPassword ? "text" : type}
           id={id}
+          name={name}
           placeholder={placeholder}
           className={styles.input}
           aria-label={label}
           minLength={minLength}
           maxLength={maxLength}
+          value={value}
+          onChange={onChange}
         />
         {showPasswordToggle && (
           <button
