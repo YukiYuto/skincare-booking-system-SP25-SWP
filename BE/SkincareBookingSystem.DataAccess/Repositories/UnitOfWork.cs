@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
@@ -94,5 +95,10 @@ public class UnitOfWork : IUnitOfWork
     public async Task<int> SaveAsync()
     {
         return await _context.SaveChangesAsync();
+    }
+    
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace SkincareBookingSystem.DataAccess.IRepositories;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace SkincareBookingSystem.DataAccess.IRepositories;
 
 public interface IUnitOfWork
 {
@@ -28,4 +30,6 @@ public interface IUnitOfWork
     ITypeItemRepository TypeItem { get; }
     IUserManagerRepository UserManager { get; }
     Task<int> SaveAsync();
+    
+    Task<IDbContextTransaction> BeginTransactionAsync();
 }

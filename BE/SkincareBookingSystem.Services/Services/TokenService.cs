@@ -15,7 +15,8 @@ public class TokenService : ITokenService
     private readonly IConfiguration _configuration;
     private readonly IRedisService _redisService;
 
-    public TokenService(UserManager<ApplicationUser> userManager, IConfiguration configuration,IRedisService redisService)
+    public TokenService(UserManager<ApplicationUser> userManager, IConfiguration configuration,
+        IRedisService redisService)
     {
         _userManager = userManager;
         _configuration = configuration;
@@ -52,7 +53,7 @@ public class TokenService : ITokenService
             issuer: _configuration["JWT:ValidIssuer"],
             audience: _configuration["JWT:ValidAudience"],
             notBefore: DateTime.Now,
-            expires: DateTime.Now.AddMinutes(60),
+            expires: DateTime.Now.AddMinutes(5),
             claims: authClaims,
             signingCredentials: signingCredentials
         );
@@ -80,7 +81,7 @@ public class TokenService : ITokenService
             issuer: _configuration["JWT:ValidIssuer"],
             audience: _configuration["JWT:ValidAudience"],
             notBefore: DateTime.Now,
-            expires: DateTime.Now.AddDays(3), //Expiration time is 3 days
+            expires: DateTime.Now.AddDays(1), //Expiration time is 3 days
             claims: authClaims,
             signingCredentials: signingCredentials
         );
@@ -90,12 +91,29 @@ public class TokenService : ITokenService
 
         return Task.FromResult(refreshToken);
     }
-    
+
     public async Task<bool> StoreRefreshToken(string userId, string refreshToken)
     {
-            string redisKey = $"userId:{userId}:refreshToken";
-            var result = await _redisService.StoreString(redisKey, refreshToken);
-            return true;
+        string redisKey = $"userId:{userId}:refreshToken";
+        var result = await _redisService.StoreString(redisKey, refreshToken);
+        return true;
     }
-    
+
+    public async Task<ClaimsPrincipal> GetPrincipalFromToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(_configuration["JWT:Secret"] ?? string.Empty);
+        var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = _configuration["JWT:ValidIssuer"],
+            ValidAudience = _configuration["JWT:ValidAudience"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        }, out SecurityToken validatedToken);
+
+        return principal;
+    }
 }
