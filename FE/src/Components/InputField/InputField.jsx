@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import styles from "./InputField.module.css";
 import eyeOpen from "./eyeOpen.svg";
@@ -20,7 +21,6 @@ export function InputField({
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
-
 
   return (
     <div className={styles.inputContainer}>
@@ -57,7 +57,8 @@ export function InputField({
         )}
       </div>
       <p className={styles.error}>
-        {value.length > 0 && (value.length < minLength || value.length > maxLength)
+        {value.length > 0 &&
+        (value.length < minLength || value.length > maxLength)
           ? `Username phải từ ${minLength} đến ${maxLength} ký tự`
           : ""}
       </p>

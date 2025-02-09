@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./registerForm.module.css";
 import { InputField } from "../InputField/InputField";
-import { useState } from "react";
+import axios from "axios";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -35,7 +38,7 @@ function RegisterForm() {
     e.preventDefault();
     const formattedFullname = formatFullname(registerData.fullName);
     const api = "https://localhost:7037/api/Auth/customers";
-    
+
     try {
       const response = await axios.post(api, {
         email: registerData.email,
@@ -48,7 +51,7 @@ function RegisterForm() {
       });
 
       console.log("Registration response:", response.data);
-      alert(`Registration successful! Welcome, ${response.data.formattedFullname}`);
+      alert(`Registration successful! Welcome, ${response.data.fullName}`);
       navigate("/login");
     } catch (error) {
       console.error("Registration error:", error.message);
@@ -61,59 +64,88 @@ function RegisterForm() {
     <form
       className={styles.registerForm}
       aria-labelledby="register-title"
-      onSubmit={handleSubmit}
+      onSubmit={handleRegisterSubmit}
     >
       <h1 id="register-title" className={styles.registerTitle}>
         Register
       </h1>
 
       <InputField
-        label="Name"
+        label="Full Name"
         type="text"
-        id="name"
-        placeholder="Name"
-        value={name}
-        onChange={(event) => setName(event.target.value)}
+        id="fullName"
+        name="fullName"
+        placeholder="Full Name"
+        value={registerData.fullName}
+        onChange={handleRegisterChange}
       />
 
-      <div className={styles.flexContainer}>
+      <div className={styles.flexContainer1}>
         <InputField
-          label="Username"
+          label="Phone Number"
           type="text"
-          id="username"
-          placeholder="Username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
+          id="phoneNumber"
+          name="phoneNumber"
+          placeholder="Phone Number"
+          value={registerData.phoneNumber}
+          onChange={handleRegisterChange}
         />
 
         <InputField
-          label="Phone"
-          type="number"
-          id="phone"
-          placeholder="Phone Number"
-          value={phone}
-          onChange={(event) => setPhone(event.target.value)}
+          label="Email Address"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email Address"
+          value={registerData.email}
+          onChange={handleRegisterChange}
         />
       </div>
 
-      <InputField
-        label="Email Address"
-        type="text"
-        id="email"
-        placeholder="Email Address"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-      />
+      <div className={styles.flexContainer2}>
+        <InputField
+          label="Password"
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter Password"
+          value={registerData.password}
+          onChange={handleRegisterChange}
+          showPasswordToggle
+        />
+        <InputField
+          label="Confirm Password"
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          value={registerData.confirmPassword}
+          onChange={handleRegisterChange}
+          showPasswordToggle
+        />
+      </div>
 
-      <InputField
-        label="Password"
-        type="password"
-        id="password"
-        placeholder="6+ characters"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-        showPasswordToggle
-      />
+      <div className={styles.flexContainer3}>
+        <InputField
+          label="Address"
+          type="text"
+          id="address"
+          name="address"
+          placeholder="Address"
+          value={registerData.address}
+          onChange={handleRegisterChange}
+        />
+
+        <InputField
+          label="Age"
+          type="number"
+          id="age"
+          name="age"
+          placeholder="Age"
+          value={registerData.age}
+          onChange={handleRegisterChange}
+        />
+      </div>
 
       <div className={styles.termsContainer}>
         <span>By registering you agree to </span>
@@ -130,11 +162,12 @@ function RegisterForm() {
       <button
         type="button"
         className={styles.loginButton}
-        onClick={() => (window.location.href = "/login")}
+        onClick={() => navigate("/login")}
       >
         Login
       </button>
     </form>
   );
 }
+
 export default RegisterForm;
