@@ -36,10 +36,9 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateService(Guid id, [FromBody] UpdateServiceDto updateServiceDto)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateService([FromBody] UpdateServiceDto updateServiceDto)
         {
-            updateServiceDto.ServiceId = id ; // Ensure the ID is set
             var result = await _servicesService.UpdateService(User, updateServiceDto);
             return StatusCode(result.StatusCode, result);
         }

@@ -16,5 +16,9 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ServiceTypeId, opt => opt.MapFrom(src => src.ServiceTypeId))
             .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
             .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0))); //Meaning of 7.0 is GMT+7
+
+        CreateMap<UpdateServiceDto, Models.Domain.Services>()
+            .ForMember(dest => dest.UpdatedTime, opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0))) //Meaning of 7.0 is GMT+7
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); // Ignore null value
     }
 }

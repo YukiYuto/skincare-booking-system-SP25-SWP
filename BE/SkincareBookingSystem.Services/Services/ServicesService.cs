@@ -15,10 +15,10 @@ namespace SkincareBookingSystem.Services.Services
 {
     public class ServicesService : IServicesService
     {
-        private readonly IMapper _mapper;
+        private readonly IAutoMapperService _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ServicesService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ServicesService(IUnitOfWork unitOfWork, IAutoMapperService mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper; // Inject IMapper
@@ -39,7 +39,7 @@ namespace SkincareBookingSystem.Services.Services
                 //}
 
                 // Using AutoMapper to map the DTO to Services model
-                var service = _mapper.Map<Models.Domain.Services>(createServiceDto);
+                var service = _mapper.Map<CreateServiceDto, Models.Domain.Services>(createServiceDto);
 
                 // Set the created by and created time (if needed)
                 service.ServiceId = Guid.NewGuid();
@@ -140,19 +140,17 @@ namespace SkincareBookingSystem.Services.Services
                 };
             }
 
-            service.ServiceName = updateServiceDto.ServiceName;
-            service.Description = updateServiceDto.Description;
-            service.Price = updateServiceDto.Price;
-            service.ImageUrl = updateServiceDto.ImageUrl;
-            service.ServiceTypeId = updateServiceDto.ServiceTypeId ?? service.ServiceTypeId;
+            // using AutoMapper to map the DTO to Services model
+            var updatedData = _mapper.Map<UpdateServiceDto, Models.Domain.Services>(updateServiceDto);
             service.UpdatedBy = User.Identity?.Name;
-            service.UpdatedTime = DateTime.UtcNow;
 
+            // Update the service
+            _unitOfWork.Services.Update(service, updatedData);
             await _unitOfWork.SaveAsync();
 
             return new ResponseDto
             {
-                Result = service,
+                Result = updatedData,
                 Message = "Service updated successfully",
                 IsSuccess = true,
                 StatusCode = 200
