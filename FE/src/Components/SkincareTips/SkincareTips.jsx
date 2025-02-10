@@ -10,17 +10,17 @@ const SkincareTips = () => {
     {
       img: skincare1,
       title: "The ultimate guide to winter skincare",
-      date: "February 7, 2025",
+      date: "February 8, 2025",
     },
     {
       img: skincare2,
       title: "Top 5 anti-aging ingredients you need to know",
-      date: "February 8, 2025",
+      date: "February 9, 2025",
     },
     {
       img: skincare3,
       title: "Common skincare myths - debunked!",
-      date: "February 9, 2025",
+      date: "February 10, 2025",
     },
   ];
 
