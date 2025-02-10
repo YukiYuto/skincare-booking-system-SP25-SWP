@@ -88,6 +88,19 @@ namespace SkincareBookingSystem.API
             // Register services from Extensions
             builder.Services.RegisterServices(builder.Configuration);
 
+            var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins",
+                    builder =>
+                    {
+                        builder.WithOrigins(corsOrigins)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
+            });
+
             var app = builder.Build();
 
             // Apply database migrations  
@@ -112,6 +125,8 @@ namespace SkincareBookingSystem.API
 
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            app.UseCors("AllowSpecificOrigins");
 
             app.UseAuthentication();
             app.UseAuthorization();
