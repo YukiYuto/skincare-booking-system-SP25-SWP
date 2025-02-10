@@ -28,6 +28,7 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IRedisService, RedisService>();
             services.AddScoped<IBlogCategoryService, BlogCategoryService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             return services;
         }
