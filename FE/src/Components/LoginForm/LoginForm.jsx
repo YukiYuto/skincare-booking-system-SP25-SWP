@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
 import styles from "./LoginForm.module.css";
+import { toast } from "react-toastify";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import PasswordInputField from "../InputField/Password/PasswordInputField";
 import {
@@ -60,11 +61,11 @@ export function LoginForm() {
     try {
       await login(loginData);
       // TODO: Replace the alert with a toast notification
-      alert(`Login successful! Welcome, ${loginData.email}!`);
+      toast.success(`Login successful! Welcome, ${loginData.email}!`);
       navigate("/");
     } catch (error) {
       console.error("Login error:", error.message);
-      alert(error.message || "Login failed. Please try again.");
+      toast.error(error.message || "Login failed. Please try again.");
     }
   };
 
