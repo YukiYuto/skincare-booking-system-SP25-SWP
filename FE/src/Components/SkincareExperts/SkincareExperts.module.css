@@ -1,0 +1,62 @@
+.expertsSection {
+    padding: 50px;
+    background-color: #fdf9f7;
+    text-align: left;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .header h2 {
+    font-size: 32px;
+    color: #522d1b;
+  }
+  
+  .viewAllButton {
+    background-color: #522d1b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .viewAllButton:hover {
+    background-color: #6a3b25;
+  }
+  
+  .expertsList {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+  
+  .expertCard {
+    text-align: center;
+    width: 250px;
+  }
+  
+  .expertImage {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .expertCard h3 {
+    font-size: 20px;
+    color: #522d1b;
+    margin-top: 15px;
+  }
+  
+  .expertCard p {
+    font-size: 16px;
+    color: #7d5d4a;
+  }
+  
