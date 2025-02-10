@@ -388,10 +388,45 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
-    public Task<ResponseDto> ChangePassword(string userId, string oldPassword, string newPassword,
-        string confirmNewPassword)
+    public async Task<ResponseDto> ChangePassword(ChangePasswordDto changePasswordDto)
     {
-        throw new NotImplementedException();
+        // Lấy id của người dùng
+        var user = await _userManager.FindByIdAsync(changePasswordDto.UserId);
+        if (user == null)
+        {
+            return new ResponseDto { IsSuccess = false, Message = "User not found." };
+        }
+
+        // Thực hiện xác thực mật khẩu và thay đổi mật khẩu
+
+        // Kiểm tra sự trùng khớp của mật khẩu mới và xác nhận mật khẩu mới 
+        /*if (newPassword != confirmNewPassword)
+        {
+            return new ResponseDto
+            { IsSuccess = false, Message = "New password and confirm new password not match." };
+        }*/
+
+        // Không cho phép thay đổi mật khẩu cũ
+        if (changePasswordDto.NewPassword == changePasswordDto.OldPassword)
+        {
+            return new ResponseDto
+            { IsSuccess = false, Message = "New password cannot be the same as the old password." };
+        }
+
+        // Thực hiện thay đổi mật khẩu
+        var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
+        if (result.Succeeded)
+        {
+            return new ResponseDto { IsSuccess = true, Message = "Password changed successfully." };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                IsSuccess = false,
+                Message = "Password change failed. Please ensure the old password is correct."
+            };
+        }
     }
 
     public async Task<ResponseDto> FetchUserByToken(string token)
@@ -438,6 +473,7 @@ public class AuthService : IAuthService
             Result = userDto
         };
     }
+    
 
     public Task<ResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
     {

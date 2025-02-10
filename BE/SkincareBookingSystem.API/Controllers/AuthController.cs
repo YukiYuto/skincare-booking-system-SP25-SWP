@@ -4,6 +4,7 @@ using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Authentication;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using System.Security.Claims;
 
 namespace SkincareBookingSystem.API.Controllers;
 
@@ -109,5 +110,24 @@ public class AuthController : ControllerBase
     {
         var responseDto = await _authService.FetchUserByToken(token);
         return StatusCode(responseDto.StatusCode, responseDto);
+    }
+
+    
+    [HttpPost("ChangePassword")]
+    public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+    {
+        // Lấy Id người dùng hiện tại.
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var responseDto = await _authService.ChangePassword(changePasswordDto);
+
+        if (responseDto.IsSuccess)
+        {
+            return Ok(responseDto.Message);
+        }
+        else
+        {
+            return BadRequest(responseDto.Message);
+        }
     }
 }
