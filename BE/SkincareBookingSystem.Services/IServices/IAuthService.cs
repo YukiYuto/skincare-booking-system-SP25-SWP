@@ -12,7 +12,7 @@ public interface IAuthService
     Task<ResponseDto> SignUpSkinTherapist(SignUpSkinTherapistDto signUpSkinTherapistDto);
     Task<ResponseDto> SignIn(SignInDto signDto);
     Task<ResponseDto> SignInByGoogle(SignInByGoogleDto signInByGoogleDto);
-    Task<ResponseDto> UpdateUserProfile(string userId, UpdateUserProfileDto updateUserProfileDto);
+    Task<ResponseDto> UpdateUserProfile(UpdateUserProfileDto updateUserProfileDto);
     Task<ResponseDto> GetUserById(Guid userId);
     Task<ResponseDto> RefreshToken(RefreshTokenDto refreshTokenDto);
     Task<ResponseDto> FetchUserByToken(string token);

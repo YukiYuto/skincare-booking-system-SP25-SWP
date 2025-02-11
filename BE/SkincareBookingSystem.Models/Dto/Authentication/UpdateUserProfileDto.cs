@@ -8,5 +8,7 @@ namespace SkincareBookingSystem.Models.Dto.Authentication
 {
     public class UpdateUserProfileDto
     {
+        public string UserId { get; set; } = null!;
+        
     }
 }

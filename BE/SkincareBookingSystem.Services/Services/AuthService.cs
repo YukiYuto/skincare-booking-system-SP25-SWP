@@ -515,7 +515,7 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
-    public Task<ResponseDto> UpdateUserProfile(string userId, UpdateUserProfileDto updateUserProfileDto)
+    public Task<ResponseDto> UpdateUserProfile(UpdateUserProfileDto updateUserProfileDto)
     {
         throw new NotImplementedException();
     }
