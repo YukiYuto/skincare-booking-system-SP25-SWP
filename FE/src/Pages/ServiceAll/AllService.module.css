@@ -21,7 +21,7 @@
 
 .filter {
     width: 20%;
-    min-width: 160px;
+    min-width: 260px;
     padding: 16px 24px 48px 16px;
     background-color: var(--primary-color); /* #caedb8 */
     border-radius: 8px;
@@ -46,12 +46,14 @@
 
 .filter li {
     margin-bottom: 12px;
-    color: var(--accent-color); /* #56694f */
+    color: var(--text-color);
+}
+.filter li:hover {
+    text-decoration: underline var(--accent-color);
 }
 
 .selected {
     font-weight: 700;
-    text-decoration: underline;
     color: var(--primary-color); /* #cd9b59 */
 }
 

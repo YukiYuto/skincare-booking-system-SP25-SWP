@@ -1,100 +1,102 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    padding: 48px 92px;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: "Poppins", sans-serif;
-  }
-  
-  .title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-  
-  .image {
-    width: 100%;
-    max-width: 500px;
-    border-radius: 16px;
-    margin: 0 auto 24px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .type, .description, .price, .popularity {
-    font-size: 1.2rem;
-    margin: 8px 0;
-  }
-  
-  .price {
-    font-weight: 700;
-    color: var(--primary-color);
-  }
-  
-  .popularity {
-    color: var(--accent-color);
-  }
-  
-  .similarSection {
-    margin-top: 48px;
-  }
-  
-  .similarTitle {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 24px;
-    text-align: center;
-  }
-  
-  .similarGrid {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  
-  .similarCard {
-    background-color: var(--primary-color);
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    text-decoration: none;
-    color: var(--text-color);
-    width: calc(25% - 12px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  
-  .similarCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  .similarImage {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 12px;
-  }
-  
-  .similarName {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-  
-  .similarPrice {
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--accent-color);
-  }
-  
-  .loading {
-    text-align: center;
-    font-size: 1.5rem;
-    color: var(--text-color);
-    margin-top: 100px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  padding: 48px 92px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: "Poppins", sans-serif;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.image {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 16px;
+  margin: 0 auto 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.type,
+.description,
+.price,
+.popularity {
+  font-size: 1.2rem;
+  margin: 8px 0;
+}
+
+.price {
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.popularity {
+  color: var(--accent-color);
+}
+
+.similarSection {
+  margin-top: 48px;
+}
+
+.similarTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.similarGrid {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.similarCard {
+  background-color: var(--primary-color);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-color);
+  width: calc(25% - 12px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.similarCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.similarImage {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.similarName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.similarPrice {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent-color);
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin-top: 100px;
+}

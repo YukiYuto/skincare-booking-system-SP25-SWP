@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import ServiceList from "../../Components/ServiceList/ServiceList";
 import styles from "./ServiceDetail.module.css";
 
 const ServiceDetail = () => {
@@ -7,41 +8,42 @@ const ServiceDetail = () => {
   const [service, setService] = useState(null);
   const [serviceType, setServiceType] = useState("");
   const [similarServices, setSimilarServices] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
 
   useEffect(() => {
-    const fetchServiceDetail = async () => {
+    const fetchData = async () => {
       try {
-        const serviceData = await fetch(
-          `https://672741d4302d03037e702957.mockapi.io/Service/${id}`
-        ).then((res) => res.json());
+        const [serviceRes, allServicesRes, allServiceTypesRes] = await Promise.all([
+          fetch(`https://672741d4302d03037e702957.mockapi.io/Service/${id}`),
+          fetch(`https://672741d4302d03037e702957.mockapi.io/Service`),
+          fetch(`https://672741d4302d03037e702957.mockapi.io/ServiceType`)
+        ]);
+
+        const serviceData = await serviceRes.json();
+        setService(serviceData);
 
         const serviceTypeData = await fetch(
           `https://672741d4302d03037e702957.mockapi.io/ServiceType/${serviceData.ServiceTypeID}`
-        ).then((res) => res.json());
-
-        setService(serviceData);
+        ).then(res => res.json());
         setServiceType(serviceTypeData.Name);
 
-        const similarServicesData = await fetch(
-          `https://672741d4302d03037e702957.mockapi.io/Service`
-        ).then((res) => res.json());
-
-        const filteredServices = similarServicesData.filter(
+        const allServicesData = await allServicesRes.json();
+        const filteredServices = allServicesData.filter(
           (s) => s.ServiceTypeID === serviceData.ServiceTypeID && s.ID !== serviceData.ID
         ).slice(0, 4);
-
         setSimilarServices(filteredServices);
+
+        const allServiceTypesData = await allServiceTypesRes.json();
+        setServiceTypes(allServiceTypesData);
       } catch (error) {
-        console.error(error);
+        console.error("Failed to fetch service details:", error);
       }
     };
 
-    fetchServiceDetail();
+    fetchData();
   }, [id]);
 
-  if (!service) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
+  if (!service) return <div className={styles.loading}>Loading...</div>;
 
   return (
     <div className={styles.container}>
@@ -52,18 +54,12 @@ const ServiceDetail = () => {
       <p className={styles.price}>Price: ${service.Price}</p>
       <p className={styles.popularity}>Popularity: {service.Popularity}</p>
 
-      <div className={styles.similarSection}>
-        <h2 className={styles.similarTitle}>Similar Services</h2>
-        <div className={styles.similarGrid}>
-          {similarServices.map((simService) => (
-            <Link to={`/service/${simService.ID}`} key={simService.ID} className={styles.similarCard}>
-              <img src={simService.imgUrl} alt={simService.ServiceName} className={styles.similarImage} />
-              <p className={styles.similarName}>{simService.ServiceName}</p>
-              <p className={styles.similarPrice}>${simService.Price}</p>
-            </Link>
-          ))}
+      {similarServices.length > 0 && (
+        <div className={styles.similarSection}>
+          <h2 className={styles.similarTitle}>Similar Services</h2>
+          <ServiceList services={similarServices} serviceTypes={serviceTypes} />
         </div>
-      </div>
+      )}
     </div>
   );
 };
