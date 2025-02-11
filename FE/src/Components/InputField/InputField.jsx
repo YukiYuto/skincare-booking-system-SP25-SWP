@@ -14,7 +14,9 @@ export function InputField({
   maxLength,
   showPasswordToggle = false,
   value,
+  error,
   onChange,
+  onBlur,
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -39,6 +41,7 @@ export function InputField({
           maxLength={maxLength}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
         />
         {showPasswordToggle && (
           <button
@@ -56,12 +59,7 @@ export function InputField({
           </button>
         )}
       </div>
-      <p className={styles.error}>
-        {value.length > 0 &&
-        (value.length < minLength || value.length > maxLength)
-          ? `Username phải từ ${minLength} đến ${maxLength} ký tự`
-          : ""}
-      </p>
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }

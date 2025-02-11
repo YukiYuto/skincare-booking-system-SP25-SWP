@@ -1,0 +1,64 @@
+.trustSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 50px;
+    background-color: #fef8f5; /* Màu nền nhẹ */
+  }
+  
+  .imageContainer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .trustImage {
+    width: 400px; /* Điều chỉnh kích thước ảnh */
+    height: 400px;
+    border-radius: 50%; /* Tạo hình tròn */
+    object-fit: cover;
+  }
+  
+  .content {
+    flex: 1;
+    max-width: 500px;
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #532c26;
+    margin-bottom: 15px;
+  }
+  
+  .description {
+    font-size: 1rem;
+    color: #5a3d35;
+    margin-bottom: 20px;
+  }
+  
+  .benefits {
+    list-style: none;
+    padding: 0;
+    font-size: 1rem;
+    color: #5a3d35;
+  }
+  
+  .benefits li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .checked{
+    width: 15px;
+  }
+
+  .benefits li {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Tạo khoảng cách giữa ảnh và text */
+    margin-bottom: 10px;
+  }
+  

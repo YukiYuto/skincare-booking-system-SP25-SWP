@@ -51,6 +51,12 @@ input:valid {
   color: #d2d2d2;
 }
 
+/* Hide the reveal and clear button, since it is customized (.eyeIcon) */
+.input::-ms-reveal,
+.input::-ms-clear {
+  display: none;
+}
+
 .togglePassword {
   position: absolute;
   right: 21px;
