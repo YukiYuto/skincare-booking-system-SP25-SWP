@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using Microsoft.AspNetCore.Http;
 using SkincareBookingSystem.Models.Dto.Authentication;
 using SkincareBookingSystem.Models.Dto.Response;
@@ -486,7 +487,7 @@ public class AuthService : IAuthService
         var principal = await _tokenService.GetPrincipalFromToken(token);
 
         var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId!);
 
         if (user == null)
         {
@@ -507,11 +508,11 @@ public class AuthService : IAuthService
         {
             Id = user.Id,
             FullName = principal.FindFirst("FullName")!.Value,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
+            Email = user.Email!,
+            PhoneNumber = user.PhoneNumber!,
             Address = principal.FindFirst("Address")?.Value,
             ImageUrl = principal.FindFirst("AvatarUrl")?.Value,
-            UserName = user.UserName,
+            UserName = user.UserName!,
             Age = user.Age,
             Roles = roles.ToList()
         };
@@ -524,12 +525,12 @@ public class AuthService : IAuthService
             Result = userDto
         };
     }
-    
 
-    public async Task<ResponseDto> SendVerifyEmail(SendVerifyEmailDto sendVerifyEmailDto)
+
+    public async Task<ResponseDto> SendVerifyEmail(EmailDto emailDto)
     {
         // Tìm user theo email
-        var user = await _userManager.FindByEmailAsync(sendVerifyEmailDto.Email);
+        var user = await _userManager.FindByEmailAsync(emailDto.Email);
         if (user == null)
         {
             return new ResponseDto
@@ -562,7 +563,7 @@ public class AuthService : IAuthService
             $"http://localhost:5173/verify-email?userId={user.Id}&token={Uri.EscapeDataString(token)}";
 
         // Gọi EmailService để gửi email xác thực sử dụng template VerificationEmailTemplate
-        bool emailSent = await _emailService.SendVerificationEmailAsync(user.Email, verificationLink, user.FullName);
+        bool emailSent = await _emailService.SendVerificationEmailAsync(user.Email!, verificationLink, user.FullName);
 
         if (emailSent)
         {
@@ -625,11 +626,103 @@ public class AuthService : IAuthService
             Result = null
         };
     }
-    
-    public Task<ResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+
+    public async Task<ResponseDto> ForgotPassword(EmailDto forgotPasswordDto)
+    {
+        var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
+        
+        if (user == null)
+        {
+            return new ResponseDto
+            {
+                IsSuccess = true,
+                Message = "If an account exists for this email, a password reset email has been sent.",
+                StatusCode = 200,
+                Result = null
+            };
+        }
+
+        //token reset password
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+ 
+        // build link reset password
+        string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={Uri.UnescapeDataString(token)}";
+        
+        bool emailSent = await _emailService.SendPasswordResetEmailAsync(user.Email!, resetLink);
+
+        if (emailSent)
+        {
+            return new ResponseDto
+            {
+                IsSuccess = true,
+                Message = "Password reset email sent successfully.",
+                StatusCode = 200,
+                Result = null
+            };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                IsSuccess = false,
+                Message = "Failed to send password reset email.",
+                StatusCode = 500,
+                Result = null
+            };
+        }
+    }
+
+    public async Task<ResponseDto> ResetPassword(ResetPasswordDto resetPasswordDto)
+    {
+        // Check if new password and confirm password match
+        if (resetPasswordDto.NewPassword != resetPasswordDto.ConfirmPassword)
+        {
+            return new ResponseDto
+            {
+                IsSuccess = false,
+                Message = "New password and confirmation password do not match.",
+                StatusCode = 400,
+                Result = null
+            };
+        }
+        
+        var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+        if (user == null)
+        {
+            return new ResponseDto
+            {
+                IsSuccess = false,
+                Message = "User not found",
+                StatusCode = 404,
+                Result = null
+            };
+        }
+        
+        var result = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
+        if (!result.Succeeded)
+        {
+            return new ResponseDto
+            {
+                IsSuccess = false,
+                Message = "Reset password failed",
+                StatusCode = 400,
+                Result = null
+            };
+        }
+        return new ResponseDto
+        {
+            IsSuccess = true,
+            Message = "Password has been reset successfully.",
+            StatusCode = 200,
+            Result = null
+        };
+    }
+
+    public Task<ResponseDto> RefreshToken(RefreshTokenDto refreshTokenDto)
     {
         throw new NotImplementedException();
     }
+
 
     public Task<MemoryStream> GetUserAvatar(ClaimsPrincipal user)
     {
@@ -651,15 +744,6 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
-    public Task<ResponseDto> RefreshToken(RefreshTokenDto refreshTokenDto)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ResponseDto> ResetPassword(string resetPasswordDto, string token, string password)
-    {
-        throw new NotImplementedException();
-    }
 
     public Task<ResponseDto> UploadUserAvatar(IFormFile file, ClaimsPrincipal user)
     {

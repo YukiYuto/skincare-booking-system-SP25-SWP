@@ -19,11 +19,11 @@ public interface IAuthService
     Task<ResponseDto> FetchUserByToken(string token);
     Task<ResponseDto> UploadUserAvatar(IFormFile file, ClaimsPrincipal user);
     Task<MemoryStream> GetUserAvatar(ClaimsPrincipal user);
-    Task<ResponseDto> SendVerifyEmail(SendVerifyEmailDto sendVerifyEmailDto);
+    Task<ResponseDto> SendVerifyEmail(EmailDto emailDto);
     Task<ResponseDto> VerifyEmail(VerifyEmailDto verifyEmailDto);
     Task<ResponseDto> ChangePassword(ChangePasswordDto changePasswordDto);
-    Task<ResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordDto);
-    Task<ResponseDto> ResetPassword(string resetPasswordDto, string token, string password);
+    Task<ResponseDto> ForgotPassword(EmailDto forgotPasswordDto);
+    Task<ResponseDto> ResetPassword(ResetPasswordDto resetPasswordDto);
     Task<ResponseDto> LockUser(string id);
     Task<ResponseDto> UnlockUser(string id);
 }

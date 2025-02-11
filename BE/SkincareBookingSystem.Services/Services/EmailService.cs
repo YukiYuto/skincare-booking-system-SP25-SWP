@@ -28,12 +28,20 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<bool> SendPasswordResetEmailAsync(string toEmail, string resetPasswordLink)
         {
-            return await SendEmailFromTemplateAsync(toEmail, new PasswordResetEmailTemplate(), new Dictionary<string, string> { { "ResetPasswordLink", resetPasswordLink } });
+            var placeholders = new Dictionary<string, string>
+            {
+                { "ResetPasswordLink", resetPasswordLink }
+            };
+            return await SendEmailFromTemplateAsync(toEmail, new PasswordResetEmailTemplate(), placeholders);
         }
 
         public async Task<bool> SendVerificationEmailAsync(string toEmail, string emailConfirmationLink, string fullName)
         {
-            var placeholders = new Dictionary<string, string> { { "EmailConfirmationLink", emailConfirmationLink }, { "UserName", fullName } };
+            var placeholders = new Dictionary<string, string>
+            {
+                { "EmailConfirmationLink", emailConfirmationLink }, 
+                { "UserName", fullName }
+            };
             return await SendEmailFromTemplateAsync(toEmail, new VerificationEmailTemplate(), placeholders);
         }
 

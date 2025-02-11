@@ -155,7 +155,7 @@ public class AuthController : ControllerBase
     /// <param name="emailDto"></param>
     /// <returns></returns>
     [HttpPost("send-verify-email")]
-    public async Task<IActionResult> SendVerifyEmail([FromBody] SendVerifyEmailDto emailDto)
+    public async Task<IActionResult> SendVerifyEmail([FromBody] EmailDto emailDto)
     {
         var responseDto = await _authService.SendVerifyEmail(emailDto);
         return StatusCode(responseDto.StatusCode, responseDto);
@@ -170,6 +170,20 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)
     {
         var responseDto = await _authService.VerifyEmail(verifyEmailDto);
+        return StatusCode(responseDto.StatusCode, responseDto);
+    }
+    
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] EmailDto forgotPasswordDto)
+    {
+        var responseDto = await _authService.ForgotPassword(forgotPasswordDto);
+        return StatusCode(responseDto.StatusCode, responseDto);
+    }
+    
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+    {
+        var responseDto = await _authService.ResetPassword(resetPasswordDto);
         return StatusCode(responseDto.StatusCode, responseDto);
     }
 }

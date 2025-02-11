@@ -1,6 +1,6 @@
 ﻿namespace SkincareBookingSystem.Models.Dto.Email;
 
-public class SendVerifyEmailDto
+public class EmailDto
 {
     public string Email { get; set; } = null!;
 }

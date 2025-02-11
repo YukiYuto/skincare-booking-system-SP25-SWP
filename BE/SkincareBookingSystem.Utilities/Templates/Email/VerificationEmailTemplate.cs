@@ -19,11 +19,6 @@ namespace SkincareBookingSystem.Utilities.Templates.Email
         public override string CallToActionText { get; set; } = "Verify your email";
         public override string FooterContent { get; set; } = $"If you have any questions, feel free to contact us at {StaticEmailSettings.SenderEmail}.";
         public override string RecipientType { get; set; } = StaticUserRoles.Customer;
-        /*
-         tại sao lại chỉ verify email cho customer?
-         mà không verify email cho staff?
-         rồi làm sao mà biết staff có đưa đúng email hay không?
-         */
         public VerificationEmailTemplate() { }
     }
 }
