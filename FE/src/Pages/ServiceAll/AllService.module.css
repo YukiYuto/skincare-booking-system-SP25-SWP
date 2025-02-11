@@ -1,0 +1,55 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 48px 92px;
+    background-color: var(--background-color);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    color: var(--text-color); 
+}
+
+.service {
+    display: flex;
+}
+
+.filter {
+    width: 20%;
+    padding: 16px;
+    background-color: var(--primary-color); 
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 16px;
+    border: 1px solid var(--accent-color);
+}
+
+.filter label {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: Poppins;
+}
+
+.filter ul {
+    list-style-type: none;
+    padding: 2px;
+    margin-top: 1.2rem;
+}
+
+.filter li {
+    margin-bottom: 8px;
+}
+
+.selected {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.unselected { 
+    font-weight: 400;
+}

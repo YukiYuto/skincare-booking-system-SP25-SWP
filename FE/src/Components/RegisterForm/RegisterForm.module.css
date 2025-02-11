@@ -14,7 +14,21 @@
   color: rgb(0, 0, 0);
 }
 
-.flexContainer {
+.flexContainer1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.flexContainer2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.flexContainer3 {
   display: flex;
   align-items: center;
   justify-content: space-between;

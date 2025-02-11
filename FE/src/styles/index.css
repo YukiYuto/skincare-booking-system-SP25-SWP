@@ -1,0 +1,40 @@
+/* Reset default margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set root and body to full viewport size */
+html,
+body,
+#root {
+  width: 100vw;
+  height: 100vh;
+  font-family: Montserrat;
+}
+
+h1 {
+  font-family: Playfair Display;
+}
+
+h2 {
+  font-family: Raleway;
+}
+
+p {
+  font-family: Lora;
+}
+
+/* Style for Toast notifications */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+:root {
+  --primary-color: #FFE8D4;
+  --secondary-color: #F4CFA1;
+  --accent-color: #C49E85;
+  --background-color: #F5E9E2;
+  --text-color: #6F4E37;
+}
