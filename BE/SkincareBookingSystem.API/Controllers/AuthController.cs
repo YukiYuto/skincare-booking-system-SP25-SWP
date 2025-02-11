@@ -5,6 +5,7 @@ using SkincareBookingSystem.Models.Dto.Authentication;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
 using System.Security.Claims;
+using SkincareBookingSystem.Models.Dto.Email;
 
 namespace SkincareBookingSystem.API.Controllers;
 
@@ -112,7 +113,11 @@ public class AuthController : ControllerBase
         return StatusCode(responseDto.StatusCode, responseDto);
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="changePasswordDto"></param>
+    /// <returns></returns>
     [HttpPost("ChangePassword")]
     public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
     {
@@ -131,10 +136,40 @@ public class AuthController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="updateUserProfileDto"></param>
+    /// <returns></returns>
     [HttpPost("UpdateUserProfile")]
     public async Task<IActionResult> UpdateUserProfile(UpdateUserProfileDto updateUserProfileDto)
     {
         var responseDto = await _authService.UpdateUserProfile(User, updateUserProfileDto);
+        return StatusCode(responseDto.StatusCode, responseDto);
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="emailDto"></param>
+    /// <returns></returns>
+    [HttpPost("send-verify-email")]
+    public async Task<IActionResult> SendVerifyEmail([FromBody] SendVerifyEmailDto emailDto)
+    {
+        var responseDto = await _authService.SendVerifyEmail(emailDto);
+        return StatusCode(responseDto.StatusCode, responseDto);
+    }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="verifyEmailDto"></param>
+    /// <returns></returns>
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)
+    {
+        var responseDto = await _authService.VerifyEmail(verifyEmailDto);
         return StatusCode(responseDto.StatusCode, responseDto);
     }
 }

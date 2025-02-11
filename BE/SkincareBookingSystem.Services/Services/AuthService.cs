@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
+using SkincareBookingSystem.Models.Dto.Email;
 using SkincareBookingSystem.Utilities.Constants;
 
 namespace SkincareBookingSystem.Services.Services;
@@ -20,6 +21,7 @@ public class AuthService : IAuthService
     private readonly JwtSecurityTokenHandler _tokenHandler;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IAutoMapperService _mapperService;
+    private readonly IEmailService _emailService;
 
     public AuthService
     (
@@ -27,7 +29,8 @@ public class AuthService : IAuthService
         RoleManager<IdentityRole> roleManager,
         ITokenService tokenService,
         IUnitOfWork unitOfWork,
-        IAutoMapperService mapperService
+        IAutoMapperService mapperService,
+        IEmailService emailService
     )
     {
         _userManager = userManager;
@@ -36,6 +39,7 @@ public class AuthService : IAuthService
         _tokenHandler = new JwtSecurityTokenHandler();
         _unitOfWork = unitOfWork;
         _mapperService = mapperService;
+        _emailService = emailService;
     }
 
     public async Task<ResponseDto> SignUpCustomer(SignUpCustomerDto signUpCustomerDto)
@@ -388,6 +392,61 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
+    public async Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,
+        UpdateUserProfileDto updateUserProfileDto)
+    {
+        // Lấy thông tin người dùng từ token JWT
+        var userId = userPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return new ResponseDto()
+            {
+                Message = "Unauthorized",
+                StatusCode = 401,
+                IsSuccess = false,
+                Result = null
+            };
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return new ResponseDto()
+            {
+                Message = "Invalid user",
+                StatusCode = 400,
+                IsSuccess = false,
+                Result = null
+            };
+        }
+
+        // Sử dụng mapping với overload có destination để cập nhật đối tượng user hiện có
+        _mapperService.Map(updateUserProfileDto, user);
+
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            return new ResponseDto
+            {
+                Message = "Update user profile failed",
+                StatusCode = 400,
+                IsSuccess = false,
+                Result = result.Errors
+            };
+        }
+
+        // Nếu muốn trả về dữ liệu cập nhật, bạn có thể map lại đối tượng user sang DTO trả về
+        var updatedUserDto = _mapperService.Map<ApplicationUser, UpdateUserProfileDto>(user);
+        return new ResponseDto()
+        {
+            Message = "Update user profile successfully",
+            StatusCode = 200,
+            IsSuccess = true,
+            Result = updatedUserDto
+        };
+    }
+
+
     public async Task<ResponseDto> ChangePassword(ChangePasswordDto changePasswordDto)
     {
         // Lấy id của người dùng
@@ -397,24 +456,16 @@ public class AuthService : IAuthService
             return new ResponseDto { IsSuccess = false, Message = "User not found." };
         }
 
-        // Thực hiện xác thực mật khẩu và thay đổi mật khẩu
-
-        // Kiểm tra sự trùng khớp của mật khẩu mới và xác nhận mật khẩu mới 
-        /*if (newPassword != confirmNewPassword)
-        {
-            return new ResponseDto
-            { IsSuccess = false, Message = "New password and confirm new password not match." };
-        }*/
-
         // Không cho phép thay đổi mật khẩu cũ
         if (changePasswordDto.NewPassword == changePasswordDto.OldPassword)
         {
             return new ResponseDto
-            { IsSuccess = false, Message = "New password cannot be the same as the old password." };
+                { IsSuccess = false, Message = "New password cannot be the same as the old password." };
         }
 
         // Thực hiện thay đổi mật khẩu
-        var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
+        var result =
+            await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
         if (result.Succeeded)
         {
             return new ResponseDto { IsSuccess = true, Message = "Password changed successfully." };
@@ -475,6 +526,106 @@ public class AuthService : IAuthService
     }
     
 
+    public async Task<ResponseDto> SendVerifyEmail(SendVerifyEmailDto sendVerifyEmailDto)
+    {
+        // Tìm user theo email
+        var user = await _userManager.FindByEmailAsync(sendVerifyEmailDto.Email);
+        if (user == null)
+        {
+            return new ResponseDto
+            {
+                IsSuccess = false,
+                Message = "User not found",
+                StatusCode = 404,
+                Result = null
+            };
+        }
+
+        // Nếu email đã được xác nhận
+        if (user.EmailConfirmed)
+        {
+            return new ResponseDto
+            {
+                IsSuccess = true,
+                Message = "Your email has already been confirmed",
+                StatusCode = 200,
+                Result = null
+            };
+        }
+
+        // Sinh token xác nhận email
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        // Xây dựng liên kết xác thực.
+        // Lưu ý: thay đổi URL cho phù hợp với môi trường (local hay production)
+        string verificationLink =
+            $"http://localhost:5173/verify-email?userId={user.Id}&token={Uri.EscapeDataString(token)}";
+
+        // Gọi EmailService để gửi email xác thực sử dụng template VerificationEmailTemplate
+        bool emailSent = await _emailService.SendVerificationEmailAsync(user.Email, verificationLink, user.FullName);
+
+        if (emailSent)
+        {
+            return new ResponseDto
+            {
+                IsSuccess = true,
+                Message = "Verification email sent successfully.",
+                StatusCode = 200,
+                Result = null
+            };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                IsSuccess = false,
+                Message = "Failed to send verification email.",
+                StatusCode = 500,
+                Result = null
+            };
+        }
+    }
+
+
+    public async Task<ResponseDto> VerifyEmail(VerifyEmailDto verifyEmailDto)
+    {
+        var user = await _userManager.FindByIdAsync(verifyEmailDto.UserId);
+
+        if (user!.EmailConfirmed)
+        {
+            return new ResponseDto()
+            {
+                Message = "Your email has been confirmed!",
+                IsSuccess = true,
+                StatusCode = 200,
+                Result = null
+            };
+        }
+
+        string decodedToken = Uri.UnescapeDataString(verifyEmailDto.Token);
+
+        var confirmResult = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+        if (!confirmResult.Succeeded)
+        {
+            return new()
+            {
+                Message = "Invalid token",
+                StatusCode = 400,
+                IsSuccess = false,
+                Result = null
+            };
+        }
+
+        return new()
+        {
+            Message = "Confirm Email Successfully",
+            IsSuccess = true,
+            StatusCode = 200,
+            Result = null
+        };
+    }
+    
     public Task<ResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
     {
         throw new NotImplementedException();
@@ -495,6 +646,11 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
+    public Task<ResponseDto> UnlockUser(string id)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<ResponseDto> RefreshToken(RefreshTokenDto refreshTokenDto)
     {
         throw new NotImplementedException();
@@ -505,75 +661,7 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
-    public Task<ResponseDto> SendVerifyEmail(string email, string userId, string token)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ResponseDto> UnlockUser(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,UpdateUserProfileDto updateUserProfileDto)
-    {
-        // Lấy thông tin người dùng từ token JWT
-        var userId = userPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return new ResponseDto()
-            {
-                Message = "Unauthorized",
-                StatusCode = 401,
-                IsSuccess = false,
-                Result = null
-            };
-        }
-
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-        {
-            return new ResponseDto()
-            {
-                Message = "Invalid user",
-                StatusCode = 400,
-                IsSuccess = false,
-                Result = null
-            };
-        }
-
-        // Sử dụng mapping với overload có destination để cập nhật đối tượng user hiện có
-        _mapperService.Map(updateUserProfileDto, user);
-
-        var result = await _userManager.UpdateAsync(user);
-        if (!result.Succeeded)
-        {
-            return new ResponseDto
-            {
-                Message = "Update user profile failed",
-                StatusCode = 400,
-                IsSuccess = false,
-                Result = result.Errors
-            };
-        }
-
-        // Nếu muốn trả về dữ liệu cập nhật, bạn có thể map lại đối tượng user sang DTO trả về
-        var updatedUserDto = _mapperService.Map<ApplicationUser, UpdateUserProfileDto>(user);
-        return new ResponseDto()
-        {
-            Message = "Update user profile successfully",
-            StatusCode = 200,
-            IsSuccess = true,
-            Result = updatedUserDto
-        };
-    }
-
     public Task<ResponseDto> UploadUserAvatar(IFormFile file, ClaimsPrincipal user)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ResponseDto> VerifyEmail(string userId, string token)
     {
         throw new NotImplementedException();
     }

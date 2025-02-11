@@ -31,9 +31,10 @@ namespace SkincareBookingSystem.Services.Services
             return await SendEmailFromTemplateAsync(toEmail, new PasswordResetEmailTemplate(), new Dictionary<string, string> { { "ResetPasswordLink", resetPasswordLink } });
         }
 
-        public async Task<bool> SendVerificationEmailAsync(string toEmail, string emailConfirmationLink)
+        public async Task<bool> SendVerificationEmailAsync(string toEmail, string emailConfirmationLink, string fullName)
         {
-            return await SendEmailFromTemplateAsync(toEmail, new VerificationEmailTemplate(), new Dictionary<string, string> { { "EmailConfirmationLink", emailConfirmationLink } });
+            var placeholders = new Dictionary<string, string> { { "EmailConfirmationLink", emailConfirmationLink }, { "UserName", fullName } };
+            return await SendEmailFromTemplateAsync(toEmail, new VerificationEmailTemplate(), placeholders);
         }
 
         public async Task<bool> SendEmailAsync(string toEmail, string subject, string body)

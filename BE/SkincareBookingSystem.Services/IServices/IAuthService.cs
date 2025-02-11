@@ -2,6 +2,7 @@
 using SkincareBookingSystem.Models.Dto.Authentication;
 using SkincareBookingSystem.Models.Dto.Response;
 using System.Security.Claims;
+using SkincareBookingSystem.Models.Dto.Email;
 
 namespace SkincareBookingSystem.Services.IServices;
 
@@ -18,8 +19,8 @@ public interface IAuthService
     Task<ResponseDto> FetchUserByToken(string token);
     Task<ResponseDto> UploadUserAvatar(IFormFile file, ClaimsPrincipal user);
     Task<MemoryStream> GetUserAvatar(ClaimsPrincipal user);
-    Task<ResponseDto> SendVerifyEmail(string email, string userId, string token);
-    Task<ResponseDto> VerifyEmail(string userId, string token);
+    Task<ResponseDto> SendVerifyEmail(SendVerifyEmailDto sendVerifyEmailDto);
+    Task<ResponseDto> VerifyEmail(VerifyEmailDto verifyEmailDto);
     Task<ResponseDto> ChangePassword(ChangePasswordDto changePasswordDto);
     Task<ResponseDto> ForgotPassword(ForgotPasswordDto forgotPasswordDto);
     Task<ResponseDto> ResetPassword(string resetPasswordDto, string token, string password);
