@@ -99,7 +99,7 @@ public class AuthController : ControllerBase
         var responseDto = await _authService.SignIn(signInDto);
         return StatusCode(responseDto.StatusCode, responseDto);
     }
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -112,7 +112,7 @@ public class AuthController : ControllerBase
         return StatusCode(responseDto.StatusCode, responseDto);
     }
 
-    
+
     [HttpPost("ChangePassword")]
     public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
     {
@@ -129,5 +129,12 @@ public class AuthController : ControllerBase
         {
             return BadRequest(responseDto.Message);
         }
+    }
+
+    [HttpPost("UpdateUserProfile")]
+    public async Task<IActionResult> UpdateUserProfile(UpdateUserProfileDto updateUserProfileDto)
+    {
+        var responseDto = await _authService.UpdateUserProfile(User, updateUserProfileDto);
+        return StatusCode(responseDto.StatusCode, responseDto);
     }
 }

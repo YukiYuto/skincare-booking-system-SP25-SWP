@@ -32,6 +32,8 @@ public class SignUpStaffDto
 
     [Required]
     public string Address { get; set; } = null!;
+    [Required]
+    public string Gender { get; set; } = null!;
 
     [Required]
     public int Age { get; set; }

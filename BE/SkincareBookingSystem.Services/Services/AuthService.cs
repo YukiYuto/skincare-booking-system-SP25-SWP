@@ -515,9 +515,57 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
-    public Task<ResponseDto> UpdateUserProfile(UpdateUserProfileDto updateUserProfileDto)
+    public async Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,UpdateUserProfileDto updateUserProfileDto)
     {
-        throw new NotImplementedException();
+        // Lấy thông tin người dùng từ token JWT
+        var userId = userPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return new ResponseDto()
+            {
+                Message = "Unauthorized",
+                StatusCode = 401,
+                IsSuccess = false,
+                Result = null
+            };
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return new ResponseDto()
+            {
+                Message = "Invalid user",
+                StatusCode = 400,
+                IsSuccess = false,
+                Result = null
+            };
+        }
+
+        // Sử dụng mapping với overload có destination để cập nhật đối tượng user hiện có
+        _mapperService.Map(updateUserProfileDto, user);
+
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            return new ResponseDto
+            {
+                Message = "Update user profile failed",
+                StatusCode = 400,
+                IsSuccess = false,
+                Result = result.Errors
+            };
+        }
+
+        // Nếu muốn trả về dữ liệu cập nhật, bạn có thể map lại đối tượng user sang DTO trả về
+        var updatedUserDto = _mapperService.Map<ApplicationUser, UpdateUserProfileDto>(user);
+        return new ResponseDto()
+        {
+            Message = "Update user profile successfully",
+            StatusCode = 200,
+            IsSuccess = true,
+            Result = updatedUserDto
+        };
     }
 
     public Task<ResponseDto> UploadUserAvatar(IFormFile file, ClaimsPrincipal user)

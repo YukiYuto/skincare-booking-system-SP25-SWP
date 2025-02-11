@@ -27,17 +27,14 @@ public class SignUpSkinTherapistDto
     [Phone]
     public string PhoneNumber { get; set; } = null!;
 
-    [Required]
-    public string FullName { get; set; } = null!;
+    [Required] public string FullName { get; set; } = null!;
 
-    [Required]
-    public string Address { get; set; } = null!;
+    [Required] public string Address { get; set; } = null!;
 
-    [Required]
-    public int Age { get; set; }
-    
-    [Required]
-    public string Experience { get; set; } = null!;
+    [Required] public int Age { get; set; }
+    [Required] public string Gender { get; set; } = null!;
+
+    [Required] public string Experience { get; set; } = null!;
 
     public Guid? TherapistScheduleId { get; set; } = null;
 }
