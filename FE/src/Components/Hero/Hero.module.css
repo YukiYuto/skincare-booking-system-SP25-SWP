@@ -1,0 +1,29 @@
+.hero {
+    background-image: url('./hero.png'); /* Replace with your image path */
+    background-size: 100% 100%;
+    background-position: center;
+    width: 100vw;
+    height: 16rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding: 20px;
+  }
+
+  .hero h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    font-family: Playfair Display;
+    color: rgb(27, 73, 255);
+  }
+  
+  .hero p {
+    font-size: 1.5rem;
+    margin-top: 24px;
+    font-family: Dancing Script;
+  }
+  

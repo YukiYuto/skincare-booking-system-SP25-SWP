@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import styles from "./RegisterPage.module.css";
 import RegisterForm from "../../Components/RegisterForm/RegisterForm";
