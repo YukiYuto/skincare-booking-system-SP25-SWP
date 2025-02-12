@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
@@ -47,6 +48,8 @@ public class UnitOfWork : IUnitOfWork
     public ISkinTherapistRepository SkinTherapist { get; private set; }
 
     public ISlotRepository Slot { get; private set; }
+    
+    public IStaffRepository Staff { get; private set; }
 
     public ITestAnswerRepository TestAnswer { get; private set; }
 
@@ -80,6 +83,7 @@ public class UnitOfWork : IUnitOfWork
         SkinTest = new SkinTestRepository(_context);
         SkinTherapist = new SkinTherapistRepository(_context);
         Slot = new SlotRepository(_context);
+        Staff = new StaffRepository(_context);
         TestAnswer = new TestAnswerRepository(_context);
         TestQuestion = new TestQuestionRepository(_context);
         TherapistSchedule = new TherapistScheduleRepository(_context);
@@ -91,5 +95,10 @@ public class UnitOfWork : IUnitOfWork
     public async Task<int> SaveAsync()
     {
         return await _context.SaveChangesAsync();
+    }
+    
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import styles from "./InputField.module.css";
 import eyeOpen from "./eyeOpen.svg";
@@ -7,11 +8,15 @@ export function InputField({
   label,
   type,
   id,
+  name,
   placeholder,
   minLength,
   maxLength,
   showPasswordToggle = false,
   value,
+  error,
+  onChange,
+  onBlur,
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -28,11 +33,15 @@ export function InputField({
         <input
           type={showPasswordToggle && showPassword ? "text" : type}
           id={id}
+          name={name}
           placeholder={placeholder}
           className={styles.input}
           aria-label={label}
           minLength={minLength}
           maxLength={maxLength}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
         />
         {showPasswordToggle && (
           <button
@@ -50,11 +59,7 @@ export function InputField({
           </button>
         )}
       </div>
-      <p className={styles.error}>
-        {value.length > 0 && (value.length < minLength || value.length > maxLength)
-          ? `Username phải từ ${minLength} đến ${maxLength} ký tự`
-          : ""}
-      </p>
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }
