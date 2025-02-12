@@ -1,3 +1,4 @@
+import React from 'react';
 import { createContext, useState, useContext, useEffect } from 'react';
 
 // Create a context to manage user data

@@ -1,0 +1,38 @@
+.loginPage {
+  background-color: rgb(250, 250, 250); 
+  display: flex;
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+  padding: 80px 64px;
+}
+
+.brandColumn {
+  align-self: center;
+  width: 61%;
+  height: 100%;
+}
+
+.formColumn {
+  width: 39%;
+}
+
+@media (max-width: 991px) {
+  .loginPage {
+    padding: 40px 20px;
+  }
+
+  .container {
+    flex-direction: column;
+  }
+
+  .brandColumn,
+  .formColumn {
+    width: 100%;
+  }
+}

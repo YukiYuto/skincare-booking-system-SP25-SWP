@@ -1,0 +1,19 @@
+.statsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    padding: 50px 0;
+    text-align: center;
+  }
+  
+  .statItem h2 {
+    font-size: 2rem;
+    color: #5a362d;
+  }
+  
+  .statItem p {
+    font-size: 1rem;
+    color: #6d4c41;
+    max-width: 200px;
+  }
+  

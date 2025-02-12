@@ -1,0 +1,10 @@
+.brand {
+    display: flex;
+    font: 500 80px Poppins, sans-serif;
+    color: rgb(21, 44, 91);
+    text-align: center;
+}
+
+.brandHighlight {
+    color: rgb(50, 82, 223);
+}
