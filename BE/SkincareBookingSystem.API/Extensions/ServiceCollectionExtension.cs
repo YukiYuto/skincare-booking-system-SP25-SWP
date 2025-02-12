@@ -14,6 +14,7 @@ namespace SkincareBookingSystem.API.Extensions
     {
         public static IServiceCollection RegisterServices(this IServiceCollection services,ConfigurationManager builderConfiguration)
         {
+
             // Đọc chuỗi kết nối Redis từ file cấu hình
             var redisConnectionString = builderConfiguration.GetValue<string>("Redis:ConnectionString");
             // Đăng ký IConnectionMultiplexer
@@ -32,6 +33,13 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<IRedisService, RedisService>();
             services.AddScoped<IBlogCategoryService, BlogCategoryService>();
             services.AddScoped<IEmailService, EmailService>();
+
+
+            // more services to be added here
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IBlogCategoryService, BlogCategoryService>();
+            services.AddScoped<IServicesService, ServicesService>();
+
 
             return services;
         }
