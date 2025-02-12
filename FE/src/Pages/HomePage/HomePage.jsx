@@ -12,6 +12,8 @@ import SkincareExperts from "../../Components/SkincareExperts/SkincareExperts";
 
 function HomePage() {
   return (
+    <div>
+    <Header />
     <div className={styles.pageContainer}>
       
       <div className={styles.container}>
@@ -21,7 +23,8 @@ function HomePage() {
             Glow naturally with <br /> skinn care
           </h1>
           <p className={styles.description}>
-            Our skincare line is crafted with pure, high-quality <br /> ingredients for visible results.
+            Our skincare line is crafted with pure, high-quality <br />{" "}
+            ingredients for visible results.
           </p>
           <Button type="primary" size="large" className={styles.button}>
             <img src={phone} alt="phone icon" className={styles.phoneIcon} /> 
@@ -50,6 +53,7 @@ function HomePage() {
 
       <AppointmentSection/><br/>
 
+    </div>
     </div>
   );
 }
