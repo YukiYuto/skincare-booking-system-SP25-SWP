@@ -14,28 +14,29 @@ function HomePage() {
   return (
     <div>
     <Header />
-    <div className={styles.pageContainer}>
-      
-      <div className={styles.container}>
-        
-        <div className={styles.textContainer}>
-          <h1 className={styles.title}>
-            Glow naturally with <br /> skinn care
-          </h1>
-          <p className={styles.description}>
-            Our skincare line is crafted with pure, high-quality <br />{" "}
-            ingredients for visible results.
-          </p>
-          <Button type="primary" size="large" className={styles.button}>
-            <img src={phone} alt="phone icon" className={styles.phoneIcon} /> 
-            Book an appointment
-          </Button>
-        </div>
+      <div className={styles.pageContainer}>
+        {/* Hero Section */}
+        <div className={styles.container}>
+          {/* Left Side - Text & Button */}
+          <div className={styles.textContainer}>
+            <h1 className={styles.title}>
+              Glow naturally with <br /> skinn care
+            </h1>
+            <p className={styles.description}>
+              Our skincare line is crafted with pure, high-quality <br />{" "}
+              ingredients for visible results.
+            </p>
+            <Button type="primary" size="large" className={styles.button}>
+              <img src={phone} alt="phone icon" className={styles.phoneIcon} />
+              Book an appointment
+            </Button>
+          </div>
 
-        <div className={styles.imageContainer}>
-          <img src={spa} alt="Relaxing Skincare" className={styles.image} />
+          {/* Right Side - Image */}
+          <div className={styles.imageContainer}>
+            <img src={spa} alt="Relaxing Skincare" className={styles.image} />
+          </div>
         </div>
-      </div>
 
       <div className={styles.featuresWrapper}>
         <FeaturesSection />
