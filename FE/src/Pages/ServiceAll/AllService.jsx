@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Header from "../../Components/Common/Header.jsx";
 import Hero from "../../Components/Hero/Hero";
 import ServiceSort from "../../Components/ServiceSort/ServiceSort.jsx";
 import ServiceList from "../../Components/ServiceList/ServiceList.jsx";
@@ -79,38 +80,41 @@ const AllService = () => {
 
   return (
     <>
-      <Hero />
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <h1>Discover Our Services</h1>
-          <ServiceSort
-            filter={filter}
-            handleFilterChange={handleFilterChange}
-          />
-        </div>
-        <div className={styles.service}>
-          <div className={styles.filter}>
-            <label>Filter by Type</label>
-            <ul>
-              {serviceTypes.map((type) => (
-                <li
-                  key={type.ID}
-                  onClick={() => toggleType(type.ID)}
-                  className={
-                    selectedTypes.includes(type.ID)
-                      ? styles.selected
-                      : styles.unselected
-                  }
-                >
-                  {type.Name}
-                </li>
-              ))}
-            </ul>
+      <div>
+        <Header />
+        <Hero />
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <h1>Discover Our Services</h1>
+            <ServiceSort
+              filter={filter}
+              handleFilterChange={handleFilterChange}
+            />
           </div>
-          <ServiceList
-            services={getFilteredServices()}
-            serviceTypes={serviceTypes}
-          />
+          <div className={styles.service}>
+            <div className={styles.filter}>
+              <label>Filter by Type</label>
+              <ul>
+                {serviceTypes.map((type) => (
+                  <li
+                    key={type.ID}
+                    onClick={() => toggleType(type.ID)}
+                    className={
+                      selectedTypes.includes(type.ID)
+                        ? styles.selected
+                        : styles.unselected
+                    }
+                  >
+                    {type.Name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <ServiceList
+              services={getFilteredServices()}
+              serviceTypes={serviceTypes}
+            />
+          </div>
         </div>
       </div>
     </>
