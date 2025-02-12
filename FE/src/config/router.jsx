@@ -37,5 +37,5 @@ export const router = createBrowserRouter([
     path: "services/:id",
     element: <ServiceDetail />,
   },
-])
+]);
 
