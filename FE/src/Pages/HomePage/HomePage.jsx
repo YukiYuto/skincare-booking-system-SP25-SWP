@@ -13,9 +13,9 @@ import SkincareExperts from "../../Components/SkincareExperts/SkincareExperts";
 function HomePage() {
   return (
     <div className={styles.pageContainer}>
-      {/* Hero Section */}
+      
       <div className={styles.container}>
-        {/* Left Side - Text & Button */}
+        
         <div className={styles.textContainer}>
           <h1 className={styles.title}>
             Glow naturally with <br /> skinn care
@@ -29,13 +29,11 @@ function HomePage() {
           </Button>
         </div>
 
-        {/* Right Side - Image */}
         <div className={styles.imageContainer}>
           <img src={spa} alt="Relaxing Skincare" className={styles.image} />
         </div>
       </div>
 
-      {/* Features Section - Nằm dưới nhưng vẫn có background */}
       <div className={styles.featuresWrapper}>
         <FeaturesSection />
       </div><br/>

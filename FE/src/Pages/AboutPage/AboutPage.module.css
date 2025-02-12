@@ -1,5 +1,5 @@
 .aboutSection {
-    background-color: #fdf9f7; /* Màu nền nhẹ */
+    background-color: #fdf9f7; 
     padding: 50px 0;
     display: flex;
     justify-content: center;
@@ -7,7 +7,7 @@
   
   .container {
     display: flex;
-    flex-direction: column; /* Hình ảnh trên, nội dung dưới */
+    flex-direction: column; 
     align-items: center;
     max-width: 900px;
     width: 90%;
@@ -24,18 +24,17 @@
     border-radius: 20px;
   }
   
-  /* Chỉnh lại phần text + experience thành hàng ngang */
   .contentWrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 100px; /* Khoảng cách giữa textContainer và experience */
+    gap: 100px; 
     margin-top: 20px;
     text-align: left;
   }
   
   .textContainer {
-    max-width: 500px; /* Giới hạn chiều rộng của text */
+    max-width: 500px; 
   }
   
   .textContainer h2 {
@@ -51,7 +50,6 @@
     margin-bottom: 20px;
   }
   
-  /* Experience nằm bên phải text */
   .experience {
     display: flex;
     flex-direction: column;
