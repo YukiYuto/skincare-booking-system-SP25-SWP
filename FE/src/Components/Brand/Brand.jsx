@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
 import styles from "./Brand.module.css";
 
-const Brand = () => {
+// Allows overriding the inline styles of the Brand component
+const Brand = ({ override }) => {
   return (
-    <div className={styles.brand}>
-      <span className={styles.brandHighlight}>Skin</span>
-      <span className={styles.brandText}>Topper</span>
+    <div className={(override?.value || "") + " " + styles.brand}>
+      <span className={styles.brandHighlight}>lumi</span>
+      <span className={styles.brandText}>connect</span>
     </div>
   );
 };
