@@ -1,5 +1,8 @@
-﻿using SkincareBookingSystem.DataAccess.IRepositories;
+﻿using Microsoft.AspNetCore.Identity;
+using SkincareBookingSystem.DataAccess.DBContext;
+using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.DataAccess.Repositories;
+using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Services.Mapping;
 using SkincareBookingSystem.Services.Services;
@@ -28,6 +31,7 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IRedisService, RedisService>();
             services.AddScoped<IBlogCategoryService, BlogCategoryService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             return services;
         }

@@ -11,7 +11,7 @@ namespace SkincareBookingSystem.Services.Services
 {
     public class BlogCategoryService : IBlogCategoryService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        /*private readonly IUnitOfWork _unitOfWork;
         private readonly IAutoMapperService _mapperService;
         public BlogCategoryService(IUnitOfWork unitOfWork, IAutoMapperService mapperService)
         {
@@ -115,6 +115,6 @@ namespace SkincareBookingSystem.Services.Services
         public Task<ResponseDto> DeleteBlogCategory(ClaimsPrincipal User, Guid blogCategoryId)
         {
             throw new NotImplementedException();
-        }
+        }*/
     }
 }

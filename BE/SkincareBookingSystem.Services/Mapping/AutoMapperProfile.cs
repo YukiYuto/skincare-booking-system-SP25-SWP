@@ -36,6 +36,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src =>src.Gender))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => false));
@@ -57,6 +58,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => false));
@@ -70,9 +72,19 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => false));
-        
+
+        //UpdateUserProfileDto to ApplicationUser
+        CreateMap<UpdateUserProfileDto, ApplicationUser>()
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
+            .ReverseMap();
     }
 }
