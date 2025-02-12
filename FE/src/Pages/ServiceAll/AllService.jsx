@@ -4,12 +4,14 @@ import Hero from "../../Components/Hero/Hero";
 import ServiceSort from "../../Components/ServiceSort/ServiceSort.jsx";
 import ServiceList from "../../Components/ServiceList/ServiceList.jsx";
 import styles from "./AllService.module.css";
+import Loading from "../../Components/Common/Loading/Loading.jsx";
 
 const AllService = () => {
   const [services, setServices] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
   const [filter, setFilter] = useState("Most Popular");
   const [selectedTypes, setSelectedTypes] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -24,12 +26,18 @@ const AllService = () => {
         ]);
         setServices(servicesData);
         setServiceTypes(serviceTypesData);
+        setLoading(false);
       } catch (error) {
         console.error(error);
+        setLoading(false);
       }
     };
     fetchServices();
   }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   const handleFilterChange = (event) => setFilter(event.target.value);
 

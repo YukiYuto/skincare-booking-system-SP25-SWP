@@ -4,7 +4,7 @@ import styles from "./RegisterPage.module.css";
 import RegisterForm from "../../Components/RegisterForm/RegisterForm";
 import BrandLogo from "../../Components/BrandLogo/BrandLogo";
 
-function RegisterPage() {
+export function RegisterPage() {
   return (
     <main className={styles.registerPage}>
       <div className={styles.container}>
@@ -18,4 +18,3 @@ function RegisterPage() {
     </main>
   );
 }
-export default RegisterPage;
