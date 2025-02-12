@@ -1,5 +1,5 @@
 import { apiCall } from '../utils/apiUtils';
-import { LOGIN_API, HTTP_METHODS } from '../config/apiConfig';
+import { LOGIN_API, REGISTER_API, HTTP_METHODS } from '../config/apiConfig';
 
 /**
  * Login API call
@@ -8,4 +8,13 @@ import { LOGIN_API, HTTP_METHODS } from '../config/apiConfig';
  */
 export const login = async (credentials) => {
   return await apiCall(HTTP_METHODS.POST, LOGIN_API, credentials);
+};
+
+/**
+ * Register API call
+ * @param {Object} userData - User registration data
+ * @returns {Promise} - Resolves with response data or rejects with an error
+ */
+export const register = async (userData) => {
+  return await apiCall(HTTP_METHODS.POST, REGISTER_API, userData);
 };
