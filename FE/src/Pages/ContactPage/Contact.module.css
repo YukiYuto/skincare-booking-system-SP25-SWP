@@ -1,0 +1,48 @@
+.contactSection {
+    background-color: #fdf9f7;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 32px;
+    color: #522d1b;
+    margin-bottom: 10px;
+  }
+  
+  .inquiryText {
+    font-size: 16px;
+    color: #7d5d4a;
+    margin-bottom: 10px;
+  }
+  
+  .phone {
+    font-size: 18px;
+    font-weight: bold;
+    color: #522d1b;
+    margin-bottom: 5px;
+  }
+  
+  .address {
+    font-size: 16px;
+    color: #7d5d4a;
+    margin-bottom: 20px;
+  }
+  
+  .socialIcons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 20px;
+    color: #522d1b;
+  }
+  
+  .socialIcons svg {
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .socialIcons svg:hover {
+    color: #6a3b25;
+  }
+  
