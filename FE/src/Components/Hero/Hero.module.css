@@ -1,5 +1,5 @@
 .hero {
-    background-image: url('./hero.png'); /* Replace with your image path */
+    background-color: var(--primary-color);
     background-size: 100% 100%;
     background-position: center;
     width: 100vw;
@@ -18,12 +18,13 @@
     font-weight: 700;
     margin-bottom: 12px;
     font-family: Playfair Display;
-    color: rgb(27, 73, 255);
+    color: var(--text-color);
   }
   
   .hero p {
     font-size: 1.5rem;
     margin-top: 24px;
     font-family: Dancing Script;
+    color: var(--accent-color);
   }
   

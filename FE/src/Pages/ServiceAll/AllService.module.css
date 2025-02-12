@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     padding: 48px 92px;
-    background-color: var(--background-color);
+    background-color: var(--background-color); /* #ede490 */
 }
 
 .header {
@@ -12,7 +12,7 @@
     margin-bottom: 24px;
     font-family: "Poppins", sans-serif;
     font-weight: 200;
-    color: var(--text-color); 
+    color: var(--accent-color); /* #56694f */
 }
 
 .service {
@@ -21,18 +21,21 @@
 
 .filter {
     width: 20%;
-    padding: 16px;
-    background-color: var(--primary-color); 
+    min-width: 260px;
+    padding: 16px 24px 48px 16px;
+    background-color: var(--primary-color); /* #caedb8 */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-right: 16px;
-    border: 1px solid var(--accent-color);
+    border: 1px solid var(--accent-color); /* #56694f */
+    height: fit-content;
 }
 
 .filter label {
     font-size: 1.8rem;
     font-weight: 700;
     font-family: Poppins;
+    color: var(--text-color); /* #963f2e */
 }
 
 .filter ul {
@@ -42,14 +45,19 @@
 }
 
 .filter li {
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+.filter li:hover {
+    text-decoration: underline var(--accent-color);
 }
 
 .selected {
     font-weight: 700;
-    text-decoration: underline;
+    color: var(--primary-color); /* #cd9b59 */
 }
 
 .unselected { 
     font-weight: 400;
+    color: var(--accent-color); /* #56694f */
 }

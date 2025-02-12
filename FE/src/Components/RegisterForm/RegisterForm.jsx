@@ -1,9 +1,16 @@
-/* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { register } from "../../services/authService";
 import styles from "./registerForm.module.css";
+import { toast } from "react-toastify";
+import {
+  validateEmail,
+  validatePasswordLength,
+  validatePhoneNumber,
+  validateAge,
+  validateConfirmPassword,
+} from "../../utils/validationUtils";
 import { InputField } from "../InputField/InputField";
-import axios from "axios";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -16,7 +23,16 @@ function RegisterForm() {
     fullName: "",
     address: "",
     age: "",
-    skinProfileId: null,
+  });
+
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phoneNumber: "",
+    fullName: "",
+    address: "",
+    age: "",
   });
 
   const formatFullname = (fullName) => {
@@ -32,15 +48,55 @@ function RegisterForm() {
       ...prevData,
       [name]: value,
     }));
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
+
+  const validateRegisterForm = () => {
+    const emailError = validateEmail(registerData.email);
+    const passwordError = validatePasswordLength(registerData.password);
+    const confirmPasswordError = validateConfirmPassword(
+      registerData.password,
+      registerData.confirmPassword
+    );
+    const phoneError = validatePhoneNumber(registerData.phoneNumber);
+    const ageError = validateAge(registerData.age);
+    const fullNameError = registerData.fullName ? "" : "Full name is required.";
+    const addressError = registerData.address ? "" : "Address is required.";
+
+    setErrors({
+      email: emailError,
+      password: passwordError,
+      confirmPassword: confirmPasswordError,
+      phoneNumber: phoneError,
+      fullName: fullNameError,
+      address: addressError,
+      age: ageError,
+    });
+
+    return !(
+      emailError ||
+      passwordError ||
+      confirmPasswordError ||
+      phoneError ||
+      fullNameError ||
+      addressError ||
+      ageError
+    );
   };
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateRegisterForm()) return;
+
     const formattedFullname = formatFullname(registerData.fullName);
-    const api = "https://localhost:7037/api/Auth/customers";
 
     try {
-      const response = await axios.post(api, {
+      await register({
         email: registerData.email,
         password: registerData.password,
         confirmPassword: registerData.confirmPassword,
@@ -50,13 +106,11 @@ function RegisterForm() {
         age: Number(registerData.age),
       });
 
-      console.log("Registration response:", response.data);
-      alert(`Registration successful! Welcome, ${response.data.fullName}`);
+      toast.success(`Registration successful! Welcome, ${formattedFullname}`);
       navigate("/login");
     } catch (error) {
       console.error("Registration error:", error.message);
-      console.log(error);
-      alert("Registration failed. Please try again.");
+      toast.error(error.message || "Registration failed. Please try again.");
     }
   };
 
@@ -73,32 +127,32 @@ function RegisterForm() {
       <InputField
         label="Full Name"
         type="text"
-        id="fullName"
         name="fullName"
         placeholder="Full Name"
         value={registerData.fullName}
         onChange={handleRegisterChange}
+        error={errors.fullName}
       />
 
       <div className={styles.flexContainer1}>
         <InputField
           label="Phone Number"
           type="text"
-          id="phoneNumber"
           name="phoneNumber"
           placeholder="Phone Number"
           value={registerData.phoneNumber}
           onChange={handleRegisterChange}
+          error={errors.phoneNumber}
         />
 
         <InputField
           label="Email Address"
           type="email"
-          id="email"
           name="email"
           placeholder="Email Address"
           value={registerData.email}
           onChange={handleRegisterChange}
+          error={errors.email}
         />
       </div>
 
@@ -106,22 +160,23 @@ function RegisterForm() {
         <InputField
           label="Password"
           type="password"
-          id="password"
           name="password"
           placeholder="Enter Password"
           value={registerData.password}
           onChange={handleRegisterChange}
           showPasswordToggle
+          error={errors.password}
         />
+
         <InputField
           label="Confirm Password"
           type="password"
-          id="confirmPassword"
           name="confirmPassword"
           placeholder="Confirm Password"
           value={registerData.confirmPassword}
           onChange={handleRegisterChange}
           showPasswordToggle
+          error={errors.confirmPassword}
         />
       </div>
 
@@ -129,21 +184,21 @@ function RegisterForm() {
         <InputField
           label="Address"
           type="text"
-          id="address"
           name="address"
           placeholder="Address"
           value={registerData.address}
           onChange={handleRegisterChange}
+          error={errors.address}
         />
 
         <InputField
           label="Age"
           type="number"
-          id="age"
           name="age"
           placeholder="Age"
           value={registerData.age}
           onChange={handleRegisterChange}
+          error={errors.age}
         />
       </div>
 
