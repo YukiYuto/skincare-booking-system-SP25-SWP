@@ -24,6 +24,11 @@ namespace SkincareBookingSystem.Services.Services
         {
             return _mapper.Map<TSource, TDestination>(source);
         }
+        
+        public void Map<TSource, TDestination>(TSource source, TDestination destination)
+        {
+            _mapper.Map(source, destination);
+        }
 
         public IEnumerable<TDestination> MapCollection<TSource, TDestination>(IEnumerable<TSource> source)
         {

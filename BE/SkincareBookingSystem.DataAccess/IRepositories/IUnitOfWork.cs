@@ -1,4 +1,6 @@
-﻿namespace SkincareBookingSystem.DataAccess.IRepositories;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace SkincareBookingSystem.DataAccess.IRepositories;
 
 public interface IUnitOfWork
 {
@@ -21,10 +23,13 @@ public interface IUnitOfWork
     ISkinTestRepository SkinTest { get; }
     ISkinTherapistRepository SkinTherapist { get; }
     ISlotRepository Slot { get; }
+    IStaffRepository Staff { get; }
     ITestAnswerRepository TestAnswer { get; }
     ITestQuestionRepository TestQuestion { get; }
     ITherapistScheduleRepository TherapistSchedule { get; }
     ITypeItemRepository TypeItem { get; }
     IUserManagerRepository UserManager { get; }
     Task<int> SaveAsync();
+    
+    Task<IDbContextTransaction> BeginTransactionAsync();
 }

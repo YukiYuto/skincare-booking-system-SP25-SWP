@@ -15,7 +15,7 @@ namespace SkincareBookingSystem.Models.Domain
 
         [StringLength(20)] public string Experience { get; set; } = null!;
 
-        public Guid TherapistScheduleId {  get; set; }
+        public Guid? TherapistScheduleId {  get; set; }
         [ForeignKey("TherapistScheduleId")]
         public virtual TherapistSchedule TherapistSchedule { get; set; } = null!;
     }

@@ -1,0 +1,88 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: transform 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.card a:hover {
+    text-decoration: none;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    /* Sửa để ảnh không bị méo */
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background-color: #ffffff;
+}
+
+.header {
+    height: calc(2em + 12px);
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333333;
+}
+
+.serviceType {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    color: #666666;
+    margin-top: auto;
+}
+
+.description {
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    height: calc(3em + 12px);
+}
+
+.price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #B22222;
+    margin-bottom: 16px;
+}
+
+.popularity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.popularity img {
+    padding: 4px 2px;
+    max-width: 32px;
+    max-height: 24px;
+    background-color: var(--primary-color);
+}

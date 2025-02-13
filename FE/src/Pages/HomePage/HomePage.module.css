@@ -1,0 +1,75 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column; /* Để FeaturesSection nằm dưới */
+  align-items: center;
+  width: 100%;
+  
+  /* Đặt background cho toàn bộ phần HomePage */
+  background-image: url("../../assets/images/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Hero Section */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100vh; /* Đảm bảo phần hero section luôn đủ cao */
+  padding: 0 5%;
+}
+
+.textContainer {
+  width: 40%;
+}
+
+.title {
+  font-size: 2.8rem;
+  color: #5a362d;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 1rem;
+  color: #6d4c41;
+  margin-bottom: 20px;
+}
+
+.button {
+  background-color: #f27d59 !important;  
+  border: none !important;
+  font-size: 1rem;
+  padding: 12px 20px;
+}
+
+.button:hover {
+  background-color: #d96b50 !important;
+}
+
+/* Right Section - Image */
+.imageContainer {
+  width: 55%;
+  display: flex;
+  justify-content: center;
+}
+
+.image {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Features Section Wrapper */
+.featuresWrapper {
+  width: 100%;
+  padding: 10px 0;
+  background: rgba(255, 255, 255, 0.8); /* Làm nền FeaturesSection trong suốt nhẹ */
+}
+
+.transformWrapper{
+  width: 50%;
+  padding: 10px 0;
+  background: rgba(255, 255, 255, 0.8);
+}
