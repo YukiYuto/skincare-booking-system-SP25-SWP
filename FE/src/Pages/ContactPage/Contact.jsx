@@ -2,10 +2,12 @@ import { FaFacebookF, FaInstagram, FaPinterestP, FaTimes } from "react-icons/fa"
 import styles from "./Contact.module.css";
 import ContactForm from "../../Components/ContactForm/ContactForm";
 import FAQ from "../../Components/FAQ/FAQ";
+import Header from "../../Components/Common/Header";
 
 const Contact = () => {
   return (
     <div>
+    <Header/>
     <section className={styles.contactSection}>
       <h2 className={styles.title}>Contact us</h2>
       <p className={styles.inquiryText}>

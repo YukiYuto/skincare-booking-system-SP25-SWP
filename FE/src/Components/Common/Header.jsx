@@ -27,10 +27,10 @@ const Header = () => {
                 </li>
                 <li>
                   <Link
-                    to="/blogs"
+                    to="/contact"
                     className="header__menu-item list-menu-item list-menu-link"
                   >
-                    Blogs
+                    Contact
                   </Link>
                 </li>
                 <li>

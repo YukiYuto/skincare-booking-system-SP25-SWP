@@ -2,9 +2,12 @@ import styles from "./AboutPage.module.css";
 import teamImage from "../../assets/images/team.png"; // Đảm bảo đường dẫn đúng
 import AboutSection from "../../Components/AboutSection/AboutSection";
 import SkincareExperts from "../../Components/SkincareExperts/SkincareExperts";
+import Header from "../../Components/Common/Header";
 
 const AboutPage = () => {
   return (
+    <div>
+    <Header/>
     <section className={styles.aboutSection}>
       <div className={styles.container}>
         <div className={styles.imageContainer}>
@@ -32,6 +35,7 @@ const AboutPage = () => {
       </div>
 
     </section>
+    </div>
   );
 };
 
