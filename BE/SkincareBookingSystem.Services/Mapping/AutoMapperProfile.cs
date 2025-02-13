@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SkincareBookingSystem.Models.Domain;
+using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
 using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.Authentication;
 
@@ -9,7 +10,12 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        CreateMap<CreateServiceTypeDto, ServiceType>()
+            .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceTypeName));
 
+        CreateMap<UpdateServiceTypeDto, ServiceType>()
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+       
         CreateMap<CreateServiceDto, Models.Domain.Services>()
             .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
