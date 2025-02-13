@@ -3,9 +3,12 @@ import React from "react";
 import styles from "./RegisterPage.module.css";
 import RegisterForm from "../../Components/RegisterForm/RegisterForm";
 import BrandLogo from "../../Components/BrandLogo/BrandLogo";
+import Header from "../../Components/Common/Header";
 
 export function RegisterPage() {
   return (
+    <div>
+    <Header/>
     <main className={styles.registerPage}>
       <div className={styles.container}>
         <div className={styles.brandColumn}>
@@ -16,5 +19,6 @@ export function RegisterPage() {
         </div>
       </div>
     </main>
+    </div>
   );
 }
