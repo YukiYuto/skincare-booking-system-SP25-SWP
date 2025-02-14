@@ -17,11 +17,11 @@ namespace SkincareBookingSystem.Models.Domain
         [ForeignKey("OrderId")]
         public virtual Order Order { get; set; } = null!;
 
-        public Guid ServiceId { get; set; }
+        public Guid? ServiceId { get; set; }
         [ForeignKey("ServiceId")]
         public virtual Services? Services { get; set; }
 
-        public Guid ServiceComboId { get; set; }
+        public Guid? ServiceComboId { get; set; }
         [ForeignKey("ServiceComboId")]
         public virtual ServiceCombo? ServiceCombo { get; set; }
 

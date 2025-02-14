@@ -35,6 +35,7 @@ namespace SkincareBookingSystem.DataAccess.DBContext
         public DbSet<TestQuestion> TestQuestion { get; set; }
         public DbSet<TherapistSchedule> TherapistSchedules { get; set; }
         public DbSet<TypeItem> TypeItem { get; set; }
+        public DbSet<TherapistServiceType> TherapistServiceTypes { get; set; }
 
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -130,6 +131,22 @@ namespace SkincareBookingSystem.DataAccess.DBContext
                 .WithMany()   
                 .HasForeignKey(o => o.CustomerId)  
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            // Composite key for ComboItem
+            modelBuilder.Entity<TherapistServiceType>()
+                .HasKey(tst => new {tst.TherapistId , tst.ServiceTypeId });
+            
+            modelBuilder.Entity<TherapistServiceType>()
+                .HasOne(tst => tst.SkinTherapist)
+                .WithMany(st => st.TherapistServiceTypes)
+                .HasForeignKey(tst => tst.TherapistId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<TherapistServiceType>()
+                .HasOne(tst => tst.ServiceType)
+                .WithMany(st => st.TherapistServiceTypes)
+                .HasForeignKey(tst => tst.ServiceTypeId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }
