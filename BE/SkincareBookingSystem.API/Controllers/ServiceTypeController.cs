@@ -30,7 +30,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get")]
+        [HttpGet("get/{id}")]
         public async Task<IActionResult> GetServiceTypeById([FromQuery] Guid id)
         {
             var result = await _serviceTypeService.GetServiceTypeById(id);
@@ -44,7 +44,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteServiceType([FromQuery] Guid id)
         {
             var result = await _serviceTypeService.DeleteServiceType(id);
