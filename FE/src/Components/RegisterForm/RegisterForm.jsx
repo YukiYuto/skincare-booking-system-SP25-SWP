@@ -90,11 +90,18 @@ function RegisterForm() {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-
+    // Reset errors without setting empty strings for all fields manually
+    setErrors((errors) => {
+      for (const key in errors) {
+        errors[key] = "";
+      }
+      return errors;
+    });
+    console.log(errors);
     if (!validateRegisterForm()) return;
 
     const formattedFullname = formatFullname(registerData.fullName);
-
+    
     try {
       await register({
         email: registerData.email,
