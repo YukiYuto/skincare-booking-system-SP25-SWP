@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { login as loginAction } from "../../redux/auth/thunks";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import PasswordInputField from "../InputField/Password/PasswordInputField";
@@ -28,9 +29,9 @@ export function LoginForm() {
 
   useEffect(() => {
     if (reduxError) {
-      toast.error(reduxError || "Login failed. Please try again.");
+      toast.error(reduxError.message || "An unexpected error occurred.");
     }
-  });
+  }, [reduxError]);
 
   const handleLoginDataChange = (e) => {
     const { name, value } = e.target;
