@@ -3,6 +3,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../../styles/index.css"; // Import custom CSS file
 import Brand from "../Brand/Brand";
+import SearchBar from "./SearchBar/SearchBar";
+import AuthButtons from "../Authentication/AuthButtons";
 
 const Header = () => {
   return (
@@ -14,6 +16,12 @@ const Header = () => {
               <Link to="/" className="nav-header__heading-link">
                 <Brand override={{ value: "text-4xl" }} />
               </Link>
+            </div>
+            <div className="nav-header__search">
+              <SearchBar />
+            </div>
+            <div className="nav-header__icons font-normal text-lg">
+              <AuthButtons />
             </div>
             <nav className="nav-header__inline-menu">
               <ul className="list-menu list-menu--inline">

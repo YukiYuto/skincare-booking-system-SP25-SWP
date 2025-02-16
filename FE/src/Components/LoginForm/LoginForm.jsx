@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../services/authService";
-import styles from "./LoginForm.module.css";
 import { toast } from "react-toastify";
+import { login as loginAction } from "../../redux/auth/thunks";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import PasswordInputField from "../InputField/Password/PasswordInputField";
 import {
   validateEmail,
   validatePasswordLength,
 } from "../../utils/validationUtils";
+import styles from "./LoginForm.module.css";
 
 export function LoginForm() {
   const [loginData, setLoginData] = useState({
@@ -21,20 +22,21 @@ export function LoginForm() {
     password: "",
   });
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error: reduxError } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (reduxError) {
+      toast.error(reduxError || "Login failed. Please try again.");
+    }
+  });
 
   const handleLoginDataChange = (e) => {
     const { name, value } = e.target;
-    setLoginData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    setErrors((prevErrors) => ({
-      // Reset errors for the field being updated
-      ...prevErrors,
-      [name]: "",
-    }));
+    setLoginData((prevData) => ({ ...prevData, [name]: value }));
+    // Reset errors for the field being updated
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const validateLoginForm = () => {
@@ -59,13 +61,11 @@ export function LoginForm() {
 
     // If form is valid, call the auth service to login
     try {
-      await login(loginData);
-      // TODO: Replace the alert with a toast notification
+      await dispatch(loginAction(loginData)).unwrap();
       toast.success(`Login successful! Welcome, ${loginData.email}!`);
       navigate("/");
     } catch (error) {
       console.error("Login error:", error.message);
-      toast.error(error.message || "Login failed. Please try again.");
     }
   };
 
@@ -103,8 +103,8 @@ export function LoginForm() {
         <span> of our center.</span>
       </div>
 
-      <button type="submit" className={styles.loginButton}>
-        Login
+      <button type="submit" className={styles.loginButton} disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
       </button>
 
       <button

@@ -1,15 +1,24 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import persistReducer from "redux-persist/es/persistReducer";
-import rootReducer from "./rootReducer";
-import persistStore from "redux-persist/es/persistStore";
+import rootReducer from "./index";
+
 const persistConfig = {
   key: "root",
   storage,
+  whitelist: ["auth"],  // Only auth slice will be persisted
 };
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-export const store = configureStore({
+
+const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // Disable check for non-serializable values, like axios errors
+    }),
 });
 
-export const persistor = persistStore(store);
+const persistor = persistStore(store);
+
+export { store, persistor };
