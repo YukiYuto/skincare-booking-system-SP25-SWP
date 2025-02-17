@@ -66,7 +66,7 @@ export function LoginForm() {
       toast.success(`Login successful! Welcome, ${loginData.email}!`);
       navigate("/");
     } catch (error) {
-      console.error("Login error:", error.message);
+      console.error("Login error", error.message);
     }
   };
 
