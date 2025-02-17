@@ -38,6 +38,11 @@
     margin-bottom: 15px;
   }
   
+  .loginButton:disabled {
+    background-color: rgba(41, 92, 243, 0.527);
+    cursor: not-allowed;
+  }
+
   .createAccountButton {
     background: none;
     border: none;

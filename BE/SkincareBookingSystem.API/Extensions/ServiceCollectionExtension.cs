@@ -26,6 +26,7 @@ namespace SkincareBookingSystem.API.Extensions
             // Scoped services
             services.AddScoped<IAutoMapperService, AutoMapperService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
+
             // more services to be added here
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthService, AuthService>();
@@ -34,12 +35,11 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<IBlogCategoryService, BlogCategoryService>();
             services.AddScoped<IEmailService, EmailService>();
 
-
             // more services to be added here
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IBlogCategoryService, BlogCategoryService>();
+            services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IServicesService, ServicesService>();
-
+            services.AddScoped<IOrderDetailService, OrderDetailServcie>();
+            services.AddScoped<IOrderService, OrderService>();
 
             return services;
         }

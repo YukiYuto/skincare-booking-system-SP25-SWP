@@ -7,18 +7,18 @@ import Header from "../../Components/Common/Header";
 
 export function RegisterPage() {
   return (
-    <div>
-    <Header/>
-    <main className={styles.registerPage}>
-      <div className={styles.container}>
-        <div className={styles.brandColumn}>
-          <BrandLogo />
+    <>
+      <Header />
+      <main className={styles.registerPage}>
+        <div className={styles.container}>
+          <div className={styles.brandColumn}>
+            <BrandLogo />
+          </div>
+          <div className={styles.formColumn}>
+            <RegisterForm />
+          </div>
         </div>
-        <div className={styles.formColumn}>
-          <RegisterForm />
-        </div>
-      </div>
-    </main>
-    </div>
+      </main>
+    </>
   );
 }

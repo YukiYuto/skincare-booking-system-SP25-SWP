@@ -46,7 +46,7 @@ export const validateConfirmPassword = (password, confirmPassword) => {
 };
 
 export const validateAge = (age) => {
-  if (!age.isLength(age, { min: 16, max: 120 })) {
+  if (!validator.isLength(age, { min: 16, max: 120 })) {
     return "Your age must be at least 16 to do registration";
   }
   return "";

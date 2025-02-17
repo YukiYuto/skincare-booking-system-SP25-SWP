@@ -4,18 +4,18 @@ import BrandLogo from "../../Components/BrandLogo/BrandLogo";
 import Header from "../../Components/Common/Header";
 export function LoginPage() {
   return (
-    <div>
-    <Header/>
-    <main className={styles.loginPage}>
-      <div className={styles.container}>
-        <div className={styles.brandColumn}>
-          <BrandLogo />
+    <>
+      <Header />
+      <main className={styles.loginPage}>
+        <div className={styles.container}>
+          <div className={styles.brandColumn}>
+            <BrandLogo />
+          </div>
+          <div className={styles.formColumn}>
+            <LoginForm />
+          </div>
         </div>
-        <div className={styles.formColumn}>
-          <LoginForm />
-        </div>
-      </div>
-    </main>
-    </div>
+      </main>
+    </>
   );
 }

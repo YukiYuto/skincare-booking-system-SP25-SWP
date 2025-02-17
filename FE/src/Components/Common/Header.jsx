@@ -3,6 +3,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../../styles/index.css"; // Import custom CSS file
 import Brand from "../Brand/Brand";
+import SearchBar from "./SearchBar/SearchBar";
+import AuthButtons from "../Authentication/AuthButtons";
 
 const Header = () => {
   return (
@@ -16,9 +18,13 @@ const Header = () => {
                 <Brand override={{ value: "text-4xl" }} />
               </Link>
             </div>
-
-            {/* Navigation Menu */}
-            <nav className="nav-header__inline-menu flex-1">
+            <div className="nav-header__search">
+              <SearchBar />
+            </div>
+            <div className="nav-header__icons font-normal text-lg">
+              <AuthButtons />
+            </div>
+            <nav className="nav-header__inline-menu">
               <ul className="list-menu list-menu--inline">
                 <li>
                   <Link to="/services" className="header__menu-item list-menu-item list-menu-link">
