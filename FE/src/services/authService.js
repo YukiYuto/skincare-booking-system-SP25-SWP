@@ -18,3 +18,15 @@ export const login = async (credentials) => {
 export const register = async (userData) => {
   return await apiCall(HTTP_METHODS.POST, REGISTER_CUSTOMER_API, userData);
 };
+
+export async function resetPassword(email) {
+  const response = await fetch("/api/auth/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not send request reset mật khẩu.");
+  }
+}

@@ -141,12 +141,4 @@ p {
   .btn {
     @apply px-6 py-2 rounded-md text-base font-semibold transition-all duration-300 ease-in-out;
   }
-
-  .btn-primary {
-    @apply bg-[var(--accent-color)] text-white hover:bg-[var(--secondary-color)] active:bg-[var(--primary-color)];
-  }
-
-  .btn-secondary {
-    @apply bg-transparent border border-[var(--accent-color)] text-[var(--accent-color)] hover:bg-[var(--secondary-color)] hover:text-white active:bg-[var(--primary-color)];
-  }
 }

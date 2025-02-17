@@ -53,16 +53,6 @@ const Header = () => {
                 </li>
               </ul>
             </nav>
-
-            {/* Login & Register Buttons */}
-            <div className="nav-header__auth flex items-center space-x-4">
-              <Link to="/login" className="btn btn-primary">
-                Login
-              </Link>
-              <Link to="/register" className="btn btn-secondary">
-                Register
-              </Link>
-            </div>
           </div>
         </div>
       </div>
