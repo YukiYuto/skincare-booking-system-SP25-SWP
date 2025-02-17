@@ -6,6 +6,7 @@ import AboutPage from "../Pages/AboutPage/AboutPage";
 import { RegisterPage } from "../Pages/Register/RegisterPage";
 import AllService from "../Pages/ServiceAll/AllService";
 import ServiceDetail from "../Pages/ServiceDetail/ServiceDetail";
+import CustomerProfile from "../Pages/CustomerProfile/CustomerProfile";
 
 export const router = createBrowserRouter([
   {
@@ -36,4 +37,8 @@ export const router = createBrowserRouter([
     path: "services/:id",
     element: <ServiceDetail />,
   },
+  {
+    path: "profile",
+    element: <CustomerProfile />,
+  }
 ]);

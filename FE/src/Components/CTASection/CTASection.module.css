@@ -22,8 +22,6 @@
   .ctaButton {
     background-color: #f27d59 !important;
     border: none !important;
-    font-size: 1rem;
-    padding: 12px 20px;
   }
   
   .ctaButton:hover {
