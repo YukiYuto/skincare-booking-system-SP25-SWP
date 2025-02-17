@@ -27,6 +27,18 @@ export async function resetPassword(email) {
   });
 
   if (!response.ok) {
-    throw new Error("Could not send request reset mật khẩu.");
+    throw new Error("Could not send request reset password.");
+  }
+}
+
+export async function updatePassword(email, newPassword) {
+  const response = await fetch("/api/auth/update-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, newPassword }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to update password.");
   }
 }

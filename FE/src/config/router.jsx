@@ -8,6 +8,7 @@ import AllService from "../Pages/ServiceAll/AllService";
 import ServiceDetail from "../Pages/ServiceDetail/ServiceDetail";
 import CustomerProfile from "../Pages/CustomerProfile/CustomerProfile";
 import { ForgotPage } from "../Pages/ForgotPage/ForgotPage";
+import { ResetPage } from "../Pages/ResetPage/ResetPage";
 
 export const router = createBrowserRouter([
   {
@@ -46,4 +47,8 @@ export const router = createBrowserRouter([
     path: "forgot-password",
     element: <ForgotPage />,
   },
+  {
+    path: "reset-password",
+    element: <ResetPage />,
+  }
 ]);

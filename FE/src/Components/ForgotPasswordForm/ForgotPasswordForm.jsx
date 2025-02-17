@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { resetPassword } from "../../services/authService";
 import styles from "./ForgotPasswordForm.module.css";
 import EmailInputField from "../InputField/Email/EmailInputField";
@@ -8,16 +9,16 @@ import { validateEmail } from "../../utils/validationUtils";
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate(); // Điều hướng trang
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    setError(""); // Xóa lỗi khi người dùng nhập lại
+    setError("");
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Kiểm tra email hợp lệ
     const emailError = validateEmail(email);
     if (emailError) {
       setError(emailError);
@@ -27,26 +28,16 @@ export function ForgotPasswordForm() {
     try {
       await resetPassword(email);
       toast.success("Password reset email has been sent!");
-      setEmail(""); // Xóa input sau khi gửi thành công
+      navigate(`/reset-password?email=${encodeURIComponent(email)}`); // Điều hướng đến ResetPasswordForm
     } catch (error) {
-      console.error("Password reset error:", error.message);
       toast.error(error.message || "Request sent failed. Please try again.");
     }
   };
 
   return (
-    <form
-      className={styles.forgotPasswordForm}
-      aria-labelledby="forgot-password-title"
-      onSubmit={handleSubmit}
-    >
-      <h1 id="forgot-password-title" className={styles.forgotPasswordTitle}>
-        Forgot Password?
-      </h1>
-
-      <p className={styles.description}>
-      Enter your email to receive a password reset link.
-      </p>
+    <form className={styles.forgotPasswordForm} onSubmit={handleSubmit}>
+      <h1 className={styles.forgotPasswordTitle}>Forgot password?</h1>
+      <p className={styles.description}>Enter your email to receive a password reset link.</p>
 
       <EmailInputField
         label="Email"
@@ -56,17 +47,7 @@ export function ForgotPasswordForm() {
         error={error}
       />
 
-      <button type="submit" className={styles.submitButton}>
-        Submit request
-      </button>
-
-      <button
-        type="button"
-        className={styles.backButton}
-        onClick={() => (window.location.href = "/login")}
-      >
-        Back to login
-      </button>
+      <button type="submit" className={styles.submitButton}>Submit request</button>
     </form>
   );
 }
