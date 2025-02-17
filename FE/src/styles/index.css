@@ -91,13 +91,20 @@ p {
     @apply ml-0;
   }
 
-  .nav-header__icons {
+  .nav-header__search {
     @apply text-center justify-center;
+    grid-area: heading;
+  }
+
+  .nav-header__icons {
+    @apply text-right justify-center;
     grid-area: icons;
   }
+
   .nav-header__inline-menu > .list-menu--inline {
     @apply justify-center;
   }
+
   .nav-header__inline-menu {
     @apply mt-1 block justify-self-center;
     grid-area: navigation-center;
@@ -110,6 +117,7 @@ p {
   .list-menu {
     @apply list-none;
   }
+
   .list-menu--inline {
     @apply inline-flex flex-wrap gap-8;
   }
@@ -124,7 +132,7 @@ p {
 
   .list-menu-link {
     @apply text-left font-normal text-base;
-    font-family: 'Nunito Sans', sans-serif;
+    font-family: "Nunito Sans", sans-serif;
   }
 
   .list-menu-link:hover {
