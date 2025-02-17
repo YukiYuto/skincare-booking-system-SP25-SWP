@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import styles from "./FeaturesSection.module.css";
+import { Link } from "react-router-dom";
 
 // Danh sách dữ liệu cho 3 thẻ
 const features = [
@@ -37,7 +38,9 @@ const FeaturesSection = () => {
           At Skinn Care, we believe that healthy skin starts with pure, effective ingredients.
           Our journey began with a simple mission.
         </p>
-        <Button type="primary" className={styles.button}>Learn more →</Button>
+        <Link to="/about">
+            <Button type="primary" className={styles.button}>Learn more →</Button>
+        </Link>
       </div>
 
       {/* 3 Thẻ Nội Dung */}
