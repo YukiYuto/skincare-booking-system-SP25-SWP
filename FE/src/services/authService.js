@@ -31,11 +31,11 @@ export async function resetPassword(email) {
   }
 }
 
-export async function updatePassword(email, newPassword) {
+export async function updatePassword(email, token, newPassword) {
   const response = await fetch("/api/auth/update-password", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, newPassword }),
+    body: JSON.stringify({ email, token, newPassword }),
   });
 
   if (!response.ok) {
