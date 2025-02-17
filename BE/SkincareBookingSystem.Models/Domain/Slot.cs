@@ -8,10 +8,9 @@ namespace SkincareBookingSystem.Models.Domain
     {
         [Key]
         public Guid SlotId { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        
-        public Guid TherapistScheduleId { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+        public Guid? TherapistScheduleId { get; set; }
         [ForeignKey("TherapistScheduleId")]
         public virtual TherapistSchedule TherapistSchedule { get; set; } = null!;
     }

@@ -2,6 +2,7 @@
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.Authentication;
+using SkincareBookingSystem.Models.Dto.Slot;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -101,5 +102,10 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ReverseMap();
+        
+        CreateMap<CreateSlotDto, Slot>()
+            .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartTime))
+            .ForMember(dest =>dest.EndTime, opt => opt.MapFrom(src => src.EndTime))
+            .ForMember(dest => dest.TherapistScheduleId, opt => opt.Ignore());
     }
 }

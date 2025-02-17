@@ -2,7 +2,7 @@
 
 public class CreateSlotDto
 {
-    public DateTime StartTime { get; set; }
-    public DateTime EndTime { get; set; }
-    
+    public TimeSpan StartTime { get; set; }
+    public TimeSpan EndTime { get; set; }
+    public Guid? TherapistScheduleId { get; set; }
 }
