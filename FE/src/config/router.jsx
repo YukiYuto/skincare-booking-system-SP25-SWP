@@ -6,9 +6,9 @@ import AboutPage from "../Pages/AboutPage/AboutPage";
 import { RegisterPage } from "../Pages/Register/RegisterPage";
 import AllService from "../Pages/ServiceAll/AllService";
 import ServiceDetail from "../Pages/ServiceDetail/ServiceDetail";
-import CustomerProfile from "../Pages/CustomerProfile/CustomerProfile";
 import { ForgotPage } from "../Pages/ForgotPage/ForgotPage";
 import { ResetPage } from "../Pages/ResetPage/ResetPage";
+import CustomerProfile from "../Pages/CustomerProfile/CustomerProfile";
 
 export const router = createBrowserRouter([
   {

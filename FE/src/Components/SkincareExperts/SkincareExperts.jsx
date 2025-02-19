@@ -17,7 +17,7 @@ const SkincareExperts = () => {
     <section className={styles.expertsSection}>
       <div className={styles.header}>
         <h2>Meet our skincare experts</h2>
-        <button className={styles.viewAllButton}>View all experts ➝</button>
+        <button style={{width: "200px"}} className={styles.viewAllButton}>View all experts ➝</button>
       </div>
 
       <div className={styles.expertsList}>

@@ -18,12 +18,6 @@ const Header = () => {
                 <Brand override={{ value: "text-4xl" }} />
               </Link>
             </div>
-            <div className="nav-header__search">
-              <SearchBar />
-            </div>
-            <div className="nav-header__icons font-normal text-lg">
-              <AuthButtons />
-            </div>
             <nav className="nav-header__inline-menu">
               <ul className="list-menu list-menu--inline">
                 <li>
@@ -53,6 +47,12 @@ const Header = () => {
                 </li>
               </ul>
             </nav>
+            <div className="nav-header__search">
+              <SearchBar />
+            </div>
+            <div className="nav-header__icons font-normal text-lg">
+              <AuthButtons />
+            </div>
           </div>
         </div>
       </div>

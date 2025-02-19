@@ -39,7 +39,7 @@ const FeaturesSection = () => {
           Our journey began with a simple mission.
         </p>
         <Link to="/about">
-            <Button type="primary" className={styles.button}>Learn more →</Button>
+            <Button style={{width: "150px"}} type="primary" className={styles.button}>Learn more →</Button>
         </Link>
       </div>
 
