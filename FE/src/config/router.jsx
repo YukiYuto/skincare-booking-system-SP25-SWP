@@ -7,33 +7,35 @@ import { RegisterPage } from "../Pages/Register/RegisterPage";
 import AllService from "../Pages/ServiceAll/AllService";
 import ServiceDetail from "../Pages/ServiceDetail/ServiceDetail";
 
+import Dashboard from "../Pages/DashBoard/Dashboard";
+import Revenue from "../Components/DashboardComponent/Tabs/Revenue/Revenue";
+import Customers from "../Components/DashboardComponent/Tabs/Customers/Customers";
+import SkinTherapists from "../Components/DashboardComponent/Tabs/Therapists/SkinTherapists";
+import Services from '../Components/DashboardComponent/Tabs/Services/Services';
+import Orders from "../Components/DashboardComponent/Tabs/Orders/Orders";
+import Schedule from "../Components/DashboardComponent/Tabs/Schedule/Schedule";
+
 export const router = createBrowserRouter([
+  { path: "/", element: <Home /> },
+  { path: "login", element: <LoginPage /> },
+  { path: "register", element: <RegisterPage /> },
+  { path: "contact", element: <Contact /> },
+  { path: "about", element: <AboutPage /> },
+  { path: "services", element: <AllService /> },
+  { path: "services/:id", element: <ServiceDetail /> },
+
+  // Manager Dashboard with Nested Routes
   {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "login",
-    element: <LoginPage />,
-  },
-  {
-    path: "register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "contact",
-    element: <Contact />,
-  },
-  {
-    path: "about",
-    element: <AboutPage />,
-  },
-  {
-    path: "services",
-    element: <AllService />,
-  },
-  {
-    path: "services/:id",
-    element: <ServiceDetail />,
+    path: "dashboard",
+    element: <Dashboard />,
+    children: [
+      { path: "revenue", element: <Revenue /> },
+      { path: "customers", element: <Customers /> },
+      { path: "therapists", element: <SkinTherapists /> },
+      { path: "services", element: <Services /> },
+      { path: "orders", element: <Orders /> },
+      { path: "schedule", element: <Schedule /> },
+      { index: true, element: <Revenue /> }, // Default dashboard page
+    ],
   },
 ]);
