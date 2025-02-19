@@ -9,7 +9,12 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   color: black;
   margin-top: 100px; /* Đẩy form xuống dưới */
+  background-image: url("../../assets/images/profile.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
+
 
 /* Các nút điều khiển */
 .buttonContainer {

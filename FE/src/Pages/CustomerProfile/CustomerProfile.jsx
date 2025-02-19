@@ -116,24 +116,24 @@ const handleUpdate = async (values) => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Full Name" name="fullName" rules={[{ required: true, message: "Please enter your full name!" }]}>
-              <Input />
+              <Input style={{backgroundColor:"white"}} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter your email!" }, { type: "email", message: "Invalid email!" }]}>
-              <Input disabled />
+              <Input style={{backgroundColor:"white"}} disabled />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Phone" name="phone" rules={[{ required: true, message: "Please enter your phone number!" }]}>
-              <Input />
+              <Input style={{backgroundColor:"white"}} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Address" name="address">
-              <Input />
+              <Input style={{backgroundColor:"white"}} />
             </Form.Item>
           </Col>
         </Row>
@@ -141,7 +141,7 @@ const handleUpdate = async (values) => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item style={{width: "70px"}} label="Age" name="age" rules={[{ required: true, message: "Please enter your age!" }]}>
-              <Input />
+              <Input style={{backgroundColor:"white"}} />
             </Form.Item>
           </Col>
         </Row>
