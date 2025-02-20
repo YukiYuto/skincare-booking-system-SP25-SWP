@@ -636,8 +636,8 @@ public class AuthService : IAuthService
             return new ResponseDto
             {
                 IsSuccess = true,
-                Message = "If an account exists for this email, a password reset email has been sent.",
-                StatusCode = 200,
+                Message = "No account found matching the provided email.",
+                StatusCode = 400,
                 Result = null
             };
         }
@@ -723,12 +723,6 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
-
-    public Task<MemoryStream> GetUserAvatar(ClaimsPrincipal user)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<ResponseDto> GetUserById(Guid userId)
     {
         throw new NotImplementedException();
@@ -740,12 +734,6 @@ public class AuthService : IAuthService
     }
 
     public Task<ResponseDto> UnlockUser(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    public Task<ResponseDto> UploadUserAvatar(IFormFile file, ClaimsPrincipal user)
     {
         throw new NotImplementedException();
     }
