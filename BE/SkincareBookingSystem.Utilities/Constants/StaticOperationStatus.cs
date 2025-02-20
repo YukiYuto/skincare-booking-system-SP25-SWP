@@ -37,6 +37,17 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const int Failure = 0;
         }
 
+        public static class File
+        {
+            public const string FileEmpty = "File is empty";
+            public const string FileUploaded = "File uploaded successfully";
+            public const string FileNotFound = "File not found";
+            public const string ImageNotFound = "Image not found";
+            public const string ImageUploaded = "Image uploaded successfully";
+            public const string VideoUploaded = "Video uploaded successfully";
+            public const string VideoNotFound = "Video not found";
+        }
+
         public static class StatusCode
         {
             public const int Ok = 200;
@@ -48,8 +59,6 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const int NotFound = 404;
             public const int InternalServerError = 500;
         }
-
-
         /// <summary>
         /// Constants related to timezones (primarily Vietnam).
         /// </summary>
@@ -57,5 +66,12 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public static readonly DateTime Vietnam = DateTime.UtcNow.AddHours(7.0);
         }
+        /// <summary>
+        /// Constants related to user operations.
+        /// </summary>
+        public static class User {
+            public const string UserNotFound = "User not found";
+        }
+
     }
 }
