@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../../config/axios";
 import styles from "./Services.module.css";
+import ServiceCreateModal from "./ServiceCreateModal"; // Import the modal component
+import ServiceEditModal from "./ServiceEditModal"; // Import the edit modal component
 
 const Services = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false); // State to control create modal visibility
+  const [showEditModal, setShowEditModal] = useState(false); // State to control edit modal visibility
+  const [selectedService, setSelectedService] = useState(null); // State to store the selected service for editing
 
   const fetchAllServices = async () => {
     try {
@@ -16,24 +21,29 @@ const Services = () => {
     }
   };
 
-  useEffect(() => {
-    const getServices = async () => {
-      try {
-        const data = await fetchAllServices();
-        setServices(data);
-      } catch (error) {
-        console.error("Failed to load services.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const refreshServices = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchAllServices();
+      setServices(data);
+    } catch (error) {
+      console.error("Failed to load services.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    getServices();
+  useEffect(() => {
+    refreshServices();
   }, []);
 
   return (
     <div className={styles.tabContainer}>
       <h2 className={styles.tabTitle}>Services</h2>
+      <button onClick={() => setShowCreateModal(true)}>
+        Add New Service
+      </button>{" "}
+      {/* Button to open create modal */}
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -46,6 +56,7 @@ const Services = () => {
               <th>Created Time</th>
               <th>Updated Time</th>
               <th>Status</th>
+              <th>Actions</th> {/* Add Actions column */}
             </tr>
           </thead>
           <tbody>
@@ -65,10 +76,38 @@ const Services = () => {
                     : "N/A"}
                 </td>
                 <td>{service.status === "0" ? "Active" : "Inactive"}</td>
+                <td>
+                  <button
+                    onClick={() => {
+                      setSelectedService(service);
+                      setShowEditModal(true);
+                    }}
+                  >
+                    Edit
+                  </button>{" "}
+                  {/* Button to open edit modal */}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+      )}
+      {showCreateModal && (
+        <ServiceCreateModal
+          onClose={() => {
+            setShowCreateModal(false);
+            refreshServices(); // Refresh services after closing the create modal
+          }}
+        />
+      )}
+      {showEditModal && (
+        <ServiceEditModal
+          service={selectedService}
+          onClose={() => {
+            setShowEditModal(false);
+            refreshServices(); // Refresh services after closing the edit modal
+          }}
+        />
       )}
     </div>
   );
