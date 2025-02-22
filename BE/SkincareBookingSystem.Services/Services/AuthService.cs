@@ -11,6 +11,7 @@ using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Email;
 using SkincareBookingSystem.Utilities.Constants;
+using System.Web;
 
 namespace SkincareBookingSystem.Services.Services;
 
@@ -646,8 +647,9 @@ public class AuthService : IAuthService
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
  
         // build link reset password
-        string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={Uri.UnescapeDataString(token)}";
-        
+        // string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={Uri.UnescapeDataString(token)}";
+        string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={HttpUtility.UrlEncode(token)}";
+
         bool emailSent = await _emailService.SendPasswordResetEmailAsync(user.Email!, resetLink);
 
         if (emailSent)
