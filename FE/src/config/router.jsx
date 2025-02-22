@@ -9,6 +9,8 @@ import ServiceDetail from "../Pages/ServiceDetail/ServiceDetail";
 import { ForgotPage } from "../Pages/ForgotPage/ForgotPage";
 import { ResetPage } from "../Pages/ResetPage/ResetPage";
 import CustomerProfile from "../Pages/CustomerProfile/CustomerProfile";
+import VerifyEmail from "../Components/VerifyEmail/VerifyEmail";
+
 
 export const router = createBrowserRouter([
   {
@@ -50,5 +52,9 @@ export const router = createBrowserRouter([
   {
     path: "reset-password",
     element: <ResetPage />,
-  }
+  },
+  {
+    path: "verify-email",
+    element: <VerifyEmail />,
+  },
 ]);

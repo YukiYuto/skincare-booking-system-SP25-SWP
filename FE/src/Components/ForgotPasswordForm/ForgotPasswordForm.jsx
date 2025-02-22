@@ -1,53 +1,75 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { resetPassword } from "../../services/authService";
 import styles from "./ForgotPasswordForm.module.css";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import { validateEmail } from "../../utils/validationUtils";
+import { forgotPassword } from "../../services/authService";
 
 export function ForgotPasswordForm() {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate(); // Điều hướng trang
+  const [ForgotData, setForgotData] = useState({ email: "" });
+  const [error, setError] = useState({ email: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    setError("");
+    const { name, value } = e.target;
+    setForgotData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    setError((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const validateRegisterForm = () => {
+    const emailError = validateEmail(ForgotData.email);
+    setError({ email: emailError });
+    return !emailError;
+  };
 
-    const emailError = validateEmail(email);
-    if (emailError) {
-      setError(emailError);
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+
+    // Kiểm tra email hợp lệ trước khi gửi
+    if (!validateRegisterForm()) {
+      toast.error("Please enter a valid email address.");
       return;
     }
 
+    setIsLoading(true);
+
     try {
-      await resetPassword(email);
-      toast.success("Password reset email has been sent!");
-      navigate(`/reset-password?email=${encodeURIComponent(email)}`); // Điều hướng đến ResetPasswordForm
+      await forgotPassword(ForgotData.email);
+      toast.success("Password reset link has been sent to your email.");
     } catch (error) {
-      toast.error(error.message || "Request sent failed. Please try again.");
+      console.error("Forgot password error:", error);
+      const errorMessage = error?.response?.data?.message || error.message || "Failed to send reset link. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <form className={styles.forgotPasswordForm} onSubmit={handleSubmit}>
+    <form className={styles.forgotPasswordForm} onSubmit={handleForgotSubmit}>
       <h1 className={styles.forgotPasswordTitle}>Forgot password?</h1>
       <p className={styles.description}>Enter your email to receive a password reset link.</p>
 
       <EmailInputField
-        label="Email"
-        placeholder="Your email"
-        value={email}
+        label="Email Address"
+        type="email"
+        name="email"
+        placeholder="Email Address"
+        value={ForgotData.email}
+        error={error.email}
         onChange={handleEmailChange}
-        error={error}
       />
 
-      <button type="submit" className={styles.submitButton}>Submit request</button>
+      <button type="submit" className={styles.submitButton} disabled={isLoading}>
+        {isLoading ? "Sending..." : "Send email"}
+      </button>
     </form>
   );
 }
