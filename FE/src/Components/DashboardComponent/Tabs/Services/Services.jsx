@@ -1,49 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import api from "../../../../config/axios";
 import styles from "./Services.module.css";
-import ServiceCreateModal from "./ServiceCreateModal"; // Import the modal component
-import ServiceEditModal from "./ServiceEditModal"; // Import the edit modal component
+import ServiceCreateModal from "./ServiceCreateModal";
+import ServiceEditModal from "./ServiceEditModal";
+import editIcon from "../../../../assets/icon/editIcon.svg";
 
 const Services = () => {
   const [services, setServices] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateModal, setShowCreateModal] = useState(false); // State to control create modal visibility
-  const [showEditModal, setShowEditModal] = useState(false); // State to control edit modal visibility
-  const [selectedService, setSelectedService] = useState(null); // State to store the selected service for editing
+  const [modal, setModal] = useState({ type: null, data: null });
 
-  const fetchAllServices = async () => {
-    try {
-      const response = await api.get("Services/all");
-      return response.data.result;
-    } catch (error) {
-      console.error("Error fetching services:", error);
-      throw error;
-    }
-  };
-
-  const refreshServices = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchAllServices();
-      setServices(data);
+      const [servicesRes, typesRes] = await Promise.all([
+        api.get("Services/all"),
+        api.get("ServiceType/all"),
+      ]);
+      setServices(servicesRes.data.result);
+      setServiceTypes(typesRes.data.result);
     } catch (error) {
-      console.error("Failed to load services.");
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    refreshServices();
-  }, []);
+    fetchData();
+  }, [fetchData]);
+
+  const getServiceTypeName = (serviceTypeId) =>
+    serviceTypes.find((type) => type.serviceTypeId === serviceTypeId)
+      ?.serviceTypeName || "Unknown";
 
   return (
     <div className={styles.tabContainer}>
       <h2 className={styles.tabTitle}>Services</h2>
-      <button onClick={() => setShowCreateModal(true)}>
+      <button onClick={() => setModal({ type: "create", data: null })}>
         Add New Service
-      </button>{" "}
-      {/* Button to open create modal */}
+      </button>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -51,20 +48,19 @@ const Services = () => {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Description</th>
               <th>Price</th>
+              <th>Service Type</th>
               <th>Created Time</th>
               <th>Updated Time</th>
-              <th>Status</th>
-              <th>Actions</th> {/* Add Actions column */}
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>
             {services.map((service) => (
               <tr key={service.serviceId}>
                 <td>{service.serviceName}</td>
-                <td>{service.description}</td>
                 <td>${service.price.toLocaleString()}</td>
+                <td>{getServiceTypeName(service.serviceTypeId)}</td>
                 <td>
                   {service.createdTime
                     ? new Date(service.createdTime).toLocaleString()
@@ -75,38 +71,30 @@ const Services = () => {
                     ? new Date(service.updatedTime).toLocaleString()
                     : "N/A"}
                 </td>
-                <td>{service.status === "0" ? "Active" : "Inactive"}</td>
                 <td>
                   <button
-                    onClick={() => {
-                      setSelectedService(service);
-                      setShowEditModal(true);
-                    }}
+                    className={styles.editButton}
+                    onClick={() => setModal({ type: "edit", data: service })}
                   >
-                    Edit
-                  </button>{" "}
-                  {/* Button to open edit modal */}
+                    <img src={editIcon} alt="Edit" />
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
-      {showCreateModal && (
+      {modal.type === "create" && (
         <ServiceCreateModal
-          onClose={() => {
-            setShowCreateModal(false);
-            refreshServices(); // Refresh services after closing the create modal
-          }}
+          onClose={() => setModal({ type: null, data: null })}
+          refresh={fetchData}
         />
       )}
-      {showEditModal && (
+      {modal.type === "edit" && (
         <ServiceEditModal
-          service={selectedService}
-          onClose={() => {
-            setShowEditModal(false);
-            refreshServices(); // Refresh services after closing the edit modal
-          }}
+          service={modal.data}
+          onClose={() => setModal({ type: null, data: null })}
+          refresh={fetchData}
         />
       )}
     </div>

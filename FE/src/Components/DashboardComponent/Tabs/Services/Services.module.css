@@ -36,3 +36,8 @@
     background-color: var(--accent-color);
     color: white;
   }
+
+  .editIcon {
+    background-color: transparent;
+    border: none;
+  }
