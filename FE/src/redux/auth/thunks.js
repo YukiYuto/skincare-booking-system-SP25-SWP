@@ -14,7 +14,9 @@ export const login = createAsyncThunk('auth/login', async (credentials, { dispat
         dispatch(setLoading(true));
         const tokens = await authService.login(credentials);
         const response = await authService.fetchUserProfile(tokens.result.accessToken);
-        const user = response.result;
+        // const user = response.result;
+            //! Now the user object will contain both the tokens and the user profile data
+        const user = { ...tokens.result, ...response.result };
         dispatch(setUser(user));
         return user;
     } catch (error) {
