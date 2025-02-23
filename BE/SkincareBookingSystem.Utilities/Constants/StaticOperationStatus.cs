@@ -28,6 +28,13 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Active = "1";
             public const string Deleted = "0";
         }
+
+        public static class Customer
+        {
+            public const string NotFound = "Customer(s) not found";
+            public const string Found = "Customer(s) found";
+        }
+
         /// <summary>
         /// Constants related to database operations (e.g. SaveAsync).
         /// </summary>
@@ -40,6 +47,7 @@ namespace SkincareBookingSystem.Utilities.Constants
         public static class File
         {
             public const string FileEmpty = "File is empty";
+            public const string FileRetrieved = "File retrieved successfully";
             public const string FileUploaded = "File uploaded successfully";
             public const string FileNotFound = "File not found";
             public const string ImageNotFound = "Image not found";
@@ -48,6 +56,11 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string VideoNotFound = "Video not found";
         }
 
+        public static class SkinTherapist
+        {
+            public const string NotFound = "Skin therapist(s) not found";
+            public const string Found = "Skin therapist(s) found";
+        }
         public static class StatusCode
         {
             public const int Ok = 200;

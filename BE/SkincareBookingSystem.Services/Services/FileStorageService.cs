@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using SkincareBookingSystem.DataAccess.IRepositories;
+using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.FileStorage;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.Helpers.Responses;
@@ -20,14 +23,22 @@ namespace SkincareBookingSystem.Services.Services
     {
         private readonly CloudinaryServiceControl _cloudinaryServiceControl;
         private readonly ICloudinaryService _cloudinaryService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public FileStorageService(CloudinaryServiceControl cloudinaryServiceControl, ICloudinaryService cloudinaryService)
+        public FileStorageService(
+            CloudinaryServiceControl cloudinaryServiceControl,
+            ICloudinaryService cloudinaryService,
+            UserManager<ApplicationUser> userManager,
+            IUnitOfWork unitOfWork)
         {
             _cloudinaryServiceControl = cloudinaryServiceControl;
             _cloudinaryService = cloudinaryService;
+            _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
-        public Task<string> GetAvatarImageUrl(ClaimsPrincipal user)
+        public async Task<ResponseDto> GetAvatarImageUrl(ClaimsPrincipal user)
         {
             throw new NotImplementedException();
         }
@@ -50,15 +61,32 @@ namespace SkincareBookingSystem.Services.Services
 
             var folderPath = $"{StaticCloudinaryFolders.UserAvatars}/{user.FindFirstValue("FullName")}";
 
-            _cloudinaryServiceControl.SetCommand(
-                new UploadAvatarImageCommand(_cloudinaryService, uploadFileDto.File, folderPath));
+            var uploadedImageUrl = await _cloudinaryService.UploadImageAsync(
+                uploadFileDto.File,
+                folderPath,
+                new Transformation().Named(StaticCloudinarySettings.AvatarTransformation));
 
-            await _cloudinaryServiceControl.RunAsync();
+            try
+            {
+                var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userToUpdate = await _userManager.FindByIdAsync(userId);
+
+                userToUpdate.ImageUrl = uploadedImageUrl;
+                await _userManager.UpdateAsync(userToUpdate);
+                
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                return ErrorResponse.Build(
+                    message: e.Message,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
 
             return SuccessResponse.Build(
                 message: StaticOperationStatus.File.FileUploaded,
                 statusCode: StaticOperationStatus.StatusCode.Ok,
-                result: $"Path: {folderPath}");
+                result: uploadedImageUrl);
         }
     }
 }

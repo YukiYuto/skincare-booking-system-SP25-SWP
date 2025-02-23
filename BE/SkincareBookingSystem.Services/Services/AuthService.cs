@@ -511,7 +511,7 @@ public class AuthService : IAuthService
             Email = user.Email!,
             PhoneNumber = user.PhoneNumber!,
             Address = principal.FindFirst("Address")?.Value,
-            ImageUrl = principal.FindFirst("AvatarUrl")?.Value,
+            ImageUrl = principal.FindFirst("ImageUrl")?.Value,
             UserName = user.UserName!,
             Age = user.Age,
             Roles = roles.ToList()
