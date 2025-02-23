@@ -547,10 +547,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
 
-                    b.Property<Guid>("ServiceComboId")
+                    b.Property<Guid?>("ServiceComboId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ServiceId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uuid");
 
                     b.HasKey("OrderDetailId");
@@ -758,9 +758,14 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<Guid>("ServiceTypeId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("SkinTherapistId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("SkinProfileId", "ServiceTypeId");
 
                     b.HasIndex("ServiceTypeId");
+
+                    b.HasIndex("SkinTherapistId");
 
                     b.ToTable("SkinServiceType");
                 });
@@ -845,16 +850,16 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<DateTime?>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("interval");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("interval");
 
                     b.Property<string>("Status")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("TherapistScheduleId")
+                    b.Property<Guid?>("TherapistScheduleId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("UpdatedBy")
@@ -968,6 +973,21 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.HasKey("TherapistScheduleId");
 
                     b.ToTable("TherapistSchedules");
+                });
+
+            modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TherapistServiceType", b =>
+                {
+                    b.Property<Guid>("TherapistId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ServiceTypeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TherapistId", "ServiceTypeId");
+
+                    b.HasIndex("ServiceTypeId");
+
+                    b.ToTable("TherapistServiceTypes");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TypeItem", b =>
@@ -1176,15 +1196,11 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasOne("SkincareBookingSystem.Models.Domain.ServiceCombo", "ServiceCombo")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ServiceComboId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ServiceComboId");
 
                     b.HasOne("SkincareBookingSystem.Models.Domain.Services", "Services")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Order");
 
@@ -1217,6 +1233,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasForeignKey("SkinProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SkincareBookingSystem.Models.Domain.SkinTherapist", null)
+                        .WithMany("SkinServiceTypes")
+                        .HasForeignKey("SkinTherapistId");
 
                     b.Navigation("ServiceType");
 
@@ -1255,9 +1275,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                 {
                     b.HasOne("SkincareBookingSystem.Models.Domain.TherapistSchedule", "TherapistSchedule")
                         .WithMany("Slots")
-                        .HasForeignKey("TherapistScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TherapistScheduleId");
 
                     b.Navigation("TherapistSchedule");
                 });
@@ -1293,6 +1311,25 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("SkinTest");
+                });
+
+            modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TherapistServiceType", b =>
+                {
+                    b.HasOne("SkincareBookingSystem.Models.Domain.ServiceType", "ServiceType")
+                        .WithMany("TherapistServiceTypes")
+                        .HasForeignKey("ServiceTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SkincareBookingSystem.Models.Domain.SkinTherapist", "SkinTherapist")
+                        .WithMany("TherapistServiceTypes")
+                        .HasForeignKey("TherapistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceType");
+
+                    b.Navigation("SkinTherapist");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TypeItem", b =>
@@ -1352,6 +1389,8 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                 {
                     b.Navigation("SkinServiceTypes");
 
+                    b.Navigation("TherapistServiceTypes");
+
                     b.Navigation("TypeItems");
                 });
 
@@ -1369,6 +1408,13 @@ namespace SkincareBookingSystem.DataAccess.Migrations
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.SkinProfile", b =>
                 {
                     b.Navigation("SkinServiceTypes");
+                });
+
+            modelBuilder.Entity("SkincareBookingSystem.Models.Domain.SkinTherapist", b =>
+                {
+                    b.Navigation("SkinServiceTypes");
+
+                    b.Navigation("TherapistServiceTypes");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TherapistSchedule", b =>

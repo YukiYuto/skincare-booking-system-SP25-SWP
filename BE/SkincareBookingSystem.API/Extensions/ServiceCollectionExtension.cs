@@ -6,13 +6,14 @@ using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Services.Mapping;
 using SkincareBookingSystem.Services.Services;
+using SkincareBookingSystem.Services.Services.CloudinaryModule.Invoker;
 using StackExchange.Redis;
 
 namespace SkincareBookingSystem.API.Extensions
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection RegisterServices(this IServiceCollection services,ConfigurationManager builderConfiguration)
+        public static IServiceCollection RegisterServices(this IServiceCollection services, ConfigurationManager builderConfiguration)
         {
 
             // Đọc chuỗi kết nối Redis từ file cấu hình
@@ -22,7 +23,7 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddSingleton<IConnectionMultiplexer>(connectionMultiplexer);
             // Register AutoMapper
             services.AddAutoMapper(typeof(AutoMapperProfile));
-            
+
             // Scoped services
             services.AddScoped<IAutoMapperService, AutoMapperService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
@@ -34,11 +35,16 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<IRedisService, RedisService>();
             services.AddScoped<IBlogCategoryService, BlogCategoryService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddScoped<CloudinaryServiceControl>();
 
             // more services to be added here
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IServicesService, ServicesService>();
-
+            services.AddScoped<ISlotService, SlotService>();
+            services.AddScoped<IOrderDetailService, OrderDetailService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
 
             return services;
         }

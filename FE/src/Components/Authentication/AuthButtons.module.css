@@ -1,0 +1,29 @@
+.profileDropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: none;
+}
+
+.loginButton {
+    background-color: #ecb65e;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.loginButton:hover {
+    background-color: #e68e2a;
+}
+
+.registerButton {
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}

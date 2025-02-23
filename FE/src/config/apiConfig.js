@@ -17,4 +17,5 @@ export const BASE_API_URL = BASE_URL;
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes
 export const LOGIN_API = `${BASE_URL}/Auth/sign-in`;
 export const REGISTER_CUSTOMER_API = `${BASE_URL}/Auth/customers`;
+export const USER_PROFILE_API = `${BASE_URL}/User`;
 
