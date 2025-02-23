@@ -138,6 +138,7 @@ p {
   .list-menu-link:hover {
     @apply font-semibold;
   }
+  
   .btn {
     @apply px-6 py-2 rounded-md text-base font-semibold transition-all duration-300 ease-in-out;
   }

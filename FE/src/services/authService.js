@@ -4,7 +4,7 @@ import { LOGIN_API, REGISTER_CUSTOMER_API, HTTP_METHODS, VERIFY_EMAIL_API, CONFI
 /**
  * Login API call
  * @param {Object} credentials - User credentials (email and password)
- * @returns {Promise} - Resolves with response data (user data) or rejects with an error
+ * @returns {Promise} - Resolves with response data (tokens) or rejects with an error
  */
 export const login = async (credentials) => {
   return await apiCall(HTTP_METHODS.POST, LOGIN_API, credentials);
@@ -18,7 +18,14 @@ export const login = async (credentials) => {
 export const register = async (userData) => {
   return await apiCall(HTTP_METHODS.POST, REGISTER_CUSTOMER_API, userData);
 };
-
+/**
+ * Fetch user profile API from token
+ * @param {string} token 
+ * @returns {Promise} - Resolves with response data (user data) or rejects with an error
+ */
+export const fetchUserProfile = async (token) => {
+  return await apiCall(HTTP_METHODS.GET, USER_PROFILE_API, null, { token });
+}
 export async function forgotPassword(email) {
   const response = await fetch(FORGOT_PASSWORD_API, {
     method: "POST",

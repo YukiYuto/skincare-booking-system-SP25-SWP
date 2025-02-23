@@ -38,8 +38,10 @@ namespace SkincareBookingSystem.API.Extensions
             // more services to be added here
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IServicesService, ServicesService>();
+            services.AddScoped<ISkinTherapistService, SkinTherapistService>();
             services.AddScoped<IOrderDetailService, OrderDetailServcie>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICustomerService, CustomerService>();
 
             return services;
         }

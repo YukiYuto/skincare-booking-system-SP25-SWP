@@ -88,7 +88,7 @@ public class UnitOfWork : IUnitOfWork
         TestQuestion = new TestQuestionRepository(_context);
         TherapistSchedule = new TherapistScheduleRepository(_context);
         TypeItem = new TypeItemRepository(_context);
-        UserManagerRepository = new UserManagerRepository(userManager);
+        UserManager = new UserManagerRepository(userManager);
         
     }
 
