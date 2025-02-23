@@ -26,7 +26,7 @@ export const FORGOT_PASSWORD_API = `${BASE_URL}/Auth/password/forgot`;
 export const RESET_PASSWORD_API = `${BASE_URL}/Auth/password/reset`;
 
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
-// export const AUTH_HEADERS = (token) => ({
-//   "Content-Type": "application/json",
-//   Authorization: `Bearer ${token}`,
-// });
+export const AUTH_HEADERS = (token) => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
+});
