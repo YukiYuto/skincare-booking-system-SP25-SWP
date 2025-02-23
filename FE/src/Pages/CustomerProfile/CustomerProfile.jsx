@@ -4,8 +4,19 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../redux/auth/slice";
 import styles from "./CustomerProfile.module.css";
-import { AUTH_HEADERS, USER_PROFILE_API } from "../../config/apiConfig";
 import axios from "axios";
+
+// Định nghĩa API endpoint
+const USER_PROFILE_API = "https://localhost:7037/api/Auth/user";
+
+// Hàm tạo headers chứa token
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+};
 
 const CustomerProfile = () => {
   const dispatch = useDispatch();
@@ -15,57 +26,58 @@ const CustomerProfile = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [formChanged, setFormChanged] = useState(false);
 
-  // Trong useEffect, gọi API để lấy dữ liệu user
-useEffect(() => {
-  const fetchUserProfile = async () => {
+  // Gọi API để lấy dữ liệu người dùng
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(USER_PROFILE_API, {
+          headers: getAuthHeaders(),
+        });
+
+        dispatch(setUser(response.data)); // Cập nhật Redux với dữ liệu từ API
+        form.setFieldsValue(response.data); // Đặt dữ liệu vào form
+        setImageUrl(response.data.image || ""); // Cập nhật avatar nếu có
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        notification.error({
+          message: "Error",
+          description: "Could not fetch user profile. Please try again.",
+        });
+      }
+    };
+
+    fetchUserProfile();
+  }, [dispatch, form]);
+
+  // Xử lý cập nhật thông tin người dùng
+  const handleUpdate = async (values) => {
     try {
-      const token = localStorage.getItem("token"); // Lấy token từ localStorage
-      const response = await axios.get(USER_PROFILE_API, {
-        headers: AUTH_HEADERS(token),
+      const updatedData = { ...values, image: imageUrl };
+
+      const response = await axios.put(USER_PROFILE_API, updatedData, {
+        headers: getAuthHeaders(),
       });
 
-      dispatch(setUser(response.data)); // Cập nhật Redux với dữ liệu từ API
-      form.setFieldsValue(response.data); // Set dữ liệu vào form
-      setImageUrl(response.data.image || ""); // Hiển thị avatar nếu có
+      dispatch(setUser(response.data)); // Cập nhật Redux với dữ liệu mới từ API
+      notification.success({
+        message: "Update Successful",
+        description: "Your profile has been updated successfully.",
+      });
+
+      setIsEditing(false);
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      console.error("Error updating profile:", error);
+      notification.error({
+        message: "Update Failed",
+        description: "Could not update profile. Please try again.",
+      });
     }
   };
 
-  fetchUserProfile();
-}, []);
-
-const handleUpdate = async (values) => {
-  try {
-    const token = localStorage.getItem("token");
-    const updatedData = { ...values, image: imageUrl };
-
-    // Gửi yêu cầu PUT lên API
-    const response = await axios.put(USER_PROFILE_API, updatedData, {
-      headers: AUTH_HEADERS(token),
-    });
-
-    // Cập nhật Redux với dữ liệu mới từ API
-    dispatch(setUser(response.data));
-
-    notification.success({
-      message: "Update Successful",
-      description: "Your profile has been updated successfully.",
-    });
-
-    setIsEditing(false);
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    notification.error({
-      message: "Update Failed",
-      description: "Could not update profile. Please try again.",
-    });
-  }
-};
-
-
+  // Bật chế độ chỉnh sửa
   const handleEdit = () => setIsEditing(true);
 
+  // Hủy chỉnh sửa, phục hồi dữ liệu ban đầu
   const handleCancel = () => {
     setIsEditing(false);
     form.setFieldsValue(user);
@@ -73,6 +85,7 @@ const handleUpdate = async (values) => {
     setFormChanged(false);
   };
 
+  // Xử lý khi upload avatar
   const handleChange = (info) => {
     if (info.file.status === "uploading") return;
     if (info.file.status === "done") {
@@ -84,7 +97,6 @@ const handleUpdate = async (values) => {
       };
     }
   };
-  
 
   return (
     <div className={styles.profileContainer}>
@@ -101,7 +113,9 @@ const handleUpdate = async (values) => {
           {imageUrl ? (
             <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
           ) : (
-            <div>{<PlusOutlined />} <div>Upload</div></div>
+            <div>
+              <PlusOutlined /> <div>Upload</div>
+            </div>
           )}
         </Upload>
       </Flex>
@@ -115,33 +129,54 @@ const handleUpdate = async (values) => {
       >
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item label="Full Name" name="fullName" rules={[{ required: true, message: "Please enter your full name!" }]}>
-              <Input style={{backgroundColor:"white"}} />
+            <Form.Item 
+              label="Full Name" 
+              name="fullName" 
+              rules={[{ required: true, message: "Please enter your full name!" }]}
+            >
+              <Input style={{ backgroundColor: "white" }} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter your email!" }, { type: "email", message: "Invalid email!" }]}>
-              <Input style={{backgroundColor:"white"}} disabled />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item label="Phone" name="phone" rules={[{ required: true, message: "Please enter your phone number!" }]}>
-              <Input style={{backgroundColor:"white"}} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Address" name="address">
-              <Input style={{backgroundColor:"white"}} />
+            <Form.Item 
+              label="Email" 
+              name="email" 
+              rules={[
+                { required: true, message: "Please enter your email!" },
+                { type: "email", message: "Invalid email!" }
+              ]}
+            >
+              <Input style={{ backgroundColor: "white" }} disabled />
             </Form.Item>
           </Col>
         </Row>
 
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item style={{width: "70px"}} label="Age" name="age" rules={[{ required: true, message: "Please enter your age!" }]}>
-              <Input style={{backgroundColor:"white"}} />
+            <Form.Item 
+              label="Phone" 
+              name="phone" 
+              rules={[{ required: true, message: "Please enter your phone number!" }]}
+            >
+              <Input style={{ backgroundColor: "white" }} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Address" name="address">
+              <Input style={{ backgroundColor: "white" }} />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item 
+              style={{ width: "70px" }} 
+              label="Age" 
+              name="age" 
+              rules={[{ required: true, message: "Please enter your age!" }]}
+            >
+              <Input style={{ backgroundColor: "white" }} />
             </Form.Item>
           </Col>
         </Row>
@@ -152,7 +187,11 @@ const handleUpdate = async (values) => {
         </div>
       </Form>
 
-      {!isEditing && <Button onClick={handleEdit} type="default" style={{ marginTop: 20 }}>Edit Profile</Button>}
+      {!isEditing && (
+        <Button onClick={handleEdit} type="default" style={{ marginTop: 20 }}>
+          Edit Profile
+        </Button>
+      )}
     </div>
   );
 };
