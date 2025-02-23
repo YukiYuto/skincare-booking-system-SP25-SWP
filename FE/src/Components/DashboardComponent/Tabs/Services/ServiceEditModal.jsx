@@ -116,11 +116,13 @@ const ServiceEditModal = ({ service, onClose }) => {
               ))}
             </select>
           </label>
-          <button type="submit">Update</button>
-          <button type="button" onClick={onClose}>
+          <button type="submit" className={styles.submitButton}>
+            Update
+          </button>
+          <button type="button" onClick={onClose} className={styles.btn}>
             Cancel
           </button>
-          <button type="button" onClick={handleDelete} className={styles.deleteButton}>
+          <button type="button" onClick={handleDelete} className={styles.btn}>
             Delete
           </button>
         </form>

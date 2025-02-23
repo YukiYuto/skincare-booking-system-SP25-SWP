@@ -104,8 +104,10 @@ const ServiceCreateModal = ({ onClose }) => {
               ))}
             </select>
           </label>
-          <button type="submit">Create</button>
-          <button type="button" onClick={onClose}>
+          <button className={styles.submitButton} type="submit">
+            Create
+          </button>
+          <button className={styles.btn} type="button" onClick={onClose}>
             Cancel
           </button>
         </form>

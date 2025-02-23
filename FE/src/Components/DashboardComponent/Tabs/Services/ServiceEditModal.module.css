@@ -47,20 +47,20 @@ select {
     color: var(--text-color);
 }
 
-button {
+.btn {
     padding: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-button[type="submit"] {
+.submitButton {
     background-color: var(--primary-color);
     color: var(--text-color);
     margin-right: 10px;
 }
 
-button[type="button"] {
+.btn {
     background-color: var(--accent-color);
     color: white;
 }
