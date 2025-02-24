@@ -8,6 +8,6 @@ namespace SkincareBookingSystem.Services.Services.CloudinaryModule.Commands
 {
     public interface ICommand
     {
-        void Execute();
+        Task ExecuteAsync();
     }
 }

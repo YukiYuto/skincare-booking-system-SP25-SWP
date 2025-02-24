@@ -18,11 +18,6 @@ namespace SkincareBookingSystem.Services.Services.CloudinaryModule.Commands
             _publicId = publicId;
         }
 
-        public async Task<string> ExecuteAsyncWithValue()
-        {
-            return await _cloudinaryService.GetImageUrlAsync(_publicId);
-        }
-
         public async Task ExecuteAsync()
         {
             await _cloudinaryService.GetImageUrlAsync(_publicId);

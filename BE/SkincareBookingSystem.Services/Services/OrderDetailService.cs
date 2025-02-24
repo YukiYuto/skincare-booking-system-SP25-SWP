@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace SkincareBookingSystem.Services.Services
 {
-    public class OrderDetailServcie : IOrderDetailService
+    public class OrderDetailService : IOrderDetailService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAutoMapperService _mapper;
 
-        public OrderDetailServcie(IUnitOfWork unitOfWork, IAutoMapperService mapper)
+        public OrderDetailService(IUnitOfWork unitOfWork, IAutoMapperService mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

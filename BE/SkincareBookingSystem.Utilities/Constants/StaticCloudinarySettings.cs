@@ -11,5 +11,7 @@ namespace SkincareBookingSystem.Utilities.Constants
         public const string CloudinarySettingsSection = "CloudinarySettings";
         public const string Images = "Images";
         public const string Videos = "Videos";
+
+        public const string AvatarTransformation = "sbs-avatar-upload";
     }
 }

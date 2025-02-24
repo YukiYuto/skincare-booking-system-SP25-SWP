@@ -1,6 +1,7 @@
 ﻿using CloudinaryDotNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.FileStorage;
@@ -25,35 +26,25 @@ namespace SkincareBookingSystem.Services.Services
         private readonly ICloudinaryService _cloudinaryService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ITokenService _tokenService;
 
         public FileStorageService(
             CloudinaryServiceControl cloudinaryServiceControl,
             ICloudinaryService cloudinaryService,
             UserManager<ApplicationUser> userManager,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ITokenService tokenService)
         {
             _cloudinaryServiceControl = cloudinaryServiceControl;
             _cloudinaryService = cloudinaryService;
             _userManager = userManager;
             _unitOfWork = unitOfWork;
+            _tokenService = tokenService;
         }
 
         public async Task<ResponseDto> GetAvatarImageUrl(ClaimsPrincipal user)
         {
-            if (user.FindFirstValue(ClaimTypes.NameIdentifier) is null)
-            {
-                return ErrorResponse.Build(
-                    message: StaticOperationStatus.User.UserNotFound,
-                    statusCode: StaticOperationStatus.StatusCode.NotFound);
-            }
-
-            var folderPath = $"{StaticCloudinaryFolders.UserAvatars}/{user.FindFirstValue("FullName")}";
-            var avatarUrl = await _cloudinaryService.GetImageUrlAsync(folderPath);
-
-            return SuccessResponse.Build(
-                message: StaticOperationStatus.File.FileRetrieved,
-                statusCode: StaticOperationStatus.StatusCode.Ok,
-                result: avatarUrl);
+            throw new NotImplementedException();
         }
 
         public async Task<ResponseDto> UploadAvatarImage(UploadFileDto uploadFileDto, ClaimsPrincipal user)
@@ -64,8 +55,16 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticOperationStatus.File.FileEmpty,
                     statusCode: StaticOperationStatus.StatusCode.BadRequest);
             }
+            if (uploadFileDto.AccessToken.IsNullOrEmpty())
+            {
+                return ErrorResponse.Build(
+                    message: StaticOperationStatus.User.UserNotAuthorized,
+                    statusCode: StaticOperationStatus.StatusCode.Unauthorized);
+            }
 
-            if (user.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            var userFromDb = await _tokenService.GetPrincipalFromToken(uploadFileDto.AccessToken);
+            var userId = userFromDb.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            if (userId.IsNullOrEmpty())
             {
                 return ErrorResponse.Build(
                     message: StaticOperationStatus.User.UserNotFound,
@@ -81,12 +80,10 @@ namespace SkincareBookingSystem.Services.Services
 
             try
             {
-                var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
-                var userToUpdate = await _userManager.FindByIdAsync(userId);
+                ApplicationUser? userToUpdate = await _userManager.FindByIdAsync(userId);
 
                 userToUpdate.ImageUrl = uploadedImageUrl;
                 await _userManager.UpdateAsync(userToUpdate);
-                
                 await _unitOfWork.SaveAsync();
             }
             catch (Exception e)

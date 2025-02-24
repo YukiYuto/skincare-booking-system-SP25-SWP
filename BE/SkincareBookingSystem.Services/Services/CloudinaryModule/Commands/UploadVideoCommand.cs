@@ -1,16 +1,21 @@
-﻿using SkincareBookingSystem.Services.IServices;
+﻿using Microsoft.AspNetCore.Http;
+using SkincareBookingSystem.Services.IServices;
 namespace SkincareBookingSystem.Services.Services.CloudinaryModule.Commands
 {
     public class UploadVideoCommand : ICommand
     {
         private ICloudinaryService _cloudinaryService;
-        public UploadVideoCommand(ICloudinaryService cloudinaryService)
+        private readonly IFormFile _file;
+        private readonly string _folderPath;
+        public UploadVideoCommand(ICloudinaryService cloudinaryService, IFormFile file, string folderPath)
         {
             _cloudinaryService = cloudinaryService;
+            _file = file;
+            _folderPath = folderPath;
         }
-        public void Execute()
+        public async Task ExecuteAsync()
         {
-            _cloudinaryService.UploadVideo();
+            await _cloudinaryService.UploadVideoAsync(_file, _folderPath);
         }
     }
 }
