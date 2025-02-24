@@ -79,6 +79,16 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public static readonly DateTime Vietnam = DateTime.UtcNow.AddHours(7.0);
         }
+
+        public static class Token
+        {
+            public const string TokenStored = "Token stored successfully";
+            public const string TokenNotFound = "Token not found";
+            public const string TokenExpired = "Token expired";
+            public const string TokenRefreshed = "Token refreshed successfully";
+            public const string TokenInvalid = "Token is invalid";
+        }
+
         /// <summary>
         /// Constants related to user operations.
         /// </summary>

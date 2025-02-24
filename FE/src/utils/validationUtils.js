@@ -45,9 +45,45 @@ export const validateConfirmPassword = (password, confirmPassword) => {
   return "";
 };
 
+export const validatenewPasswordLength = (newPassword) => {
+  if (!newPassword) {
+    return "New password cannot be empty";
+  }
+  if (!validator.isLength(newPassword, { min: 8, max: 32 })) {
+    return "New password must be between 8-32 characters long";
+  }
+  return "";
+};
+
+export const validatenewPasswordFormat = (newPassword) => {
+  if (!validator.isStrongPassword(newPassword)) {
+    return "New password must be at least 8 character long, contain at least 1 lowercase, 1 uppercase, 1 number, and 1 special character";
+  }
+  return "";
+};
+export const validateConfirmNewPassword = (newPassword, confirmNewPassword) => {
+  if (!validator.equals(newPassword, confirmNewPassword)) {
+    return "Passwords do not match";
+  }
+  return "";
+};
+
+
 export const validateAge = (age) => {
-  if (!validator.isLength(age, { min: 16, max: 120 })) {
+  if (!validator.isInt(age, { min: 16, max: 120 })) {
     return "Your age must be at least 16 to do registration";
   }
   return "";
 };
+
+export const validateGender = (gender) => {
+  const validGenders = ["male", "female"];
+
+  if (!validGenders.includes(gender.toLowerCase())) {
+    return "Gender must be either 'Male' or 'Female'.";
+  }
+
+  return "";
+};
+
+

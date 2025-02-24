@@ -116,4 +116,11 @@ public class TokenService : ITokenService
 
         return principal;
     }
+
+    public async Task<string> RetrieveRefreshTokenAsync(string userId)
+    {
+        string redisKey = $"userId:{userId}:refreshToken";
+        var refreshToken = await _redisService.RetrieveString(redisKey);
+        return refreshToken;
+    }
 }

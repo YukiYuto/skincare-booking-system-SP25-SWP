@@ -6,6 +6,11 @@ import AboutPage from "../Pages/AboutPage/AboutPage";
 import { RegisterPage } from "../Pages/Register/RegisterPage";
 import AllService from "../Pages/ServiceAll/AllService";
 import ServiceDetail from "../Pages/ServiceDetail/ServiceDetail";
+import { ForgotPage } from "../Pages/ForgotPage/ForgotPage";
+import { ResetPage } from "../Pages/ResetPage/ResetPage";
+import CustomerProfile from "../Pages/CustomerProfile/CustomerProfile";
+import VerifyEmail from "../Components/VerifyEmail/VerifyEmail";
+
 
 import Dashboard from "../Pages/DashBoard/Dashboard";
 import Revenue from "../Components/DashboardComponent/Tabs/Revenue/Revenue";
@@ -37,5 +42,21 @@ export const router = createBrowserRouter([
       { path: "schedule", element: <Schedule /> },
       { index: true, element: <Revenue /> }, // Default dashboard page
     ],
+  },
+  {
+    path: "profile",
+    element: <CustomerProfile />,
+  },
+  {
+    path: "forgot-password",
+    element: <ForgotPage />,
+  },
+  {
+    path: "reset-password",
+    element: <ResetPage />,
+  },
+  {
+    path: "verify-email",
+    element: <VerifyEmail />,
   },
 ]);

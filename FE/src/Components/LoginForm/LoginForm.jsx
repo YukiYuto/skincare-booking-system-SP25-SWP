@@ -66,7 +66,7 @@ export function LoginForm() {
       toast.success(`Login successful! Welcome, ${loginData.email}!`);
       navigate("/");
     } catch (error) {
-      console.error("Login error:", error.message);
+      console.error("Login error", error.message);
     }
   };
 
@@ -95,6 +95,12 @@ export function LoginForm() {
         onChange={handleLoginDataChange}
         error={errors.password}
       />
+      
+      <div>
+      <a style={{fontSize: "20px"}} href="forgot-password" className={styles.forgotLink}>
+          Forgot Password
+        </a>
+      </div>
 
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>

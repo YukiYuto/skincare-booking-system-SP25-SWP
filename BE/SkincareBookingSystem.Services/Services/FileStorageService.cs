@@ -84,6 +84,7 @@ namespace SkincareBookingSystem.Services.Services
 
                 userToUpdate.ImageUrl = uploadedImageUrl;
                 await _userManager.UpdateAsync(userToUpdate);
+                
                 await _unitOfWork.SaveAsync();
             }
             catch (Exception e)

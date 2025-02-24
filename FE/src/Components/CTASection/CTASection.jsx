@@ -11,7 +11,7 @@ const CTASection = () => {
           Book your personalized skincare session today and discover your natural glow.
         </p>
       </div>
-      <Button type="primary" size="large" className={styles.ctaButton}>
+      <Button style={{width:"250px"}} type="primary" size="large" className={styles.ctaButton}>
         <img src={phoneIcon} alt="Phone" className={styles.phoneIcon} />
         Schedule appointment
       </Button>
