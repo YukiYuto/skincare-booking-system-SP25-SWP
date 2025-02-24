@@ -84,6 +84,7 @@ namespace SkincareBookingSystem.Utilities.Constants
         /// </summary>
         public static class User {
             public const string UserNotFound = "User not found";
+            public const string UserNotAuthorized = "User is not authorized";
         }
 
     }
