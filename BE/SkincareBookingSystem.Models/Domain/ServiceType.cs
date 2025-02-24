@@ -12,5 +12,6 @@ namespace SkincareBookingSystem.Models.Domain
         
         public virtual ICollection<SkinServiceType> SkinServiceTypes { get; set; } = new List<SkinServiceType>();
         public virtual ICollection<TypeItem> TypeItems { get; set; } = new List<TypeItem>();
+        public virtual ICollection<TherapistServiceType> TherapistServiceTypes { get; set; } = new List<TherapistServiceType>();
     }
 }

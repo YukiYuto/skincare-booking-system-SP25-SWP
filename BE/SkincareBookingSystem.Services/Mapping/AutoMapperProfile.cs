@@ -38,7 +38,7 @@ public class AutoMapperProfile : Profile
 
         CreateMap<UpdateServiceTypeDto, ServiceType>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-       
+
         CreateMap<CreateServiceDto, Models.Domain.Services>()
             .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
@@ -71,7 +71,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => src.UpdatedBy))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticBlogStatus.Modified));
             */
-        
+
         //SignUpCustomerDto to ApplicationUser
         CreateMap<SignUpCustomerDto, ApplicationUser>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -80,20 +80,20 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
-            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src =>src.Gender))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => false));
-        
+
         //SignUpCustomerDto to Customer
         CreateMap<SignUpCustomerDto, Customer>()
             .ForMember(dest => dest.SkinProfileId, opt => opt.Ignore());
-        
+
         //SignUpSkinTherapistDto to SkinTherapist
         CreateMap<SignUpSkinTherapistDto, SkinTherapist>()
             .ForMember(dest => dest.Experience, opt => opt.MapFrom(src => src.Experience))
             .ForMember(dest => dest.TherapistScheduleId, opt => opt.Ignore());
-        
+
         //SignUpSkinTherapistDto to ApplicationUser
         CreateMap<SignUpSkinTherapistDto, ApplicationUser>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -106,8 +106,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => false));
-        
-        
+
+
         //SignUpStaffDto to ApplicationUser
         CreateMap<SignUpStaffDto, ApplicationUser>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -152,6 +152,28 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))
             .ForMember(dest => dest.Experience, opt => opt.MapFrom(src => src.Experience));
+
+
+        // Slots
+        CreateMap<CreateSlotDto, Slot>()
+            .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartTime))
+            .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime))
+            .ForMember(dest => dest.TherapistScheduleId, opt => opt.Ignore());
+
+        CreateMap<UpdateSlotDto, Slot>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+
+        // Appointments
+        CreateMap<CreateAppointmentDto, Appointments>()
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+            .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
+            .ForMember(dest => dest.AppointmentTime, opt => opt.MapFrom(src => src.AppointmentTime))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Appointment.Created))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam)); // UTC+7
+
+        CreateMap<UpdateAppointmentDto, Appointments>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
 
 
     }

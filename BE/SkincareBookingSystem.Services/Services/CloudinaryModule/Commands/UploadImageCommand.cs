@@ -1,4 +1,5 @@
-﻿using SkincareBookingSystem.Services.IServices;
+﻿using Microsoft.AspNetCore.Http;
+using SkincareBookingSystem.Services.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,17 @@ namespace SkincareBookingSystem.Services.Services.CloudinaryModule.Commands
     public class UploadImageCommand : ICommand
     {
         private ICloudinaryService _cloudinaryService;
-        public UploadImageCommand(ICloudinaryService cloudinaryService)
+        private readonly IFormFile _file;
+        private readonly string _folderPath;
+        public UploadImageCommand(ICloudinaryService cloudinaryService, IFormFile file, string folderPath)
         {
             _cloudinaryService = cloudinaryService;
+            _file = file;
+            _folderPath = folderPath;
         }
-        public void Execute()
+        public async Task ExecuteAsync()
         {
-            _cloudinaryService.UploadImage();
+            await _cloudinaryService.UploadImageAsync(_file, _folderPath);
         }
     }
 }
