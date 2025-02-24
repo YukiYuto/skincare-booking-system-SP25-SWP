@@ -12,6 +12,7 @@ using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Email;
 using SkincareBookingSystem.Utilities.Constants;
 using System.Web;
+using SkincareBookingSystem.Services.Helpers.Responses;
 
 namespace SkincareBookingSystem.Services.Services;
 
@@ -721,9 +722,41 @@ public class AuthService : IAuthService
         };
     }
 
-    public Task<ResponseDto> RefreshToken(RefreshTokenDto refreshTokenDto)
+    public async Task<ResponseDto> RefreshAccessToken(RefreshTokenDto refreshTokenDto)
     {
-        throw new NotImplementedException();
+        var principal = await _tokenService.GetPrincipalFromToken(refreshTokenDto.RefreshToken);
+        if (principal is null)
+        {
+            ErrorResponse.Build(
+                message: StaticOperationStatus.Token.TokenInvalid,
+                statusCode: StaticOperationStatus.StatusCode.Unauthorized);
+        }
+
+        var userId = principal!.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userFromDb = await _userManager.FindByIdAsync(userId);
+
+        if (userFromDb is null)
+        {
+            ErrorResponse.Build(
+                message: StaticOperationStatus.User.UserNotFound,
+                statusCode: StaticOperationStatus.StatusCode.NotFound);
+        }
+
+        var storedRefreshToken = await _tokenService.RetrieveRefreshTokenAsync(userId);
+
+        if (storedRefreshToken != refreshTokenDto.RefreshToken)
+        {
+            ErrorResponse.Build(
+                message: StaticOperationStatus.Token.TokenInvalid,
+                statusCode: StaticOperationStatus.StatusCode.Unauthorized);
+        }
+        // New access token creation
+        var newAccessToken = await _tokenService.GenerateJwtAccessTokenAsync(userFromDb);
+
+        return SuccessResponse.Build(
+            message: StaticOperationStatus.Token.TokenRefreshed,
+            statusCode: StaticOperationStatus.StatusCode.Ok,
+            result: newAccessToken);
     }
 
     public Task<ResponseDto> GetUserById(Guid userId)
