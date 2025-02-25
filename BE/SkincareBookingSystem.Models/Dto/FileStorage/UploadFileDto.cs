@@ -9,7 +9,6 @@ namespace SkincareBookingSystem.Models.Dto.FileStorage
 {
     public class UploadFileDto
     {
-        public string AccessToken { get; set; } = null!;
         public IFormFile? File { get; set; }
     }
 }
