@@ -55,13 +55,6 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticOperationStatus.File.FileEmpty,
                     statusCode: StaticOperationStatus.StatusCode.BadRequest);
             }
-            if (uploadFileDto.AccessToken.IsNullOrEmpty())
-            {
-                return ErrorResponse.Build(
-                    message: StaticOperationStatus.User.UserNotAuthorized,
-                    statusCode: StaticOperationStatus.StatusCode.Unauthorized);
-            }
-
             var userFromDb = await _tokenService.GetPrincipalFromToken(uploadFileDto.AccessToken);
             var userId = userFromDb.FindFirstValue(ClaimTypes.NameIdentifier)!;
             if (userId.IsNullOrEmpty())
@@ -72,20 +65,17 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var folderPath = $"{StaticCloudinaryFolders.UserAvatars}/{user.FindFirstValue("FullName")}";
-
-            var uploadedImageUrl = await _cloudinaryService.UploadImageAsync(
-                uploadFileDto.File,
-                folderPath,
-                new Transformation().Named(StaticCloudinarySettings.AvatarTransformation));
-
-            try
+            try  // Upload image to Cloudinary
             {
-                ApplicationUser? userToUpdate = await _userManager.FindByIdAsync(userId);
+                var uploadedImageUrl = await _cloudinaryService.UploadImageAsync(
+                    uploadFileDto.File,
+                    folderPath,
+                    new Transformation().Named(StaticCloudinarySettings.AvatarTransformation));
 
-                userToUpdate.ImageUrl = uploadedImageUrl;
-                await _userManager.UpdateAsync(userToUpdate);
-                
-                await _unitOfWork.SaveAsync();
+                return SuccessResponse.Build(
+                    message: StaticOperationStatus.File.FileUploaded,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: uploadedImageUrl);
             }
             catch (Exception e)
             {
@@ -93,11 +83,6 @@ namespace SkincareBookingSystem.Services.Services
                     message: e.Message,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
             }
-
-            return SuccessResponse.Build(
-                message: StaticOperationStatus.File.FileUploaded,
-                statusCode: StaticOperationStatus.StatusCode.Ok,
-                result: uploadedImageUrl);
         }
     }
 }
