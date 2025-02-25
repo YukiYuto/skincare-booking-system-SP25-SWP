@@ -1,160 +1,120 @@
-import { useEffect, useState } from "react";
-import { Form, Input, Button, Row, Col, Upload, notification, Flex } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../redux/auth/slice";
+import { Col, Form, Row } from "antd";
+import { useSelector } from "react-redux";
 import styles from "./CustomerProfile.module.css";
-import { AUTH_HEADERS, USER_PROFILE_API } from "../../config/apiConfig";
-import axios from "axios";
+import Header from "../../Components/Common/Header";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
-const CustomerProfile = () => {
-  const dispatch = useDispatch();
+const UserProfile = () => {
   const { user } = useSelector((state) => state.auth);
-  const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm();
-  const [imageUrl, setImageUrl] = useState("");
-  const [formChanged, setFormChanged] = useState(false);
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(user.imageUrl);
 
-  // Trong useEffect, gọi API để lấy dữ liệu user
-useEffect(() => {
-  const fetchUserProfile = async () => {
-    try {
-      const token = localStorage.getItem("token"); // Lấy token từ localStorage
-      const response = await axios.get(USER_PROFILE_API, {
-        headers: AUTH_HEADERS(token),
-      });
+  const accessToken = localStorage.getItem("accessToken");
 
-      dispatch(setUser(response.data)); // Cập nhật Redux với dữ liệu từ API
-      form.setFieldsValue(response.data); // Set dữ liệu vào form
-      setImageUrl(response.data.image || ""); // Hiển thị avatar nếu có
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
+  // Chọn file ảnh
+  const handleFileChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
+  // Upload ảnh bằng fetch
+  const handleUpload = async () => {
+    if (!image) {
+      toast.warn("Vui lòng chọn ảnh!");
+      return;
     }
-  };
-
-  fetchUserProfile();
-}, []);
-
-const handleUpdate = async (values) => {
-  try {
-    const token = localStorage.getItem("token");
-    const updatedData = { ...values, image: imageUrl };
-
-    // Gửi yêu cầu PUT lên API
-    const response = await axios.put(USER_PROFILE_API, updatedData, {
-      headers: AUTH_HEADERS(token),
-    });
-
-    // Cập nhật Redux với dữ liệu mới từ API
-    dispatch(setUser(response.data));
-
-    notification.success({
-      message: "Update Successful",
-      description: "Your profile has been updated successfully.",
-    });
-
-    setIsEditing(false);
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    notification.error({
-      message: "Update Failed",
-      description: "Could not update profile. Please try again.",
-    });
-  }
-};
-
-
-  const handleEdit = () => setIsEditing(true);
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    form.setFieldsValue(user);
-    setImageUrl(user.image || "");
-    setFormChanged(false);
-  };
-
-  const handleChange = (info) => {
-    if (info.file.status === "uploading") return;
-    if (info.file.status === "done") {
-      const reader = new FileReader();
-      reader.readAsDataURL(info.file.originFileObj);
-      reader.onload = () => {
-        setImageUrl(reader.result);
-        form.setFieldValue("avatar", reader.result);
-      };
+  
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", image);
+  
+    try {
+      const response = await fetch(
+        `https://localhost:7037/api/UserManagement/avatar?AccessToken=${accessToken}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (data.isSuccess && data.result) { // Kiểm tra isSuccess
+        setImageUrl(data.result); // Cập nhật ảnh mới
+  
+        toast.success("Upload thành công!");
+      } else {
+        toast.warn("Upload thất bại!");
+      }
+    } catch (error) {
+      toast.warn("Upload thất bại");
+    } finally {
+      setLoading(false);
     }
   };
   
-
   return (
-    <div className={styles.profileContainer}>
-      <h2>Customer Profile</h2>
-
-      <Flex gap="middle" wrap>
-        <Upload
-          name="avatar"
-          listType="picture-card"
-          showUploadList={false}
-          action="#"
-          onChange={handleChange}
-        >
-          {imageUrl ? (
-            <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-          ) : (
-            <div>{<PlusOutlined />} <div>Upload</div></div>
-          )}
-        </Upload>
-      </Flex>
-
-      <Form 
-        form={form} 
-        onFinish={handleUpdate} 
-        layout="vertical" 
-        disabled={!isEditing} 
-        onValuesChange={() => setFormChanged(true)}
-      >
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item label="Full Name" name="fullName" rules={[{ required: true, message: "Please enter your full name!" }]}>
-              <Input style={{backgroundColor:"white"}} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter your email!" }, { type: "email", message: "Invalid email!" }]}>
-              <Input style={{backgroundColor:"white"}} disabled />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item label="Phone" name="phone" rules={[{ required: true, message: "Please enter your phone number!" }]}>
-              <Input style={{backgroundColor:"white"}} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Address" name="address">
-              <Input style={{backgroundColor:"white"}} />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item style={{width: "70px"}} label="Age" name="age" rules={[{ required: true, message: "Please enter your age!" }]}>
-              <Input style={{backgroundColor:"white"}} />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <div className={styles.buttonContainer}>
-          <Button type="primary" htmlType="submit" disabled={!formChanged}>Update</Button>
-          <Button onClick={handleCancel} style={{ marginLeft: 8 }}>Cancel</Button>
+    <div className={styles.bodyPage}>
+      <Header />
+      <div className={styles.profileContainer}>
+        <h2>Customer Profile</h2>
+        <div>
+          <input className={styles.fileinput} type="file" onChange={handleFileChange} />
+          <button className={styles.uploadbutton} onClick={handleUpload} disabled={loading}>
+            {loading ? "Uploading..." : "Upload Avatar"}
+          </button>
+          <img 
+            className={styles.avatarpreview}
+            src={imageUrl || user.imageUrl} 
+            alt="Avatar" 
+          />
         </div>
-      </Form>
 
-      {!isEditing && <Button onClick={handleEdit} type="default" style={{ marginTop: 20 }}>Edit Profile</Button>}
+        <Form form={form} layout="vertical">
+          <Row style={{marginTop: "20px"}} gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Full Name">
+                <p>{user.fullName}</p>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Email">
+                <p>{user.email}</p>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Phone">
+                <p>{user.phoneNumber}</p>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Address">
+                <p>{user.address}</p>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Age">
+                <p>{user.age}</p>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Gender">
+                <p>{user.gender}</p>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </div>
     </div>
   );
 };
 
-export default CustomerProfile;
+export default UserProfile;

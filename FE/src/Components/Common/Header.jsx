@@ -11,7 +11,7 @@ const Header = () => {
     <>
       <div className="sticky-header">
         <div className="bg-white nav-header-wrapper header-wrapper--border-bottom">
-          <div className="nav-header nav-page-width items-center justify-between">
+          <div className="nav-header nav-page-width flex items-center justify-between">
             {/* Logo */}
             <div className="nav-header__heading">
               <Link to="/" className="nav-header__heading-link">

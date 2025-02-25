@@ -18,6 +18,7 @@ export const BASE_API_URL = BASE_URL;
 export const LOGIN_API = `${BASE_URL}/Auth/signin`;
 export const REGISTER_CUSTOMER_API = `${BASE_URL}/Auth/customers`;
 export const USER_PROFILE_API = `${BASE_URL}/Auth/user`;
+export const AVATAR_UPLOAD_API = `${BASE_URL}/UserManagement/avatar`;
 export const VERIFY_EMAIL_API = `${BASE_URL}/Auth/email/verification/send`; // Gửi email xác thực
 export const CONFIRM_EMAIL_API = `${BASE_URL}/Auth/email/verification/confirm`; // Xác thực email
 
@@ -25,8 +26,8 @@ export const CONFIRM_EMAIL_API = `${BASE_URL}/Auth/email/verification/confirm`; 
 export const FORGOT_PASSWORD_API = `${BASE_URL}/Auth/password/forgot`;
 export const RESET_PASSWORD_API = `${BASE_URL}/Auth/password/reset`;
 
-// // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
-export const AUTH_HEADERS = (token) => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${token}`,
-});
+// // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
+// export const AUTH_HEADERS = (accessToken) => ({
+//   "Content-Type": "application/json",
+//   Authorization: `Bearer ${accessToken}`,
+// });
