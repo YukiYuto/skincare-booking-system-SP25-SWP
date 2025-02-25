@@ -49,21 +49,18 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> UploadAvatarImage(UploadFileDto uploadFileDto, ClaimsPrincipal user)
         {
+            if (user.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticOperationStatus.User.UserNotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
             if (uploadFileDto.File?.Length is 0)
             {
                 return ErrorResponse.Build(
                     message: StaticOperationStatus.File.FileEmpty,
                     statusCode: StaticOperationStatus.StatusCode.BadRequest);
             }
-            var userFromDb = await _tokenService.GetPrincipalFromToken(uploadFileDto.AccessToken);
-            var userId = userFromDb.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            if (userId.IsNullOrEmpty())
-            {
-                return ErrorResponse.Build(
-                    message: StaticOperationStatus.User.UserNotFound,
-                    statusCode: StaticOperationStatus.StatusCode.NotFound);
-            }
-
             var folderPath = $"{StaticCloudinaryFolders.UserAvatars}/{user.FindFirstValue("FullName")}";
             try  // Upload image to Cloudinary
             {
