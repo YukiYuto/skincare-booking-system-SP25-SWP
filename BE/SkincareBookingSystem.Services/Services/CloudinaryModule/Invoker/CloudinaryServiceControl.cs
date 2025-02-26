@@ -7,21 +7,25 @@ namespace SkincareBookingSystem.Services.Services.CloudinaryModule.Invoker
     public class CloudinaryServiceControl
     {
         private ICommand _command;
-        private ICloudinaryService _cloudinaryService;
-
-        public CloudinaryServiceControl(ICloudinaryService cloudinaryService)
-        {
-            _cloudinaryService = cloudinaryService;
-        }
 
         public void SetCommand(ICommand command)
         {
             _command = command;
         }
-        public void Run(IFormFile inputFile, string fileType)
+
+        /// <summary>
+        /// Async method to run commands related to Cloudinary services.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task RunAsync()
         {
-            _cloudinaryService.SetFileData(inputFile, fileType);
-            _command.Execute();
+            if (_command is null)
+            {
+                throw new InvalidOperationException("Command not set.");
+            }
+
+            await _command.ExecuteAsync();
         }
     }
 }

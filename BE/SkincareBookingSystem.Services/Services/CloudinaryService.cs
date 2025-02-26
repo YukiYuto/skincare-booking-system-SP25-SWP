@@ -20,8 +20,6 @@ namespace SkincareBookingSystem.Services.Services
         private CloudinarySettingsDto settings;
         private Cloudinary cloudinary;
         private readonly ApplicationDbContext _context;
-        private IFormFile inputFile;
-        private string fileType;
 
         public CloudinaryService(IConfiguration configuration, ApplicationDbContext context)
         {
@@ -31,19 +29,19 @@ namespace SkincareBookingSystem.Services.Services
             cloudinary = new Cloudinary(account);
             this._context = context;
         }
-        public async Task<string> UploadImage()
-        {
-            if (fileType != StaticCloudinarySettings.Images)
-            {
-                throw new Exception("Invalid file type");
-            }
 
+        public async Task<string> UploadImageAsync(IFormFile file, string folderPath, Transformation? transformation = null)
+        {
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(
-                   inputFile.FileName.Replace(" ", ","),
-                   inputFile.OpenReadStream()),
+                   file.FileName.Replace(" ", ","),
+                   file.OpenReadStream()),
                 PublicId = Guid.NewGuid().ToString(),
+                Folder = folderPath,
+                UseFilename = true,
+                UniqueFilename = false,
+                Transformation = transformation
             };
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
 
@@ -52,21 +50,30 @@ namespace SkincareBookingSystem.Services.Services
                 return uploadResult.SecureUrl.ToString();
             }
 
-            return "";
+            throw new Exception($"Failed to upload image to Cloudinary. Error: {uploadResult.Error.Message}");
         }
 
-        public async Task<string> UploadVideo()
+        public async Task<string> GetImageUrlAsync(string publicId)
         {
-            if (fileType != StaticCloudinarySettings.Videos)
+            var getResourceParams = new GetResourceParams(publicId);
+            
+            try
             {
-                throw new Exception("Invalid file type");
+                var resource = await cloudinary.GetResourceAsync(getResourceParams);
+                return resource.SecureUrl.ToString();
+            } catch (Exception e)
+            {
+                throw new Exception($"Failed to retrieve image from Cloudinary. Error: {e.Message}");
             }
+        }
 
+        public async Task<string> UploadVideoAsync(IFormFile file, string folderPath)
+        {
             var uploadParams = new VideoUploadParams()
             {
                 File = new FileDescription(
-                   inputFile.FileName.Replace(" ", ","),
-                   inputFile.OpenReadStream()),
+                   file.FileName.Replace(" ", ","),
+                   file.OpenReadStream()),
                 PublicId = Guid.NewGuid().ToString(),
             };
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
@@ -76,20 +83,7 @@ namespace SkincareBookingSystem.Services.Services
                 return uploadResult.SecureUrl.ToString();
             }
 
-            return "";
-        }
-
-        public string GetFileType(string mimeType)
-        {
-            return mimeType.Contains("image") ? StaticCloudinarySettings.Images
-                 : mimeType.Contains("video") ? StaticCloudinarySettings.Videos
-                 : "";
-        }
-
-        public void SetFileData(IFormFile inputFile, string fileType)
-        {
-            this.inputFile = inputFile;
-            this.fileType = fileType;
+            throw new Exception($"Failed to upload video to Cloudinary. Error: {uploadResult.Error.Message}");
         }
 
     }

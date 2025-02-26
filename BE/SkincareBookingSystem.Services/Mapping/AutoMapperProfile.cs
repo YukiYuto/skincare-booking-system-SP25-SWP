@@ -8,6 +8,8 @@ using SkincareBookingSystem.Models.Dto.Orders;
 using SkincareBookingSystem.Models.Dto.Slot;
 using SkincareBookingSystem.Models.Dto.Appointment;
 using SkincareBookingSystem.Utilities.Constants;
+using SkincareBookingSystem.Models.Dto.SkinTherapist;
+using SkincareBookingSystem.Models.Dto.Customer;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -126,8 +128,30 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
             .ReverseMap();
+
+        // ApplicationUser to GetCustomerDto
+        CreateMap<Customer, GetCustomerDto>()
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
+            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.ApplicationUser.Age))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.ApplicationUser.Gender))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ApplicationUser.Address))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))
+            .ForMember(dest => dest.SkinProfileId, opt => opt.MapFrom(src => src.SkinProfileId));
+        // SkinTherapist to GetSkinTherapistDto
+        CreateMap<SkinTherapist, GetSkinTherapistDto>()
+            .ForMember(dest => dest.SkinTherapistId, opt => opt.MapFrom(src => src.SkinTherapistId))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
+            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.ApplicationUser.Age))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.ApplicationUser.Gender))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))
+            .ForMember(dest => dest.Experience, opt => opt.MapFrom(src => src.Experience));
 
 
         // Slots

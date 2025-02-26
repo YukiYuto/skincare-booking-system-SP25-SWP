@@ -15,10 +15,8 @@ public interface IAuthService
     Task<ResponseDto> SignInByGoogle(SignInByGoogleDto signInByGoogleDto);
     Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,UpdateUserProfileDto updateUserProfileDto);
     Task<ResponseDto> GetUserById(Guid userId);
-    Task<ResponseDto> RefreshToken(RefreshTokenDto refreshTokenDto);
+    Task<ResponseDto> RefreshAccessToken(RefreshTokenDto refreshTokenDto);
     Task<ResponseDto> FetchUserByToken(string token);
-    Task<ResponseDto> UploadUserAvatar(IFormFile file, ClaimsPrincipal user);
-    Task<MemoryStream> GetUserAvatar(ClaimsPrincipal user);
     Task<ResponseDto> SendVerifyEmail(EmailDto emailDto);
     Task<ResponseDto> VerifyEmail(VerifyEmailDto verifyEmailDto);
     Task<ResponseDto> ChangePassword(ChangePasswordDto changePasswordDto);

@@ -8,8 +8,9 @@ namespace SkincareBookingSystem.Utilities.Constants
 {
     public static class StaticCloudinaryFolders
     {
-        public const string UserAvatars = "UserAvatars";
-        public const string ServiceImages = "ServiceImages";
-        public const string ServiceComboImages = "ServiceComboImages";
+        public const string UserAvatars = "user-avatars";
+        public const string ServiceImages = "service-images";
+        public const string ServiceComboImages = "service-combo-images";
+        public const string BlogImages = "blog-images";
     }
 }

@@ -1,44 +1,59 @@
-/* eslint-disable no-unused-vars */
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { Dropdown, Menu, Button, Spin } from "antd";
+import { toast } from "react-toastify";
+import { LogoutOutlined, UserOutlined, ProfileOutlined, DownOutlined } from "@ant-design/icons";
 import { logout as logoutAction } from "../../redux/auth/thunks";
 import styles from "./AuthButtons.module.css";
+import { useState } from "react";
 
 const AuthButtons = () => {
-  const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const handleLogout = () => {
-    dispatch(logoutAction());
+    setLoading(true);
+    try{
+      dispatch(logoutAction());
+      toast.success("Logout Successfully!")
+    } finally {
+      setLoading(false);
+    }
+    
   };
 
+  // Menu dropdown
+  const menu = (
+    <Menu>
+      <Menu.Item key="profile" icon={<UserOutlined />}>
+        <Link to="/profile">Profile</Link>
+      </Menu.Item>
+      <Menu.Item key="orders" icon={<ProfileOutlined />}>
+        <Link to="/orders">Orders</Link>
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout} disabled={loading}>
+         {loading ? <Spin size="small" /> : "Logout"}
+      </Menu.Item>
+    </Menu>
+  );
+
   return isAuthenticated ? (
-    <div className={styles.profileDropdown}>
-      <span>{user?.name || "Profile"}</span>
-      <ul>
-        <li>
-          <Link to="/profile">Profile</Link>
-        </li>
-        <li>
-          <Link to="/orders">Orders</Link>
-        </li>
-        <li>
-          <button onClick={handleLogout} disabled={loading}>
-            {loading ? "Logging out..." : "Logout"}
-          </button>
-        </li>
-      </ul>
-    </div>
+    <Dropdown overlay={menu} trigger={["click"]} placement="bottomRight">
+       <Button className={styles.profileButton}>
+        {user?.fullName || "Profile"} <DownOutlined />
+      </Button>
+    </Dropdown>
   ) : (
-    <>
+    <div className={styles.authButtons}>
       <Link to="/register" className={styles.registerButton}>
         Register
       </Link>
-      <Link to="/login" className={styles.loginButton + " " + "text-white"}>
+      <Link to="/login" className={styles.loginButton + " text-white"}>
         Login
       </Link>
-    </>
+    </div>
   );
 };
 

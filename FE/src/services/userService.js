@@ -1,6 +1,7 @@
 import { apiCall } from '../utils/apiUtils';
 import { USER_API, HTTP_METHODS } from '../config/apiConfig';
 
+
 /**
  * Get user data by ID
  *  @param {string} userId - User ID

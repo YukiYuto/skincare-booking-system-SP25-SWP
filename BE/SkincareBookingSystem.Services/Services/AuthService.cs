@@ -11,6 +11,8 @@ using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Email;
 using SkincareBookingSystem.Utilities.Constants;
+using System.Web;
+using SkincareBookingSystem.Services.Helpers.Responses;
 
 namespace SkincareBookingSystem.Services.Services;
 
@@ -511,7 +513,8 @@ public class AuthService : IAuthService
             Email = user.Email!,
             PhoneNumber = user.PhoneNumber!,
             Address = principal.FindFirst("Address")?.Value,
-            ImageUrl = principal.FindFirst("AvatarUrl")?.Value,
+            Gender = user.Gender,
+            ImageUrl = principal.FindFirst("ImageUrl")?.Value,
             UserName = user.UserName!,
             Age = user.Age,
             Roles = roles.ToList()
@@ -636,8 +639,8 @@ public class AuthService : IAuthService
             return new ResponseDto
             {
                 IsSuccess = true,
-                Message = "If an account exists for this email, a password reset email has been sent.",
-                StatusCode = 200,
+                Message = "No account found matching the provided email.",
+                StatusCode = 400,
                 Result = null
             };
         }
@@ -646,8 +649,9 @@ public class AuthService : IAuthService
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
  
         // build link reset password
-        string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={Uri.UnescapeDataString(token)}";
-        
+        // string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={Uri.UnescapeDataString(token)}";
+        string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={HttpUtility.UrlEncode(token)}";
+
         bool emailSent = await _emailService.SendPasswordResetEmailAsync(user.Email!, resetLink);
 
         if (emailSent)
@@ -718,15 +722,41 @@ public class AuthService : IAuthService
         };
     }
 
-    public Task<ResponseDto> RefreshToken(RefreshTokenDto refreshTokenDto)
+    public async Task<ResponseDto> RefreshAccessToken(RefreshTokenDto refreshTokenDto)
     {
-        throw new NotImplementedException();
-    }
+        var principal = await _tokenService.GetPrincipalFromToken(refreshTokenDto.RefreshToken);
+        if (principal is null)
+        {
+            ErrorResponse.Build(
+                message: StaticOperationStatus.Token.TokenInvalid,
+                statusCode: StaticOperationStatus.StatusCode.Unauthorized);
+        }
 
+        var userId = principal!.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userFromDb = await _userManager.FindByIdAsync(userId);
 
-    public Task<MemoryStream> GetUserAvatar(ClaimsPrincipal user)
-    {
-        throw new NotImplementedException();
+        if (userFromDb is null)
+        {
+            ErrorResponse.Build(
+                message: StaticOperationStatus.User.UserNotFound,
+                statusCode: StaticOperationStatus.StatusCode.NotFound);
+        }
+
+        var storedRefreshToken = await _tokenService.RetrieveRefreshTokenAsync(userId);
+
+        if (storedRefreshToken != refreshTokenDto.RefreshToken)
+        {
+            ErrorResponse.Build(
+                message: StaticOperationStatus.Token.TokenInvalid,
+                statusCode: StaticOperationStatus.StatusCode.Unauthorized);
+        }
+        // New access token creation
+        var newAccessToken = await _tokenService.GenerateJwtAccessTokenAsync(userFromDb);
+
+        return SuccessResponse.Build(
+            message: StaticOperationStatus.Token.TokenRefreshed,
+            statusCode: StaticOperationStatus.StatusCode.Ok,
+            result: newAccessToken);
     }
 
     public Task<ResponseDto> GetUserById(Guid userId)
@@ -740,12 +770,6 @@ public class AuthService : IAuthService
     }
 
     public Task<ResponseDto> UnlockUser(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    public Task<ResponseDto> UploadUserAvatar(IFormFile file, ClaimsPrincipal user)
     {
         throw new NotImplementedException();
     }

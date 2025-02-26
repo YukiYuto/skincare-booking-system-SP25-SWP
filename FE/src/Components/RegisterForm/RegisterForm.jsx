@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "../../services/authService";
-import styles from "./registerForm.module.css";
+import { register, sendVerificationEmail } from "../../services/authService";
+import styles from "./RegisterForm.module.css";
 import { toast } from "react-toastify";
 import {
   validateEmail,
@@ -9,11 +9,13 @@ import {
   validatePhoneNumber,
   validateAge,
   validateConfirmPassword,
+  validateGender,
 } from "../../utils/validationUtils";
 import { InputField } from "../InputField/InputField";
 
 function RegisterForm() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [registerData, setRegisterData] = useState({
     email: "",
@@ -23,6 +25,7 @@ function RegisterForm() {
     fullName: "",
     address: "",
     age: "",
+    gender: "",
   });
 
   const [errors, setErrors] = useState({
@@ -33,6 +36,7 @@ function RegisterForm() {
     fullName: "",
     address: "",
     age: "",
+    gender: "",
   });
 
   const formatFullname = (fullName) => {
@@ -66,6 +70,7 @@ function RegisterForm() {
     const ageError = validateAge(registerData.age);
     const fullNameError = registerData.fullName ? "" : "Full name is required.";
     const addressError = registerData.address ? "" : "Address is required.";
+    const genderError = validateGender(registerData.gender);
 
     setErrors({
       email: emailError,
@@ -75,6 +80,7 @@ function RegisterForm() {
       fullName: fullNameError,
       address: addressError,
       age: ageError,
+      gender: genderError,
     });
 
     return !(
@@ -84,24 +90,26 @@ function RegisterForm() {
       phoneError ||
       fullNameError ||
       addressError ||
-      ageError
+      ageError ||
+      genderError
     );
   };
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    // Reset errors without setting empty strings for all fields manually
     setErrors((errors) => {
       for (const key in errors) {
         errors[key] = "";
       }
       return errors;
     });
-    console.log(errors);
+  
     if (!validateRegisterForm()) return;
 
+    setIsLoading(true);
+  
     const formattedFullname = formatFullname(registerData.fullName);
-    
+  
     try {
       await register({
         email: registerData.email,
@@ -111,13 +119,17 @@ function RegisterForm() {
         fullName: formattedFullname,
         address: registerData.address,
         age: Number(registerData.age),
+        gender: registerData.gender,
       });
 
-      toast.success(`Registration successful! Welcome, ${formattedFullname}`);
-      navigate("/login");
+      await sendVerificationEmail(registerData.email);
+
+      toast.success("Registration successful! Please check your email to verify your account.");
     } catch (error) {
       console.error("Registration error:", error.message);
       toast.error(error.message || "Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false); 
     }
   };
 
@@ -130,16 +142,28 @@ function RegisterForm() {
       <h1 id="register-title" className={styles.registerTitle}>
         Register
       </h1>
+      <div className={styles.flexContainer1}>
+        <InputField
+          label="Full Name"
+          type="text"
+          name="fullName"
+          placeholder="Full Name"
+          value={registerData.fullName}
+          onChange={handleRegisterChange}
+          error={errors.fullName}
+        />
 
-      <InputField
-        label="Full Name"
-        type="text"
-        name="fullName"
-        placeholder="Full Name"
-        value={registerData.fullName}
-        onChange={handleRegisterChange}
-        error={errors.fullName}
-      />
+        <InputField
+          label="Gender"
+          type="text"
+          name="gender"
+          placeholder="Gender"
+          value={registerData.gender}
+          onChange={handleRegisterChange}
+          error={errors.gender}
+        />
+      </div>
+      
 
       <div className={styles.flexContainer1}>
         <InputField
@@ -217,8 +241,8 @@ function RegisterForm() {
         <span> of our center.</span>
       </div>
 
-      <button type="submit" className={styles.registerButton}>
-        Register
+      <button type="submit" className={styles.registerButton} disabled={isLoading}>
+        {isLoading ? "Registering..." : "Register"}
       </button>
 
       <button

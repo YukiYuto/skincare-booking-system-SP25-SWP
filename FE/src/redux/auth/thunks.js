@@ -12,7 +12,11 @@ import { setUser, clearUser, setLoading, setError } from "./slice";
 export const login = createAsyncThunk('auth/login', async (credentials, { dispatch }) =>{
     try {
         dispatch(setLoading(true));
-        const user = await authService.login(credentials);
+        const tokens = await authService.login(credentials);
+        const response = await authService.fetchUserProfile(tokens.result.accessToken);
+        // const user = response.result;
+            //! Now the user object will contain both the tokens and the user profile data
+        const user = { ...tokens.result, ...response.result };
         dispatch(setUser(user));
         return user;
     } catch (error) {

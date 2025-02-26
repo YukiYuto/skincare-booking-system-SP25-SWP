@@ -1,0 +1,56 @@
+/* Container chính */
+.verifyContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* Hộp thông báo */
+.verifyBox {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 350px;
+}
+
+/* Văn bản */
+.verifyText,
+.successText,
+.errorText {
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: 15px;
+}
+
+/* Biểu tượng tải */
+.spinner {
+  font-size: 50px;
+  color: #667eea;
+  animation: spin 1s linear infinite;
+}
+
+/* Biểu tượng thành công */
+.successIcon {
+  font-size: 50px;
+  color: #28a745;
+}
+
+/* Biểu tượng lỗi */
+.errorIcon {
+  font-size: 50px;
+  color: #dc3545;
+}
+
+/* Hiệu ứng xoay */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
