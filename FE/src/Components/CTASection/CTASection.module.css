@@ -1,0 +1,37 @@
+.ctaContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e2aa99;
+    padding: 30px 50px;
+    border-radius: 30px;
+    margin: 50px auto;
+    width: 80%;
+  }
+  
+  .text h2 {
+    color: #5a362d;
+    font-size: 1.8rem;
+  }
+  
+  .text p {
+    color: #6d4c41;
+    font-size: 1rem;
+  }
+  
+  .ctaButton {
+    background-color: #f27d59 !important;
+    border: none !important;
+    font-size: 1rem;
+    padding: 12px 20px;
+  }
+  
+  .ctaButton:hover {
+    background-color: #d96b50 !important;
+  }
+  
+  .phoneIcon {
+    width: 16px;
+    margin-right: 8px;
+  }
+  
