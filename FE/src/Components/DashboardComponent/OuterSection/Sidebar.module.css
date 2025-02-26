@@ -1,7 +1,7 @@
 .sidebar {
     width: 250px;
     height: 100vh;
-    background-color: var(--accent-color);
+    background-color: var(--secondary-color);
     color: var(--text-color);
     display: flex;
     flex-direction: column;
@@ -30,10 +30,10 @@
 }
 
 .navLinks a:hover {
-    background: var(--secondary-color);
+    background: var(--primary-color);
 }
 
 .active {
-    background: var(--primary-color);
+    background: var(--background-color);
     font-weight: bold;
 }
