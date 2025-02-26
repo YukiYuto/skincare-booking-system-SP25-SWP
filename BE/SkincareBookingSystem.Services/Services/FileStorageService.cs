@@ -24,22 +24,13 @@ namespace SkincareBookingSystem.Services.Services
     {
         private readonly CloudinaryServiceControl _cloudinaryServiceControl;
         private readonly ICloudinaryService _cloudinaryService;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ITokenService _tokenService;
 
         public FileStorageService(
             CloudinaryServiceControl cloudinaryServiceControl,
-            ICloudinaryService cloudinaryService,
-            UserManager<ApplicationUser> userManager,
-            IUnitOfWork unitOfWork,
-            ITokenService tokenService)
+            ICloudinaryService cloudinaryService)
         {
             _cloudinaryServiceControl = cloudinaryServiceControl;
             _cloudinaryService = cloudinaryService;
-            _userManager = userManager;
-            _unitOfWork = unitOfWork;
-            _tokenService = tokenService;
         }
 
         public async Task<ResponseDto> GetAvatarImageUrl(ClaimsPrincipal user)
