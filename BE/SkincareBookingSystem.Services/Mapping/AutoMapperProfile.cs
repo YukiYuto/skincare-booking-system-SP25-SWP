@@ -137,7 +137,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
             .ReverseMap();
 
         //// ApplicationUser to GetCustomerDto

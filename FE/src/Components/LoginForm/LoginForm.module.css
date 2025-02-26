@@ -58,8 +58,6 @@
   }
 
   .createAccountButton {
-    background: none;
-    border: none;
     font-size: 24px;
     color: rgb(0, 0, 0);
     cursor: pointer;
