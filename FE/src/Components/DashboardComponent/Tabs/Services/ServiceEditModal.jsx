@@ -1,60 +1,82 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import api from "../../../../config/axios";
 import styles from "./ServiceEditModal.module.css";
 
 const ServiceEditModal = ({ service, onClose }) => {
-  const [serviceName, setServiceName] = useState(service.serviceName);
-  const [description, setDescription] = useState(service.description);
-  const [price, setPrice] = useState(service.price);
-  const [imageUrl, setImageUrl] = useState(service.imageUrl);
-  const [serviceTypeName, setServiceTypeName] = useState("");
+  const [formState, setFormState] = useState({
+    serviceId: service.serviceId, // Thêm serviceId vào state
+    serviceName: service.serviceName,
+    description: service.description,
+    price: service.price,
+    imageUrl: service.imageUrl,
+    serviceTypeId: service.serviceTypeId,
+  });
   const [serviceTypes, setServiceTypes] = useState([]);
-  const [serviceTypeId, setServiceTypeId] = useState(service.serviceTypeId);
 
   useEffect(() => {
     const fetchServiceTypes = async () => {
       try {
         const response = await api.get("ServiceType/all");
         setServiceTypes(response.data.result);
-        const selectedType = response.data.result.find(
-          (type) => type.serviceTypeId === service.serviceTypeId
-        );
-        setServiceTypeName(selectedType.serviceTypeName);
       } catch (error) {
         console.error("Error fetching service types:", error);
       }
     };
-
     fetchServiceTypes();
-  }, [service.serviceTypeId]);
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const updatedService = {
-      serviceId: service.serviceId,
-      serviceName,
-      description,
-      price: parseFloat(price),
-      imageUrl,
-      serviceTypeId,
-    };
-
-    try {
-      await api.put("Services/update", updatedService);
-      onClose();
-    } catch (error) {
-      console.error("Error updating service:", error);
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDelete = async () => {
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      try {
+        const response = await api.put("Services/update", {
+          ...formState,
+          price: parseFloat(formState.price),
+        });
+
+        if (response.status === 200) {
+          console.log("Service updated successfully", response.data);
+          onClose();
+        }
+      } catch (error) {
+        if (error.response) {
+          console.error(
+            "API Error:",
+            error.response.status,
+            error.response.data
+          );
+        } else {
+          console.error("Error updating service:", error);
+        }
+      }
+    },
+    [formState, onClose]
+  );
+
+  const handleDelete = useCallback(async () => {
     try {
-      await api.delete(`Services/delete/${service.serviceId}`);
-      onClose();
+      const response = await api.delete(`Services/delete/${service.serviceId}`);
+      if (response.status === 200) {
+        console.log("Service deleted successfully");
+        onClose();
+      }
     } catch (error) {
-      console.error("Error deleting service:", error);
+      if (error.response) {
+        console.error(
+          "Delete API Error:",
+          error.response.status,
+          error.response.data
+        );
+      } else {
+        console.error("Error deleting service:", error);
+      }
     }
-  };
+  }, [service.serviceId, onClose]);
 
   return (
     <div className={styles.modal}>
@@ -65,16 +87,18 @@ const ServiceEditModal = ({ service, onClose }) => {
             Service Name:
             <input
               type="text"
-              value={serviceName}
-              onChange={(e) => setServiceName(e.target.value)}
+              name="serviceName"
+              value={formState.serviceName}
+              onChange={handleChange}
               required
             />
           </label>
           <label>
             Description:
             <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              name="description"
+              value={formState.description}
+              onChange={handleChange}
               required
             />
           </label>
@@ -82,8 +106,9 @@ const ServiceEditModal = ({ service, onClose }) => {
             Price:
             <input
               type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              name="price"
+              value={formState.price}
+              onChange={handleChange}
               required
             />
           </label>
@@ -91,21 +116,17 @@ const ServiceEditModal = ({ service, onClose }) => {
             Image URL:
             <input
               type="text"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
+              name="imageUrl"
+              value={formState.imageUrl}
+              onChange={handleChange}
             />
           </label>
           <label>
             Service Type:
             <select
-              value={serviceTypeId}
-              onChange={(e) => {
-                const selectedType = serviceTypes.find(
-                  (type) => type.serviceTypeId === e.target.value
-                );
-                setServiceTypeId(selectedType.serviceTypeId);
-                setServiceTypeName(selectedType.serviceTypeName);
-              }}
+              name="serviceTypeId"
+              value={formState.serviceTypeId}
+              onChange={handleChange}
               required
             >
               <option value="">Select a type</option>

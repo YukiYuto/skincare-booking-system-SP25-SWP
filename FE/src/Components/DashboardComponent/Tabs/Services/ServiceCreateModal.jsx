@@ -3,13 +3,14 @@ import api from "../../../../config/axios";
 import styles from "./ServiceCreateModal.module.css";
 
 const ServiceCreateModal = ({ onClose }) => {
-  const [serviceName, setServiceName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [serviceTypeName, setServiceTypeName] = useState("");
+  const [formState, setFormState] = useState({
+    serviceName: "",
+    description: "",
+    price: "",
+    imageUrl: "",
+    serviceTypeId: "",
+  });
   const [serviceTypes, setServiceTypes] = useState([]);
-  const [serviceTypeId, setServiceTypeId] = useState("");
 
   useEffect(() => {
     const fetchServiceTypes = async () => {
@@ -24,20 +25,19 @@ const ServiceCreateModal = ({ onClose }) => {
     fetchServiceTypes();
   }, []);
 
+  const handleChange = (e) => {
+    setFormState({ ...formState, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newService = {
-      serviceName,
-      description,
-      price: parseFloat(price),
-      imageUrl,
-      serviceTypeId,
-      createdBy: "admin", // Replace with actual user
-      createdTime: new Date().toISOString(),
-    };
-
     try {
-      await api.post("Services/create", newService);
+      await api.post("Services/create", {
+        ...formState,
+        price: parseFloat(formState.price),
+        createdBy: "admin",
+        createdTime: new Date().toISOString(),
+      });
       onClose();
     } catch (error) {
       console.error("Error creating service:", error);
@@ -49,57 +49,44 @@ const ServiceCreateModal = ({ onClose }) => {
       <div className={styles.modalContent}>
         <h2>Create New Service</h2>
         <form onSubmit={handleSubmit}>
-          <label>
-            Service Name:
-            <input
-              type="text"
-              value={serviceName}
-              onChange={(e) => setServiceName(e.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Description:
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Price:
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Image URL:
-            <input
-              type="text"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-            />
-          </label>
+          {[
+            { label: "Service Name", name: "serviceName", type: "text" },
+            { label: "Description", name: "description", type: "textarea" },
+            { label: "Price", name: "price", type: "number" },
+            { label: "Image URL", name: "imageUrl", type: "text" },
+          ].map(({ label, name, type }) => (
+            <label key={name}>
+              {label}:
+              {type === "textarea" ? (
+                <textarea
+                  name={name}
+                  value={formState[name]}
+                  onChange={handleChange}
+                  required
+                />
+              ) : (
+                <input
+                  name={name}
+                  type={type}
+                  value={formState[name]}
+                  onChange={handleChange}
+                  required
+                />
+              )}
+            </label>
+          ))}
           <label>
             Service Type:
             <select
-              value={serviceTypeId}
-              onChange={(e) => {
-                const selectedType = serviceTypes.find(
-                  (type) => type.serviceTypeId === e.target.value
-                );
-                setServiceTypeId(selectedType.serviceTypeId);
-                setServiceTypeName(selectedType.serviceTypeName);
-              }}
+              name="serviceTypeId"
+              value={formState.serviceTypeId}
+              onChange={handleChange}
               required
             >
               <option value="">Select a type</option>
-              {serviceTypes.map((type) => (
-                <option key={type.serviceTypeId} value={type.serviceTypeId}>
-                  {type.serviceTypeName}
+              {serviceTypes.map(({ serviceTypeId, serviceTypeName }) => (
+                <option key={serviceTypeId} value={serviceTypeId}>
+                  {serviceTypeName}
                 </option>
               ))}
             </select>

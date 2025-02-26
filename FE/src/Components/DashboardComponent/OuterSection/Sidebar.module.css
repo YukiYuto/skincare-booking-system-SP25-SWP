@@ -30,10 +30,10 @@
 }
 
 .navLinks a:hover {
-    background: var(--secondary-color);
+    background: var(--primary-color);
 }
 
 .active {
-    background: var(--primary-color);
+    background: var(--background-color);
     font-weight: bold;
 }
