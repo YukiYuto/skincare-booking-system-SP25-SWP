@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Row } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./CustomerProfile.module.css";
 import Header from "../../Components/Common/Header";
@@ -14,6 +14,13 @@ const UserProfile = () => {
   const [updateLoading, setUpdateLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(user.imageUrl);
   const [userData, setUserData] = useState({ ...user });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   const accessToken = localStorage.getItem("accessToken");
 
@@ -87,6 +94,63 @@ const UserProfile = () => {
       setUpdateLoading(false);
     }
   };
+
+  // Hiển thị modal đổi mật khẩu
+const showChangePasswordModal = () => {
+  setIsModalVisible(true);
+};
+
+// Đóng modal
+const handleCancel = () => {
+  setIsModalVisible(false);
+  setPasswords({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
+};
+
+// Xử lý input thay đổi
+const handlePasswordChange = (e) => {
+  setPasswords({ ...passwords, [e.target.name]: e.target.value });
+};
+
+// Gửi yêu cầu đổi mật khẩu
+const handleChangePassword = async () => {
+  if (passwords.newPassword !== passwords.confirmNewPassword) {
+    toast.error("New Password and Confirm Password do not match!");
+    return;
+  }
+
+  setPasswordLoading(true);
+
+  try {
+    const response = await fetch("https://localhost:7037/api/Auth/password/change", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        userId: user.id, // Truyền userId từ state
+        oldPassword: passwords.oldPassword,
+        newPassword: passwords.newPassword,
+        confirmNewPassword: passwords.confirmNewPassword,
+      }),
+    });
+
+    // Kiểm tra nếu server trả về text thay vì JSON
+    const textResponse = await response.text();
+
+    if (response.ok) {
+      toast.success(textResponse); // Hiển thị thông báo thành công
+      handleCancel(); // Đóng modal nếu có
+    } else {
+      toast.error(`Error: ${textResponse}`); // Hiển thị lỗi nếu có
+    }
+
+  } catch (error) {
+    toast.error("Error changing password!");
+  } finally {
+    setPasswordLoading(false);
+  }
+};
   
   return (
     <div className={styles.bodyPage}>
@@ -167,10 +231,36 @@ const UserProfile = () => {
               <Button type="primary" onClick={handleUpdateProfile}>
               {updateLoading ? "Saving..." : "Save"}
               </Button>
-              <Button type="default">
+              <Button type="default" onClick={showChangePasswordModal}>
                 Change password
               </Button>
         </div>
+        {/* Modal đổi mật khẩu */}
+        <Modal
+          title="Change Password"
+          open={isModalVisible}
+          onCancel={handleCancel}
+          footer={[
+            <Button key="cancel" onClick={handleCancel}>
+              Cancel
+            </Button>,
+            <Button key="submit" type="primary" onClick={handleChangePassword} disabled={passwordLoading}>
+              {passwordLoading ? <Spin /> : "Save"}
+            </Button>,
+          ]}
+        >
+          <Form layout="vertical">
+            <Form.Item label="Old Password">
+              <Input.Password name="oldPassword" value={passwords.oldPassword} onChange={handlePasswordChange} />
+            </Form.Item>
+            <Form.Item label="New Password">
+              <Input.Password name="newPassword" value={passwords.newPassword} onChange={handlePasswordChange} />
+            </Form.Item>
+            <Form.Item label="Confirm New Password">
+              <Input.Password name="confirmNewPassword" value={passwords.confirmNewPassword} onChange={handlePasswordChange} />
+            </Form.Item>
+          </Form>
+        </Modal>
       </div>
     </div>
   );

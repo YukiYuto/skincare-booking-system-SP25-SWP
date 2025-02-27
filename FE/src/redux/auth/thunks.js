@@ -23,8 +23,6 @@ export const login = createAsyncThunk("auth/login", async (credentials, { dispat
   
       // Gộp thông tin user với token
       const user = { ...tokens.result, ...userProfile.result };
-      localStorage.setItem("accessToken", user.accessToken);
-      localStorage.setItem("imageUrl", user.imageUrl);
   
       // Lưu vào Redux
       dispatch(setUser(user));
