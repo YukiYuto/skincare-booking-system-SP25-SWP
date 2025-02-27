@@ -1,4 +1,5 @@
-﻿using SkincareBookingSystem.Models.Dto.Response;
+﻿using SkincareBookingSystem.Models.Dto.Booking.ServiceType;
+using SkincareBookingSystem.Models.Dto.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace SkincareBookingSystem.Services.IServices
     public interface ISkinTherapistService
     {
         Task<ResponseDto> GetTherapistDetailsById(Guid therapistId);
+        Task<ResponseDto> GetTherapistsByServiceType(ServiceTypeDto serviceTypeDto);
         Task<ResponseDto> GetAllTherapists();
     }
 }

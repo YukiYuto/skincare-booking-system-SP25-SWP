@@ -1,5 +1,6 @@
 ﻿using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
+using SkincareBookingSystem.Models.Dto.Booking.ServiceType;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Services.Helpers.Responses;
@@ -60,6 +61,28 @@ namespace SkincareBookingSystem.Services.Services
                 message: StaticOperationStatus.SkinTherapist.Found,
                 statusCode: StaticOperationStatus.StatusCode.Ok,
                 result: therapistDto);
+        }
+
+        public async Task<ResponseDto> GetTherapistsByServiceType(ServiceTypeDto serviceTypeDto)
+        {
+            var therapistsFromDb = await _unitOfWork.SkinTherapist.GetAllAsync(
+                filter: s => s.TherapistServiceTypes.Any(
+                    tst => tst.ServiceTypeId == serviceTypeDto.ServiceTypeId),
+                includeProperties: $"{nameof(TherapistServiceType)},{nameof(ApplicationUser)}");
+
+            if (therapistsFromDb.Any())
+            {
+                var therapistListDto = _autoMapperService.MapCollection<SkinTherapist, GetSkinTherapistDto>(therapistsFromDb);
+
+                return SuccessResponse.Build(
+                    message: StaticOperationStatus.SkinTherapist.Found,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: therapistListDto);
+            }
+
+            return ErrorResponse.Build(
+                message: StaticOperationStatus.SkinTherapist.NotFound,
+                statusCode: StaticOperationStatus.StatusCode.NotFound);
         }
     }
 }
