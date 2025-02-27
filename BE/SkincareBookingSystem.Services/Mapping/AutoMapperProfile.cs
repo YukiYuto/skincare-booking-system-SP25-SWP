@@ -91,8 +91,7 @@ public class AutoMapperProfile : Profile
 
         //SignUpSkinTherapistDto to SkinTherapist
         CreateMap<SignUpSkinTherapistDto, SkinTherapist>()
-            .ForMember(dest => dest.Experience, opt => opt.MapFrom(src => src.Experience))
-            .ForMember(dest => dest.TherapistScheduleId, opt => opt.Ignore());
+            .ForMember(dest => dest.Experience, opt => opt.MapFrom(src => src.Experience));
 
         //SignUpSkinTherapistDto to ApplicationUser
         CreateMap<SignUpSkinTherapistDto, ApplicationUser>()
@@ -157,8 +156,7 @@ public class AutoMapperProfile : Profile
         // Slots
         CreateMap<CreateSlotDto, Slot>()
             .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartTime))
-            .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime))
-            .ForMember(dest => dest.TherapistScheduleId, opt => opt.Ignore());
+            .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime));
 
         CreateMap<UpdateSlotDto, Slot>()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
