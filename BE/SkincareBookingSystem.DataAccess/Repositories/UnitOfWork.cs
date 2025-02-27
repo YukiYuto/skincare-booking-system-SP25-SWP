@@ -48,7 +48,7 @@ public class UnitOfWork : IUnitOfWork
     public ISkinTherapistRepository SkinTherapist { get; private set; }
 
     public ISlotRepository Slot { get; private set; }
-    
+
     public IStaffRepository Staff { get; private set; }
 
     public ITestAnswerRepository TestAnswer { get; private set; }
@@ -56,6 +56,7 @@ public class UnitOfWork : IUnitOfWork
     public ITestQuestionRepository TestQuestion { get; private set; }
 
     public ITherapistScheduleRepository TherapistSchedule { get; private set; }
+    public ITherapistServiceTypeRepository TherapistServiceType { get; private set; }
 
     public ITypeItemRepository TypeItem { get; private set; }
 
@@ -87,16 +88,17 @@ public class UnitOfWork : IUnitOfWork
         TestAnswer = new TestAnswerRepository(_context);
         TestQuestion = new TestQuestionRepository(_context);
         TherapistSchedule = new TherapistScheduleRepository(_context);
+        TherapistServiceType = new TherapistServiceTypeRepository(_context);
         TypeItem = new TypeItemRepository(_context);
         UserManager = new UserManagerRepository(userManager);
-        
+
     }
 
     public async Task<int> SaveAsync()
     {
         return await _context.SaveChangesAsync();
     }
-    
+
     public async Task<IDbContextTransaction> BeginTransactionAsync()
     {
         return await _context.Database.BeginTransactionAsync();

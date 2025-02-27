@@ -27,6 +27,7 @@ public interface IUnitOfWork
     ITestAnswerRepository TestAnswer { get; }
     ITestQuestionRepository TestQuestion { get; }
     ITherapistScheduleRepository TherapistSchedule { get; }
+    ITherapistServiceTypeRepository TherapistServiceType { get; }
     ITypeItemRepository TypeItem { get; }
     IUserManagerRepository UserManager { get; }
     Task<int> SaveAsync();
