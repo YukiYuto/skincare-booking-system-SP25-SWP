@@ -15,17 +15,14 @@ export const login = createAsyncThunk("auth/login", async (credentials, { dispat
       
       // Gọi API đăng nhập để lấy token
       const tokens = await authService.login(credentials);
-      console.log("🚀 Token Response:", tokens);
   
       const accessToken = tokens.result.accessToken; // Lấy accessToken
   
       // Gọi API để lấy thông tin user
       const userProfile = await authService.fetchUserByToken(accessToken);
-      console.log("✅ User Profile:", userProfile);
   
       // Gộp thông tin user với token
       const user = { ...tokens.result, ...userProfile.result };
-      console.log("User: ",user)
       localStorage.setItem("accessToken", user.accessToken);
       localStorage.setItem("imageUrl", user.imageUrl);
   

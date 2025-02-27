@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isAuthenticated: false,
-  user: null,
+  user: null, 
   loading: false,
   error: null,
 };
@@ -16,6 +16,11 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.loading = false;
       state.error = null;
+    },
+    updateUser: (state, action) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload }; // Cập nhật thông tin user
+      }
     },
     clearUser: (state) => {
       state.isAuthenticated = false;
@@ -51,6 +56,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, setLoading, setError } = authSlice.actions;
+export const { setUser, updateUser, clearUser, setLoading, setError } = authSlice.actions;
 
 export default authSlice.reducer;

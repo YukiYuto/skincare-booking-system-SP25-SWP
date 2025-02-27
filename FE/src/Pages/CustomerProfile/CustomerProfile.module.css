@@ -3,7 +3,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 800px;
+  height: 900px;
 }
 /* Profile container sẽ có background mờ và form lùi xuống một chút */
 .profileContainer {
@@ -29,25 +29,6 @@
 
 .fileinput:hover {
   border-color: #388e3c;
-}
-
-.uploadbutton {
-  padding: 10px 15px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-}
-
-.uploadbutton:hover {
-  background-color: #388e3c;
-}
-
-.uploadbutton:disabled {
-  background-color: #9e9e9e;
-  cursor: not-allowed;
 }
 
 .avatarpreview {

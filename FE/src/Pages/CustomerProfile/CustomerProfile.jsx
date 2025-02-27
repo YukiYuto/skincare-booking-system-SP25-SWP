@@ -1,57 +1,90 @@
-import { Col, Form, Row } from "antd";
-import { useSelector } from "react-redux";
+import { Button, Col, Form, Input, Row } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./CustomerProfile.module.css";
 import Header from "../../Components/Common/Header";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { updateUser } from "../../redux/auth/slice";
 
 const UserProfile = () => {
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(user.imageUrl);
+  const [userData, setUserData] = useState({ ...user });
 
   const accessToken = localStorage.getItem("accessToken");
 
-  // Chọn file ảnh
-  const handleFileChange = (event) => {
-    setImage(event.target.files[0]);
-  };
+  // Khi chọn file, upload luôn avatar
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  // Upload ảnh bằng fetch
-  const handleUpload = async () => {
-    if (!image) {
-      toast.warn("Vui lòng chọn ảnh!");
-      return;
-    }
-  
-    setLoading(true);
+    setUploadLoading(true);
+
     const formData = new FormData();
-    formData.append("file", image);
-  
+    formData.append("file", file);
+
     try {
       const response = await fetch(
-        `https://localhost:7037/api/UserManagement/avatar?AccessToken=${accessToken}`,
+        `https://localhost:7037/api/UserManagement/avatar`,
         {
           method: "POST",
+          headers: {
+              Authorization: `Bearer ${accessToken}`,
+          },
           body: formData,
         }
       );
-  
+
       const data = await response.json();
-  
-      if (data.isSuccess && data.result) { // Kiểm tra isSuccess
+
+      if (data.isSuccess && data.result) {
         setImageUrl(data.result); // Cập nhật ảnh mới
-  
-        toast.success("Upload thành công!");
+        dispatch(updateUser({ imageUrl: data.result })); // Cập nhật Redux store
+        toast.success("Upload Successfully!");
       } else {
-        toast.warn("Upload thất bại!");
+        toast.error("Upload Failed!");
       }
     } catch (error) {
-      toast.warn("Upload thất bại");
+      toast.error("Error uploading image!");
     } finally {
-      setLoading(false);
+      setUploadLoading(false);
+    }
+  };
+
+  // Bắt đầu chỉnh sửa
+  const handleInputChange = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
+  // Gửi API cập nhật profile
+  const handleUpdateProfile = async () => {
+    setUpdateLoading(true);
+    try {
+      const response = await fetch("https://localhost:7037/api/Auth/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (data.isSuccess) {
+        dispatch(updateUser(userData)); // Cập nhật Redux store
+        toast.success("Update Successfully!");
+      } else {
+        toast.error("Update Failed!");
+      }
+    } catch (error) {
+      toast.error("Error updating information!");
+    } finally{
+      setUpdateLoading(false);
     }
   };
   
@@ -61,27 +94,29 @@ const UserProfile = () => {
       <div className={styles.profileContainer}>
         <h2>Customer Profile</h2>
         <div>
-          <input className={styles.fileinput} type="file" onChange={handleFileChange} />
-          <button className={styles.uploadbutton} onClick={handleUpload} disabled={loading}>
-            {loading ? "Uploading..." : "Upload Avatar"}
-          </button>
+          <p>Choose file here:</p><input className={styles.fileinput} type="file" onChange={handleFileChange} disabled={uploadLoading} />
           <img 
             className={styles.avatarpreview}
-            src={imageUrl || user.imageUrl} 
+            src={imageUrl || userData.imageUrl} 
             alt="Avatar" 
           />
+          {uploadLoading && <p>Uploading...</p>}
         </div>
 
         <Form form={form} layout="vertical">
           <Row style={{marginTop: "20px"}} gutter={16}>
             <Col span={12}>
               <Form.Item label="Full Name">
-                <p>{user.fullName}</p>
+              <Input
+                  name="fullName"
+                  value={userData.fullName}
+                  onChange={handleInputChange}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item label="Email">
-                <p>{user.email}</p>
+              <p>{userData.email}</p>
               </Form.Item>
             </Col>
           </Row>
@@ -89,12 +124,20 @@ const UserProfile = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="Phone">
-                <p>{user.phoneNumber}</p>
+              <Input
+                  name="phoneNumber"
+                  value={userData.phoneNumber}
+                  onChange={handleInputChange}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item label="Address">
-                <p>{user.address}</p>
+              <Input
+                  name="address"
+                  value={userData.address}
+                  onChange={handleInputChange}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -102,16 +145,32 @@ const UserProfile = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="Age">
-                <p>{user.age}</p>
+              <Input
+                  name="age"
+                  value={userData.age}
+                  onChange={handleInputChange}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item label="Gender">
-                <p>{user.gender}</p>
+              <Input
+                  name="gender"
+                  value={userData.gender}
+                  onChange={handleInputChange}
+                />
               </Form.Item>
             </Col>
           </Row>
         </Form>
+        <div style={{ marginTop: "20px" }}>
+              <Button type="primary" onClick={handleUpdateProfile}>
+              {updateLoading ? "Saving..." : "Save"}
+              </Button>
+              <Button type="default">
+                Change password
+              </Button>
+        </div>
       </div>
     </div>
   );

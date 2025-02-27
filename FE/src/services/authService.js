@@ -40,6 +40,7 @@ export const fetchUserByToken = async (accessToken) => {
   return response.json();
 };
 
+
 export async function forgotPassword(email) {
   const response = await fetch(FORGOT_PASSWORD_API, {
     method: "POST",
@@ -53,7 +54,7 @@ export async function forgotPassword(email) {
 }
 
 export async function resetPassword(email, token, newPassword, confirmPassword) {
-  // const encodedToken = encodeURIComponent(token);  // ✅ Cần mã hóa token trước khi gửi
+  // const encodedToken = encodeURIComponent(token); 
 
   const response = await fetch(RESET_PASSWORD_API, {
     method: "POST",
