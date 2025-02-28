@@ -62,6 +62,11 @@
   color: var(--accent-color);
 }
 
+.serviceTableContainer {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
 .serviceTable {
   width: 100%;
   border-collapse: collapse;
@@ -77,6 +82,9 @@
 .serviceTable th {
   background-color: var(--primary-color);
   color: var(--text-color);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .serviceTable tr:nth-child(even) {

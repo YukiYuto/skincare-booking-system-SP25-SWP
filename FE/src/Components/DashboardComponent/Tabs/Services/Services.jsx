@@ -115,45 +115,67 @@ const Services = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <table className={styles.serviceTable}>
-          <thead>
-            <tr>
-              <th onClick={() => handleSort("serviceName")}>Name</th>
-              <th onClick={() => handleSort("price")}>Price</th>
-              <th onClick={() => handleSort("serviceTypeId")}>Service Type</th>
-              <th onClick={() => handleSort("createdTime")}>Created Time</th>
-              <th onClick={() => handleSort("updatedTime")}>Updated Time</th>
-              <th>Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedServices.map((service) => (
-              <tr key={service.serviceId}>
-                <td>{service.serviceName}</td>
-                <td>${service.price.toLocaleString()}</td>
-                <td>{getServiceTypeName(service.serviceTypeId)}</td>
-                <td>
-                  {service.createdTime
-                    ? new Date(service.createdTime).toLocaleString()
-                    : "N/A"}
-                </td>
-                <td>
-                  {service.updatedTime
-                    ? new Date(service.updatedTime).toLocaleString()
-                    : "N/A"}
-                </td>
-                <td>
-                  <button
-                    className={styles.editButton}
-                    onClick={() => setModal({ type: "edit", data: service })}
-                  >
-                    <img src={editIcon} alt="Edit" />
-                  </button>
-                </td>
+        <div className={styles.serviceTableContainer}>
+          <table className={styles.serviceTable}>
+            <thead>
+              <tr>
+                <th onClick={() => handleSort("serviceName")}>
+                  Name{" "}
+                  {sortConfig.key === "serviceName" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("price")}>
+                  Price{" "}
+                  {sortConfig.key === "price" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("serviceTypeId")}>
+                  Service Type{" "}
+                  {sortConfig.key === "serviceTypeId" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("createdTime")}>
+                  Created Time{" "}
+                  {sortConfig.key === "createdTime" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("updatedTime")}>
+                  Updated Time{" "}
+                  {sortConfig.key === "updatedTime" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th>Edit</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {sortedServices.map((service) => (
+                <tr key={service.serviceId}>
+                  <td>{service.serviceName}</td>
+                  <td>${service.price.toLocaleString()}</td>
+                  <td>{getServiceTypeName(service.serviceTypeId)}</td>
+                  <td>
+                    {service.createdTime
+                      ? new Date(service.createdTime).toLocaleString()
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {service.updatedTime
+                      ? new Date(service.updatedTime).toLocaleString()
+                      : "N/A"}
+                  </td>
+                  <td>
+                    <button
+                      className={styles.editButton}
+                      onClick={() => setModal({ type: "edit", data: service })}
+                    >
+                      <img src={editIcon} alt="Edit" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       {modal.type === "create" && (
         <ServiceCreateModal
