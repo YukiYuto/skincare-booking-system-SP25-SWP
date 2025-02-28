@@ -147,7 +147,29 @@ namespace SkincareBookingSystem.DataAccess.DBContext
                 .WithMany(st => st.TherapistServiceTypes)
                 .HasForeignKey(tst => tst.ServiceTypeId)
                 .OnDelete(DeleteBehavior.Cascade);
-        }
+            
+            
+            // Composite key for TherapistSchedule
+            modelBuilder.Entity<TherapistSchedule>()
+                .HasOne(ts => ts.Appointment)
+                .WithMany(a => a.TherapistSchedules)
+                .HasForeignKey(ts => ts.AppointmentId)
+                .OnDelete(DeleteBehavior.Restrict); // Không xóa khi Appointment bị xóa
 
+            // Thiết lập quan hệ giữa TherapistSchedule và Slot (1-1)
+            modelBuilder.Entity<TherapistSchedule>()
+                .HasOne(ts => ts.Slot)
+                .WithMany(s => s.TherapistSchedules)
+                .HasForeignKey(ts => ts.SlotId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Thiết lập quan hệ giữa TherapistSchedule và SkinTherapist (1-1)
+            modelBuilder.Entity<TherapistSchedule>()
+                .HasOne(ts => ts.SkinTherapist)
+                .WithMany(st => st.TherapistSchedules)
+                .HasForeignKey(ts => ts.TherapistId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+            
     }
 }
