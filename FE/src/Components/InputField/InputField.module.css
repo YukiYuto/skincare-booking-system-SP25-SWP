@@ -1,6 +1,7 @@
 .inputContainer {
   margin-bottom: 12px;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .label {
@@ -51,7 +52,7 @@
 
 .togglePassword {
   position: absolute;
-  right: 21px;
+  left: 64%;
   background: none;
   border: none;
   padding: 0;
