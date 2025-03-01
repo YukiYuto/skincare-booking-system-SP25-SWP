@@ -10,6 +10,8 @@ using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Models.Dto.BookingSchedule;
 using SkincareBookingSystem.Services.IServices;
 using System.Security.Claims;
+using SkincareBookingSystem.Utilities.Constants;
+using SkincareBookingSystem.Services.Helpers.Responses;
 
 namespace SkincareBookingSystem.Services.Services
 {
@@ -24,7 +26,7 @@ namespace SkincareBookingSystem.Services.Services
             _mapper = mapper;
         }
 
-        public async Task<ResponseDto> CreateBookingSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto createBookingScheduleDto)
+        public async Task<ResponseDto> CreateTherapistSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto createBookingScheduleDto)
         {
             try
             {
@@ -56,7 +58,7 @@ namespace SkincareBookingSystem.Services.Services
             }
         }
 
-        public async Task<ResponseDto> GetAllBookingSchedules()
+        public async Task<ResponseDto> GetAllTherapistSchedules()
         {
             var bookingSchedules = await _unitOfWork.TherapistSchedule.GetAllAsync();
             return new ResponseDto
@@ -68,7 +70,7 @@ namespace SkincareBookingSystem.Services.Services
             };
         }
 
-        public async Task<ResponseDto> GetBookingScheduleById(Guid id)
+        public async Task<ResponseDto> GetTherapistScheduleById(Guid id)
         {
             var bookingSchedule = await _unitOfWork.TherapistSchedule.GetAsync(b => b.TherapistScheduleId == id);
             if (bookingSchedule == null)
@@ -90,7 +92,7 @@ namespace SkincareBookingSystem.Services.Services
             };
         }
 
-        public async Task<ResponseDto> UpdateBookingSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto updateBookingScheduleDto)
+        public async Task<ResponseDto> UpdateTherapistSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto updateBookingScheduleDto)
         {
             var bookingSchedule = await _unitOfWork.TherapistSchedule.GetAsync(b => b.TherapistScheduleId == updateBookingScheduleDto.BookingScheduleId);
             if (bookingSchedule == null)
@@ -118,7 +120,7 @@ namespace SkincareBookingSystem.Services.Services
             };
         }
 
-        public async Task<ResponseDto> DeleteBookingSchedule(Guid id)
+        public async Task<ResponseDto> DeleteTherapistSchedule(ClaimsPrincipal User, Guid id)
         {
             var booking = await _unitOfWork.TherapistSchedule.GetAsync(s => s.TherapistScheduleId == id);
             if (booking == null)
@@ -130,17 +132,25 @@ namespace SkincareBookingSystem.Services.Services
                     StatusCode = 404
                 };
             }
-            booking.Status = "1"; // Soft delete, 1 is deleted, 0 is active
-            booking.UpdatedTime = DateTime.UtcNow;
+            booking.Status = StaticOperationStatus.BookingSchedule.Deleted;
+            booking.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;   
+            booking.UpdatedBy = User.FindFirstValue("FullName");
 
-            await _unitOfWork.SaveAsync();
+            return (await SaveChangesAsync()) ?
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.Deleted,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: booking)
+                :
+                ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotDeleted,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
 
-            return new ResponseDto
-            {
-                Message = "Service(s) deleted successfully",
-                IsSuccess = true,
-                StatusCode = 200
-            };
         }
+
+        private async Task<bool> SaveChangesAsync()
+            {
+                return await _unitOfWork.SaveAsync() == StaticOperationStatus.Database.Success;
+            }
     }
 }

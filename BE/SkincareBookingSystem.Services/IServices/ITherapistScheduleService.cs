@@ -11,10 +11,10 @@ namespace SkincareBookingSystem.Services.IServices
 {
     public interface ITherapistScheduleService
     {
-        Task<ResponseDto> CreateBookingSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto bookingScheduleDto);
-        Task<ResponseDto> GetBookingScheduleById(Guid id);
-        Task<ResponseDto> GetAllBookingSchedules();
-        Task<ResponseDto> UpdateBookingSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto bookingScheduleDto);
-        Task<ResponseDto> DeleteBookingSchedule(Guid id);
+        Task<ResponseDto> CreateTherapistSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto bookingScheduleDto);
+        Task<ResponseDto> GetTherapistScheduleById(Guid id);
+        Task<ResponseDto> GetAllTherapistSchedules();
+        Task<ResponseDto> UpdateTherapistSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto bookingScheduleDto);
+        Task<ResponseDto> DeleteTherapistSchedule(ClaimsPrincipal User, Guid id);
     }
 }

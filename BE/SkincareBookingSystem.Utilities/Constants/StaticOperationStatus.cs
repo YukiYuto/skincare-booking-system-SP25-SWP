@@ -97,5 +97,16 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string UserNotAuthorized = "User is not authorized";
         }
 
+        // Constants related to booking schedule operations
+        public static class BookingSchedule
+        {
+            public const string Created = "CREATED";
+            public const string Confirmed = "CONFIRMED";
+            public const string Cancelled = "CANCELLED";
+            public const string Completed = "COMPLETED";
+            public const string Rescheduled = "RESCHEDULED";
+            public const string Deleted = "DELETED";
+        }
+
     }
 }
