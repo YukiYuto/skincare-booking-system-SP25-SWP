@@ -2,7 +2,7 @@
 
 namespace SkincareBookingSystem.Models.Domain;
 
-public class TherapistServiceType
+public class TherapistServiceType : BaseEntity<string, string, string>
 {
     public Guid TherapistId { get; set; }
     [ForeignKey("TherapistId")] 

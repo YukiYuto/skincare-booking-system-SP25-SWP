@@ -4,12 +4,14 @@
   align-items: center;
   width: 100%;
   
+  /* Đặt background cho toàn bộ phần HomePage */
   background-image: url("../../assets/images/background.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
+/* Hero Section */
 .container {
   display: flex;
   align-items: center;
@@ -46,6 +48,7 @@
   background-color: #d96b50 !important;
 }
 
+/* Right Section - Image */
 .imageContainer {
   width: 55%;
   display: flex;
@@ -58,6 +61,7 @@
   box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
 }
 
+/* Features Section Wrapper */
 .featuresWrapper {
   width: 100%;
   padding: 10px 0;
