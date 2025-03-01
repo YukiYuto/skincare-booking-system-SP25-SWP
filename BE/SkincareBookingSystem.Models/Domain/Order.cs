@@ -12,7 +12,8 @@ namespace SkincareBookingSystem.Models.Domain
     {
         [Key]
         public Guid OrderId { get; set; }
-
+        
+        public long OrderNumber { get; set; }
         public Guid CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; } = null!;
