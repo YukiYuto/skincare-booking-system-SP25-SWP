@@ -63,12 +63,12 @@ namespace SkincareBookingSystem.Services.Services
                 result: therapistDto);
         }
 
-        public async Task<ResponseDto> GetTherapistsByServiceType(ServiceTypeDto serviceTypeDto)
+        public async Task<ResponseDto> GetTherapistsByServiceTypeId(Guid serviceTypeId)
         {
             var therapistsFromDb = await _unitOfWork.SkinTherapist.GetAllAsync(
                 filter: s => s.TherapistServiceTypes.Any(
-                    tst => tst.ServiceTypeId == serviceTypeDto.ServiceTypeId),
-                includeProperties: $"{nameof(TherapistServiceType)},{nameof(ApplicationUser)}");
+                    tst => tst.ServiceTypeId == serviceTypeId),
+                includeProperties: $"{nameof(SkinTherapist.TherapistServiceTypes)},{nameof(ApplicationUser)}");
 
             if (therapistsFromDb.Any())
             {

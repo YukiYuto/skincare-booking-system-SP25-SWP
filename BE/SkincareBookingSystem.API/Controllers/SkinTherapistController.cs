@@ -30,10 +30,10 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("skin-therapists/service")]
-        public async Task<ActionResult> GetTherapistsByServiceType([FromBody] ServiceTypeDto serviceTypeDto)
+        [HttpGet("skin-therapists/service-type/{serviceTypeId}")]
+        public async Task<ActionResult> GetTherapistsByServiceType(Guid serviceTypeId)
         {
-            var response = await _skinTherapistService.GetTherapistsByServiceType(serviceTypeDto);
+            var response = await _skinTherapistService.GetTherapistsByServiceTypeId(serviceTypeId);
             return StatusCode(response.StatusCode, response);
         }
     }

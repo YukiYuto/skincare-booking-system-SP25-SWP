@@ -11,7 +11,7 @@ namespace SkincareBookingSystem.Services.IServices
     public interface ISkinTherapistService
     {
         Task<ResponseDto> GetTherapistDetailsById(Guid therapistId);
-        Task<ResponseDto> GetTherapistsByServiceType(ServiceTypeDto serviceTypeDto);
+        Task<ResponseDto> GetTherapistsByServiceTypeId(Guid serviceTypeId);
         Task<ResponseDto> GetAllTherapists();
     }
 }
