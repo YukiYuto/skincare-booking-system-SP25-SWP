@@ -9,12 +9,12 @@ using System.Security.Claims;
 
 namespace SkincareBookingSystem.Services.IServices
 {
-    public interface IBookingScheduleService
+    public interface ITherapistScheduleService
     {
-        Task<ResponseDto> CreateBookingSchedule(ClaimsPrincipal User, CreateBookingScheduleDto bookingScheduleDto);
+        Task<ResponseDto> CreateBookingSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto bookingScheduleDto);
         Task<ResponseDto> GetBookingScheduleById(Guid id);
         Task<ResponseDto> GetAllBookingSchedules();
-        Task<ResponseDto> UpdateBookingSchedule(ClaimsPrincipal User, UpdateBookingScheduleDto bookingScheduleDto);
+        Task<ResponseDto> UpdateBookingSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto bookingScheduleDto);
         Task<ResponseDto> DeleteBookingSchedule(Guid id);
     }
 }

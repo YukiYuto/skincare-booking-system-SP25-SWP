@@ -6,17 +6,17 @@ namespace SkincareBookingSystem.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BookingScheduleController : ControllerBase
+    public class TherapistScheduleController : ControllerBase
     {
-        private readonly IBookingScheduleService _bookingScheduleService;
+        private readonly ITherapistScheduleService _bookingScheduleService;
 
-        public BookingScheduleController(IBookingScheduleService bookingScheduleService)
+        public TherapistScheduleController(ITherapistScheduleService bookingScheduleService)
         {
             _bookingScheduleService = bookingScheduleService;
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateBookingSchedule([FromBody] CreateBookingScheduleDto createBookingScheduleDto)
+        public async Task<IActionResult> CreateBookingSchedule([FromBody] CreateTherapistScheduleDto createBookingScheduleDto)
         {
             var result = await _bookingScheduleService.CreateBookingSchedule(User, createBookingScheduleDto);
             return StatusCode(result.StatusCode, result);
@@ -37,7 +37,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateBookingSchedule([FromBody] UpdateBookingScheduleDto updateBookingScheduleDto)
+        public async Task<IActionResult> UpdateBookingSchedule([FromBody] UpdateTherapistScheduleDto updateBookingScheduleDto)
         {
             var result = await _bookingScheduleService.UpdateBookingSchedule(User, updateBookingScheduleDto);
             return StatusCode(result.StatusCode, result);

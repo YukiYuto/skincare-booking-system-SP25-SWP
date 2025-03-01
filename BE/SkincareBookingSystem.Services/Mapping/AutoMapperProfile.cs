@@ -19,8 +19,8 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         //BookingSchedule
-        CreateMap<CreateBookingScheduleDto, TherapistSchedule>();
-        CreateMap<UpdateBookingScheduleDto, TherapistSchedule>();
+        CreateMap<CreateTherapistScheduleDto, TherapistSchedule>();
+        CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>();
 
 
         //Order

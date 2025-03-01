@@ -13,23 +13,23 @@ using System.Security.Claims;
 
 namespace SkincareBookingSystem.Services.Services
 {
-    public class BookingScheduleService : IBookingScheduleService
+    public class TherapistScheduleService : ITherapistScheduleService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public BookingScheduleService(IUnitOfWork unitOfWork, IMapper mapper)
+        public TherapistScheduleService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<ResponseDto> CreateBookingSchedule(ClaimsPrincipal User, CreateBookingScheduleDto createBookingScheduleDto)
+        public async Task<ResponseDto> CreateBookingSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto createBookingScheduleDto)
         {
             try
             {
 
-                var bookingSchedule = _mapper.Map<CreateBookingScheduleDto, TherapistSchedule>(createBookingScheduleDto);
+                var bookingSchedule = _mapper.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
 
                 bookingSchedule.TherapistScheduleId = Guid.NewGuid();
                 bookingSchedule.CreatedBy = User.Identity?.Name;
@@ -90,7 +90,7 @@ namespace SkincareBookingSystem.Services.Services
             };
         }
 
-        public async Task<ResponseDto> UpdateBookingSchedule(ClaimsPrincipal User, UpdateBookingScheduleDto updateBookingScheduleDto)
+        public async Task<ResponseDto> UpdateBookingSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto updateBookingScheduleDto)
         {
             var bookingSchedule = await _unitOfWork.TherapistSchedule.GetAsync(b => b.TherapistScheduleId == updateBookingScheduleDto.BookingScheduleId);
             if (bookingSchedule == null)
@@ -103,7 +103,7 @@ namespace SkincareBookingSystem.Services.Services
                 };
             }
 
-            var updatedData = _mapper.Map<UpdateBookingScheduleDto, TherapistSchedule>(updateBookingScheduleDto);
+            var updatedData = _mapper.Map<UpdateTherapistScheduleDto, TherapistSchedule>(updateBookingScheduleDto);
             bookingSchedule.UpdatedBy = User.Identity?.Name;
 
             _unitOfWork.TherapistSchedule.Update(bookingSchedule, updatedData);

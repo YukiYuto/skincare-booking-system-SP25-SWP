@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace SkincareBookingSystem.Models.Dto.BookingSchedule
 {
-    public class CreateBookingScheduleDto
+    public class UpdateTherapistScheduleDto
     {
-        public Guid SkinTherapistId { get; set; }
-        public Guid SlotId { get; set; }
+        public Guid BookingScheduleId { get; set; }
+        public Guid? SkinTherapistId { get; set; }
+        public Guid? SlotId { get; set; }
     }
 }
