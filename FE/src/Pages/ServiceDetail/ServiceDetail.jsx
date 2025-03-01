@@ -38,6 +38,8 @@ const ServiceDetail = () => {
         }
 
         const serviceData = await serviceRes.json();
+        setService(serviceData);
+
         const serviceTypeData = await fetch(
           `https://672741d4302d03037e702957.mockapi.io/ServiceType/${serviceData.ServiceTypeID}`
         ).then((res) => res.json());
