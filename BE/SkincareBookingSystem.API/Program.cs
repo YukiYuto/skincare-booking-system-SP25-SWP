@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,8 @@ namespace SkincareBookingSystem.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.  
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(
+                opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             // Configure DbContext with SQL Server  
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
