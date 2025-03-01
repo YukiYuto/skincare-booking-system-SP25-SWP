@@ -28,5 +28,12 @@ namespace SkincareBookingSystem.API.Controllers
             var response = await _customerService.GetCustomerDetailsById(User, customerId);
             return StatusCode(response.StatusCode, response);
         }
+
+        [HttpGet("id")]
+        public async Task<IActionResult> GetCustomerIdByUserId()
+        {
+            var response = await _customerService.GetCustomerIdByUserId(User);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

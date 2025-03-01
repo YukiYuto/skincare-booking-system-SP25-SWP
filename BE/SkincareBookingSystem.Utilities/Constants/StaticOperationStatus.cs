@@ -48,6 +48,15 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string VideoNotFound = "Video not found";
         }
 
+        public static class OrderDetail
+        {
+            public const string NotFound = "No order details found";
+            public const string Found = "Order details found";
+            public const string EmptyList = "Order detail list is empty";
+            public const string NotProvided = "No order details provided";
+            public const string Invalid = "Invalid order details";
+        }
+
         public static class ServiceType
         {
             public const string NotFound = "Service type(s) not found";
