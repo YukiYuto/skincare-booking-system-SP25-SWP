@@ -30,10 +30,13 @@ namespace SkincareBookingSystem.DataAccess.DBContext
         public DbSet<SkinTest> SkinTest { get; set; }
         public DbSet<SkinTherapist> SkinTherapist { get; set; }
         public DbSet<Slot> Slot { get; set; }
+        public DbSet<Staff> Staff { get; set; }
         public DbSet<TestAnswer> TestAnswer { get; set; }
         public DbSet<TestQuestion> TestQuestion { get; set; }
         public DbSet<TherapistSchedule> TherapistSchedules { get; set; }
         public DbSet<TypeItem> TypeItem { get; set; }
+        public DbSet<TherapistServiceType> TherapistServiceTypes { get; set; }
+
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -128,7 +131,45 @@ namespace SkincareBookingSystem.DataAccess.DBContext
                 .WithMany()   
                 .HasForeignKey(o => o.CustomerId)  
                 .OnDelete(DeleteBehavior.Restrict);
-        }
+            
+            // Composite key for ComboItem
+            modelBuilder.Entity<TherapistServiceType>()
+                .HasKey(tst => new {tst.TherapistId , tst.ServiceTypeId });
+            
+            modelBuilder.Entity<TherapistServiceType>()
+                .HasOne(tst => tst.SkinTherapist)
+                .WithMany(st => st.TherapistServiceTypes)
+                .HasForeignKey(tst => tst.TherapistId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<TherapistServiceType>()
+                .HasOne(tst => tst.ServiceType)
+                .WithMany(st => st.TherapistServiceTypes)
+                .HasForeignKey(tst => tst.ServiceTypeId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            
+            // Composite key for TherapistSchedule
+            modelBuilder.Entity<TherapistSchedule>()
+                .HasOne(ts => ts.Appointment)
+                .WithMany(a => a.TherapistSchedules)
+                .HasForeignKey(ts => ts.AppointmentId)
+                .OnDelete(DeleteBehavior.Restrict); // Không xóa khi Appointment bị xóa
 
+            // Thiết lập quan hệ giữa TherapistSchedule và Slot (1-1)
+            modelBuilder.Entity<TherapistSchedule>()
+                .HasOne(ts => ts.Slot)
+                .WithMany(s => s.TherapistSchedules)
+                .HasForeignKey(ts => ts.SlotId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Thiết lập quan hệ giữa TherapistSchedule và SkinTherapist (1-1)
+            modelBuilder.Entity<TherapistSchedule>()
+                .HasOne(ts => ts.SkinTherapist)
+                .WithMany(st => st.TherapistSchedules)
+                .HasForeignKey(ts => ts.TherapistId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+            
     }
 }

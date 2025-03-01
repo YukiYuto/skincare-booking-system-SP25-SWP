@@ -8,12 +8,13 @@ import axios from "axios";
  * @returns {Promise} - Resolves with response data or rejects with an error
  */
 
-export const apiCall = async (method, url, data = null) => {
+export const apiCall = async (method, url, data = null, query) => {
   try {
     const response = await axios({
       method,
       url,
       data,
+      params: query,
     });
 
     return response.data;

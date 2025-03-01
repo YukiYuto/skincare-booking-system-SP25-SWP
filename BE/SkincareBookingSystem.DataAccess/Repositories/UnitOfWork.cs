@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
@@ -48,11 +49,14 @@ public class UnitOfWork : IUnitOfWork
 
     public ISlotRepository Slot { get; private set; }
 
+    public IStaffRepository Staff { get; private set; }
+
     public ITestAnswerRepository TestAnswer { get; private set; }
 
     public ITestQuestionRepository TestQuestion { get; private set; }
 
     public ITherapistScheduleRepository TherapistSchedule { get; private set; }
+    public ITherapistServiceTypeRepository TherapistServiceType { get; private set; }
 
     public ITypeItemRepository TypeItem { get; private set; }
 
@@ -80,16 +84,23 @@ public class UnitOfWork : IUnitOfWork
         SkinTest = new SkinTestRepository(_context);
         SkinTherapist = new SkinTherapistRepository(_context);
         Slot = new SlotRepository(_context);
+        Staff = new StaffRepository(_context);
         TestAnswer = new TestAnswerRepository(_context);
         TestQuestion = new TestQuestionRepository(_context);
         TherapistSchedule = new TherapistScheduleRepository(_context);
+        TherapistServiceType = new TherapistServiceTypeRepository(_context);
         TypeItem = new TypeItemRepository(_context);
-        UserManagerRepository = new UserManagerRepository(userManager);
-        
+        UserManager = new UserManagerRepository(userManager);
+
     }
 
     public async Task<int> SaveAsync()
     {
         return await _context.SaveChangesAsync();
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 }

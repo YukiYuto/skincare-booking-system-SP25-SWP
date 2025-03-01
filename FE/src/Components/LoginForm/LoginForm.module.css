@@ -24,6 +24,16 @@
     color: rgb(0, 61, 252);
     text-decoration: none;
   }
+
+  .forgotLink{
+    color: rgb(0, 61, 252);
+    text-decoration: none;
+  }
+
+  .forgotLink:hover{
+    color: red; /* Màu khi hover */
+    text-decoration: underline;
+  }
   
   .loginButton {
     border-radius: 10px;
@@ -38,13 +48,24 @@
     margin-bottom: 15px;
   }
   
+  .loginButton:hover{
+    background-color: darkblue;
+  }
+
+  .loginButton:disabled {
+    background-color: rgba(41, 92, 243, 0.527);
+    cursor: not-allowed;
+  }
+
   .createAccountButton {
-    background: none;
-    border: none;
     font-size: 24px;
     color: rgb(0, 0, 0);
     cursor: pointer;
     align-self: center;
+  }
+
+  .createAccountButton:hover{
+    background-color: lightgray;
   }
   
   @media (max-width: 991px) {

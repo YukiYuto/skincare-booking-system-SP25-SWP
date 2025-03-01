@@ -14,7 +14,21 @@
   color: rgb(0, 0, 0);
 }
 
-.flexContainer {
+.flexContainer1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.flexContainer2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.flexContainer3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,6 +59,10 @@
   margin-bottom: 15px;
 }
 
+.registerButton:hover{
+  background-color: darkblue;
+}
+
 .loginButton {
   background: none;
   border: none;
@@ -52,6 +70,10 @@
   color: rgb(0, 0, 0);
   cursor: pointer;
   align-self: center;
+}
+
+.loginButton:hover{
+  background-color: lightgray;
 }
 
 @media (max-width: 991px) {

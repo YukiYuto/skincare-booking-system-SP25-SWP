@@ -9,6 +9,6 @@ namespace SkincareBookingSystem.DataAccess.IRepositories
 {
     public interface IAppointmentsRepository : IRepository<Appointments>
     {
-
+        void Update(Appointments target, Appointments source);
     }
 }

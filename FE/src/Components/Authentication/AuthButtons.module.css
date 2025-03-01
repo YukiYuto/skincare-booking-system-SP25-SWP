@@ -1,0 +1,52 @@
+.authButtons {
+    display: flex;
+    align-items: center;
+}
+
+.loginButton {
+    background-color: #ecb65e;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-right: 12px;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.loginButton:hover {
+    background-color: #e68e2a;
+    color: white;
+}
+
+.registerButton {
+    border: 1px solid #ecb65e;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+}
+
+.registerButton:hover {
+    background-color: #ecb65e;
+    color: white;
+}
+
+.profileButton {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Khoảng cách giữa text và icon */
+    transition: background 0.3s ease-in-out;
+    width: 200px;
+    margin-right: 50px;
+}
+
+.profileButton:hover {
+    background: #f5f5f5;
+}

@@ -1,58 +1,99 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ServiceLayout from "../../Components/ServiceDetail/ServiceLayout";
 import ServiceList from "../../Components/ServiceList/ServiceList";
 import styles from "./ServiceDetail.module.css";
 
 const ServiceDetail = () => {
   const { id } = useParams();
-  const [service, setService] = useState(null);
-  const [serviceType, setServiceType] = useState("");
-  const [similarServices, setSimilarServices] = useState([]);
-  const [serviceTypes, setServiceTypes] = useState([]);
+  const [state, setState] = useState({
+    service: null,
+    serviceType: "",
+    similarServices: [],
+    serviceTypes: [],
+    isLoading: true,
+    error: null,
+  });
+
+  const fakeTherapists = [
+    { id: 1, name: "Dr. Emily Carter" },
+    { id: 2, name: "John Smith" },
+    { id: 3, name: "Sophia Lee" },
+    { id: 4, name: "Michael Brown" },
+  ];
+  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [serviceRes, allServicesRes, allServiceTypesRes] = await Promise.all([
-          fetch(`https://672741d4302d03037e702957.mockapi.io/Service/${id}`),
-          fetch(`https://672741d4302d03037e702957.mockapi.io/Service`),
-          fetch(`https://672741d4302d03037e702957.mockapi.io/ServiceType`)
-        ]);
+        const [serviceRes, allServicesRes, allServiceTypesRes] =
+          await Promise.all([
+            fetch(`https://672741d4302d03037e702957.mockapi.io/Service/${id}`),
+            fetch(`https://672741d4302d03037e702957.mockapi.io/Service`),
+            fetch(`https://672741d4302d03037e702957.mockapi.io/ServiceType`),
+          ]);
+
+        if (!serviceRes.ok || !allServicesRes.ok || !allServiceTypesRes.ok) {
+          throw new Error("Failed to fetch data");
+        }
 
         const serviceData = await serviceRes.json();
         setService(serviceData);
 
         const serviceTypeData = await fetch(
           `https://672741d4302d03037e702957.mockapi.io/ServiceType/${serviceData.ServiceTypeID}`
-        ).then(res => res.json());
-        setServiceType(serviceTypeData.Name);
+        ).then((res) => res.json());
 
         const allServicesData = await allServicesRes.json();
-        const filteredServices = allServicesData.filter(
-          (s) => s.ServiceTypeID === serviceData.ServiceTypeID && s.ID !== serviceData.ID
-        ).slice(0, 4);
-        setSimilarServices(filteredServices);
+        const similarServices = allServicesData
+          .filter(
+            (s) =>
+              s.ServiceTypeID === serviceData.ServiceTypeID &&
+              s.ID !== serviceData.ID
+          )
+          .slice(0, 4);
 
         const allServiceTypesData = await allServiceTypesRes.json();
-        setServiceTypes(allServiceTypesData);
+
+        setState({
+          service: serviceData,
+          serviceType: serviceTypeData.Name,
+          similarServices,
+          serviceTypes: allServiceTypesData,
+          isLoading: false,
+          error: null,
+        });
       } catch (error) {
-        console.error("Failed to fetch service details:", error);
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: error.message,
+        }));
       }
     };
 
     fetchData();
   }, [id]);
 
-  if (!service) return <div className={styles.loading}>Loading...</div>;
+  const {
+    service,
+    serviceType,
+    similarServices,
+    serviceTypes,
+    isLoading,
+    error,
+  } = state;
+
+  if (isLoading) return <div className={styles.loading}>Loading...</div>;
+  if (error) return <div className={styles.error}>Error: {error}</div>;
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>{service.ServiceName}</h1>
-      <img src={service.imgUrl} alt={service.ServiceName} className={styles.image} />
-      <p className={styles.type}>Type: {serviceType}</p>
-      <p className={styles.description}>{service.Description}</p>
-      <p className={styles.price}>Price: ${service.Price}</p>
-      <p className={styles.popularity}>Popularity: {service.Popularity}</p>
+      <ServiceLayout
+        service={service}
+        serviceType={serviceType}
+        therapists={fakeTherapists}
+      />
 
       {similarServices.length > 0 && (
         <div className={styles.similarSection}>

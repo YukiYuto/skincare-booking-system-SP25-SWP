@@ -6,13 +6,19 @@
   box-sizing: border-box;
 }
 
-/* Set root and body to full viewport size */
+body {
+  margin: 0;
+  padding: 0;
+}
+
 html,
 body,
 #root {
   width: 100vw;
   height: 100vh;
   font-family: Montserrat;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 h1 {
