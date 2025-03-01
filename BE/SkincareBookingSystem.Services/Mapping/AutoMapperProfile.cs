@@ -10,6 +10,7 @@ using SkincareBookingSystem.Models.Dto.Appointment;
 using SkincareBookingSystem.Utilities.Constants;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Customer;
+using Microsoft.EntityFrameworkCore;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -172,6 +173,13 @@ public class AutoMapperProfile : Profile
 
         CreateMap<UpdateAppointmentDto, Appointments>()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+
+        //! TODO: Uncomment this when the TherapistServiceType is updated to inherit BaseEntity
+        CreateMap<Guid, TherapistServiceType>()
+           .ForMember(dest => dest.ServiceTypeId, opt => opt.MapFrom(src => src))
+           .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())  // We'll set this manually
+           .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(_ => StaticOperationStatus.Timezone.Vietnam))
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => StaticOperationStatus.BaseEntity.Active));
 
 
     }

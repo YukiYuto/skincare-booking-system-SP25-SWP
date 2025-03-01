@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkincareBookingSystem.Models.Dto.Booking.ServiceType;
 using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
@@ -26,6 +27,13 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<ActionResult> GetAllTherapists()
         {
             var response = await _skinTherapistService.GetAllTherapists();
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("skin-therapists/service-type/{serviceTypeId}")]
+        public async Task<ActionResult> GetTherapistsByServiceType(Guid serviceTypeId)
+        {
+            var response = await _skinTherapistService.GetTherapistsByServiceTypeId(serviceTypeId);
             return StatusCode(response.StatusCode, response);
         }
     }

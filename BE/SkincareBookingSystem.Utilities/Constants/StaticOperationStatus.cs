@@ -8,9 +8,6 @@ namespace SkincareBookingSystem.Utilities.Constants
 {
     public static class StaticOperationStatus
     {
-        /// <summary>
-        /// Constants related to appointment statuses.
-        /// </summary>
         public static class Appointment
         {
             public const string Created = "CREATED";
@@ -20,9 +17,7 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Rescheduled = "RESCHEDULED";
             public const string Deleted = "DELETED";
         }
-        /// <summary>
-        /// Constants related to BaseEntity statuses.
-        /// </summary>
+
         public static class BaseEntity
         {
             public const string Active = "1";
@@ -35,9 +30,6 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Found = "Customer(s) found";
         }
 
-        /// <summary>
-        /// Constants related to database operations (e.g. SaveAsync).
-        /// </summary>
         public static class Database
         {
             public const int Success = 1;
@@ -56,6 +48,14 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string VideoNotFound = "Video not found";
         }
 
+        public static class ServiceType
+        {
+            public const string NotFound = "Service type(s) not found";
+            public const string Found = "Service type(s) found";
+            public const string EmptyList = "Service type list is empty";
+            public const string Invalid = "Invalid service type(s)";
+        }
+
         public static class SkinTherapist
         {
             public const string NotFound = "Skin therapist(s) not found";
@@ -72,9 +72,16 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const int NotFound = 404;
             public const int InternalServerError = 500;
         }
-        /// <summary>
-        /// Constants related to timezones (primarily Vietnam).
-        /// </summary>
+
+        public static class TherapistServiceType
+        {
+            public const string Added = "Service type(s) added to therapist";
+            public const string Removed = "Service type(s) removed from therapist";
+            public const string NotFound = "No record found";
+            public const string NotAdded = "Failed to add service type(s) to therapist";
+            public const string NotRemoved = "Failed to remove service type(s) from therapist";
+        }
+
         public static class Timezone
         {
             public static readonly DateTime Vietnam = DateTime.UtcNow.AddHours(7.0);
@@ -89,10 +96,8 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string TokenInvalid = "Token is invalid";
         }
 
-        /// <summary>
-        /// Constants related to user operations.
-        /// </summary>
-        public static class User {
+        public static class User
+        {
             public const string UserNotFound = "User not found";
             public const string UserNotAuthorized = "User is not authorized";
         }
