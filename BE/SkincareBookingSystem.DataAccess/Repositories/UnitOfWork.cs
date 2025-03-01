@@ -61,6 +61,7 @@ public class UnitOfWork : IUnitOfWork
     public ITypeItemRepository TypeItem { get; private set; }
 
     public IUserManagerRepository UserManager { get; private set; }
+    public IPaymentRepository Payment { get; }
 
     public UnitOfWork(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     {
@@ -91,7 +92,7 @@ public class UnitOfWork : IUnitOfWork
         TherapistServiceType = new TherapistServiceTypeRepository(_context);
         TypeItem = new TypeItemRepository(_context);
         UserManager = new UserManagerRepository(userManager);
-
+        Payment = new PaymentRepository(_context);
     }
 
     public async Task<int> SaveAsync()
