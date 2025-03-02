@@ -23,23 +23,9 @@ export const register = async (userData) => {
  * @param {string} token 
  * @returns {Promise} - Resolves with response data (user data) or rejects with an error
  */
-export const fetchUserByToken = async (accessToken) => {
-  // Thêm accessToken vào query string
-  const urlWithToken = `${USER_PROFILE_API}?token=${encodeURIComponent(accessToken)}`;
-  const response = await fetch(urlWithToken, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch user");
-  }
-
-  return response.json();
-};
-
+export const fetchUserProfile = async (token) => {
+  return await apiCall(HTTP_METHODS.GET, USER_PROFILE_API, null, { token });
+}
 
 export async function forgotPassword(email) {
   const response = await fetch(FORGOT_PASSWORD_API, {

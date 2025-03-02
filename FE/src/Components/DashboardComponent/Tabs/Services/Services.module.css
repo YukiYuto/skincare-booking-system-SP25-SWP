@@ -1,38 +1,103 @@
 .tabContainer {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    padding: 20px;
-    border-radius: 8px;
-  }
-  
-  .tabTitle {
-    font-family: Raleway;
-    color: var(--accent-color);
-    margin-bottom: 20px;
-  }
-  
-  .serviceTable {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .serviceTable th,
-  .serviceTable td {
-    border: 1px solid var(--secondary-color);
-    padding: 10px;
-    text-align: left;
-  }
-  
-  .serviceTable th {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-  }
-  
-  .serviceTable tr:nth-child(even) {
-    background-color: var(--secondary-color);
-  }
-  
-  .serviceTable tr:hover {
-    background-color: var(--accent-color);
-    color: white;
-  }
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.tabTitleContainer {
+  display: flex;
+  gap: 16px;
+}
+
+.tabHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filterContainer {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterSelect {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--secondary-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.tabHeader button {
+  background: transparent;
+  border: none;
+  padding: 4px 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tabHeader button:hover {
+  padding: 4px;
+  background-color: var(--text-color);
+}
+
+.tabHeader img {
+  width: 30px;
+  height: 30px;
+}
+
+.tabTitle {
+  font-family: Raleway;
+  color: var(--accent-color);
+}
+
+.serviceTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.serviceTable th,
+.serviceTable td {
+  border: 1px solid var(--secondary-color);
+  padding: 10px;
+  text-align: left;
+}
+
+.serviceTable th {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.serviceTable tr:nth-child(even) {
+  background-color: var(--secondary-color);
+}
+
+.serviceTable tr:hover {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.editButton {
+  background: transparent;
+  border: none;
+  padding: 4px 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.editButton:hover {
+  padding: 4px;
+  background-color: var(--text-color);
+}

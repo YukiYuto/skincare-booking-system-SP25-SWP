@@ -13,5 +13,7 @@ namespace SkincareBookingSystem.Utilities.Constants
         public const string Videos = "Videos";
 
         public const string AvatarTransformation = "sbs-avatar-upload";
+        public const string ServiceTransformation = "sbs-service-upload";
+        public const string ServiceComboTransformation = "sbs-service-combo-upload";
     }
 }

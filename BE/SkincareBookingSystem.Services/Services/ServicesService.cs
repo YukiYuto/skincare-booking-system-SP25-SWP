@@ -142,6 +142,17 @@ namespace SkincareBookingSystem.Services.Services
 
             // using AutoMapper to map the DTO to Services model
             var updatedData = _mapper.Map<UpdateServiceDto, Models.Domain.Services>(updateServiceDto);
+            if(updatedData.ServiceTypeId == Guid.Empty)
+            {
+                //updatedData.ServiceTypeId = service.ServiceTypeId;
+                return new ResponseDto
+                {
+                    Message = "Service Type Id is required",
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Result = updatedData.ServiceTypeId
+                };
+            }
             service.UpdatedBy = User.Identity?.Name;
 
             // Update the service

@@ -10,6 +10,7 @@ import { useState } from "react";
 const AuthButtons = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -17,6 +18,7 @@ const AuthButtons = () => {
     setLoading(true);
     try{
       dispatch(logoutAction());
+      navigate("/");
       toast.success("Logout Successfully!")
       navigate("/")
     } finally {

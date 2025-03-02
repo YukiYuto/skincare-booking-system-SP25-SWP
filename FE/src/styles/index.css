@@ -6,13 +6,19 @@
   box-sizing: border-box;
 }
 
-/* Set root and body to full viewport size */
+body {
+  margin: 0;
+  padding: 0;
+}
+
 html,
 body,
 #root {
   width: 100vw;
   height: 100vh;
   font-family: Montserrat;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 h1 {
@@ -52,9 +58,8 @@ p {
   }
 
   .nav-header-wrapper {
-    @apply block relative py-3;
+    @apply block relative;
   }
-
   .header-wrapper--border-bottom {
     @apply border-gray-600 border-0;
   }
@@ -91,20 +96,13 @@ p {
     @apply ml-0;
   }
 
-  .nav-header__search {
-    @apply text-center justify-center;
-    grid-area: heading;
-  }
-
   .nav-header__icons {
-    @apply text-right justify-center;
+    @apply text-center justify-center;
     grid-area: icons;
   }
-
   .nav-header__inline-menu > .list-menu--inline {
     @apply justify-center;
   }
-
   .nav-header__inline-menu {
     @apply mt-1 block justify-self-center;
     grid-area: navigation-center;
@@ -117,7 +115,6 @@ p {
   .list-menu {
     @apply list-none;
   }
-
   .list-menu--inline {
     @apply inline-flex flex-wrap gap-8;
   }
@@ -132,14 +129,10 @@ p {
 
   .list-menu-link {
     @apply text-left font-normal text-base;
-    font-family: "Nunito Sans", sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
   }
 
   .list-menu-link:hover {
     @apply font-semibold;
-  }
-  
-  .btn {
-    @apply px-6 py-2 rounded-md text-base font-semibold transition-all duration-300 ease-in-out;
   }
 }

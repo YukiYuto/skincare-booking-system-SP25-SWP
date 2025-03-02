@@ -83,6 +83,12 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(responseDto.StatusCode, responseDto);
         }
 
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshTokenDto refreshTokenDto)
+        {
+            var responseDto = await _authService.RefreshAccessToken(refreshTokenDto);
+            return StatusCode(responseDto.StatusCode, responseDto);
+        }
 
         [HttpPost("password/change")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
