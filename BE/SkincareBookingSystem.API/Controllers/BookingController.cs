@@ -21,5 +21,19 @@ namespace SkincareBookingSystem.API.Controllers
             var result = await _bookingService.BundleOrder(bundleOrderDto, User);
             return StatusCode(result.StatusCode, result);
         }
+
+        [HttpGet("therapists")]
+        public async Task<IActionResult> GetTherapistsForServiceType(Guid serviceTypeId)
+        {
+            var result = await _bookingService.GetTherapistsForServiceType(serviceTypeId);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet("slots")]
+        public async Task<IActionResult> GetOccupiedSlotsFromTherapist(Guid therapistId, DateTime date)
+        {
+            var result = await _bookingService.GetOccupiedSlotsFromTherapist(therapistId, date);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }
