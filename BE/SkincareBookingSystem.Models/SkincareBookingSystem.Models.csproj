@@ -15,8 +15,4 @@
     <ProjectReference Include="..\SkincareBookingSystem.Utilities\SkincareBookingSystem.Utilities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dto\Booking\" />
-  </ItemGroup>
-
 </Project>
