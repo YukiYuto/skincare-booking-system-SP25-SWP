@@ -13,6 +13,7 @@ using SkincareBookingSystem.Models.Dto.Customer;
 using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.Repositories;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
+using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -35,6 +36,13 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ServiceComboId, opt => opt.MapFrom(src => src.ServiceComboId))
             .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
+
+        CreateMap<SkinTherapist, PreviewTherapistDto>()
+            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.SkinTherapistId))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
+            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.ApplicationUser.Age))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))
+            .ForMember(dest => dest.Experience, opt => opt.MapFrom(src => src.Experience));
 
         CreateMap<UpdateOrderDetailDto, OrderDetail>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
