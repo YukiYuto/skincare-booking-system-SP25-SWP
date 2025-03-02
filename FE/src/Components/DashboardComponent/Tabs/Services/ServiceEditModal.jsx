@@ -4,7 +4,7 @@ import styles from "./ServiceEditModal.module.css";
 
 const ServiceEditModal = ({ service, onClose }) => {
   const [formState, setFormState] = useState({
-    serviceId: service.serviceId, // Thêm serviceId vào state
+    serviceId: service.serviceId,
     serviceName: service.serviceName,
     description: service.description,
     price: service.price,
@@ -44,15 +44,7 @@ const ServiceEditModal = ({ service, onClose }) => {
           onClose();
         }
       } catch (error) {
-        if (error.response) {
-          console.error(
-            "API Error:",
-            error.response.status,
-            error.response.data
-          );
-        } else {
-          console.error("Error updating service:", error);
-        }
+        console.error("Error updating service:", error.response?.data || error);
       }
     },
     [formState, onClose]
@@ -66,15 +58,7 @@ const ServiceEditModal = ({ service, onClose }) => {
         onClose();
       }
     } catch (error) {
-      if (error.response) {
-        console.error(
-          "Delete API Error:",
-          error.response.status,
-          error.response.data
-        );
-      } else {
-        console.error("Error deleting service:", error);
-      }
+      console.error("Error deleting service:", error.response?.data || error);
     }
   }, [service.serviceId, onClose]);
 
@@ -82,71 +66,74 @@ const ServiceEditModal = ({ service, onClose }) => {
     <div className={styles.modal}>
       <div className={styles.modalContent}>
         <h2>Edit Service</h2>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Service Name:
-            <input
-              type="text"
-              name="serviceName"
-              value={formState.serviceName}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Description:
-            <textarea
-              name="description"
-              value={formState.description}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Price:
-            <input
-              type="number"
-              name="price"
-              value={formState.price}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Image URL:
-            <input
-              type="text"
-              name="imageUrl"
-              value={formState.imageUrl}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Service Type:
-            <select
-              name="serviceTypeId"
-              value={formState.serviceTypeId}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select a type</option>
-              {serviceTypes.map((type) => (
-                <option key={type.serviceTypeId} value={type.serviceTypeId}>
-                  {type.serviceTypeName}
-                </option>
+        <div className={styles.contentWrapper}>
+          <div className={styles.formSection}>
+            <form onSubmit={handleSubmit}>
+              {[
+                { label: "Service Name", name: "serviceName", type: "text" },
+                { label: "Description", name: "description", type: "textarea" },
+                { label: "Price", name: "price", type: "number" },
+                { label: "Image URL", name: "imageUrl", type: "text" },
+              ].map(({ label, name, type }) => (
+                <label key={name}>
+                  {label}:
+                  {type === "textarea" ? (
+                    <textarea
+                      name={name}
+                      value={formState[name]}
+                      onChange={handleChange}
+                      required
+                    />
+                  ) : (
+                    <input
+                      name={name}
+                      type={type}
+                      value={formState[name]}
+                      onChange={handleChange}
+                      required
+                    />
+                  )}
+                </label>
               ))}
-            </select>
-          </label>
-          <button type="submit" className={styles.submitButton}>
-            Update
-          </button>
-          <button type="button" onClick={onClose} className={styles.btn}>
-            Cancel
-          </button>
-          <button type="button" onClick={handleDelete} className={styles.btn}>
-            Delete
-          </button>
-        </form>
+              <label>
+                Service Type:
+                <select
+                  name="serviceTypeId"
+                  value={formState.serviceTypeId}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select a type</option>
+                  {serviceTypes.map(({ serviceTypeId, serviceTypeName }) => (
+                    <option key={serviceTypeId} value={serviceTypeId}>
+                      {serviceTypeName}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className={styles.buttonContainer}>
+                <button className={styles.submitButton} type="submit">
+                  Update
+                </button>
+                <button className={styles.cancelButton} type="button" onClick={onClose}>
+                  Cancel
+                </button>
+                <button className={styles.deleteButton} type="button" onClick={handleDelete}>
+                  Delete
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className={styles.imageSection}>
+            <img src={service.imageUrl} alt="Service" className={styles.serviceImage} />
+            <p><strong>Service ID:</strong> {service.serviceId}</p>
+            <p><strong>Created By:</strong> {service.createdBy || "N/A"}</p>
+            <p><strong>Updated By:</strong> {service.updatedBy || "N/A"}</p>
+            <p><strong>Created Time:</strong> {service.createdTime || "N/A"}</p>
+            <p><strong>Updated Time:</strong> {service.updatedTime || "N/A"}</p>
+            <p><strong>Status:</strong> {service.status || "N/A"}</p>
+          </div>
+        </div>
       </div>
     </div>
   );

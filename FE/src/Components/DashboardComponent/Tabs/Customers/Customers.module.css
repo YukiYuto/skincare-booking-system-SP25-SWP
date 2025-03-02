@@ -3,7 +3,12 @@
   color: var(--text-color);
   padding: 20px;
   border-radius: 8px;
-  position: relative; /* For proper modal positioning */
+  position: relative;
+  /* Add these to make container fit available space */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent container from scrolling */
 }
 
 .tabTitleContainer {

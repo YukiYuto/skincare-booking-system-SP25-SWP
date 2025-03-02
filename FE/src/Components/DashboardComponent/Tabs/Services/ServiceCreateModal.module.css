@@ -8,6 +8,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    padding: 20px;
 }
 
 .modalContent {
@@ -15,52 +18,84 @@
     color: var(--text-color);
     padding: 20px;
     border-radius: 8px;
-    width: 500px;
+    width: 600px;
     max-width: 90%;
+    max-height: 90vh;
     font-family: Raleway;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-    font-family: Raleway;
-    color: var(--accent-color);
-    margin-top: 0;
-}
-
-form {
+    z-index: 1001;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
 
-label {
-    margin-bottom: 10px;
+/* Two-column layout for form */
+.formContainer {
+    display: flex;
+    gap: 20px;
 }
 
-input,
-textarea,
-select {
+.formLeft {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.formRight {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+}
+
+/* Image preview */
+.imagePreview {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid var(--secondary-color);
-    border-radius: 4px;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: Lora;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    max-width: calc(50% - 8px);
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-top: 10px;
+    border: 2px solid var(--secondary-color);
 }
 
-.btn {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
+/* Styled file input */
+.fileInputWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     cursor: pointer;
+    border: 2px dashed var(--secondary-color);
+    padding: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.fileInputWrapper:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.fileInputWrapper input {
+    display: none;
+}
+
+.fileInputLabel {
+    color: var(--accent-color);
     font-family: Montserrat;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+/* Align buttons side by side */
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
 }
 
 .submitButton {
+    flex: 1;
     background-color: var(--primary-color);
     color: var(--text-color);
     font-family: Montserrat;
@@ -68,15 +103,24 @@ select {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-bottom: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+    background-color: var(--accent-color);
 }
 
 .btn {
-    background-color: var(--accent-color);
+    flex: 1;
+    background-color: var(--secondary-color);
     color: white;
     font-family: Montserrat;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .btn:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--accent-color);
 }

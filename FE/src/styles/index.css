@@ -44,8 +44,12 @@ p {
   --accent-color: #c49e85;
   --background-color: #f5e9e2;
   --text-color: #6f4e37;
+  --scrollbar-width: 8px;
+  --scrollbar-track: var(--background-color);
+  --scrollbar-thumb: var(--accent-color);
 }
 
+<<<<<<< Updated upstream
 @layer components {
   .sticky-header {
     @apply sticky top-0 z-1000 shadow-xs;
@@ -136,3 +140,30 @@ p {
     @apply font-semibold;
   }
 }
+=======
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-color);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) var(--background-color);
+}
+>>>>>>> Stashed changes

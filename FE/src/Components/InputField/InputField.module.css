@@ -52,11 +52,12 @@
 
 .togglePassword {
   position: absolute;
-  left: 64%;
+  right: 12px;
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
+  width: min-content;
 }
 
 .eyeIcon {

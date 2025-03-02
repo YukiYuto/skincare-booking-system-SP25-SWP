@@ -3,6 +3,12 @@
   color: var(--text-color);
   padding: 20px;
   border-radius: 8px;
+  /* Add these to make container fit available space */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Prevent container from scrolling */
 }
 
 .tabTitleContainer {
@@ -84,7 +90,14 @@
   color: var(--text-color);
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10; /* Reduce this if necessary */
+  cursor: pointer;
+  user-select: none;
+}
+
+.serviceTable th:hover {
+  background-color: var(--accent-color);
+  color: white;
 }
 
 .serviceTable tr:nth-child(even) {
@@ -106,6 +119,5 @@
 }
 
 .editButton:hover {
-  padding: 4px;
-  background-color: var(--text-color);
+  padding: 4px 10px;
 }
