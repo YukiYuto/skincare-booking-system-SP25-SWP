@@ -10,8 +10,6 @@ import { ForgotPage } from "../Pages/ForgotPage/ForgotPage";
 import { ResetPage } from "../Pages/ResetPage/ResetPage";
 import CustomerProfile from "../Pages/CustomerProfile/CustomerProfile";
 import VerifyEmail from "../Components/VerifyEmail/VerifyEmail";
-
-
 import Dashboard from "../Pages/DashBoard/Dashboard";
 import Revenue from "../Components/DashboardComponent/Tabs/Revenue/Revenue";
 import Customers from "../Components/DashboardComponent/Tabs/Customers/Customers";
@@ -19,6 +17,8 @@ import SkinTherapists from "../Components/DashboardComponent/Tabs/Therapists/Ski
 import Services from '../Components/DashboardComponent/Tabs/Services/Services';
 import Orders from "../Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "../Components/DashboardComponent/Tabs/Schedule/Schedule";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+
 
 export const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -59,4 +59,8 @@ export const router = createBrowserRouter([
     path: "verify-email",
     element: <VerifyEmail />,
   },
+  {
+    path: "error",
+    element: <ErrorPage />
+  }
 ]);
