@@ -14,13 +14,6 @@ namespace SkincareBookingSystem.API.Controllers
             _orderService = orderService;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto)
-        {
-            var result = await _orderService.CreateOrder(User, createOrderDto);
-            return StatusCode(result.StatusCode, result);
-        }
-
         [HttpGet("all")]
         public async Task<IActionResult> GetAllOrders()
         {

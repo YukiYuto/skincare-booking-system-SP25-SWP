@@ -48,6 +48,23 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string VideoNotFound = "Video not found";
         }
 
+        public static class Order
+        {
+            public static class Message
+            {
+                public const string Created = "Order created successfully";
+                public const string NotCreated = "Failed to create order";
+                public const string NotFound = "Order not found";
+                public const string Found = "Order found";
+                public const string EmptyList = "Order list is empty";
+                public const string Invalid = "Invalid order";
+            }
+
+            public const string Created = "CREATED";
+            public const string Paid = "PAID";
+            public const string Cancelled = "CANCELLED";
+        }
+
         public static class OrderDetail
         {
             public const string NotFound = "No order details found";
@@ -55,6 +72,8 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string EmptyList = "Order detail list is empty";
             public const string NotProvided = "No order details provided";
             public const string Invalid = "Invalid order details";
+            public const string Created = "Order detail(s) created successfully";
+            public const string NotCreated = "Failed to create order detail(s)";
         }
 
         public static class ServiceType

@@ -15,13 +15,7 @@ namespace SkincareBookingSystem.API.Controllers
             _orderDetailService = orderDetailService;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateOrderDetail([FromBody] CreateOrderDetailDto createOrderDetailDto)
-        {
-            var result = await _orderDetailService.CreateOrderDetail(User, createOrderDetailDto);
-            return StatusCode(result.StatusCode, result);
-        }
-
+        
         [HttpGet("all")]
         public async Task<IActionResult> GetAllOrderDetails()
         {
@@ -43,7 +37,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteOrderDetail([FromQuery] Guid id)
         {
             var result = await _orderDetailService.DeleteOrderDetail(id);
