@@ -50,6 +50,7 @@ p {
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 @layer components {
   .sticky-header {
     @apply sticky top-0 z-1000 shadow-xs;
@@ -141,6 +142,8 @@ p {
   }
 }
 =======
+=======
+>>>>>>> Stashed changes
 /* For Webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: var(--scrollbar-width);
@@ -165,5 +168,9 @@ p {
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--accent-color) var(--background-color);
+<<<<<<< Updated upstream
+}
+>>>>>>> Stashed changes
+=======
 }
 >>>>>>> Stashed changes
