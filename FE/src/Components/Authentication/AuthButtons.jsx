@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, Menu, Button, Spin } from "antd";
 import { toast } from "react-toastify";
 import { LogoutOutlined, UserOutlined, ProfileOutlined, DownOutlined } from "@ant-design/icons";
@@ -10,12 +10,14 @@ import { useState } from "react";
 const AuthButtons = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleLogout = () => {
     setLoading(true);
     try{
       dispatch(logoutAction());
+      navigate("/");
       toast.success("Logout Successfully!")
     } finally {
       setLoading(false);
