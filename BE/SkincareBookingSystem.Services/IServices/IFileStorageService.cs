@@ -13,6 +13,7 @@ namespace SkincareBookingSystem.Services.IServices
     public interface IFileStorageService
     {
         Task<ResponseDto> UploadAvatarImage(UploadFileDto uploadFileDto, ClaimsPrincipal user);
-        Task<ResponseDto> GetAvatarImageUrl(ClaimsPrincipal user);
+        Task<ResponseDto> UploadServiceImage(ClaimsPrincipal user, UploadFileDto uploadFileDto);
+        Task<ResponseDto> UploadServiceComboImage(ClaimsPrincipal user, UploadFileDto uploadFileDto);
     }
 }

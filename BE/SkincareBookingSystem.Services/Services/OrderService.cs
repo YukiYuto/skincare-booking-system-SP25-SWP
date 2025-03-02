@@ -22,37 +22,6 @@ namespace SkincareBookingSystem.Services.Services
             _autoMapperService = autoMapperService;
         }
 
-        public async Task<ResponseDto> CreateOrder(ClaimsPrincipal User, CreateOrderDto createOrderDto)
-        {
-            try
-            {
-                var order = _autoMapperService.Map<CreateOrderDto, Models.Domain.Order>(createOrderDto);
-
-                order.OrderId = Guid.NewGuid();
-                order.CreatedBy = User.Identity?.Name;
-
-                await _unitOfWork.Order.AddAsync(order);
-                await _unitOfWork.SaveAsync();
-
-                return new ResponseDto
-                {
-                    Result = order,
-                    Message = "Order created successfully",
-                    IsSuccess = true,
-                    StatusCode = 201
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    Message = $"Error when creating order: {ex.Message}",
-                    IsSuccess = false,
-                    StatusCode = 500
-                };
-            }
-        }
-
         public async Task<ResponseDto> DeleteOrder(Guid id)
         {
             var order = await _unitOfWork.Order.GetAsync(o => o.OrderId == id);
@@ -103,6 +72,7 @@ namespace SkincareBookingSystem.Services.Services
                     StatusCode = 404
                 };
             }
+
             return new ResponseDto
             {
                 Result = order,
@@ -137,7 +107,6 @@ namespace SkincareBookingSystem.Services.Services
                 IsSuccess = true,
                 StatusCode = 200
             };
-
         }
     }
 }

@@ -23,12 +23,5 @@ namespace SkincareBookingSystem.API.Controllers
             var responseDto = await _fileStorageService.UploadAvatarImage(uploadFileDto, User);
             return StatusCode(responseDto.StatusCode, responseDto);
         }
-
-        [HttpGet("avatar")]
-        public async Task<ActionResult> GetAvatarImageUrl()
-        {
-            var responseDto = await _fileStorageService.GetAvatarImageUrl(User);
-            return StatusCode(responseDto.StatusCode, responseDto);
-        }
     }
 }

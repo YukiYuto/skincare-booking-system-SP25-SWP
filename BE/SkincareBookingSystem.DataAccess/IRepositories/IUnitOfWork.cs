@@ -30,6 +30,7 @@ public interface IUnitOfWork
     ITherapistServiceTypeRepository TherapistServiceType { get; }
     ITypeItemRepository TypeItem { get; }
     IUserManagerRepository UserManager { get; }
+    IPaymentRepository Payment { get; }
     Task<int> SaveAsync();
     
     Task<IDbContextTransaction> BeginTransactionAsync();
