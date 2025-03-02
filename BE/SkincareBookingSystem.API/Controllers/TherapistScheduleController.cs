@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.BookingSchedule;
+using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
@@ -16,37 +17,65 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateBookingSchedule([FromBody] CreateTherapistScheduleDto createBookingScheduleDto)
+        public async Task<ActionResult<ResponseDto>> CreateTherapistSchedule([FromBody] CreateTherapistScheduleDto bookingScheduleDto)
         {
-            var result = await _bookingScheduleService.CreateTherapistSchedule(User, createBookingScheduleDto);
-            return StatusCode(result.StatusCode, result);
-        }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Invalid input data.",
+                    Result = ModelState.Values
+                        .SelectMany(v => v.Errors.Select(e => e.ErrorMessage))
+                });
+            }
 
-        [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetBookingScheduleById(Guid id)
-        {
-            var result = await _bookingScheduleService.GetTherapistScheduleById(id);
+            var result = await _bookingScheduleService.CreateTherapistSchedule(User, bookingScheduleDto);
             return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllBookingSchedules()
+        public async Task<ActionResult<ResponseDto>> GetAllTherapistSchedules()
         {
             var result = await _bookingScheduleService.GetAllTherapistSchedules();
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateBookingSchedule([FromBody] UpdateTherapistScheduleDto updateBookingScheduleDto)
+        [HttpGet("get/{id}")]
+        public async Task<ActionResult<ResponseDto>> GetTherapistScheduleById(Guid scheduleId)
         {
-            var result = await _bookingScheduleService.UpdateTherapistSchedule(User, updateBookingScheduleDto);
+            var result = await _bookingScheduleService.GetTherapistScheduleById(User, scheduleId);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet("{TherapistId}/TherapistSchedule")]
+        public async Task<ActionResult<ResponseDto>> GetTherapistScheduleByTherapistId(Guid therapistId)
+        {
+            var result = await _bookingScheduleService.GetTherapistScheduleByTherapistId(therapistId);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPut("update")]
+        public async Task<ActionResult<ResponseDto>> UpdateTherapistSchedule([FromBody] UpdateTherapistScheduleDto bookingScheduleDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Invalid input data.",
+                    Result = ModelState.Values
+                        .SelectMany(v => v.Errors.Select(e => e.ErrorMessage))
+                });
+            }
+            var result = await _bookingScheduleService.UpdateTherapistSchedule(User, bookingScheduleDto);
             return StatusCode(result.StatusCode, result);
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteBookingSchedule(Guid id)
+        public async Task<ActionResult<ResponseDto>> DeleteTherapistSchedule(Guid scheduleId)
         {
-            var result = await _bookingScheduleService.DeleteTherapistSchedule(User, id);
+            var result = await _bookingScheduleService.DeleteTherapistSchedule(User, scheduleId);
             return StatusCode(result.StatusCode, result);
         }
     }

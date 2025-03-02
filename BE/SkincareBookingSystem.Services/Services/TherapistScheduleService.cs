@@ -28,109 +28,136 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> CreateTherapistSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto createBookingScheduleDto)
         {
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var bookingScheduleToCreate = _mapper.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
+            bookingScheduleToCreate.CreatedBy = User.FindFirstValue("FullName");
+
             try
             {
-
-                var bookingSchedule = _mapper.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
-
-                bookingSchedule.TherapistScheduleId = Guid.NewGuid();
-                bookingSchedule.CreatedBy = User.Identity?.Name;
-
-                await _unitOfWork.TherapistSchedule.AddAsync(bookingSchedule);
+                await _unitOfWork.TherapistSchedule.AddAsync(bookingScheduleToCreate);
                 await _unitOfWork.SaveAsync();
-
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    Message = "Booking schedule created successfully",
-                    StatusCode = 201,
-                    Result = bookingSchedule
-                };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = $"Booking schedule creation failed: {ex.Message}",
-                    StatusCode = 500,
-                };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotCreated,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
             }
+            return SuccessResponse.Build(
+                message: StaticResponseMessage.BookingSchedule.Created,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: bookingScheduleToCreate);
         }
 
         public async Task<ResponseDto> GetAllTherapistSchedules()
         {
             var bookingSchedules = await _unitOfWork.TherapistSchedule.GetAllAsync();
-            return new ResponseDto
-            {
-                IsSuccess = true,
-                Message = "All booking schedules retrieved successfully",
-                StatusCode = 200,
-                Result = bookingSchedules
-            };
+            return (bookingSchedules.Any()) ?
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.RetrievedAll,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: bookingSchedules)
+                :
+                ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
         }
 
-        public async Task<ResponseDto> GetTherapistScheduleById(Guid id)
+        public async Task<ResponseDto> GetTherapistScheduleById(ClaimsPrincipal User, Guid scheduleId)
         {
-            var bookingSchedule = await _unitOfWork.TherapistSchedule.GetAsync(b => b.TherapistScheduleId == id);
-            if (bookingSchedule == null)
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Booking schedule not found",
-                    StatusCode = 404
-                };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            return new ResponseDto
+            var bookingSchedule = await _unitOfWork.TherapistSchedule.GetAsync(b => b.TherapistScheduleId == scheduleId);
+            return (bookingSchedule is null) ?
+                ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound)
+                :
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.Retrieved,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: bookingSchedule);
+        }
+
+        public async Task<ResponseDto> GetTherapistScheduleByTherapistId(Guid therapistId)
+        {
+            if (await _unitOfWork.SkinTherapist.GetAsync(t => t.SkinTherapistId == therapistId) is null)
             {
-                IsSuccess = true,
-                Message = "Booking schedule retrieved successfully",
-                StatusCode = 200,
-                Result = bookingSchedule
-            };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var bookingSchedules = await _unitOfWork.TherapistSchedule.GetAllAsync(b => b.TherapistId == therapistId);
+
+            return (bookingSchedules.Any()) ?
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.RetrievedAll,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: bookingSchedules)
+                :
+                ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
         }
 
         public async Task<ResponseDto> UpdateTherapistSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto updateBookingScheduleDto)
         {
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
             var bookingSchedule = await _unitOfWork.TherapistSchedule.GetAsync(b => b.TherapistScheduleId == updateBookingScheduleDto.BookingScheduleId);
             if (bookingSchedule == null)
             {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Booking schedule not found",
-                    StatusCode = 404
-                };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
             var updatedData = _mapper.Map<UpdateTherapistScheduleDto, TherapistSchedule>(updateBookingScheduleDto);
-            bookingSchedule.UpdatedBy = User.Identity?.Name;
-
             _unitOfWork.TherapistSchedule.Update(bookingSchedule, updatedData);
-            await _unitOfWork.SaveAsync();
 
-            return new ResponseDto
-            {
-                IsSuccess = true,
-                Message = "Booking schedule updated successfully",
-                StatusCode = 200,
-                Result = bookingSchedule
-            };
+            return (!await SaveChangesAsync()) ?
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.Updated,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: updatedData)
+                :
+                ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotUpdated,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
         }
 
-        public async Task<ResponseDto> DeleteTherapistSchedule(ClaimsPrincipal User, Guid id)
+        public async Task<ResponseDto> DeleteTherapistSchedule(ClaimsPrincipal User, Guid scheduleId)
         {
-            var booking = await _unitOfWork.TherapistSchedule.GetAsync(s => s.TherapistScheduleId == id);
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var booking = await _unitOfWork.TherapistSchedule.GetAsync(s => s.TherapistScheduleId == scheduleId);
             if (booking == null)
             {
-                return new ResponseDto
-                {
-                    Message = "Service not found",
-                    IsSuccess = false,
-                    StatusCode = 404
-                };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
             booking.Status = StaticOperationStatus.BookingSchedule.Deleted;
             booking.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;   
@@ -145,7 +172,6 @@ namespace SkincareBookingSystem.Services.Services
                 ErrorResponse.Build(
                     message: StaticResponseMessage.BookingSchedule.NotDeleted,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
-
         }
 
         private async Task<bool> SaveChangesAsync()
