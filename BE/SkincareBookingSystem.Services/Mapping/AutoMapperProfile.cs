@@ -12,6 +12,7 @@ using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Customer;
 using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.Repositories;
+using SkincareBookingSystem.Models.Dto.Booking.Order;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -19,16 +20,17 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<CreateOrderDto, Order>()
-            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-
         CreateMap<UpdateOrderDto, Order>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
+        CreateMap<BundleOrderDto, Order>()
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Order.CustomerId))
+            .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Order.TotalPrice))
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Order.Created));
+
         CreateMap<CreateOrderDetailDto, OrderDetail>()
-            .ForMember(dest => dest.OrderDetailId, opt => opt.MapFrom(src => Guid.NewGuid()))
-            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
             .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
             .ForMember(dest => dest.ServiceComboId, opt => opt.MapFrom(src => src.ServiceComboId))
             .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))

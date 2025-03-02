@@ -13,7 +13,6 @@ namespace SkincareBookingSystem.Services.IServices
     {
         Task<ResponseDto> GetOrderDetailById(Guid orderDetailId);
         Task<ResponseDto> GetAllOrderDetails();
-        Task<ResponseDto> CreateOrderDetail(ClaimsPrincipal User, CreateOrderDetailDto newOrderDetail);
         Task<ResponseDto> UpdateOrderDetail(ClaimsPrincipal User, UpdateOrderDetailDto orderDetail);
         Task<ResponseDto> DeleteOrderDetail(Guid orderDetailId);
     }
