@@ -3,6 +3,7 @@ using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Customer;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.Helpers.Responses;
+using SkincareBookingSystem.Services.Helpers.Users;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Utilities.Constants;
 using System;
@@ -68,6 +69,32 @@ namespace SkincareBookingSystem.Services.Services
                 message: StaticOperationStatus.Customer.Found,
                 statusCode: StaticOperationStatus.StatusCode.Ok,
                 result: customerDto);
+        }
+
+        public async Task<ResponseDto> GetCustomerIdByUserId(ClaimsPrincipal User)
+        {
+            if (UserError.NotExists(User))
+            {
+                return ErrorResponse.Build(
+                    message: StaticOperationStatus.User.UserNotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var customerFromDb = await _unitOfWork.Customer.GetAsync(
+                filter: c => c.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier),
+                includeProperties: nameof(ApplicationUser));
+
+            if (customerFromDb is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticOperationStatus.Customer.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            return SuccessResponse.Build(
+                message: StaticOperationStatus.Customer.Found,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: customerFromDb.CustomerId);
         }
     }
 }

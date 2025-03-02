@@ -7,10 +7,23 @@ namespace SkincareBookingSystem.DataAccess.Repositories
 {
     public class OrderRepository : Repository<Order>, IOrderRepository
     {
-        private readonly ApplicationDbContext _context; 
+        private readonly ApplicationDbContext _context;
+
         public OrderRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
+        }
+
+
+        public Task<Order> GetOrderByOrderNumber(long orderNumber)
+        {
+            return _context.Order.FirstOrDefaultAsync(o => o.OrderNumber == orderNumber);
+        }
+
+        public async Task<long> GenerateUniqueNumberAsync()
+        {
+            var maxOrderNumber = await _context.Order.MaxAsync(o => (long?)o.OrderNumber) ?? 0;
+            return maxOrderNumber + 1;
         }
 
         public void Update(Order target, Order source)

@@ -27,8 +27,7 @@ namespace SkincareBookingSystem.Services.Services
             try
             {
                 var order = _autoMapperService.Map<CreateOrderDto, Models.Domain.Order>(createOrderDto);
-
-                order.OrderId = Guid.NewGuid();
+                order.OrderNumber = await _unitOfWork.Order.GenerateUniqueNumberAsync();
                 order.CreatedBy = User.Identity?.Name;
 
                 await _unitOfWork.Order.AddAsync(order);
@@ -103,6 +102,7 @@ namespace SkincareBookingSystem.Services.Services
                     StatusCode = 404
                 };
             }
+
             return new ResponseDto
             {
                 Result = order,
@@ -137,7 +137,6 @@ namespace SkincareBookingSystem.Services.Services
                 IsSuccess = true,
                 StatusCode = 200
             };
-
         }
     }
 }

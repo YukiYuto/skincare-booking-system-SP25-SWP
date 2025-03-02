@@ -36,6 +36,8 @@ namespace SkincareBookingSystem.DataAccess.DBContext
         public DbSet<TherapistSchedule> TherapistSchedules { get; set; }
         public DbSet<TypeItem> TypeItem { get; set; }
         public DbSet<TherapistServiceType> TherapistServiceTypes { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -168,6 +170,18 @@ namespace SkincareBookingSystem.DataAccess.DBContext
                 .HasOne(ts => ts.SkinTherapist)
                 .WithMany(st => st.TherapistSchedules)
                 .HasForeignKey(ts => ts.TherapistId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            //OrderNumber is unique
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.OrderNumber)
+                .IsUnique();
+        
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.Orders)
+                .WithMany()
+                .HasForeignKey(p => p.OrderNumber)
+                .HasPrincipalKey(o => o.OrderNumber)
                 .OnDelete(DeleteBehavior.Restrict);
         }
             

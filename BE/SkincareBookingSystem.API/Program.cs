@@ -1,9 +1,11 @@
 ﻿using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Net.payOS;
 using SkincareBookingSystem.API.Extensions;
 using SkincareBookingSystem.API.Middlewares;
 using SkincareBookingSystem.DataAccess.DBContext;
@@ -20,7 +22,8 @@ namespace SkincareBookingSystem.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.  
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(
+                opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             // Configure DbContext with SQL Server  
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -64,7 +67,7 @@ namespace SkincareBookingSystem.API
                     }
                 });
             });
-            
+
             // Add JWT Authentication
             builder.Services.AddAuthentication(options =>
             {
@@ -80,10 +83,25 @@ namespace SkincareBookingSystem.API
                     ValidateAudience = true,
                     ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
                     ValidAudience = builder.Configuration["JWT:ValidAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                 };
             });
+            
+            //PayOs
 
+            // Lấy thông tin từ `appsettings.json`
+            var payOSClientId = builder.Configuration["Environment:PAYOS_CLIENT_ID"]
+                                ?? throw new Exception("Cannot find PAYOS_CLIENT_ID");
+
+            var payOSApiKey = builder.Configuration["Environment:PAYOS_API_KEY"]
+                              ?? throw new Exception("Cannot find PAYOS_API_KEY");
+
+            var payOSChecksumKey = builder.Configuration["Environment:PAYOS_CHECKSUM_KEY"]
+                                   ?? throw new Exception("Cannot find PAYOS_CHECKSUM_KEY");
+
+            // Đăng ký PayOS vào DI Container
+            builder.Services.AddSingleton(new PayOS(payOSClientId, payOSApiKey, payOSChecksumKey));
 
             // Register services from Extensions
             builder.Services.RegisterServices(builder.Configuration);
@@ -103,6 +121,39 @@ namespace SkincareBookingSystem.API
 
             var app = builder.Build();
 
+            app.Use(async (context, next) =>
+            {
+                var loggerFactory = context.RequestServices.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger("CORSMiddleware");
+
+                logger.LogInformation($"Request from origin: {context.Request.Headers["Origin"]}");
+                logger.LogInformation($"Request method: {context.Request.Method}");
+                logger.LogInformation($"Request path: {context.Request.Path}");
+
+                if (context.Request.Method == "OPTIONS")
+                {
+                    context.Response.Headers.Add("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
+                    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, Authorization");
+                    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                    context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+                    context.Response.StatusCode = 200;
+                    await context.Response.CompleteAsync();
+                }
+                else
+                {
+                    await next();
+                }
+
+                if (context.Response.Headers.ContainsKey("Access-Control-Allow-Origin"))
+                {
+                    logger.LogInformation(
+                        $"Response Access-Control-Allow-Origin: {context.Response.Headers["Access-Control-Allow-Origin"]}");
+                }
+            });
+
+            app.UseCors("AllowSpecificOrigin");
+            
+
             // Apply database migrations  
             ApplyMigration(app);
 
@@ -111,9 +162,9 @@ namespace SkincareBookingSystem.API
             {
                 app.UseDeveloperExceptionPage(); // Thêm dev page trong môi trường phát triển  
             }
-            
+
             app.UseMiddleware<GlobalExceptionHandllingMiddleware>();
-            
+
             app.UseHttpsRedirection();
 
             // Kích hoạt Swagger middleware  
