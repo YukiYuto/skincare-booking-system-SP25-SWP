@@ -29,7 +29,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("occupied-slots")]
+        [HttpGet("slots")]
         public async Task<IActionResult> GetOccupiedSlotsFromTherapist(Guid therapistId, DateTime date)
         {
             var result = await _bookingService.GetOccupiedSlotsFromTherapist(therapistId, date);
