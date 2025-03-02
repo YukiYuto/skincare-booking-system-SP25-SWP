@@ -3,7 +3,10 @@ using SkincareBookingSystem.DataAccess.Repositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.OrderDetails;
 using SkincareBookingSystem.Models.Dto.Response;
+using SkincareBookingSystem.Services.Helpers.Responses;
+using SkincareBookingSystem.Services.Helpers.Users;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,36 +25,6 @@ namespace SkincareBookingSystem.Services.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-        }
-
-        public async Task<ResponseDto> CreateOrderDetail(ClaimsPrincipal User, CreateOrderDetailDto createOrderDetailDto)
-        {
-            try
-            {
-
-                var orderDetail = _mapper.Map<CreateOrderDetailDto, OrderDetail>(createOrderDetailDto);
-                orderDetail.OrderDetailId = Guid.NewGuid();
-
-                await _unitOfWork.OrderDetail.AddAsync(orderDetail);
-                await _unitOfWork.SaveAsync();
-
-                return new ResponseDto
-                {
-                    Result = orderDetail,
-                    Message = "Order Detail created successfully",
-                    IsSuccess = true,
-                    StatusCode = 201
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    Message = $"Error when creating Order Detail: {ex.Message}",
-                    IsSuccess = false,
-                    StatusCode = 500
-                };
-            }
         }
 
         public Task<ResponseDto> DeleteOrderDetail(Guid orderDetailId)
@@ -91,7 +64,7 @@ namespace SkincareBookingSystem.Services.Services
                 StatusCode = 200
             };
         }
-        
+
         public async Task<ResponseDto> UpdateOrderDetail(ClaimsPrincipal User, UpdateOrderDetailDto orderDetailDto)
         {
             var orderDetail = await _unitOfWork.OrderDetail.GetAsync(o => o.OrderDetailId == orderDetailDto.OrderDetailId);
