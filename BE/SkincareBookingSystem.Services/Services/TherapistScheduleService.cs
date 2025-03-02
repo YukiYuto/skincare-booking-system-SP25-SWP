@@ -155,12 +155,19 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var booking = await _unitOfWork.TherapistSchedule.GetAsync(s => s.TherapistScheduleId == scheduleId);
-            if (booking == null || booking.Status == StaticOperationStatus.BookingSchedule.Deleted)
+            if (booking == null)
             {
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.BookingSchedule.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
+            if (booking.Status == StaticOperationStatus.BookingSchedule.Deleted)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.AlreadyDeleted,
+                    statusCode: StaticOperationStatus.StatusCode.BadRequest);
+            }
+
             booking.Status = StaticOperationStatus.BookingSchedule.Deleted;
             booking.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;   
             booking.UpdatedBy = User.FindFirstValue("FullName");

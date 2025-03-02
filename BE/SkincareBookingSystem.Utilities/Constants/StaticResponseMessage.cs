@@ -53,6 +53,7 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public const string Created = "Booking schedule created successfully";
             public const string Deleted = "Booking schedule deleted successfully";
+            public const string AlreadyDeleted = "Booking schedule already deleted";
             public const string RetrievedAll = "All booking schedules retrieved successfully";
             public const string Retrieved = "Booking schedule retrieved successfully";
             public const string Updated = "Booking schedule updated successfully";
