@@ -89,6 +89,15 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotFound = "Skin therapist(s) not found";
             public const string Found = "Skin therapist(s) found";
         }
+
+        public static class Slot
+        {
+            public const string NotFound = "No slot found";
+            public const string Found = "Slot found";
+            public const string EmptyList = "Slot list is empty";
+            public const string Invalid = "Invalid slot";
+        }
+
         public static class StatusCode
         {
             public const int Ok = 200;

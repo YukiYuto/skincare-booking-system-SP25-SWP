@@ -15,7 +15,7 @@ namespace SkincareBookingSystem.Services.IServices
     public interface IBookingService
     {
         Task<ResponseDto> GetTherapistsForServiceType(Guid serviceTypeId);
-        Task<ResponseDto> GetOccupiedSlots(Guid therapistId, DateTime date);
+        Task<ResponseDto> GetOccupiedSlotsFromTherapist(Guid therapistId, DateTime date);
         Task<ResponseDto> BundleOrder(BundleOrderDto bundleOrderDto, ClaimsPrincipal User);
 
     }

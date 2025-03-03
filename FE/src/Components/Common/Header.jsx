@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css"; // Import custom CSS file
 import Brand from "../Brand/Brand";
+import AuthButton from "../Authentication/AuthButtons";
 
 const Header = () => {
   return (
@@ -49,12 +50,7 @@ const Header = () => {
 
           {/* Login & Register Buttons */}
           <div className={styles.navHeaderAuth}>
-            <Link to="/login" className={styles.btnPrimary} aria-label="Login">
-              Login
-            </Link>
-            <Link to="/register" className={styles.btnSecondary} aria-label="Register">
-              Register
-            </Link>
+            <AuthButton />
           </div>
         </div>
       </div>
