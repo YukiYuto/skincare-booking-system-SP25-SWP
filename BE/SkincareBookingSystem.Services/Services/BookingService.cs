@@ -86,9 +86,6 @@ namespace SkincareBookingSystem.Services.Services
                 order.OrderNumber = await _unitOfWork.Order.GenerateUniqueNumberAsync();
                 order.CreatedBy = User.Identity?.Name;
 
-                await _unitOfWork.Order.AddAsync(order);
-                await _unitOfWork.SaveAsync();
-
                 // Map OrderDetails and Assign OrderId
                 var orderDetails = _autoMapperService.MapCollection<CreateOrderDetailDto, OrderDetail>(bundleOrderDto.OrderDetails).ToList();
                 orderDetails.ForEach(detail =>
@@ -96,8 +93,9 @@ namespace SkincareBookingSystem.Services.Services
                     detail.OrderId = order.OrderId;
                 });
                 order.TotalPrice = GetTotalPrice(orderDetails);
-
-                await _unitOfWork.OrderDetail.AddRangeAsync(orderDetails);
+                
+                //Lưu 1 lần xuống dưới Db
+                await _unitOfWork.Order.AddAsync(order);
                 await _unitOfWork.SaveAsync();
 
                 await transaction.CommitAsync();

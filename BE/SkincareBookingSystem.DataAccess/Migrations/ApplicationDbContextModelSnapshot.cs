@@ -1057,9 +1057,8 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uuid");
@@ -1452,7 +1451,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Transaction", b =>
                 {
-                    b.HasOne("SkincareBookingSystem.Models.Domain.ApplicationUser", "ApplicationUser")
+                    b.HasOne("SkincareBookingSystem.Models.Domain.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1468,7 +1467,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationUser");
+                    b.Navigation("Customer");
 
                     b.Navigation("Orders");
 
