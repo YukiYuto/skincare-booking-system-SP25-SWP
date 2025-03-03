@@ -27,7 +27,6 @@ public class AutoMapperProfile : Profile
         CreateMap<BundleOrderDto, Order>()
             .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Order.CustomerId))
             .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Order.TotalPrice))
-            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Order.Created));
 
