@@ -6,7 +6,7 @@ namespace SkincareBookingSystem.Models.Domain;
 public enum PaymentStatus
 {
     Pending = 0,
-    Completed = 1,
+    Paid = 1,
     Cancelled = 2
 }
 

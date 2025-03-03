@@ -6,6 +6,7 @@ using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Payment;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using Transaction = SkincareBookingSystem.Models.Domain.Transaction;
 
 namespace SkincareBookingSystem.Services.Services;
 
@@ -53,7 +54,8 @@ public class PaymentService : IPaymentService
                 };
             }
 
-            var (services, serviceCombos) = await _unitOfWork.OrderDetail.GetServicesAndCombosByOrderIdAsync(order.OrderId);
+            var (services, serviceCombos) =
+                await _unitOfWork.OrderDetail.GetServicesAndCombosByOrderIdAsync(order.OrderId);
 
             // Chuyển danh sách thành Dictionary để truy xuất nhanh hơn
             var serviceDict = services.ToDictionary(s => s.ServiceId);
@@ -142,9 +144,85 @@ public class PaymentService : IPaymentService
     }
 
 
-    public Task<ResponseDto> ConfirmPayOsTransaction(ConfirmPaymentDto confirmPaymentDto)
+    public async Task<ResponseDto> ConfirmPayOsTransaction(ConfirmPaymentDto confirmPaymentDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var order = await _unitOfWork.Order.GetOrderByOrderNumber(confirmPaymentDto.orderNumber);
+            if (order is null)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Order does not exist",
+                    IsSuccess = false,
+                    StatusCode = 404,
+                    Result = null
+                };
+            }
+            
+            PaymentLinkInformation transactionInfo = await _payOs.getPaymentLinkInformation(confirmPaymentDto.orderNumber);
+            if (transactionInfo == null)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Transaction not found or not successful",
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Result = null
+                };
+            }
+            
+            var payment = await _unitOfWork.Payment.GetPaymentByOrderNumber(confirmPaymentDto.orderNumber);
+            if (payment == null)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Payment record not found",
+                    IsSuccess = false,
+                    StatusCode = 404,
+                    Result = null
+                };
+            }
+
+            payment.Status = PaymentStatus.Paid;
+            _unitOfWork.Payment.Update(payment);
+            
+            var transaction = new Transaction()
+            {
+                CustomerId = order.CustomerId,
+                OrderId = order.OrderId,
+                PaymentId = confirmPaymentDto.paymentTransactionId,
+                Amount = payment.Amount,
+                TransactionMethod = "Tranfer",
+                TransactionDateTime = DateTime.UtcNow
+            };
+
+            await _unitOfWork.Transaction.AddAsync(transaction);
+            await _unitOfWork.SaveAsync();
+
+            return new ResponseDto()
+            {
+                Message = "Payment confirmed successfully",
+                IsSuccess = true,
+                StatusCode = 200,
+                Result = new
+                {
+                    TransactionId = transaction.PaymentId,
+                    Status = payment.Status,
+                    PayOS_ConfirmUrl = transactionInfo.transactions
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ResponseDto()
+            {
+                Message = ex.Message,
+                IsSuccess = false,
+                StatusCode = 500,
+                Result = null
+            };
+        }
     }
 
     public Task<ResponseDto> CancelPayOsPaymentLink(ClaimsPrincipal User, Guid paymentTransactionId,

@@ -83,8 +83,6 @@ namespace SkincareBookingSystem.Services.Services
             {
                 // Create Order
                 var order = _autoMapperService.Map<BundleOrderDto, Order>(bundleOrderDto);
-
-                order.OrderId = Guid.NewGuid();
                 order.OrderNumber = await _unitOfWork.Order.GenerateUniqueNumberAsync();
                 order.CreatedBy = User.Identity?.Name;
 
