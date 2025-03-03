@@ -86,25 +86,24 @@ const Services = () => {
             <img src={addIcon} alt="Add Service" />
           </button>
         </div>
+
         <div className={styles.filterContainer}>
-          <div className={styles.filterGroup}>
-            <select
-              id="serviceTypeFilter"
-              value={selectedServiceType}
-              onChange={handleFilterChange}
-              className={styles.filterSelect}
-            >
-              <option value="all">All Service Types</option>
-              {serviceTypes.map((type) => (
-                <option
-                  key={type.serviceTypeId}
-                  value={type.serviceTypeId.toString()}
-                >
-                  {type.serviceTypeName}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            id="serviceTypeFilter"
+            value={selectedServiceType}
+            onChange={handleFilterChange}
+            className={styles.filterSelect}
+          >
+            <option value="all">All Service Types</option>
+            {serviceTypes.map((type) => (
+              <option
+                key={type.serviceTypeId}
+                value={type.serviceTypeId.toString()}
+              >
+                {type.serviceTypeName}
+              </option>
+            ))}
+          </select>
           <button
             onClick={() => setModal({ type: "createServiceType", data: null })}
           >
@@ -112,6 +111,7 @@ const Services = () => {
           </button>
         </div>
       </div>
+      
       {loading ? (
         <p>Loading...</p>
       ) : (
