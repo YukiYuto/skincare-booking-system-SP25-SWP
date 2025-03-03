@@ -31,6 +31,7 @@ public interface IUnitOfWork
     ITypeItemRepository TypeItem { get; }
     IUserManagerRepository UserManager { get; }
     IPaymentRepository Payment { get; }
+    ITransactionRepository Transaction { get; }
     Task<int> SaveAsync();
     
     Task<IDbContextTransaction> BeginTransactionAsync();
