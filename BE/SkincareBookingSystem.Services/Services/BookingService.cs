@@ -98,7 +98,6 @@ namespace SkincareBookingSystem.Services.Services
                 
                 //Lưu 1 lần xuống dưới Db
                 await _unitOfWork.Order.AddAsync(order);
-                await _unitOfWork.OrderDetail.AddRangeAsync(orderDetails);
                 await _unitOfWork.SaveAsync();
 
                 await transaction.CommitAsync();
