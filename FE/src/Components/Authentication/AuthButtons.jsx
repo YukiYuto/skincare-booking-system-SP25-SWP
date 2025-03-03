@@ -12,7 +12,6 @@ const AuthButtons = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     setLoading(true);

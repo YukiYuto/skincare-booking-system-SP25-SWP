@@ -153,15 +153,29 @@ function RegisterForm() {
           error={errors.fullName}
         />
 
-        <InputField
-          label="Gender"
-          type="text"
-          name="gender"
-          placeholder="Gender"
-          value={registerData.gender}
-          onChange={handleRegisterChange}
-          error={errors.gender}
-        />
+        <div className={styles.genderContainer}>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="Male"
+              checked={registerData.gender === "Male"}
+              onChange={handleRegisterChange}
+            />
+            Male
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="Female"
+              checked={registerData.gender === "Female"}
+              onChange={handleRegisterChange}
+            />
+            Female
+          </label>
+        </div>
+        {errors.gender && <span className={styles.error}>{errors.gender}</span>}
       </div>
       
 
