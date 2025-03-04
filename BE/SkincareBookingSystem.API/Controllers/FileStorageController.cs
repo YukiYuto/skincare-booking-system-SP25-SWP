@@ -6,7 +6,8 @@ using System.Security.Claims;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    // Cần kiểm tra lại tại chatGPT kêu là khi làm file thì không nên chi ra nhiều như vậy mà nên dùng switch case
+    [Route("api/files")]
     [ApiController]
     public class FileStorageController : ControllerBase
     {

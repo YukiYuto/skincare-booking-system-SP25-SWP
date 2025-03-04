@@ -4,7 +4,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/customer")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -15,21 +15,21 @@ namespace SkincareBookingSystem.API.Controllers
             _customerService = customerService;
         }
 
-        [HttpGet("list")]
+        [HttpGet]
         public async Task<IActionResult> GetAllCustomers()
         {
             var response = await _customerService.GetAllCustomers();
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("{customerId}")]
+        [HttpGet("{customerId:guid}")]
         public async Task<IActionResult> GetCustomerDetailsById(Guid customerId)
         {
             var response = await _customerService.GetCustomerDetailsById(User, customerId);
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("id")]
+        [HttpGet("user")]
         public async Task<IActionResult> GetCustomerIdByUserId()
         {
             var response = await _customerService.GetCustomerIdByUserId(User);
