@@ -23,8 +23,7 @@ namespace SkincareBookingSystem.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.  
-            builder.Services.AddControllers().AddJsonOptions(
-                opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            builder.Services.AddControllers();
 
             // Configure DbContext with SQL Server  
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -88,8 +87,6 @@ namespace SkincareBookingSystem.API
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                 };
             });
-            
-            //PayOs
 
             // Lấy thông tin từ `appsettings.json`
             var payOSClientId = builder.Configuration["Environment:PAYOS_CLIENT_ID"]

@@ -16,7 +16,10 @@ namespace SkincareBookingSystem.Services.Helpers.Users
         /// <returns>true if the user doesn't exist or not authorized, false otherwise</returns>
         public static bool NotExists(ClaimsPrincipal User)
         {
-            return (User.FindFirstValue(ClaimTypes.NameIdentifier) is null) || (User is null);
+            return User is null || (
+                User.FindFirstValue(ClaimTypes.NameIdentifier) is null &&
+                User.FindFirstValue("FullName") is null
+                );
         }
     }
 }
