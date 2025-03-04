@@ -9,8 +9,6 @@ using SkincareBookingSystem.Models.Dto.Slot;
 using SkincareBookingSystem.Models.Dto.Appointment;
 using SkincareBookingSystem.Utilities.Constants;
 using SkincareBookingSystem.Models.Dto.BookingSchedule;
-//using SkincareBookingSystem.Models.Dto.SkinTherapist;
-//using SkincareBookingSystem.Models.Dto.Customer;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Customer;
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +28,6 @@ public class AutoMapperProfile : Profile
         CreateMap<CreateTherapistScheduleDto, TherapistSchedule>();
         CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>();
 
-        //Order
-        CreateMap<CreateOrderDto, Order>()
-            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-
         CreateMap<UpdateOrderDto, Order>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
@@ -43,12 +36,15 @@ public class AutoMapperProfile : Profile
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<BundleOrderDto, Order>()
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Order.CustomerId))
             .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Order.TotalPrice))
             .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Order.Created));
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Order.Created))
+            .ForMember(dest => dest.OrderDetails, opt => opt.Ignore());
 
         CreateMap<CreateOrderDetailDto, OrderDetail>()
+            .ForMember(dest => dest.OrderDetailId, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
             .ForMember(dest => dest.ServiceComboId, opt => opt.MapFrom(src => src.ServiceComboId))
             .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
@@ -187,6 +183,17 @@ public class AutoMapperProfile : Profile
 
         CreateMap<UpdateAppointmentDto, Appointments>()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+
+        CreateMap<Guid, TherapistServiceType>()
+            .ForMember(dest => dest.ServiceTypeId, opt => opt.MapFrom(src => src));
+
+        CreateMap<SkinTherapist, Models.Dto.TherapistServiceTypes.TherapistDto>()
+            .ForMember(dest => dest.SkinTherapistId, opt => opt.MapFrom(src => src.SkinTherapistId))
+            .ForMember(dest => dest.ServiceTypes, opt => opt.MapFrom(
+                src => src.TherapistServiceTypes.Select(tst => tst.ServiceType).ToList()));
+
+        CreateMap<ServiceType, Models.Dto.TherapistServiceTypes.ServiceTypeDto>();
+
 
     }
 }
