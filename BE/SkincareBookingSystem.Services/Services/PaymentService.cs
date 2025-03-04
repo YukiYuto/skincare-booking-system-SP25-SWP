@@ -21,29 +21,44 @@ public class PaymentService : IPaymentService
         _payOs = payOs;
     }
 
-    public async Task<ResponseDto> CreatePayOsPaymentLink(ClaimsPrincipal User,
-        CreatePaymentLinkDto createPaymentLinkDto)
+    public async Task<ResponseDto> CreatePayOsPaymentLink(ClaimsPrincipal User, CreatePaymentLinkDto createPaymentLinkDto)
     {
         try
         {
-            var order = await _unitOfWork.Order.GetOrderByOrderNumber(createPaymentLinkDto.OrderNumber);
-
-            if (order == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
             {
                 return new ResponseDto()
                 {
-                    Message = "Order not found",
+                    Message = "User not found",
                     IsSuccess = false,
                     StatusCode = 404,
                     Result = null
                 };
             }
 
+            var customer = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId);
+            if (customer == null)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Customer not found",
+                    IsSuccess = false,
+                    StatusCode = 404,
+                    Result = null
+                };
+            }
+            
+            var order = await _unitOfWork.Order.GetAsync(
+                x => x.CustomerId == customer.CustomerId
+                     && x.OrderNumber == createPaymentLinkDto.OrderNumber);
+
             // Lấy danh sách OrderDetail liên quan
             var orderDetails = await _unitOfWork.OrderDetail
-                .GetListAsync(od => od.OrderId == order.OrderId);
+                .GetListAsync(od => od.OrderId == order!.OrderId);
 
-            if (orderDetails == null || !orderDetails.Any())
+            var enumerable = orderDetails.ToList();
+            if (!enumerable.Any())
             {
                 return new ResponseDto()
                 {
@@ -55,13 +70,13 @@ public class PaymentService : IPaymentService
             }
 
             var (services, serviceCombos) =
-                await _unitOfWork.OrderDetail.GetServicesAndCombosByOrderIdAsync(order.OrderId);
+                await _unitOfWork.OrderDetail.GetServicesAndCombosByOrderIdAsync(order!.OrderId);
 
             // Chuyển danh sách thành Dictionary để truy xuất nhanh hơn
             var serviceDict = services.ToDictionary(s => s.ServiceId);
             var serviceComboDict = serviceCombos.ToDictionary(sc => sc.ServiceComboId);
 
-            var groupedItems = orderDetails.SelectMany(od =>
+            var groupedItems = enumerable.SelectMany(od =>
             {
                 var items = new List<ItemData>();
 
@@ -123,11 +138,11 @@ public class PaymentService : IPaymentService
             {
                 Message = "Create payment link successfully",
                 IsSuccess = true,
-                StatusCode = 200,
+                StatusCode = 201,
                 Result = new
                 {
-                    result,
-                    PaymentTransactionId = payment.PaymentTransactionId
+                    result
+                    //PaymentTransactionId = payment.PaymentTransactionId
                 }
             };
         }
@@ -148,31 +163,33 @@ public class PaymentService : IPaymentService
     {
         try
         {
-            var order = await _unitOfWork.Order.GetOrderByOrderNumber(confirmPaymentDto.orderNumber);
-            if (order is null)
+            var order = await _unitOfWork.Order.GetOrderByOrderNumber(confirmPaymentDto.OrderNumber);
+            if (order == null)
             {
                 return new ResponseDto()
                 {
-                    Message = "Order does not exist",
+                    Message = "Order not found",
                     IsSuccess = false,
                     StatusCode = 404,
                     Result = null
                 };
             }
-            
-            PaymentLinkInformation transactionInfo = await _payOs.getPaymentLinkInformation(confirmPaymentDto.orderNumber);
+
+            PaymentLinkInformation transactionInfo =
+                await _payOs.getPaymentLinkInformation(confirmPaymentDto.OrderNumber);
+
             if (transactionInfo == null)
             {
                 return new ResponseDto()
                 {
-                    Message = "Transaction not found or not successful",
+                    Message = "Transaction not found",
                     IsSuccess = false,
                     StatusCode = 400,
                     Result = null
                 };
             }
-            
-            var payment = await _unitOfWork.Payment.GetPaymentByOrderNumber(confirmPaymentDto.orderNumber);
+
+            var payment = await _unitOfWork.Payment.GetPaymentByOrderNumber(confirmPaymentDto.OrderNumber);
             if (payment == null)
             {
                 return new ResponseDto()
@@ -184,32 +201,50 @@ public class PaymentService : IPaymentService
                 };
             }
 
-            payment.Status = PaymentStatus.Paid;
-            _unitOfWork.Payment.Update(payment);
-            
-            var transaction = new Transaction()
+            if (transactionInfo.status == "PAID")
             {
-                CustomerId = order.CustomerId,
-                OrderId = order.OrderId,
-                PaymentId = confirmPaymentDto.paymentTransactionId,
-                Amount = payment.Amount,
-                TransactionMethod = "Tranfer",
-                TransactionDateTime = DateTime.UtcNow
-            };
+                payment.Status = PaymentStatus.Paid;
+                var transaction = new Transaction()
+                {
+                    CustomerId = order.CustomerId,
+                    OrderId = order.OrderId,
+                    PaymentId = payment.PaymentTransactionId,
+                    Amount = payment.Amount,
+                    TransactionMethod = "Transfer",
+                    TransactionDateTime = DateTime.UtcNow
+                };
 
-            await _unitOfWork.Transaction.AddAsync(transaction);
+                await _unitOfWork.Transaction.AddAsync(transaction);
+            }
+            else if (transactionInfo.status == "CANCELLED")
+            {
+                payment.Status = PaymentStatus.Cancelled;
+            }
+            else
+            {
+                return new ResponseDto()
+                {
+                    Message = $"{transactionInfo.status}",
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Result = null
+                };
+            }
+
+            _unitOfWork.Payment.Update(payment);
             await _unitOfWork.SaveAsync();
+            
+            var orderId = await _unitOfWork.Order.GetOrderByOrderNumber(confirmPaymentDto.OrderNumber);
 
             return new ResponseDto()
             {
-                Message = "Payment confirmed successfully",
+                Message = "Payment status updated successfully and Transaction created",
                 IsSuccess = true,
-                StatusCode = 200,
+                StatusCode = 201,
                 Result = new
                 {
-                    TransactionId = transaction.PaymentId,
-                    Status = payment.Status,
-                    PayOS_ConfirmUrl = transactionInfo.transactions
+                    OrderNumber = payment.OrderNumber,
+                    OrderId = order.OrderId
                 }
             };
         }
