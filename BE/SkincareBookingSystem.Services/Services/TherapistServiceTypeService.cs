@@ -63,7 +63,6 @@ namespace SkincareBookingSystem.Services.Services
             {
                 tst.TherapistId = therapistFromDb.SkinTherapistId;
                 tst.CreatedBy = User.FindFirstValue("FullName");
-
             }
 
             // 4. Add service types to the therapist using transaction
@@ -82,10 +81,12 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
             }
 
+            var therapistResultDto = _autoMapperService.Map<SkinTherapist, TherapistDto>(therapistFromDb);
+
             return SuccessResponse.Build(
                 message: StaticOperationStatus.TherapistServiceType.Added,
                 statusCode: StaticOperationStatus.StatusCode.Created,
-                result: therapistFromDb.TherapistServiceTypes);
+                result: therapistResultDto);
         }
 
         public async Task<ResponseDto> RemoveServiceTypesForTherapist(ClaimsPrincipal User, TherapistServiceTypesDto therapistServiceTypesDto)
@@ -139,10 +140,12 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
             }
 
+            var therapistResultDto = _autoMapperService.Map<SkinTherapist, TherapistDto>(therapistFromDb);
+
             return SuccessResponse.Build(
                 message: StaticOperationStatus.TherapistServiceType.Removed,
                 statusCode: StaticOperationStatus.StatusCode.Ok,
-                result: therapistFromDb.TherapistServiceTypes);
+                result: therapistResultDto);
         }
     }
 }
