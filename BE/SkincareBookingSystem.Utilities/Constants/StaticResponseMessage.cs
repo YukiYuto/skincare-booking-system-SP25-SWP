@@ -46,5 +46,22 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update appointment";
             public const string NotRetrieved = "Failed to retrieve appointment(s)";
         }
+        /// <summary>
+        /// Error messages related to booking schedules
+        /// </summary>
+        public static class BookingSchedule
+        {
+            public const string Created = "Booking schedule created successfully";
+            public const string Deleted = "Booking schedule deleted successfully";
+            public const string AlreadyDeleted = "Booking schedule already deleted";
+            public const string RetrievedAll = "All booking schedules retrieved successfully";
+            public const string Retrieved = "Booking schedule retrieved successfully";
+            public const string Updated = "Booking schedule updated successfully";
+            public const string NotFound = "Booking schedule(s) not found";
+            public const string NotCreated = "Failed to create booking schedule";
+            public const string NotDeleted = "Failed to delete booking schedule";
+            public const string NotUpdated = "Failed to update booking schedule";
+            public const string NotRetrieved = "Failed to retrieve booking schedule(s)";
+        }
     }
 }
