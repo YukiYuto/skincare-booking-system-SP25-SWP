@@ -6,7 +6,7 @@ namespace SkincareBookingSystem.Services.IServices;
 
 public interface IPaymentService
 {
-    Task<ResponseDto> CreatePayOsPaymentLink(ClaimsPrincipal User, CreatePaymentLinkDto createPaymentLinkDto);
+    Task<ResponseDto> CreatePayOsPaymentLink(ClaimsPrincipal User ,CreatePaymentLinkDto createPaymentLinkDto);
     Task<ResponseDto> ConfirmPayOsTransaction(ConfirmPaymentDto confirmPaymentDto);
     Task<ResponseDto> CancelPayOsPaymentLink(ClaimsPrincipal User, Guid paymentTransactionId, string cancellationReason);
 }

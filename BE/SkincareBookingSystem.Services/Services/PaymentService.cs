@@ -21,7 +21,8 @@ public class PaymentService : IPaymentService
         _payOs = payOs;
     }
 
-    public async Task<ResponseDto> CreatePayOsPaymentLink(ClaimsPrincipal User, CreatePaymentLinkDto createPaymentLinkDto)
+    public async Task<ResponseDto> CreatePayOsPaymentLink(ClaimsPrincipal User,
+        CreatePaymentLinkDto createPaymentLinkDto)
     {
         try
         {
@@ -48,17 +49,20 @@ public class PaymentService : IPaymentService
                     Result = null
                 };
             }
-            
+
             var order = await _unitOfWork.Order.GetAsync(
                 x => x.CustomerId == customer.CustomerId
-                     && x.OrderNumber == createPaymentLinkDto.OrderNumber);
+                     && x.OrderNumber == createPaymentLinkDto.OrderNumber,
+                includeProperties:
+                $"{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)},{nameof(Order.OrderDetails)}.{nameof(OrderDetail.ServiceCombo)}");
 
+            /*
             // Lấy danh sách OrderDetail liên quan
             var orderDetails = await _unitOfWork.OrderDetail
                 .GetListAsync(od => od.OrderId == order!.OrderId);
+                */
 
-            var enumerable = orderDetails.ToList();
-            if (!enumerable.Any())
+            if (!order.OrderDetails.Any())
             {
                 return new ResponseDto()
                 {
@@ -69,14 +73,20 @@ public class PaymentService : IPaymentService
                 };
             }
 
+            /*
             var (services, serviceCombos) =
                 await _unitOfWork.OrderDetail.GetServicesAndCombosByOrderIdAsync(order!.OrderId);
+                */
 
             // Chuyển danh sách thành Dictionary để truy xuất nhanh hơn
-            var serviceDict = services.ToDictionary(s => s.ServiceId);
-            var serviceComboDict = serviceCombos.ToDictionary(sc => sc.ServiceComboId);
+            //var serviceDict = services.ToDictionary(s => s.ServiceId);
+            var serviceDict = order.OrderDetails.Where(od => od.Services != null).Select(od => od.Services)
+                .ToDictionary(s => s.ServiceId);
+            //var serviceComboDict = serviceCombos.ToDictionary(sc => sc.ServiceComboId);
+            var serviceComboDict = order.OrderDetails.Where(od => od.ServiceCombo != null).Select(od => od.ServiceCombo)
+                .ToDictionary(sc => sc.ServiceComboId);
 
-            var groupedItems = enumerable.SelectMany(od =>
+            var groupedItems = order.OrderDetails.SelectMany(od =>
             {
                 var items = new List<ItemData>();
 
@@ -127,7 +137,7 @@ public class PaymentService : IPaymentService
                 Description = result.description.Trim(),
                 CancelUrl = paymentData.cancelUrl,
                 ReturnUrl = paymentData.returnUrl,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow.AddHours(7),
                 Status = PaymentStatus.Pending
             };
 
@@ -233,7 +243,7 @@ public class PaymentService : IPaymentService
 
             _unitOfWork.Payment.Update(payment);
             await _unitOfWork.SaveAsync();
-            
+
             var orderId = await _unitOfWork.Order.GetOrderByOrderNumber(confirmPaymentDto.OrderNumber);
 
             return new ResponseDto()
