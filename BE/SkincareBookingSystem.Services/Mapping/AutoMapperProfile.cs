@@ -23,6 +23,17 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // BookingService.BundleOrder - Order response to avoid cyclic references when returned
+        CreateMap<Order, Models.Dto.Booking.Order.OrderDto>()
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+            .ForMember(dest => dest.OrderNumber, opt => opt.MapFrom(src => src.OrderNumber))
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice))
+            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime))
+            .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
+
+        CreateMap<OrderDetail, Models.Dto.Booking.Order.OrderDetailDto>();
 
         //BookingSchedule
         CreateMap<CreateTherapistScheduleDto, TherapistSchedule>();
@@ -40,8 +51,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Order.CustomerId))
             .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Order.TotalPrice))
             .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Order.Created))
-            .ForMember(dest => dest.OrderDetails, opt => opt.Ignore());
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Order.Created));
+
 
         CreateMap<CreateOrderDetailDto, OrderDetail>()
             .ForMember(dest => dest.OrderDetailId, opt => opt.MapFrom(src => Guid.NewGuid()))
