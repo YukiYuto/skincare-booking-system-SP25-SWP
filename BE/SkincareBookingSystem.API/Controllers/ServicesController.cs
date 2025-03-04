@@ -5,7 +5,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/services")]
     [ApiController]
     public class ServicesController : ControllerBase
     {
@@ -15,35 +15,35 @@ namespace SkincareBookingSystem.API.Controllers
             _servicesService = servicesService;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateService([FromBody] CreateServiceDto createServiceDto)
         {
             var result = await _servicesService.CreateService(User, createServiceDto);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetAllServices()
         {
             var result = await _servicesService.GetAllServices();
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetServiceById(Guid id)
         {
             var result = await _servicesService.GetServiceById(id);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut("update")]
+        [HttpPut()]
         public async Task<IActionResult> UpdateService([FromBody] UpdateServiceDto updateServiceDto)
         {
             var result = await _servicesService.UpdateService(User, updateServiceDto);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteService(Guid id)
         {
             var result = await _servicesService.DeleteService(id);

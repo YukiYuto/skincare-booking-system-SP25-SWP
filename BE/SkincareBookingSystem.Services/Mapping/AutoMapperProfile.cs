@@ -83,26 +83,6 @@ public class AutoMapperProfile : Profile
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0))) //Meaning of 7.0 is GMT+7
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); // Ignore null value
 
-        /*
-        CreateMap<CreateBlogCategoryDto, BlogCategory>()
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0))) // UTC+7
-            // TODO: Change this to the actual user ID
-            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticBlogStatus.Created));
-
-        CreateMap<BlogCategory, GetBlogCategoryDto>().ReverseMap();
-
-        CreateMap<UpdateBlogCategoryDto, BlogCategory>()
-            .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-            .ForMember(dest => dest.UpdatedTime, opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0))) // UTC+7
-            .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => src.UpdatedBy))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticBlogStatus.Modified));
-            */
-
         //SignUpCustomerDto to ApplicationUser
         CreateMap<SignUpCustomerDto, ApplicationUser>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -194,7 +174,6 @@ public class AutoMapperProfile : Profile
 
         // Appointments
         CreateMap<CreateAppointmentDto, Appointments>()
-            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
             .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
             .ForMember(dest => dest.AppointmentTime, opt => opt.MapFrom(src => src.AppointmentTime))

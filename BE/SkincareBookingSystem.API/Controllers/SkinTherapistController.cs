@@ -5,7 +5,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/therapists")]
     [ApiController]
     public class SkinTherapistController : ControllerBase
     {
@@ -16,21 +16,21 @@ namespace SkincareBookingSystem.API.Controllers
             _skinTherapistService = skinTherapistService;
         }
 
-        [HttpGet("skin-therapists/{therapistId}")]
+        [HttpGet("{therapistId}")]
         public async Task<ActionResult> GetTherapistDetailsById(Guid therapistId)
         {
             var response = await _skinTherapistService.GetTherapistDetailsById(therapistId);
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("skin-therapists")]
+        [HttpGet]
         public async Task<ActionResult> GetAllTherapists()
         {
             var response = await _skinTherapistService.GetAllTherapists();
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("skin-therapists/service-type/{serviceTypeId}")]
+        [HttpGet("{serviceTypeId}")]
         public async Task<ActionResult> GetTherapistsByServiceType(Guid serviceTypeId)
         {
             var response = await _skinTherapistService.GetTherapistsByServiceTypeId(serviceTypeId);

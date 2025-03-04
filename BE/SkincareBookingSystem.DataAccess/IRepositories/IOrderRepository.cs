@@ -11,6 +11,7 @@ namespace SkincareBookingSystem.DataAccess.IRepositories
     {
         Task<Order> GetOrderByOrderNumber(long orderNumber);
         Task<long> GenerateUniqueNumberAsync();
+        Task<Order?> GetLatestOrderByCustomerIdAsync(Guid customerId);
         void Update(Order target, Order source);
     }
 }

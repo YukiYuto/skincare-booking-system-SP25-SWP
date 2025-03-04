@@ -4,7 +4,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/order-detail")]
     [ApiController]
     public class OrderDetailController : ControllerBase
     {
@@ -16,28 +16,28 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetAllOrderDetails()
         {
             var result = await _orderDetailService.GetAllOrderDetails();
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderDetailById([FromQuery] Guid id)
         {
             var result = await _orderDetailService.GetOrderDetailById(id);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut("update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateOrderDetail([FromBody] UpdateOrderDetailDto updateOrderDetailDto)
         {
             var result = await _orderDetailService.UpdateOrderDetail(User, updateOrderDetailDto);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteOrderDetail([FromQuery] Guid id)
         {
             var result = await _orderDetailService.DeleteOrderDetail(id);

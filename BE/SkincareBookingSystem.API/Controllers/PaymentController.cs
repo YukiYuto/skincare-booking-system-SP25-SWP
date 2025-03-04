@@ -5,7 +5,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/payment")]
 [ApiController]
 public class PaymentController : ControllerBase
 {
@@ -16,15 +16,15 @@ public class PaymentController : ControllerBase
         _paymentService = paymentService;
     }
 
-    [HttpPost("create-payment-link")]
+    [HttpPost("create-link")]
     public async Task<ActionResult<ResponseDto>> CreatePaymentLink([FromBody] CreatePaymentLinkDto createPaymentLinkDTO)
     {
-        var responseDto = await _paymentService.CreatePayOsPaymentLink(User, createPaymentLinkDTO);
+        var responseDto = await _paymentService.CreatePayOsPaymentLink(User,createPaymentLinkDTO);
 
         return StatusCode(responseDto.StatusCode, responseDto);
     }
     
-    [HttpPost("confirm-payment")]
+    [HttpPost("confirm-transaction")]
     public async Task<ActionResult<ResponseDto>> ConfirmPayment([FromBody] ConfirmPaymentDto confirmPaymentDto)
     {
         var responseDto = await _paymentService.ConfirmPayOsTransaction(confirmPaymentDto);

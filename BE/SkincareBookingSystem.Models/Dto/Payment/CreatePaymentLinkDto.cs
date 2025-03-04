@@ -3,7 +3,7 @@
 public class CreatePaymentLinkDto
 {
     public long OrderNumber { get; set; }
-    public string CustomerId { get; set; } = null!;
+    //public Guid CustomerId { get; set; }
     public string CancelUrl { get; set; } = null!;
     public string ReturnUrl { get; set; } = null!;
 }

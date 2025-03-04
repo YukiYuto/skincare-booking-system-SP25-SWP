@@ -21,5 +21,7 @@ public class Payment
     public string? CancelUrl { get; set; }
     public string? ReturnUrl { get; set; }
     public DateTime CreatedAt { get; set; }
+    
+    [Column(TypeName = "varchar(20)")] 
     public PaymentStatus Status { get; set; }
 }

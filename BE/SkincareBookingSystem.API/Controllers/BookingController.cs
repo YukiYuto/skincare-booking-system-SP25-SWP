@@ -5,7 +5,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/bookings")]
     [ApiController]
     public class BookingController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace SkincareBookingSystem.API.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpPost("order/bundle")]
+        [HttpPost("orders-bundles")]
         public async Task<IActionResult> BundleOrder([FromBody] BundleOrderDto bundleOrderDto)
         {
             var result = await _bookingService.BundleOrder(bundleOrderDto, User);

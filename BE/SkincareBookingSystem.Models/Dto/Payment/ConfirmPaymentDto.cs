@@ -2,6 +2,6 @@
 
 public class ConfirmPaymentDto
 {
-    public long orderNumber { get; set; }
-    public Guid paymentTransactionId { get; set; }
+    public long OrderNumber { get; set; }
+    //public Guid PaymentTransactionId { get; set; }
 }
