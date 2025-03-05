@@ -1,150 +1,184 @@
-import React, { useEffect, useState, useCallback } from "react";
-import api from "../../../../config/axios";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createSelector } from "@reduxjs/toolkit";
+import { 
+  fetchServices, 
+  createService, 
+  updateService, 
+  deleteService 
+} from "../../../../redux/Services/ServiceThunk";
+import { 
+  fetchServiceTypes 
+} from "../../../../redux/ServiceType/ServiceTypeThunk";
 import styles from "./Services.module.css";
 import ServiceCreateModal from "./ServiceCreateModal";
 import ServiceEditModal from "./ServiceEditModal";
 import ServiceTypeCreateModal from "./ServiceType/ServiceTypeCreateModal";
 import editIcon from "../../../../assets/icon/editIcon.svg";
+import deleteIcon from "../../../../assets/icon/deleteIcon.svg";
 import addIcon from "../../../../assets/icon/addIcon.svg";
 
 const Services = () => {
-  const [services, setServices] = useState([]);
-  const [serviceTypes, setServiceTypes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  // Memoized selectors with robust implementation
+  const selectServicesResult = (state) => 
+    state.service?.services?.result ?? [];
+  const selectServiceTypesResult = (state) => 
+    state.serviceType?.serviceTypes?.result ?? [];
+
+  const selectServices = useMemo(
+    () => createSelector(
+      [selectServicesResult],
+      (services) => services
+    ),
+    []
+  );
+
+  const selectServiceTypes = useMemo(
+    () => createSelector(
+      [selectServiceTypesResult],
+      (serviceTypes) => serviceTypes
+    ),
+    []
+  );
+
+  const services = useSelector(selectServices);
+  const serviceTypes = useSelector(selectServiceTypes);
+  const { loading, error } = useSelector((state) => ({
+    loading: state.service?.loading,
+    error: state.service?.error
+  }));
+
   const [modal, setModal] = useState({ type: null, data: null });
-  const [sortConfig, setSortConfig] = useState({
-    key: null,
-    direction: "ascending",
-  });
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [selectedServiceType, setSelectedServiceType] = useState("all");
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [servicesRes, typesRes] = await Promise.all([
-        api.get("Services/all"),
-        api.get("ServiceType/all"),
-      ]);
-      setServices(servicesRes.data.result);
-      setServiceTypes(typesRes.data.result);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Improved error handling and retry mechanism
+  const fetchData = useCallback(() => {
+    dispatch(fetchServices());
+    dispatch(fetchServiceTypes());
+  }, [dispatch]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  const getServiceTypeName = (serviceTypeId) =>
-    serviceTypes.find((type) => type.serviceTypeId === serviceTypeId)
-      ?.serviceTypeName || "Unknown";
+  const getServiceTypeName = (id) =>
+    serviceTypes.find((type) => type.serviceTypeId === id)?.serviceTypeName ||
+    "Unknown";
 
   const handleSort = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  const handleDeleteService = (serviceId) => {
+    if (window.confirm("Are you sure you want to delete this service?")) {
+      dispatch(deleteService(serviceId));
     }
-    setSortConfig({ key, direction });
   };
 
-  const sortedServices = [...services]
-    .filter(
-      (service) =>
-        selectedServiceType === "all" ||
-        service.serviceTypeId.toString() === selectedServiceType
-    )
-    .sort((a, b) => {
-      if (!sortConfig.key) return 0;
+  const sortedServices = useMemo(() => {
+    return [...services]
+      .filter(
+        (service) =>
+          selectedServiceType === "all" ||
+          service.serviceTypeId.toString() === selectedServiceType
+      )
+      .sort((a, b) => {
+        if (!sortConfig.key) return 0;
+        let valueA = a[sortConfig.key];
+        let valueB = b[sortConfig.key];
 
-      let valueA =
-        typeof a[sortConfig.key] === "string"
-          ? a[sortConfig.key].toLowerCase()
-          : a[sortConfig.key];
-      let valueB =
-        typeof b[sortConfig.key] === "string"
-          ? b[sortConfig.key].toLowerCase()
-          : b[sortConfig.key];
+        if (typeof valueA === "string") valueA = valueA.toLowerCase();
+        if (typeof valueB === "string") valueB = valueB.toLowerCase();
 
-      if (valueA < valueB) return sortConfig.direction === "ascending" ? -1 : 1;
-      if (valueA > valueB) return sortConfig.direction === "ascending" ? 1 : -1;
-      return 0;
-    });
+        return sortConfig.direction === "asc"
+          ? valueA > valueB
+            ? 1
+            : -1
+          : valueA < valueB
+          ? 1
+          : -1;
+      });
+  }, [services, selectedServiceType, sortConfig]);
 
-  const handleFilterChange = (e) => {
-    setSelectedServiceType(e.target.value);
-  };
+  // Render error message if fetch fails
+  if (error) {
+    return (
+      <div className={styles.errorContainer}>
+        <h2>Error Loading Services</h2>
+        <p>{error.message || 'An unexpected error occurred'}</p>
+        <button onClick={fetchData} className={styles.retryButton}>
+          Retry Loading
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.tabContainer}>
       <div className={styles.tabHeader}>
-        <div className={styles.tabTitleContainer}>
-          <h2 className={styles.tabTitle}>Services</h2>
-          <button onClick={() => setModal({ type: "create", data: null })}>
-            <img src={addIcon} alt="Add Service" />
-          </button>
-        </div>
-
-        <div className={styles.filterContainer}>
+        <h2 className={styles.tabTitle}>Services Management</h2>
+        <div className={styles.controls}>
           <select
-            id="serviceTypeFilter"
             value={selectedServiceType}
-            onChange={handleFilterChange}
+            onChange={(e) => setSelectedServiceType(e.target.value)}
             className={styles.filterSelect}
           >
             <option value="all">All Service Types</option>
             {serviceTypes.map((type) => (
-              <option
-                key={type.serviceTypeId}
-                value={type.serviceTypeId.toString()}
-              >
+              <option key={type.serviceTypeId} value={type.serviceTypeId}>
                 {type.serviceTypeName}
               </option>
             ))}
           </select>
-          <button
-            onClick={() => setModal({ type: "createServiceType", data: null })}
+          <button 
+            onClick={() => setModal({ type: "createServiceType" })}
+            className={styles.iconButton}
+            title="Add Service Type"
           >
             <img src={addIcon} alt="Add Service Type" />
           </button>
+          <button 
+            onClick={() => setModal({ type: "create" })}
+            className={styles.iconButton}
+            title="Add Service"
+          >
+            <img src={addIcon} alt="Add Service" />
+          </button>
         </div>
       </div>
-      
+
       {loading ? (
-        <p>Loading...</p>
+        <div className={styles.loadingContainer}>
+          <p>Loading services...</p>
+        </div>
       ) : (
         <div className={styles.serviceTableContainer}>
           <table className={styles.serviceTable}>
             <thead>
               <tr>
-                <th onClick={() => handleSort("serviceName")}>
-                  Name{" "}
-                  {sortConfig.key === "serviceName" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("price")}>
-                  Price{" "}
-                  {sortConfig.key === "price" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("serviceTypeId")}>
-                  Service Type{" "}
-                  {sortConfig.key === "serviceTypeId" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("createdTime")}>
-                  Created Time{" "}
-                  {sortConfig.key === "createdTime" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("updatedTime")}>
-                  Updated Time{" "}
-                  {sortConfig.key === "updatedTime" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th>Edit</th>
+                {[
+                  "Service Name",
+                  "Price",
+                  "Service Type",
+                  "Created Time",
+                  "Updated Time",
+                  "Actions"
+                ].map((key) => (
+                  <th 
+                    key={key} 
+                    onClick={() => handleSort(key.replace(/\s+/g, '').toLowerCase())}
+                  >
+                    {key}
+                    {sortConfig.key === key.replace(/\s+/g, '').toLowerCase() &&
+                      (sortConfig.direction === "asc" ? " ↑" : " ↓")}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -164,12 +198,22 @@ const Services = () => {
                       : "N/A"}
                   </td>
                   <td>
-                    <button
-                      className={styles.editButton}
-                      onClick={() => setModal({ type: "edit", data: service })}
-                    >
-                      <img src={editIcon} alt="Edit" />
-                    </button>
+                    <div className={styles.actionButtons}>
+                      <button
+                        className={styles.editButton}
+                        onClick={() => setModal({ type: "edit", data: service })}
+                        title="Edit Service"
+                      >
+                        <img src={editIcon} alt="Edit" />
+                      </button>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleDeleteService(service.serviceId)}
+                        title="Delete Service"
+                      >
+                        <img src={deleteIcon} alt="Delete" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -177,23 +221,24 @@ const Services = () => {
           </table>
         </div>
       )}
+
       {modal.type === "create" && (
         <ServiceCreateModal
-          onClose={() => setModal({ type: null, data: null })}
-          refresh={fetchData}
+          onClose={() => setModal({ type: null })}
+          refresh={() => dispatch(fetchServices())}
         />
       )}
       {modal.type === "edit" && (
         <ServiceEditModal
           service={modal.data}
-          onClose={() => setModal({ type: null, data: null })}
-          refresh={fetchData}
+          onClose={() => setModal({ type: null })}
+          refresh={() => dispatch(fetchServices())}
         />
       )}
       {modal.type === "createServiceType" && (
         <ServiceTypeCreateModal
-          onClose={() => setModal({ type: null, data: null })}
-          refresh={fetchData}
+          onClose={() => setModal({ type: null })}
+          refresh={() => dispatch(fetchServiceTypes())}
         />
       )}
     </div>

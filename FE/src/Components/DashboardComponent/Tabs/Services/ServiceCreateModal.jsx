@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { createService } from "../../../../redux/Services/ServiceThunk";
 import api from "../../../../config/axios";
 import styles from "./ServiceCreateModal.module.css";
 
-const ServiceCreateModal = ({ onClose }) => {
+const ServiceCreateModal = ({ onClose, refresh }) => {
+  const dispatch = useDispatch();
   const [formState, setFormState] = useState({
     serviceName: "",
     description: "",
@@ -41,12 +44,12 @@ const ServiceCreateModal = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!imageFile) {
       alert("Please upload an image before submitting.");
       return;
     }
-  
+
     try {
       const formData = new FormData();
       formData.append("serviceName", formState.serviceName);
@@ -54,15 +57,15 @@ const ServiceCreateModal = ({ onClose }) => {
       formData.append("price", parseFloat(formState.price));
       formData.append("serviceTypeId", formState.serviceTypeId);
       formData.append("image", imageFile); // Append file
-  
-      await api.post("Services/create", formData); // REMOVE custom headers
-  
+
+      await dispatch(createService(formData)); // Use Redux action
+
       onClose();
+      refresh(); // Refresh the parent component
     } catch (error) {
       console.error("Error creating service:", error);
     }
   };
-  
 
   return (
     <div className={styles.modal}>

@@ -1,33 +1,26 @@
-import React, { useEffect, useState, useCallback } from "react";
-import api from "../../../../config/axios";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCustomers } from "../../../../redux/Customer/CustomerThunk";
 import styles from "./Customers.module.css";
 import infoIcon from "../../../../assets/icon/infoIcon.svg";
 import CustomerDetail from "./CustomerDetail";
 
 const Customers = () => {
-  const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const {
+    customers = [],
+    loading,
+    error,
+  } = useSelector((state) => state.customer); // Ensure customers is an array
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [sortConfig, setSortConfig] = useState({
-    key: null,
+    key: "fullName",
     direction: "ascending",
   });
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const customersRes = await api.get("Customer/list");
-      setCustomers(customersRes.data.result);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    dispatch(fetchCustomers());
+  }, [dispatch]);
 
   const handleSort = (key) => {
     let direction = "ascending";
@@ -37,95 +30,99 @@ const Customers = () => {
     setSortConfig({ key, direction });
   };
 
-  const sortedCustomers = [...customers].sort((a, b) => {
+  const customerList = Array.isArray(customers.result) ? customers.result : [];
+
+  const sortedCustomers = [...customerList].sort((a, b) => {
     if (!sortConfig.key) return 0;
 
-    let valueA =
-      typeof a[sortConfig.key] === "string"
-        ? a[sortConfig.key].toLowerCase()
-        : a[sortConfig.key];
-    let valueB =
-      typeof b[sortConfig.key] === "string"
-        ? b[sortConfig.key].toLowerCase()
-        : b[sortConfig.key];
+    let valueA = a[sortConfig.key] ?? ""; // Ensure a valid value
+    let valueB = b[sortConfig.key] ?? "";
 
-    if (valueA < valueB) return sortConfig.direction === "ascending" ? -1 : 1;
-    if (valueA > valueB) return sortConfig.direction === "ascending" ? 1 : -1;
-    return 0;
+    if (typeof valueA === "string") valueA = valueA.toLowerCase();
+    if (typeof valueB === "string") valueB = valueB.toLowerCase();
+
+    return valueA < valueB
+      ? sortConfig.direction === "ascending"
+        ? -1
+        : 1
+      : valueA > valueB
+      ? sortConfig.direction === "ascending"
+        ? 1
+        : -1
+      : 0;
   });
-
-  const handleOpenDetail = (customer) => {
-    setSelectedCustomer(customer);
-  };
-
-  const handleCloseDetail = () => {
-    setSelectedCustomer(null);
-  };
 
   return (
     <div className={styles.tabContainer}>
       <div className={styles.tabHeader}>
-        <div className={styles.tabTitleContainer}>
-          <h2 className={styles.tabTitle}>Customers</h2>
-        </div>
+        <h2 className={styles.tabTitle}>Customers</h2>
       </div>
+
       {loading ? (
         <p>Loading...</p>
+      ) : error ? (
+        <p>Error: {error}</p>
       ) : (
         <div className={styles.customerTableContainer}>
           <table className={styles.customerTable}>
             <thead>
               <tr>
-                <th onClick={() => handleSort("fullName")}>
-                  Name {sortConfig.key === "fullName" && (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("email")}>
-                  Email {sortConfig.key === "email" && (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("age")}>
-                  Age {sortConfig.key === "age" && (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("gender")}>
-                  Gender {sortConfig.key === "gender" && (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("phoneNumber")}>
-                  Phone Number {sortConfig.key === "phoneNumber" && (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("address")}>
-                  Address {sortConfig.key === "address" && (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
+                {[
+                  "fullName",
+                  "email",
+                  "age",
+                  "gender",
+                  "phoneNumber",
+                  "address",
+                ].map((key) => (
+                  <th key={key} onClick={() => handleSort(key)}>
+                    {key.charAt(0).toUpperCase() + key.slice(1)}{" "}
+                    {sortConfig.key === key &&
+                      (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                  </th>
+                ))}
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {sortedCustomers.map((customer) => (
-                <tr key={customer.customerId}>
-                  <td>{customer.fullName}</td>
-                  <td>{customer.email}</td>
-                  <td>{customer.age}</td>
-                  <td>{customer.gender}</td>
-                  <td>{customer.phoneNumber}</td>
-                  <td>{customer.address}</td>
-                  <td>
-                    <button
-                      className={styles.infoButton}
-                      onClick={() => handleOpenDetail(customer)}
-                      aria-label="View customer details"
-                    >
-                      <img src={infoIcon} alt="Detail" />
-                    </button>
-                  </td>
+              {sortedCustomers.length > 0 ? (
+                sortedCustomers.map((customer) => (
+                  <tr key={customer.customerId}>
+                    {[
+                      "fullName",
+                      "email",
+                      "age",
+                      "gender",
+                      "phoneNumber",
+                      "address",
+                    ].map((key) => (
+                      <td key={key}>{customer[key]}</td>
+                    ))}
+                    <td>
+                      <button
+                        className={styles.infoButton}
+                        onClick={() => setSelectedCustomer(customer)}
+                        aria-label="View customer details"
+                      >
+                        <img src={infoIcon} alt="Detail" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7">No customers found</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
       )}
-      
+
       {selectedCustomer && (
-        <CustomerDetail 
-          customer={selectedCustomer} 
-          onClose={handleCloseDetail} 
+        <CustomerDetail
+          customer={selectedCustomer}
+          onClose={() => setSelectedCustomer(null)}
         />
       )}
     </div>

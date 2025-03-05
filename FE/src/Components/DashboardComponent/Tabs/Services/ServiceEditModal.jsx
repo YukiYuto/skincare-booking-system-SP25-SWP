@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
+import {
+  updateService,
+  deleteService,
+} from "../../../../redux/Services/ServiceThunk";
 import api from "../../../../config/axios";
 import styles from "./ServiceEditModal.module.css";
 
-const ServiceEditModal = ({ service, onClose }) => {
+const ServiceEditModal = ({ service, onClose, refresh }) => {
+  const dispatch = useDispatch();
   const [formState, setFormState] = useState({
     serviceId: service.serviceId,
     serviceName: service.serviceName,
@@ -33,34 +39,30 @@ const ServiceEditModal = ({ service, onClose }) => {
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      try {
-        const response = await api.put("Services/update", {
-          ...formState,
-          price: parseFloat(formState.price),
-        });
-
-        if (response.status === 200) {
-          console.log("Service updated successfully", response.data);
+      dispatch(
+        updateService({ serviceId: service.serviceId, serviceData: formState })
+      )
+        .then(() => {
+          refresh();
           onClose();
-        }
-      } catch (error) {
-        console.error("Error updating service:", error.response?.data || error);
-      }
+        })
+        .catch((error) => {
+          console.error("Error updating service:", error);
+        });
     },
-    [formState, onClose]
+    [dispatch, formState, service.serviceId, refresh, onClose]
   );
 
-  const handleDelete = useCallback(async () => {
-    try {
-      const response = await api.delete(`Services/delete/${service.serviceId}`);
-      if (response.status === 200) {
-        console.log("Service deleted successfully");
+  const handleDelete = useCallback(() => {
+    dispatch(deleteService(service.serviceId))
+      .then(() => {
+        refresh();
         onClose();
-      }
-    } catch (error) {
-      console.error("Error deleting service:", error.response?.data || error);
-    }
-  }, [service.serviceId, onClose]);
+      })
+      .catch((error) => {
+        console.error("Error deleting service:", error);
+      });
+  }, [dispatch, service.serviceId, refresh, onClose]);
 
   return (
     <div className={styles.modal}>
@@ -115,23 +117,47 @@ const ServiceEditModal = ({ service, onClose }) => {
                 <button className={styles.submitButton} type="submit">
                   Update
                 </button>
-                <button className={styles.cancelButton} type="button" onClick={onClose}>
+                <button
+                  className={styles.cancelButton}
+                  type="button"
+                  onClick={onClose}
+                >
                   Cancel
                 </button>
-                <button className={styles.deleteButton} type="button" onClick={handleDelete}>
+                <button
+                  className={styles.deleteButton}
+                  type="button"
+                  onClick={handleDelete}
+                >
                   Delete
                 </button>
               </div>
             </form>
           </div>
           <div className={styles.imageSection}>
-            <img src={service.imageUrl} alt="Service" className={styles.serviceImage} />
-            <p><strong>Service ID:</strong> {service.serviceId}</p>
-            <p><strong>Created By:</strong> {service.createdBy || "N/A"}</p>
-            <p><strong>Updated By:</strong> {service.updatedBy || "N/A"}</p>
-            <p><strong>Created Time:</strong> {service.createdTime || "N/A"}</p>
-            <p><strong>Updated Time:</strong> {service.updatedTime || "N/A"}</p>
-            <p><strong>Status:</strong> {service.status || "N/A"}</p>
+            <img
+              src={service.imageUrl}
+              alt="Service"
+              className={styles.serviceImage}
+            />
+            <p>
+              <strong>Service ID:</strong> {service.serviceId}
+            </p>
+            <p>
+              <strong>Created By:</strong> {service.createdBy || "N/A"}
+            </p>
+            <p>
+              <strong>Updated By:</strong> {service.updatedBy || "N/A"}
+            </p>
+            <p>
+              <strong>Created Time:</strong> {service.createdTime || "N/A"}
+            </p>
+            <p>
+              <strong>Updated Time:</strong> {service.updatedTime || "N/A"}
+            </p>
+            <p>
+              <strong>Status:</strong> {service.status || "N/A"}
+            </p>
           </div>
         </div>
       </div>
