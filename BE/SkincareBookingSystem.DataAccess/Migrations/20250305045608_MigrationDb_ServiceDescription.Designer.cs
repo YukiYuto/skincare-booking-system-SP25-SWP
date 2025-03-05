@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SkincareBookingSystem.DataAccess.DBContext;
@@ -11,9 +12,11 @@ using SkincareBookingSystem.DataAccess.DBContext;
 namespace SkincareBookingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250305045608_MigrationDb_ServiceDescription")]
+    partial class MigrationDb_ServiceDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,7 +275,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Admin St",
                             Age = 30,
-                            ConcurrencyStamp = "8dc4fb3d-bf16-41f5-9a09-ccf93835814d",
+                            ConcurrencyStamp = "8daaf1e2-c105-459a-b497-fc8dc042d842",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Admin",
@@ -280,10 +283,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOYDf0756Rg7kwD4z1OU6cetmChRMWWZxm2XENRUfNqrcVLR2ENN/kVArb9S+TYRDw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOdxW8rxmZ8L+Zhh+9a4BXmq33OcBUrKSgtRlRuY0USgKIRSOun86+6MKl92jToX0A==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "c2e64953-8da6-460e-b96c-65df9d2f00ef",
+                            SecurityStamp = "34c73459-fbf7-4b7d-84ed-7176af5c317f",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         },
@@ -293,7 +296,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Manager St",
                             Age = 30,
-                            ConcurrencyStamp = "7b761574-e375-4e2c-b007-4197ba3d6db8",
+                            ConcurrencyStamp = "3b42ab95-3ca1-40df-803d-6b8d73415112",
                             Email = "manager@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Manager",
@@ -301,10 +304,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "MANAGER@GMAIL.COM",
                             NormalizedUserName = "MANAGER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKSDlAzujv6XJdThJEk5ayhr0nDL2EITMlWIudxbua/wTtKt/DT1lL58GkFJpHJDTg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDo/MNAqoLVcDRbZ7/tx9RMT1YxqnklTrVN1DqVf+wBUFZDXoaZ1g7aRJfKqTf7dYg==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "7b40e76b-5195-42fe-bca0-15d80b803455",
+                            SecurityStamp = "e30e32c5-c388-4e8a-bf9e-de3787c09c93",
                             TwoFactorEnabled = false,
                             UserName = "manager@gmail.com"
                         });
@@ -316,11 +319,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("AppointmentDate")
+                    b.Property<DateTime?>("AppointmentDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("AppointmentTime")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
@@ -335,10 +337,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.Property<Guid?>("CustomerId1")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");

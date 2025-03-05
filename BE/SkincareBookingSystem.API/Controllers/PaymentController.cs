@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Payment;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
@@ -19,16 +21,37 @@ public class PaymentController : ControllerBase
     [HttpPost("create-link")]
     public async Task<ActionResult<ResponseDto>> CreatePaymentLink([FromBody] CreatePaymentLinkDto createPaymentLinkDTO)
     {
-        var responseDto = await _paymentService.CreatePayOsPaymentLink(User,createPaymentLinkDTO);
-
+        var responseDto = await _paymentService.CreatePayOsPaymentLink(User, createPaymentLinkDTO);
         return StatusCode(responseDto.StatusCode, responseDto);
     }
-    
+
     [HttpPost("confirm-transaction")]
     public async Task<ActionResult<ResponseDto>> ConfirmPayment([FromBody] ConfirmPaymentDto confirmPaymentDto)
     {
         var responseDto = await _paymentService.ConfirmPayOsTransaction(confirmPaymentDto);
+        return StatusCode(responseDto.StatusCode, responseDto);
+    }
 
+    [HttpGet]
+    [Authorize]
+    public async Task<ActionResult<ResponseDto>> GetAll
+    (
+        [FromQuery] 
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? filterOn = null,
+        string? filterQuery = null,
+        string? sortBy = null
+    )
+    {
+        var responseDto = await _paymentService.GetAll(User,pageNumber, pageSize, filterOn, filterQuery, sortBy);
+        return StatusCode(responseDto.StatusCode, responseDto);
+    }
+
+    [HttpGet("get-by-id")]
+    public async Task<ActionResult<ResponseDto>> GetPaymentById(Guid paymentTransactionId)
+    {
+        var responseDto = await _paymentService.GetPaymentById(User, paymentTransactionId);
         return StatusCode(responseDto.StatusCode, responseDto);
     }
 }

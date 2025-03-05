@@ -83,6 +83,12 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string EmptyList = "Service type list is empty";
             public const string Invalid = "Invalid service type(s)";
         }
+        
+        public static class Service 
+        {
+            public const string Active = "Active";
+            public const string Disable = "Disable";
+        }
 
         public static class SkinTherapist
         {

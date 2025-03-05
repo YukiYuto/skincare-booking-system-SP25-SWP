@@ -6,6 +6,7 @@ using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Payment;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using Transaction = SkincareBookingSystem.Models.Domain.Transaction;
 
 namespace SkincareBookingSystem.Services.Services;
@@ -14,11 +15,113 @@ public class PaymentService : IPaymentService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly PayOS _payOs;
+    private readonly IAutoMapperService _mapper;
 
-    public PaymentService(IUnitOfWork unitOfWork, PayOS payOs)
+    public PaymentService(IUnitOfWork unitOfWork, PayOS payOs, IAutoMapperService mapper)
     {
         _unitOfWork = unitOfWork;
         _payOs = payOs;
+        _mapper = mapper;
+    }
+
+    public async Task<ResponseDto> GetAll
+    (
+        ClaimsPrincipal User,
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? filterOn = null,
+        string? filterQuery = null,
+        string? sortBy = null
+    )
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return new ResponseDto()
+            {
+                Message = "User not found",
+                IsSuccess = false,
+                StatusCode = 404,
+                Result = null
+            };
+        }
+        
+        bool isManager = userId == StaticUserRoles.Manager;
+        
+        Guid? customerId = null;
+        if (!isManager)
+        {
+            var customer = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId);
+            if (customer == null)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Customer not found",
+                    IsSuccess = false,
+                    StatusCode = 404
+                };
+            }
+
+            customerId = customer.CustomerId;
+        }
+        
+        var (payments, totalPayments) =
+            await _unitOfWork.Payment.GetPaymentsAsync(pageNumber, pageSize, filterOn, filterQuery, sortBy,customerId);
+
+        if (!payments.Any())
+        {
+            return new ResponseDto()
+            {
+                Message = "No payments found",
+                IsSuccess = false,
+                Result = payments,
+                StatusCode = 200
+            };
+        }
+
+        int totalPages = (int)Math.Ceiling((double)totalPayments / pageSize);
+        
+        var paymentDtos = _mapper.MapCollection<Payment, GetAllPaymentDto>(payments);
+
+        return new ResponseDto()
+        {
+            Message = "Get all payments successfully",
+            IsSuccess = true,
+            StatusCode = 200,
+            Result = new
+            {
+                TotalPayments = totalPayments,
+                TotalPages = totalPages,
+                PageSize = pageSize,
+                CurrentPage = pageNumber,
+                Payments = paymentDtos
+            }
+        };
+    }
+
+    public async Task<ResponseDto> GetPaymentById(ClaimsPrincipal User, Guid paymentTransactionId)
+    {
+        var payment = await _unitOfWork.Payment.GetAsync(p => p.PaymentTransactionId == paymentTransactionId);
+        if (payment == null)
+        {
+            return new ResponseDto()
+            {
+                Message = "Payment not found",
+                IsSuccess = false,
+                StatusCode = 404,
+                Result = null
+            };
+        }
+
+        var paymentDto = _mapper.Map<Payment, GetAllPaymentDto>(payment);
+
+        return new ResponseDto()
+        {
+            Message = "Get payment by Id successfully",
+            IsSuccess = true,
+            StatusCode = 200,
+            Result = paymentDto
+        };
     }
 
     public async Task<ResponseDto> CreatePayOsPaymentLink(ClaimsPrincipal User,
@@ -56,12 +159,6 @@ public class PaymentService : IPaymentService
                 includeProperties:
                 $"{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)},{nameof(Order.OrderDetails)}.{nameof(OrderDetail.ServiceCombo)}");
 
-            /*
-            // Lấy danh sách OrderDetail liên quan
-            var orderDetails = await _unitOfWork.OrderDetail
-                .GetListAsync(od => od.OrderId == order!.OrderId);
-                */
-
             if (!order.OrderDetails.Any())
             {
                 return new ResponseDto()
@@ -73,16 +170,11 @@ public class PaymentService : IPaymentService
                 };
             }
 
-            /*
-            var (services, serviceCombos) =
-                await _unitOfWork.OrderDetail.GetServicesAndCombosByOrderIdAsync(order!.OrderId);
-                */
-
             // Chuyển danh sách thành Dictionary để truy xuất nhanh hơn
-            //var serviceDict = services.ToDictionary(s => s.ServiceId);
+
             var serviceDict = order.OrderDetails.Where(od => od.Services != null).Select(od => od.Services)
                 .ToDictionary(s => s.ServiceId);
-            //var serviceComboDict = serviceCombos.ToDictionary(sc => sc.ServiceComboId);
+
             var serviceComboDict = order.OrderDetails.Where(od => od.ServiceCombo != null).Select(od => od.ServiceCombo)
                 .ToDictionary(sc => sc.ServiceComboId);
 
@@ -114,10 +206,9 @@ public class PaymentService : IPaymentService
                 return items;
             }).ToList();
 
-            // Tính tổng tiền
+
             var totalPrice = groupedItems.Sum(i => i.price * i.quantity);
 
-            // Tạo dữ liệu thanh toán
             var paymentData = new PaymentData(
                 orderCode: createPaymentLinkDto.OrderNumber,
                 amount: totalPrice,
@@ -129,7 +220,6 @@ public class PaymentService : IPaymentService
 
             CreatePaymentResult result = await _payOs.createPaymentLink(paymentData);
 
-            // Lưu vào database
             Payment payment = new Payment()
             {
                 OrderNumber = createPaymentLinkDto.OrderNumber,
@@ -152,7 +242,6 @@ public class PaymentService : IPaymentService
                 Result = new
                 {
                     result
-                    //PaymentTransactionId = payment.PaymentTransactionId
                 }
             };
         }
@@ -268,11 +357,5 @@ public class PaymentService : IPaymentService
                 Result = null
             };
         }
-    }
-
-    public Task<ResponseDto> CancelPayOsPaymentLink(ClaimsPrincipal User, Guid paymentTransactionId,
-        string cancellationReason)
-    {
-        throw new NotImplementedException();
     }
 }
