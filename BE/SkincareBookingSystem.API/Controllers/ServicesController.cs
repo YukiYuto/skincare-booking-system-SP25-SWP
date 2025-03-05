@@ -49,6 +49,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut()]
+        [Authorize(Roles = StaticUserRoles.Manager)]
         public async Task<IActionResult> UpdateService([FromBody] UpdateServiceDto updateServiceDto)
         {
             var result = await _servicesService.UpdateService(User, updateServiceDto);

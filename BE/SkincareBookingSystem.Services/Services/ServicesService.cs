@@ -55,7 +55,7 @@ namespace SkincareBookingSystem.Services.Services
 
             int totalPages = (int)Math.Ceiling((double)totalServices / pageSize);
 
-            var serviceDtos = 
+            var serviceDtos =
                 _mapper.MapCollection<Models.Domain.Services, GetAllServicesDto>(services);
 
             return new ResponseDto
@@ -141,21 +141,9 @@ namespace SkincareBookingSystem.Services.Services
                 };
             }
 
-            // using AutoMapper to map the DTO to Services model
             var updatedData = _mapper.Map<UpdateServiceDto, Models.Domain.Services>(updateServiceDto);
-            if (updatedData.ServiceTypeId == Guid.Empty)
-            {
-                //updatedData.ServiceTypeId = service.ServiceTypeId;
-                return new ResponseDto
-                {
-                    Message = "Service Type Id is required",
-                    IsSuccess = false,
-                    StatusCode = 400,
-                    Result = updatedData.ServiceTypeId
-                };
-            }
-
-            service.UpdatedBy = User.Identity?.Name;
+            service.UpdatedBy = User.FindFirstValue("FullName");
+            service.Status = updatedData.Status;
 
             // Update the service
             _unitOfWork.Services.Update(service, updatedData);
