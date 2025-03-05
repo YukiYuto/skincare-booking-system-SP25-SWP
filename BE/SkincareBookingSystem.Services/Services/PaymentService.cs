@@ -46,7 +46,7 @@ public class PaymentService : IPaymentService
             };
         }
         
-        bool isManager = User.IsInRole("MANAGER");
+        bool isManager = userId == StaticUserRoles.Manager;
         
         Guid? customerId = null;
         if (!isManager)

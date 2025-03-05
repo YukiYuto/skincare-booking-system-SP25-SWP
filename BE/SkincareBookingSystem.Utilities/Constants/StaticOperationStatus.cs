@@ -86,8 +86,8 @@ namespace SkincareBookingSystem.Utilities.Constants
         
         public static class Service 
         {
-            public const string Active = "Service is active";
-            public const string Disable = "Service is disable";
+            public const string Active = "Active";
+            public const string Disable = "Disable";
         }
 
         public static class SkinTherapist

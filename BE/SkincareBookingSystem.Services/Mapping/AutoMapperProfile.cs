@@ -69,6 +69,8 @@ public class AutoMapperProfile : Profile
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
         //Service
+        CreateMap<Models.Domain.Services, GetAllServicesDto>().ReverseMap();
+        
         CreateMap<CreateServiceDto, Models.Domain.Services>()
             .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
@@ -78,8 +80,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CreatedTime,
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Service.Active));
-            
-
+        
         CreateMap<UpdateServiceDto, Models.Domain.Services>()
             .ForMember(dest => dest.UpdatedTime,
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))

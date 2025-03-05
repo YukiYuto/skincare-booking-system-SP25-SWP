@@ -13,10 +13,19 @@ namespace SkincareBookingSystem.Services.IServices
     public interface IServicesService
     {
         Task<ResponseDto> GetServiceById(Guid id);
-        Task<ResponseDto> GetAllServices();
+
+        Task<ResponseDto> GetAllServices
+        (
+            ClaimsPrincipal User,
+            int pageNumber = 1,
+            int pageSize = 10,
+            string? filterOn = null,
+            string? filterQuery = null,
+            string? sortBy = null
+        );
+
         Task<ResponseDto> CreateService(ClaimsPrincipal User, CreateServiceDto createServiceDto);
         Task<ResponseDto> UpdateService(ClaimsPrincipal User, UpdateServiceDto updateServiceDto);
         Task<ResponseDto> DeleteService(Guid id);
-
     }
 }
