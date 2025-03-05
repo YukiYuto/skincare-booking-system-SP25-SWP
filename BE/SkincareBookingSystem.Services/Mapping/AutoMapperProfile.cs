@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.Repositories;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
+using SkincareBookingSystem.Models.Dto.Payment;
 
 
 namespace SkincareBookingSystem.Services.Mapping;
@@ -74,14 +75,15 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
             .ForMember(dest => dest.ServiceTypeId, opt => opt.MapFrom(src => src.ServiceTypeId))
-            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
             .ForMember(dest => dest.CreatedTime,
-                opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0))); //Meaning of 7.0 is GMT+7
+                opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Service.Active));
+            
 
         CreateMap<UpdateServiceDto, Models.Domain.Services>()
             .ForMember(dest => dest.UpdatedTime,
-                opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0))) //Meaning of 7.0 is GMT+7
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); // Ignore null value
+                opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
         //SignUpCustomerDto to ApplicationUser
         CreateMap<SignUpCustomerDto, ApplicationUser>()
@@ -193,7 +195,10 @@ public class AutoMapperProfile : Profile
                 src => src.TherapistServiceTypes.Select(tst => tst.ServiceType).ToList()));
 
         CreateMap<ServiceType, Models.Dto.TherapistServiceTypes.ServiceTypeDto>();
-
+        
+        //Payment
+        CreateMap<GetAllPaymentDto, Payment>().ReverseMap();
+        CreateMap<GetPaymentByIdDto, Payment>().ReverseMap();
 
     }
 }
