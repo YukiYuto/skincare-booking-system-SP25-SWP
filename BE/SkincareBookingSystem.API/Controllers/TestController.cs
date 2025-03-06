@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.Models.Domain;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -23,6 +24,7 @@ namespace SkincareBookingSystem.API.Controllers
 
         // GET: api/Test
         [HttpGet]
+        [SwaggerOperation(Summary = "API gets all appointments", Description = "Requires admin role")]
         public async Task<ActionResult<IEnumerable<Appointments>>> GetAppointments()
         {
             return await _context.Appointments.ToListAsync();
@@ -30,6 +32,7 @@ namespace SkincareBookingSystem.API.Controllers
 
         // GET: api/Test/5
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "API gets an appointment by id", Description = "Requires id")]
         public async Task<ActionResult<Appointments>> GetAppointments(Guid id)
         {
             var appointments = await _context.Appointments.FindAsync(id);
@@ -45,6 +48,7 @@ namespace SkincareBookingSystem.API.Controllers
         // PUT: api/Test/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "API updates an appointment", Description = "Requires user role")]
         public async Task<IActionResult> PutAppointments(Guid id, Appointments appointments)
         {
             if (id != appointments.AppointmentId)
@@ -76,6 +80,7 @@ namespace SkincareBookingSystem.API.Controllers
         // POST: api/Test
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [SwaggerOperation(Summary = "API creates an appointment", Description = "Requires user role")]
         public async Task<ActionResult<Appointments>> PostAppointments(Appointments appointments)
         {
             _context.Appointments.Add(appointments);
@@ -86,6 +91,7 @@ namespace SkincareBookingSystem.API.Controllers
 
         // DELETE: api/Test/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "API deletes an appointment", Description = "Requires user role")]
         public async Task<IActionResult> DeleteAppointments(Guid id)
         {
             var appointments = await _context.Appointments.FindAsync(id);

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Utilities.Constants;
+using Swashbuckle.AspNetCore.Annotations;   
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -19,6 +20,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "API create a new Service", Description = "Requires admin role")]
         [Authorize(Roles = StaticUserRoles.Manager)]
         public async Task<IActionResult> CreateService([FromBody] CreateServiceDto createServiceDto)
         {
@@ -27,6 +29,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "API get all Services", Description = "Requires admin role")]
         public async Task<IActionResult> GetAllServices
         (
             [FromQuery] int pageNumber = 1,
@@ -42,6 +45,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "API get a Service by id", Description = "Requires admin role")]
         public async Task<IActionResult> GetServiceById(Guid id)
         {
             var result = await _servicesService.GetServiceById(id);
@@ -50,6 +54,7 @@ namespace SkincareBookingSystem.API.Controllers
 
         [HttpPut()]
         [Authorize(Roles = StaticUserRoles.Manager)]
+        [SwaggerOperation(Summary = "API update a Service", Description = "Requires admin and manager roles")]
         public async Task<IActionResult> UpdateService([FromBody] UpdateServiceDto updateServiceDto)
         {
             var result = await _servicesService.UpdateService(User, updateServiceDto);
@@ -57,6 +62,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "API soft delete a Service", Description = "Requires admin role")]
         public async Task<IActionResult> DeleteService(Guid id)
         {
             var result = await _servicesService.DeleteService(id);
