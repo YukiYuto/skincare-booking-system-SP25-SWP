@@ -63,5 +63,10 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update booking schedule";
             public const string NotRetrieved = "Failed to retrieve booking schedule(s)";
         }
+
+        public static class Payment
+        {
+            public const string Pending = "Payment Not Paid";
+        }
     }
 }

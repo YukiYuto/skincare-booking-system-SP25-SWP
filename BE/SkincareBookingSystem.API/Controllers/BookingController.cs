@@ -5,7 +5,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/bookings")]
     [ApiController]
     public class BookingController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace SkincareBookingSystem.API.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpPost("order/bundle")]
+        [HttpPost("orders-bundles")]
         public async Task<IActionResult> BundleOrder([FromBody] BundleOrderDto bundleOrderDto)
         {
             var result = await _bookingService.BundleOrder(bundleOrderDto, User);
@@ -30,7 +30,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("occupied-slots")]
-        public async Task<IActionResult> GetOccupiedSlotsFromTherapist(Guid therapistId, DateTime date)
+        public async Task<IActionResult> GetOccupiedSlotsFromTherapist(Guid therapistId, DateOnly date)
         {
             var result = await _bookingService.GetOccupiedSlotsFromTherapist(therapistId, date);
             return StatusCode(result.StatusCode, result);

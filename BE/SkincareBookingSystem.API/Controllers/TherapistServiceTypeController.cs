@@ -5,7 +5,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/therapist-service-type")]
     [ApiController]
     public class TherapistServiceTypeController : ControllerBase
     {
@@ -15,14 +15,14 @@ namespace SkincareBookingSystem.API.Controllers
             _therapistServiceTypeService = therapistServiceTypeService;
         }
 
-        [HttpPost("assignment")]
+        [HttpPost]
         public async Task<IActionResult> AssignServiceTypeToTherapist([FromBody] TherapistServiceTypesDto therapistServiceTypesDto)
         {
             var response = await _therapistServiceTypeService.AssignServiceTypesToTherapist(User, therapistServiceTypesDto);
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpDelete("removal")]
+        [HttpDelete]
         public async Task<IActionResult> RemoveServiceTypeFromTherapist([FromBody] TherapistServiceTypesDto therapistServiceTypesDto)
         {
             var response = await _therapistServiceTypeService.RemoveServiceTypesForTherapist(User, therapistServiceTypesDto);

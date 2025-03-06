@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SkincareBookingSystem.DataAccess.Seed;
 using SkincareBookingSystem.Models.Domain;
 
 namespace SkincareBookingSystem.DataAccess.DBContext
@@ -43,6 +44,9 @@ namespace SkincareBookingSystem.DataAccess.DBContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            //Seed data
+            ApplicationDbContextSeed.SeedAdminAndManagerAccount(modelBuilder);
             
             // Composite key for ComboItem
             modelBuilder.Entity<ComboItem>()

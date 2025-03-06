@@ -1,5 +1,6 @@
 ﻿using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
+using SkincareBookingSystem.Models.Dto.Booking.Appointment;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.OrderDetails;
@@ -51,11 +52,11 @@ namespace SkincareBookingSystem.Services.Services
 
         }
 
-        public async Task<ResponseDto> GetOccupiedSlotsFromTherapist(Guid therapistId, DateTime dateToSearch)
+        public async Task<ResponseDto> GetOccupiedSlotsFromTherapist(Guid therapistId, DateOnly dateToSearch)
         {
             IEnumerable<Slot> occupiedSlots = await _unitOfWork.Slot.GetAllAsync(
                 filter: s => s.TherapistSchedules.Any(
-                    ts => ts.TherapistId == therapistId && ts.Appointment.AppointmentDate == dateToSearch.Date),
+                    ts => ts.TherapistId == therapistId && ts.Appointment.AppointmentDate == dateToSearch),
                 includeProperties: $"{nameof(Slot.TherapistSchedules)},{nameof(Slot.TherapistSchedules)}.{nameof(TherapistSchedule.Appointment)}"
                 );
 
@@ -93,17 +94,19 @@ namespace SkincareBookingSystem.Services.Services
                     detail.OrderId = order.OrderId;
                 });
                 order.TotalPrice = GetTotalPrice(orderDetails);
-                
+
                 //Lưu 1 lần xuống dưới Db
                 await _unitOfWork.Order.AddAsync(order);
                 await _unitOfWork.SaveAsync();
 
                 await transaction.CommitAsync();
 
+                // Custom response is created to avoid circular reference in the response JSON
+                var orderResponseDto = _autoMapperService.Map<Order, OrderDto>(order);
                 return SuccessResponse.Build(
                     message: StaticOperationStatus.Order.Created,
                     statusCode: StaticOperationStatus.StatusCode.Created,
-                    result: new { order, orderDetails });
+                    result: orderResponseDto);
             }
             catch (Exception ex)
             {
@@ -117,6 +120,11 @@ namespace SkincareBookingSystem.Services.Services
         private static Int32 GetTotalPrice(IEnumerable<OrderDetail> orderDetails)
         {
             return Convert.ToInt32(orderDetails.Sum(detail => detail.Price));
+        }
+
+        public Task<ResponseDto> FinalizeAppointment(BookAppointmentDto bookAppointmentDto, ClaimsPrincipal User)
+        {
+            throw new NotImplementedException();
         }
     }
 }
