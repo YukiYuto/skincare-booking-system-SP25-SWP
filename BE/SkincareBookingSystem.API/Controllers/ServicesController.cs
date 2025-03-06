@@ -17,7 +17,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("create")]
-        [SwaggerOperation(Summary = "Create a new service", Description = "Create a new service")]
+        [SwaggerOperation(Summary = "API tạo Service mới")]
         public async Task<IActionResult> CreateService([FromBody] CreateServiceDto createServiceDto)
         {
             var result = await _servicesService.CreateService(User, createServiceDto);
@@ -25,7 +25,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("all")]
-        [SwaggerOperation(Summary = "Get all services", Description = "Get all Services available")]
+        [SwaggerOperation(Summary = "API lấy tất cả Services có sẵn")]
         public async Task<IActionResult> GetAllServices()
         {
             var result = await _servicesService.GetAllServices();
@@ -33,7 +33,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("get/{id}")]
-        [SwaggerOperation(Summary = "Get service by id", Description = "Get a service by id")]
+        [SwaggerOperation(Summary = "API lấy một Service bằng ServiceID")]
         public async Task<IActionResult> GetServiceById(Guid id)
         {
             var result = await _servicesService.GetServiceById(id);
@@ -41,7 +41,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut("update")]
-        [SwaggerOperation(Summary = "Update a service", Description = "Update a service")]
+        [SwaggerOperation(Summary = "API cập nhật một Service")]
         public async Task<IActionResult> UpdateService([FromBody] UpdateServiceDto updateServiceDto)
         {
             var result = await _servicesService.UpdateService(User, updateServiceDto);
@@ -49,7 +49,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        [SwaggerOperation(Summary = "Delete a service", Description = "Soft delete a service")]
+        [SwaggerOperation(Summary = "API soft delete một Service bằng ServiceID")]
         public async Task<IActionResult> DeleteService(Guid id)
         {
             var result = await _servicesService.DeleteService(id);
