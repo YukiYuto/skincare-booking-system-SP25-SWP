@@ -66,6 +66,15 @@ namespace SkincareBookingSystem.API
                         new List<string>()
                     }
                 });
+                // API document
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Skincare Booking API",
+                    Version = "v1",
+                    Description = "API documentation for Skincare Booking System"
+                });
+                options.EnableAnnotations();
+
             });
 
             // Add JWT Authentication
