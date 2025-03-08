@@ -19,6 +19,7 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> GetOccupiedSlotsFromTherapist(Guid therapistId, DateOnly date);
         Task<ResponseDto> BundleOrder(BundleOrderDto bundleOrderDto, ClaimsPrincipal User);
         Task<ResponseDto> FinalizeAppointment(BookAppointmentDto bookAppointmentDto, ClaimsPrincipal User);
+        Task<ResponseDto> HandleTherapistAutoAssignment(AutoAssignmentDto autoAssignmentDto);
 
     }
 }

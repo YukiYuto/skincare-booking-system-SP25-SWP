@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkincareBookingSystem.Models.Dto.Booking.Appointment;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Services.IServices;
 
@@ -22,6 +23,13 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [HttpPost("appointment-schedule")]
+        public async Task<ActionResult> FinalizeAppointment([FromBody] BookAppointmentDto bookingRequest)
+        {
+            var result = await _bookingService.FinalizeAppointment(bookingRequest, User);
+            return StatusCode(result.StatusCode, result);
+        }
+
         [HttpGet("therapists")]
         public async Task<IActionResult> GetTherapistsForServiceType(Guid serviceTypeId)
         {
@@ -33,6 +41,13 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<IActionResult> GetOccupiedSlotsFromTherapist(Guid therapistId, DateOnly date)
         {
             var result = await _bookingService.GetOccupiedSlotsFromTherapist(therapistId, date);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("auto-assign")]
+        public async Task<IActionResult> HandleTherapistAutoAssignment([FromBody] AutoAssignmentDto autoAssignmentDto)
+        {
+            var result = await _bookingService.HandleTherapistAutoAssignment(autoAssignmentDto);
             return StatusCode(result.StatusCode, result);
         }
     }
