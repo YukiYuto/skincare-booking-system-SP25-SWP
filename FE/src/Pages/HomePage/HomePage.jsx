@@ -10,8 +10,11 @@ import AppointmentSection from "../../Components/AppointmentSection/AppointmentS
 import SkincareTips from "../../Components/SkincareTips/SkincareTips";
 import TrustSection from "../../Components/TrustSection/TrustSection";
 import SkincareExperts from "../../Components/SkincareExperts/SkincareExperts";
+import { useState } from "react";
+import BookingModal from "../../Components/BookingModal/BookingModal";
 
 function HomePage() {
+  const [visible, setVisible] = useState(false);
   return (
     <div>
       <Header />
@@ -27,10 +30,11 @@ function HomePage() {
               Our skincare line is crafted with pure, high-quality <br />{" "}
               ingredients for visible results.
             </p>
-            <Button type="primary" size="large" className={styles.button}>
+            <Button type="primary" size="large" className={styles.button} onClick={() => setVisible(true)}>
               <img src={phone} alt="phone icon" className={styles.phoneIcon} />
               Book an appointment
             </Button>
+            <BookingModal visible={visible} onClose={() => setVisible(false)} />
           </div>
 
           {/* Right Side - Image */}

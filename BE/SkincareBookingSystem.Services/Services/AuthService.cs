@@ -514,7 +514,7 @@ public class AuthService : IAuthService
             PhoneNumber = user.PhoneNumber!,
             Gender = user.Gender,
             Address = principal.FindFirst("Address")?.Value,
-            Gender = user.Gender,
+   
             ImageUrl = principal.FindFirst("ImageUrl")?.Value,
             UserName = user.UserName!,
             Age = user.Age,

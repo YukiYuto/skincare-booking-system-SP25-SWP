@@ -18,6 +18,7 @@ import Services from '../Components/DashboardComponent/Tabs/Services/Services';
 import Orders from "../Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "../Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import TableCustomer from "../Components/TableCustomer/TableCustomer";
 
 
 export const router = createBrowserRouter([
@@ -67,4 +68,8 @@ export const router = createBrowserRouter([
     path: "*",
     element: <Navigate to="/error" replace />,
   },
+  {
+    path: "table-customer",
+    element: <TableCustomer />,
+  }
 ]);
