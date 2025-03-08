@@ -4,6 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SkincareBookingSystem.Models.Domain
 {
+    public enum ScheduleStatus
+    {
+        Pending = 0,
+        Confirmed = 1,
+        Completed = 2,
+        Cancelled = 3,
+        Rejected = 4,
+        Rescheduled = 5,
+        Unavailable = 6
+    }
     public class TherapistSchedule : BaseEntity<string, string, string>
     {
         [Key]
@@ -17,6 +27,7 @@ namespace SkincareBookingSystem.Models.Domain
 
         public Guid TherapistId { get; set; }
         [ForeignKey("TherapistId")] public virtual SkinTherapist SkinTherapist { get; set; }
+        [Column(TypeName = "varchar(20)")] public ScheduleStatus ScheduleStatus { get; set; }
         [StringLength(255)] public string? Reason { get; set; }
     }
 }
