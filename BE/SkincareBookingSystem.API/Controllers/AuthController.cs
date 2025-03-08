@@ -7,7 +7,7 @@ using SkincareBookingSystem.Models.Dto.Email;
 namespace SkincareBookingSystem.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -17,7 +17,15 @@ namespace SkincareBookingSystem.API.Controllers
             _authService = authService;
         }
 
+
+        /// <summary>
+        /// API register new customer
+        /// </summary>
+        /// <param name="signUpCustomerDto">Customer register information</param>
+        /// <returns>ResponseDto include result</returns>
         [HttpPost("customers")]
+        [ProducesResponseType(typeof(ResponseDto), 201)]
+        [ProducesResponseType(typeof(ResponseDto), 400)]
         public async Task<ActionResult<ResponseDto>> SignUpCustomer([FromBody] SignUpCustomerDto signUpCustomerDto)
         {
             if (!ModelState.IsValid)
@@ -31,9 +39,17 @@ namespace SkincareBookingSystem.API.Controllers
             }
 
             var result = await _authService.SignUpCustomer(signUpCustomerDto);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
+            return result.IsSuccess
+                ? (CreatedAtAction(nameof(SignUpCustomer), result.Result, result))
+                : BadRequest(result);
         }
-
+        
+        
+        /// <summary>
+        /// API register new therapist
+        /// </summary>
+        /// <param name="signUpSkinTherapistDto">Therapist register information</param>
+        /// <returns>ResponseDto include result</returns>
         [HttpPost("skin-therapists")]
         public async Task<ActionResult<ResponseDto>> SignUpSkinTherapist(
             [FromBody] SignUpSkinTherapistDto signUpSkinTherapistDto)
@@ -49,7 +65,9 @@ namespace SkincareBookingSystem.API.Controllers
             }
 
             var result = await _authService.SignUpSkinTherapist(signUpSkinTherapistDto);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
+            return result.IsSuccess
+                ? (CreatedAtAction(nameof(SignUpSkinTherapist), result.Result, result))
+                : BadRequest(result);
         }
 
         [HttpPost("staff")]
@@ -66,7 +84,9 @@ namespace SkincareBookingSystem.API.Controllers
             }
 
             var result = await _authService.SignUpStaff(signUpStaffDto);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
+            return result.IsSuccess
+                ? (CreatedAtAction(nameof(SignUpStaff), result.Result, result))
+                : BadRequest(result);
         }
 
         [HttpPost("signin")]
@@ -94,7 +114,7 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
         {
             var responseDto = await _authService.ChangePassword(changePasswordDto);
-            return responseDto.IsSuccess ? Ok(responseDto.Message) : BadRequest(responseDto.Message);
+            return StatusCode(responseDto.StatusCode, responseDto);
         }
 
         [HttpPost("password/forgot")]

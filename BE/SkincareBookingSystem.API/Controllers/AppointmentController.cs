@@ -7,7 +7,7 @@ using SkincareBookingSystem.Services.IServices;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/appointment")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {

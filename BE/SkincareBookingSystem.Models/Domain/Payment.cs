@@ -6,7 +6,7 @@ namespace SkincareBookingSystem.Models.Domain;
 public enum PaymentStatus
 {
     Pending = 0,
-    Completed = 1,
+    Paid = 1,
     Cancelled = 2
 }
 
@@ -21,5 +21,7 @@ public class Payment
     public string? CancelUrl { get; set; }
     public string? ReturnUrl { get; set; }
     public DateTime CreatedAt { get; set; }
+    
+    [Column(TypeName = "varchar(20)")] 
     public PaymentStatus Status { get; set; }
 }

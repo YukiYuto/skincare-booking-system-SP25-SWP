@@ -79,6 +79,11 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotDeleted = "Failed to delete Blog";
             public const string NotUpdated = "Failed to update Blog";
             public const string NotRetrieved = "Failed to retrieve Blog(s)";
+
+        public static class Payment
+        {
+            public const string Pending = "Payment Not Paid";
+
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
+using SkincareBookingSystem.Models.Dto.Booking.Appointment;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
+using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.OrderDetails;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.Helpers.Responses;
@@ -19,33 +21,54 @@ namespace SkincareBookingSystem.Services.Services
     public class BookingService : IBookingService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IOrderService _orderService;
-        private readonly IOrderDetailService _orderDetailService;
         private readonly IAutoMapperService _autoMapperService;
 
         public BookingService
         (
             IUnitOfWork unitOfWork,
-            IOrderService orderService,
-            IOrderDetailService orderDetailService,
             IAutoMapperService autoMapperService
         )
         {
             _unitOfWork = unitOfWork;
-            _orderService = orderService;
-            _orderDetailService = orderDetailService;
             _autoMapperService = autoMapperService;
         }
 
 
-        public Task<ResponseDto> GetTherapistsForServiceType(Guid serviceTypeId)
+        public async Task<ResponseDto> GetTherapistsForServiceType(Guid serviceTypeId)
         {
-            throw new NotImplementedException();
+            var therapistsFromDb = await _unitOfWork.SkinTherapist.GetAllAsync(
+                filter: st => st.TherapistServiceTypes.Any(tst => tst.ServiceTypeId == serviceTypeId),
+                includeProperties: $"{nameof(SkinTherapist.ApplicationUser)},{nameof(SkinTherapist.TherapistServiceTypes)}");
+
+            if (therapistsFromDb is null || !therapistsFromDb.Any())
+                return ErrorResponse.Build(StaticOperationStatus.SkinTherapist.NotFound, StaticOperationStatus.StatusCode.NotFound);
+
+            var therapistDtos = _autoMapperService.MapCollection<SkinTherapist, PreviewTherapistDto>(therapistsFromDb).ToList();
+
+            return SuccessResponse.Build(
+                message: StaticOperationStatus.SkinTherapist.Found,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: therapistDtos);
+
         }
 
-        public Task<ResponseDto> GetOccupiedSlots(Guid therapistId, DateTime date)
+        public async Task<ResponseDto> GetOccupiedSlotsFromTherapist(Guid therapistId, DateOnly dateToSearch)
         {
-            throw new NotImplementedException();
+            IEnumerable<Slot> occupiedSlots = await _unitOfWork.Slot.GetAllAsync(
+                filter: s => s.TherapistSchedules.Any(
+                    ts => ts.TherapistId == therapistId && ts.Appointment.AppointmentDate == dateToSearch),
+                includeProperties: $"{nameof(Slot.TherapistSchedules)},{nameof(Slot.TherapistSchedules)}.{nameof(TherapistSchedule.Appointment)}"
+                );
+
+            if (occupiedSlots is null || !occupiedSlots.Any())
+                return ErrorResponse.Build(StaticOperationStatus.Slot.NotFound, StaticOperationStatus.StatusCode.NotFound);
+
+            var occupiedSlotIds = occupiedSlots.Select(s => s.SlotId).ToList();
+
+            return SuccessResponse.Build(
+                message: StaticOperationStatus.Slot.Found,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: occupiedSlotIds);
         }
 
         public async Task<ResponseDto> BundleOrder(BundleOrderDto bundleOrderDto, ClaimsPrincipal User)
@@ -64,9 +87,6 @@ namespace SkincareBookingSystem.Services.Services
                 order.OrderNumber = await _unitOfWork.Order.GenerateUniqueNumberAsync();
                 order.CreatedBy = User.Identity?.Name;
 
-                await _unitOfWork.Order.AddAsync(order);
-                await _unitOfWork.SaveAsync();
-
                 // Map OrderDetails and Assign OrderId
                 var orderDetails = _autoMapperService.MapCollection<CreateOrderDetailDto, OrderDetail>(bundleOrderDto.OrderDetails).ToList();
                 orderDetails.ForEach(detail =>
@@ -75,15 +95,18 @@ namespace SkincareBookingSystem.Services.Services
                 });
                 order.TotalPrice = GetTotalPrice(orderDetails);
 
-                await _unitOfWork.OrderDetail.AddRangeAsync(orderDetails);
+                //Lưu 1 lần xuống dưới Db
+                await _unitOfWork.Order.AddAsync(order);
                 await _unitOfWork.SaveAsync();
 
                 await transaction.CommitAsync();
 
+                // Custom response is created to avoid circular reference in the response JSON
+                var orderResponseDto = _autoMapperService.Map<Order, OrderDto>(order);
                 return SuccessResponse.Build(
                     message: StaticOperationStatus.Order.Created,
                     statusCode: StaticOperationStatus.StatusCode.Created,
-                    result: new { order, orderDetails });
+                    result: orderResponseDto);
             }
             catch (Exception ex)
             {
@@ -97,6 +120,11 @@ namespace SkincareBookingSystem.Services.Services
         private static Int32 GetTotalPrice(IEnumerable<OrderDetail> orderDetails)
         {
             return Convert.ToInt32(orderDetails.Sum(detail => detail.Price));
+        }
+
+        public Task<ResponseDto> FinalizeAppointment(BookAppointmentDto bookAppointmentDto, ClaimsPrincipal User)
+        {
+            throw new NotImplementedException();
         }
     }
 }

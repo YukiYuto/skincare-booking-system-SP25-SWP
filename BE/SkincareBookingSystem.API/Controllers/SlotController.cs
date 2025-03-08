@@ -5,7 +5,7 @@ using SkincareBookingSystem.Services.IServices;
 namespace SkincareBookingSystem.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/slot")]
 public class SlotController : Controller
 {
     private readonly ISlotService _slotService;
@@ -15,7 +15,7 @@ public class SlotController : Controller
         _slotService = slotService;
     }
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> CreateSlot([FromBody] CreateSlotDto createSlotDto)
     {
         var result = await _slotService.CreateSlot(User, createSlotDto);
@@ -29,14 +29,14 @@ public class SlotController : Controller
         return StatusCode(result.StatusCode, result);
     }
 
-    [HttpGet("list")]
+    [HttpGet]
     public async Task<IActionResult> GetAllSlots()
     {
         var result = await _slotService.GetAllSlots();
         return StatusCode(result.StatusCode, result);
     }
 
-    [HttpPut("update")]
+    [HttpPut]
     public async Task<IActionResult> UpdateSlot([FromBody] UpdateSlotDto updateSlotDto)
     {
         var result = await _slotService.UpdateSlot(User, updateSlotDto);

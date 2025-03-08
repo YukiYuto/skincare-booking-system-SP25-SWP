@@ -7,11 +7,11 @@ namespace SkincareBookingSystem.Models.Domain
     {
         [Key] public Guid ServiceId { get; set; }
         [StringLength(50)] public string ServiceName { get; set; } = null!;
-        [StringLength(50)] public string Description { get; set; } = null!;
+        [StringLength(200)] public string Description { get; set; } = null!;
         public double Price { get; set; }
         [StringLength(200)]public string? ImageUrl { get; set; }
 
-        public Guid ServiceTypeId { get; set; }
+        public Guid? ServiceTypeId { get; set; }
         [ForeignKey("ServiceTypeId")] public virtual ServiceType ServiceType { get; set; }
 
         public virtual ICollection<ComboItem> ComboItems { get; set; } = new List<ComboItem>();

@@ -52,7 +52,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                 columns: table => new
                 {
                     TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CustomerId = table.Column<string>(type: "text", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
                     OrderId = table.Column<Guid>(type: "uuid", nullable: true),
                     PaymentId = table.Column<Guid>(type: "uuid", nullable: false),
                     Amount = table.Column<double>(type: "double precision", nullable: false),
@@ -63,10 +63,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_Transactions", x => x.TransactionId);
                     table.ForeignKey(
-                        name: "FK_Transactions_AspNetUsers_CustomerId",
+                        name: "FK_Transactions_Customers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Transactions_Order_OrderId",

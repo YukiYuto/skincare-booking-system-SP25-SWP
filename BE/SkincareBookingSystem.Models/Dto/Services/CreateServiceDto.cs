@@ -12,7 +12,7 @@ namespace SkincareBookingSystem.Models.Dto.Services
         public double Price { get; set; }
         public string? ImageUrl { get; set; }
         public Guid? ServiceTypeId { get; set; }
-        public string? CreatedBy { get; set; } = null!;
-        public string? CreatedTime { get; set; }
+        /*public string? CreatedTime { get; set; }
+        public string Status { get; set; } = null!;*/
     }
 }
