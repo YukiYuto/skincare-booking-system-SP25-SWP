@@ -16,7 +16,7 @@ namespace SkincareBookingSystem.API.Controllers
             _skinTherapistService = skinTherapistService;
         }
 
-        [HttpGet("{therapistId}")]
+        [HttpGet("details/{therapistId}")]
         public async Task<ActionResult> GetTherapistDetailsById(Guid therapistId)
         {
             var response = await _skinTherapistService.GetTherapistDetailsById(therapistId);
@@ -30,7 +30,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("{serviceTypeId}")]
+        [HttpGet("service/{serviceTypeId}")]
         public async Task<ActionResult> GetTherapistsByServiceType(Guid serviceTypeId)
         {
             var response = await _skinTherapistService.GetTherapistsByServiceTypeId(serviceTypeId);
