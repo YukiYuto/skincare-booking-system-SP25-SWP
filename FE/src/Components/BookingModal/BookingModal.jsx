@@ -185,14 +185,24 @@ const BookingModal = ({ visible, onClose }) => {
             style={{ width: "100%", marginBottom: 10 }}
             onChange={(date) => setSelectedDate(dayjs(date).format("YYYY-MM-DD"))}
           />
-          <select onChange={(e) => setSelectedTime(e.target.value)}>
-              <option value="">-- Chọn thời gian --</option>
-              {timeSlots.map((slot, index) => (
-                  <option key={index} value={`${slot.startTime} - ${slot.endTime}`}>
-                      {slot.startTime} - {slot.endTime}
-                  </option>
-              ))}
-          </select>
+          <div className={styles.slotContainer}>
+            {timeSlots.map((slot, index) => {
+              const slotValue = `${slot.startTime} - ${slot.endTime}`;
+              
+              return (
+                <Button
+                  key={index}
+                  type="default"
+                  className={`${styles.slotButton} ${selectedTime === slotValue ? styles.selectedSlot : ""}`}
+                  onClick={() => setSelectedTime(selectedTime === slotValue ? null : slotValue)}
+                >
+                  {slot.startTime} - {slot.endTime}
+                </Button>
+              );
+            })}
+          </div>
+
+
 
         </div>
       )}

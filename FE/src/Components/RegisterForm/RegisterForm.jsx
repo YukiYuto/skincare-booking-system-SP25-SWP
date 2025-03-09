@@ -135,7 +135,7 @@ function RegisterForm() {
 
   return (
     <form
-      className={styles.registerForm}
+      className={`${styles.registerForm} ${isLoading ? styles.disabledForm : ""}`}
       aria-labelledby="register-title"
       onSubmit={handleRegisterSubmit}
     >
@@ -249,7 +249,9 @@ function RegisterForm() {
 
       <div className={styles.termsContainer}>
         <span>By registering you agree to </span>
-        <a href="/terms" className={styles.termsLink}>
+        <a 
+        style={{ pointerEvents: isLoading ? "none" : "auto", opacity: isLoading ? 0.5 : 1 }}
+        href="/terms" className={styles.termsLink}>
           terms and conditions
         </a>
         <span> of our center.</span>
@@ -262,7 +264,12 @@ function RegisterForm() {
       <button
         type="button"
         className={styles.loginButton}
-        onClick={() => navigate("/login")}
+        onClick={() => {
+          if (!isLoading) {
+            navigate("/login")
+            }
+          }}
+          disabled={isLoading} 
       >
         Login
       </button>
