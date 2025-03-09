@@ -48,12 +48,14 @@ const ServiceTypeCreateModal = ({ onClose }) => {
               required
             />
           </label>
-          <button className={styles.submitButton} type="submit">
-            Create
-          </button>
-          <button className={styles.btn} type="button" onClick={onClose}>
-            Cancel
-          </button>
+          <div className={styles.buttonContainer}>
+            <button className={styles.submitButton} type="submit">
+              Create
+            </button>
+            <button className={styles.btn} type="button" onClick={onClose}>
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

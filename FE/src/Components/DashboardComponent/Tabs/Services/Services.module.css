@@ -9,6 +9,25 @@
   overflow: hidden;
 }
 
+.iconButton,
+.tabHeader button {
+  background: transparent;
+  border: none;
+  padding: 4px 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.iconButton:hover,
+.tabHeader button:hover {
+  padding: 4px;
+  background-color: var(--text-color);
+  color: white;
+}
+
 .tabHeader {
   display: flex;
   justify-content: space-between;
@@ -21,7 +40,8 @@
   gap: 16px;
 }
 
-.filterContainer, .tabTitleContainer{
+.filterContainer,
+.tabTitleContainer {
   display: flex;
   align-items: center;
   text-align: center;
@@ -44,22 +64,6 @@
   color: var(--text-color);
 }
 
-.tabHeader button {
-  background: transparent;
-  border: none;
-  padding: 4px 2px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
-.tabHeader button:hover {
-  padding: 4px;
-  background-color: var(--text-color);
-}
-
 .tabHeader img {
   width: 30px;
   height: 30px;
@@ -68,6 +72,17 @@
 .tabTitle {
   font-family: Raleway;
   color: var(--accent-color);
+}
+
+.service,
+.serviceType {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 16px;
+  color: var(--text-color);
+  transition: 0.2s;
 }
 
 .serviceTableContainer {
@@ -122,4 +137,32 @@
 
 .editButton:hover {
   padding: 4px;
+}
+
+.paginationControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.paginationControls span {
+  font-family: Raleway;
+  color: var(--text-color);
+}
+
+.changePageSizeButton {
+  padding: 6px 12px;
+  border: 1px solid var(--text-color);
+  border-radius: 4px;
+  background-color: var(--primary-color);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  width: calc(100% + 60px);
+}
+
+.changePageSizeButton:hover {
+  background-color: var(--accent-color);
+  color: white;
 }

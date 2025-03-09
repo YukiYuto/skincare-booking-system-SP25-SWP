@@ -15,7 +15,7 @@ import {
 
 // Enhanced error handling utility
 const handleApiError = (error, dispatch, defaultMessage) => {
-  console.error('API Error Details:', {
+  console.error("API Error Details:", {
     name: error.name,
     message: error.message,
     status: error.response?.status,
@@ -23,11 +23,13 @@ const handleApiError = (error, dispatch, defaultMessage) => {
   });
 
   dispatch(setLoading(false));
-  dispatch(setError({
-    message: defaultMessage,
-    details: error.message,
-    status: error.response?.status || 500
-  }));
+  dispatch(
+    setError({
+      message: defaultMessage,
+      details: error.message,
+      status: error.response?.status || 500,
+    })
+  );
 
   throw error;
 };
@@ -39,15 +41,16 @@ export const fetchServices = createAsyncThunk(
     try {
       dispatch(setLoading(true));
       const response = await fetch(GET_ALL_SERVICES_API);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      dispatch(setServices(data || []));
+      const services = data.result ?? [];
+      dispatch(setServices(services || []));
       dispatch(setLoading(false));
-      return data;
+      return services;
     } catch (error) {
       return handleApiError(error, dispatch, "Failed to fetch services");
     }
@@ -63,11 +66,11 @@ export const fetchServiceById = createAsyncThunk(
       const response = await fetch(
         GET_SERVICE_BY_ID_API.replace("{serviceId}", serviceId)
       );
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       dispatch(setServiceDetail(data));
       dispatch(setLoading(false));
@@ -81,21 +84,21 @@ export const fetchServiceById = createAsyncThunk(
 // Create Service
 export const createService = createAsyncThunk(
   "service/create",
-  async (serviceData, { dispatch }) => {
+  async (formData, token, { dispatch }) => {
     try {
       dispatch(setLoading(true));
       const response = await fetch(POST_SERVICE_API, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
         },
-        body: JSON.stringify(serviceData),
+        body: formData,
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       dispatch(fetchServices()); // Refresh services list
       dispatch(setLoading(false));
@@ -109,21 +112,18 @@ export const createService = createAsyncThunk(
 // Update Service
 export const updateService = createAsyncThunk(
   "service/update",
-  async ({ serviceId, serviceData }, { dispatch }) => {
+  async ({ serviceId, formData }, { dispatch }) => {
     try {
       dispatch(setLoading(true));
       const response = await fetch(PUT_SERVICE_API.replace("{id}", serviceId), {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(serviceData),
+        body: formData,
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       dispatch(fetchServices()); // Refresh services list
       dispatch(setLoading(false));
@@ -140,14 +140,17 @@ export const deleteService = createAsyncThunk(
   async (serviceId, { dispatch }) => {
     try {
       dispatch(setLoading(true));
-      const response = await fetch(DELETE_SERVICE_API.replace("{id}", serviceId), {
-        method: "DELETE",
-      });
-      
+      const response = await fetch(
+        DELETE_SERVICE_API.replace("{id}", serviceId),
+        {
+          method: "DELETE",
+        }
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       dispatch(fetchServices()); // Refresh services list
       dispatch(setLoading(false));
       return serviceId;

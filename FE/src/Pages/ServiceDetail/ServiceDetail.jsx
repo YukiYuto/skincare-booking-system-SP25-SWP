@@ -3,67 +3,109 @@ import { useParams } from "react-router-dom";
 import ServiceLayout from "../../Components/ServiceDetail/ServiceLayout";
 import ServiceList from "../../Components/ServiceList/ServiceList";
 import styles from "./ServiceDetail.module.css";
+import {
+  GET_SERVICE_BY_ID_API,
+  GET_ALL_SERVICES_API,
+  GET_THERAPIST_BY_SERVICE_API,
+  HTTP_METHODS,
+  AUTH_HEADERS
+} from "../../config/apiConfig";
 
 const ServiceDetail = () => {
   const { id } = useParams();
   const [state, setState] = useState({
     service: null,
-    serviceType: "",
     similarServices: [],
-    serviceTypes: [],
+    therapists: [],
     isLoading: true,
     error: null,
   });
 
-  const fakeTherapists = [
-    { id: 1, name: "Dr. Emily Carter" },
-    { id: 2, name: "John Smith" },
-    { id: 3, name: "Sophia Lee" },
-    { id: 4, name: "Michael Brown" },
-  ];
-  
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [serviceRes, allServicesRes, allServiceTypesRes] =
-          await Promise.all([
-            fetch(`https://672741d4302d03037e702957.mockapi.io/Service/${id}`),
-            fetch(`https://672741d4302d03037e702957.mockapi.io/Service`),
-            fetch(`https://672741d4302d03037e702957.mockapi.io/ServiceType`),
-          ]);
+        // Get token from local storage or state management
+        const token = localStorage.getItem('token');
+        const headers = token ? AUTH_HEADERS(token) : { "Content-Type": "application/json" };
 
-        if (!serviceRes.ok || !allServicesRes.ok || !allServiceTypesRes.ok) {
-          throw new Error("Failed to fetch data");
+        // Replace hardcoded API URLs with endpoints from apiconfig
+        const serviceEndpoint = GET_SERVICE_BY_ID_API.replace('{id}', id);
+        
+        console.log("Fetching service from:", serviceEndpoint);
+        
+        // Fetch service data first
+        const serviceRes = await fetch(serviceEndpoint, {
+          method: HTTP_METHODS.GET,
+          headers
+        });
+
+        if (!serviceRes.ok) {
+          throw new Error(`Failed to fetch service data: ${serviceRes.status}`);
         }
 
-        const serviceData = await serviceRes.json();
-        setService(serviceData);
+        const serviceResponse = await serviceRes.json();
+        console.log("Service data:", serviceResponse);
+        
+        // Extract the actual service data from the response
+        const serviceData = serviceResponse.result;
+        
+        if (!serviceData || !serviceData.serviceTypeId) {
+          throw new Error("Invalid service data structure");
+        }
 
-        const serviceTypeData = await fetch(
-          `https://672741d4302d03037e702957.mockapi.io/ServiceType/${serviceData.ServiceTypeID}`
-        ).then((res) => res.json());
+        // Then fetch all services
+        const allServicesRes = await fetch(GET_ALL_SERVICES_API, {
+          method: HTTP_METHODS.GET,
+          headers
+        });
 
-        const allServicesData = await allServicesRes.json();
+        if (!allServicesRes.ok) {
+          throw new Error(`Failed to fetch all services: ${allServicesRes.status}`);
+        }
+
+        const allServicesResponse = await allServicesRes.json();
+        // Extract the actual services array from the response
+        const allServicesData = allServicesResponse.result || allServicesResponse;
+        console.log("All services data:", allServicesData);
+
+        // Get therapists for this service type
+        const therapistsEndpoint = GET_THERAPIST_BY_SERVICE_API.replace('{serviceTypeId}', serviceData.serviceTypeId);
+        console.log("Fetching therapists from:", therapistsEndpoint);
+        
+        const therapistsRes = await fetch(therapistsEndpoint, {
+          method: HTTP_METHODS.GET,
+          headers
+        });
+        
+        if (!therapistsRes.ok) {
+          throw new Error(`Failed to fetch therapists: ${therapistsRes.status}`);
+        }
+        
+        const therapistsResponse = await therapistsRes.json();
+        // Extract the actual therapists data from the response
+        const therapistsData = therapistsResponse.result || therapistsResponse;
+        console.log("Therapists data:", therapistsData);
+        
+        // Find similar services (same service type, different ID)
         const similarServices = allServicesData
           .filter(
             (s) =>
-              s.ServiceTypeID === serviceData.ServiceTypeID &&
-              s.ID !== serviceData.ID
+              s.serviceTypeId === serviceData.serviceTypeId &&
+              s.serviceId !== serviceData.serviceId
           )
           .slice(0, 4);
 
-        const allServiceTypesData = await allServiceTypesRes.json();
+        console.log("Similar services:", similarServices);
 
         setState({
           service: serviceData,
-          serviceType: serviceTypeData.Name,
           similarServices,
-          serviceTypes: allServiceTypesData,
+          therapists: therapistsData || [],
           isLoading: false,
           error: null,
         });
       } catch (error) {
+        console.error("Error in fetchData:", error);
         setState((prev) => ({
           ...prev,
           isLoading: false,
@@ -77,9 +119,8 @@ const ServiceDetail = () => {
 
   const {
     service,
-    serviceType,
     similarServices,
-    serviceTypes,
+    therapists,
     isLoading,
     error,
   } = state;
@@ -87,18 +128,20 @@ const ServiceDetail = () => {
   if (isLoading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
 
+  // Add safety checks before rendering components
+  if (!service) return <div className={styles.error}>Service data not available</div>;
+
   return (
     <div className={styles.container}>
       <ServiceLayout
         service={service}
-        serviceType={serviceType}
-        therapists={fakeTherapists}
+        therapists={therapists || []}
       />
 
       {similarServices.length > 0 && (
         <div className={styles.similarSection}>
           <h2 className={styles.similarTitle}>Similar Services</h2>
-          <ServiceList services={similarServices} serviceTypes={serviceTypes} />
+          <ServiceList services={similarServices} />
         </div>
       )}
     </div>

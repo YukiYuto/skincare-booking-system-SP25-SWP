@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCustomers } from "../../../../redux/Customer/CustomerThunk";
+import axios from "axios";
+import { GET_ALL_CUSTOMERS_API } from "../../../../config/apiConfig";
 import styles from "./Customers.module.css";
 import infoIcon from "../../../../assets/icon/infoIcon.svg";
 import CustomerDetail from "./CustomerDetail";
 
 const Customers = () => {
-  const dispatch = useDispatch();
-  const {
-    customers = [],
-    loading,
-    error,
-  } = useSelector((state) => state.customer); // Ensure customers is an array
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [sortConfig, setSortConfig] = useState({
     key: "fullName",
@@ -19,8 +16,23 @@ const Customers = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchCustomers());
-  }, [dispatch]);
+    const fetchCustomers = async () => {
+      try {
+        const response = await axios.get(GET_ALL_CUSTOMERS_API);
+        setCustomers(response.data.result);
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          setError("Customers not found (404)");
+        } else {
+          setError(err.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
 
   const handleSort = (key) => {
     let direction = "ascending";
@@ -30,9 +42,7 @@ const Customers = () => {
     setSortConfig({ key, direction });
   };
 
-  const customerList = Array.isArray(customers.result) ? customers.result : [];
-
-  const sortedCustomers = [...customerList].sort((a, b) => {
+  const sortedCustomers = [...customers].sort((a, b) => {
     if (!sortConfig.key) return 0;
 
     let valueA = a[sortConfig.key] ?? ""; // Ensure a valid value

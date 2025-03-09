@@ -13,7 +13,7 @@ const SkinTherapistDetail = ({ therapist, onClose }) => {
       setLoading(true);
       try {
         const response = await api.get(
-          `SkinTherapist/skin-therapists/${therapist.skinTherapistId}`
+          `therapists/${therapist.therapistId}`
         );
         setTherapistDetail(response.data.result);
         setError(null);
@@ -52,7 +52,7 @@ const SkinTherapistDetail = ({ therapist, onClose }) => {
       document.removeEventListener("mousedown", handleOutsideClick);
       document.body.style.overflow = "auto";
     };
-  }, [therapist.skinTherapistId, onClose]);
+  }, [therapist.therapistId, onClose]);
 
   return (
     <div className={styles.modalContainer}>

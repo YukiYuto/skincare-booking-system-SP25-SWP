@@ -1,16 +1,12 @@
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
-    overflow-y: auto; 
+    background: rgba(0, 0, 0, 0.5);
     padding: 20px;
+    z-index: 1000;
 }
 
 .modalContent {
@@ -21,106 +17,45 @@
     width: 600px;
     max-width: 90%;
     max-height: 90vh;
-    font-family: Raleway;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
 }
 
-/* Two-column layout for form */
 .formContainer {
     display: flex;
-    gap: 20px;
-}
-
-.formLeft {
-    flex: 1;
-    display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
-.formRight {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-}
-
-/* Image preview */
 .imagePreview {
     width: 100%;
-    max-width: calc(50% - 8px);
-    height: auto;
+    max-height: 200px;
+    object-fit: contain;
     border-radius: 8px;
-    object-fit: cover;
     margin-top: 10px;
     border: 2px solid var(--secondary-color);
 }
 
-/* Styled file input */
-.fileInputWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    border: 2px dashed var(--secondary-color);
-    padding: 10px;
-    border-radius: 8px;
-    transition: 0.3s;
-}
-
-.fileInputWrapper:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.fileInputWrapper input {
-    display: none;
-}
-
-.fileInputLabel {
-    color: var(--accent-color);
-    font-family: Montserrat;
-    cursor: pointer;
-}
-
-/* Align buttons side by side */
 .buttonGroup {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
     margin-top: 15px;
 }
 
+.submitButton, .btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 .submitButton {
-    flex: 1;
-    background-color: var(--primary-color);
+    background: var(--primary-color);
     color: var(--text-color);
-    font-family: Montserrat;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    margin-right: 10px;
 }
 
-.submitButton:hover {
-    background-color: var(--accent-color);
-}
-
-.btn {
-    flex: 1;
-    background-color: var(--secondary-color);
-    color: white;
-    font-family: Montserrat;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn:hover {
-    background-color: var(--accent-color);
+.submitButton:hover, .btn:hover {
+    background: var(--accent-color);
 }

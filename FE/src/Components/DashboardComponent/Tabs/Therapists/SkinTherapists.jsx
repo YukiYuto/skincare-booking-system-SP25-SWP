@@ -16,7 +16,7 @@ const SkinTherapists = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const therapistsRes = await api.get("SkinTherapist/skin-therapists");
+      const therapistsRes = await api.get("therapists");
       setTherapists(therapistsRes.data.result);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -117,7 +117,7 @@ const SkinTherapists = () => {
                   <td>{therapist.age}</td>
                   <td>{therapist.gender}</td>
                   <td>{therapist.phoneNumber}</td>
-                  <td>{therapist.experience}</td>
+                  <td>{therapist.experience} years</td>
                   <td>
                     <button
                       className={styles.infoButton}

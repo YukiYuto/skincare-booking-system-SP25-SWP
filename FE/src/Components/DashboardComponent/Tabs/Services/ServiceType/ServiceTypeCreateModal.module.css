@@ -47,6 +47,11 @@
     color: var(--text-color);
 }
 
+buttonContainer{
+    display: flex;
+    justify-content: space-between;
+}
+
 .submitButton {
     background-color: var(--primary-color);
     color: var(--text-color);
