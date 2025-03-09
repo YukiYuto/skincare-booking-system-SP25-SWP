@@ -8,8 +8,8 @@ import {
   GET_ALL_SERVICES_API,
   GET_THERAPIST_BY_SERVICE_API,
   HTTP_METHODS,
-  AUTH_HEADERS
 } from "../../config/apiConfig";
+import Header from "../../Components/Common/Header";
 
 const ServiceDetail = () => {
   const { id } = useParams();
@@ -21,130 +21,140 @@ const ServiceDetail = () => {
     error: null,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
+    try {
+      console.log("Fetching service details for ID:", id);
+
+      const serviceEndpoint = GET_SERVICE_BY_ID_API.replace("{id}", id);
+      console.log("Service API URL:", serviceEndpoint);
+
+      const serviceRes = await fetch(serviceEndpoint, {
+        method: HTTP_METHODS.GET,
+        headers: { "Content-Type": "application/json" }, 
+      });
+
+      if (!serviceRes.ok) {
+        throw new Error(`Failed to fetch service data: ${serviceRes.status}`);
+      }
+
+      const serviceResponse = await serviceRes.json();
+      console.log("Service Response:", serviceResponse);
+
+      const serviceData = serviceResponse.result;
+      if (!serviceData || !serviceData.serviceTypeId) {
+        throw new Error("Invalid service data structure");
+      }
+
+      console.log("Fetching all services...");
+      const allServicesRes = await fetch(GET_ALL_SERVICES_API, {
+        method: HTTP_METHODS.GET,
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!allServicesRes.ok) {
+        throw new Error(
+          `Failed to fetch all services: ${allServicesRes.status}`
+        );
+      }
+
+      const allServicesResponse = await allServicesRes.json();
+      const allServicesData = allServicesResponse.services || [];
+
+      console.log("All Services Data:", allServicesData);
+
+      console.log(
+        "Fetching therapists for serviceTypeId:",
+        serviceData.serviceTypeId
+      );
+      const therapistsEndpoint = GET_THERAPIST_BY_SERVICE_API.replace(
+        "{serviceTypeId}",
+        serviceData.serviceTypeId
+      );
+      console.log("Therapists API URL:", therapistsEndpoint);
+
+      let therapistsData = [];
       try {
-        // Get token from local storage or state management
-        const token = localStorage.getItem('token');
-        const headers = token ? AUTH_HEADERS(token) : { "Content-Type": "application/json" };
-
-        // Replace hardcoded API URLs with endpoints from apiconfig
-        const serviceEndpoint = GET_SERVICE_BY_ID_API.replace('{id}', id);
-        
-        console.log("Fetching service from:", serviceEndpoint);
-        
-        // Fetch service data first
-        const serviceRes = await fetch(serviceEndpoint, {
-          method: HTTP_METHODS.GET,
-          headers
-        });
-
-        if (!serviceRes.ok) {
-          throw new Error(`Failed to fetch service data: ${serviceRes.status}`);
-        }
-
-        const serviceResponse = await serviceRes.json();
-        console.log("Service data:", serviceResponse);
-        
-        // Extract the actual service data from the response
-        const serviceData = serviceResponse.result;
-        
-        if (!serviceData || !serviceData.serviceTypeId) {
-          throw new Error("Invalid service data structure");
-        }
-
-        // Then fetch all services
-        const allServicesRes = await fetch(GET_ALL_SERVICES_API, {
-          method: HTTP_METHODS.GET,
-          headers
-        });
-
-        if (!allServicesRes.ok) {
-          throw new Error(`Failed to fetch all services: ${allServicesRes.status}`);
-        }
-
-        const allServicesResponse = await allServicesRes.json();
-        // Extract the actual services array from the response
-        const allServicesData = allServicesResponse.result || allServicesResponse;
-        console.log("All services data:", allServicesData);
-
-        // Get therapists for this service type
-        const therapistsEndpoint = GET_THERAPIST_BY_SERVICE_API.replace('{serviceTypeId}', serviceData.serviceTypeId);
-        console.log("Fetching therapists from:", therapistsEndpoint);
-        
         const therapistsRes = await fetch(therapistsEndpoint, {
           method: HTTP_METHODS.GET,
-          headers
+          headers: { "Content-Type": "application/json" },
         });
-        
-        if (!therapistsRes.ok) {
-          throw new Error(`Failed to fetch therapists: ${therapistsRes.status}`);
+
+        if (therapistsRes.ok) {
+          const therapistsResponse = await therapistsRes.json();
+          therapistsData = therapistsResponse.result || therapistsResponse;
+          console.log("Therapists Data:", therapistsData);
+        } else if (therapistsRes.status !== 404) {
+          throw new Error(
+            `Failed to fetch therapists: ${therapistsRes.status}`
+          );
+        } else {
+          console.warn("No therapists found for this service.");
         }
-        
-        const therapistsResponse = await therapistsRes.json();
-        // Extract the actual therapists data from the response
-        const therapistsData = therapistsResponse.result || therapistsResponse;
-        console.log("Therapists data:", therapistsData);
-        
-        // Find similar services (same service type, different ID)
-        const similarServices = allServicesData
-          .filter(
-            (s) =>
-              s.serviceTypeId === serviceData.serviceTypeId &&
-              s.serviceId !== serviceData.serviceId
-          )
-          .slice(0, 4);
-
-        console.log("Similar services:", similarServices);
-
-        setState({
-          service: serviceData,
-          similarServices,
-          therapists: therapistsData || [],
-          isLoading: false,
-          error: null,
-        });
-      } catch (error) {
-        console.error("Error in fetchData:", error);
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-          error: error.message,
-        }));
+      } catch (therapistError) {
+        console.warn("Therapist API error:", therapistError);
       }
-    };
 
+      const similarServices = allServicesData
+        .filter(
+          (s) =>
+            s.serviceTypeId === serviceData.serviceTypeId &&
+            s.serviceId !== serviceData.serviceId
+        )
+        .slice(0, 4);
+
+      console.log("Similar Services:", similarServices);
+
+      setState({
+        service: serviceData,
+        similarServices,
+        therapists: therapistsData,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      console.error("Error in fetchData:", error);
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error.message,
+      }));
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [id]);
 
-  const {
-    service,
-    similarServices,
-    therapists,
-    isLoading,
-    error,
-  } = state;
+  const { service, similarServices, therapists, isLoading, error } = state;
 
-  if (isLoading) return <div className={styles.loading}>Loading...</div>;
-  if (error) return <div className={styles.error}>Error: {error}</div>;
+  if (isLoading) {
+    console.log("Loading state active...");
+    return <div className={styles.loading}>Loading...</div>;
+  }
 
-  // Add safety checks before rendering components
-  if (!service) return <div className={styles.error}>Service data not available</div>;
+  if (error) {
+    console.error("Error state:", error);
+    return <div className={styles.error}>Error: {error}</div>;
+  }
+
+  if (!service) {
+    console.warn("Service data not available!");
+    return <div className={styles.error}>Service data not available</div>;
+  }
 
   return (
-    <div className={styles.container}>
-      <ServiceLayout
-        service={service}
-        therapists={therapists || []}
-      />
-
-      {similarServices.length > 0 && (
-        <div className={styles.similarSection}>
-          <h2 className={styles.similarTitle}>Similar Services</h2>
-          <ServiceList services={similarServices} />
-        </div>
-      )}
-    </div>
+    <>
+      <Header />
+      <div className={styles.container}>
+        <ServiceLayout service={service} therapists={therapists || []} />
+        {similarServices.length > 0 && (
+          <div className={styles.similarSection}>
+            <h2 className={styles.similarTitle}>Similar Services</h2>
+            <ServiceList services={similarServices} />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

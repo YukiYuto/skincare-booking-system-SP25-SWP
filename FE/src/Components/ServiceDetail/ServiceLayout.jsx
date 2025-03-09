@@ -1,28 +1,28 @@
 import React from "react";
 import styles from "./ServiceLayout.module.css";
 
-const ServiceLayout = ({ service, serviceType, therapists = [] }) => {
+const ServiceLayout = ({ service, therapists = [] }) => {
   return (
     <div className={styles.layout}>
       <div className={styles.imageContainer}>
         <img
-          src={service.imgUrl}
-          alt={service.ServiceName}
+          src={service.imageUrl}
+          alt={service.serviceName}
           className={styles.image}
         />
       </div>
 
       <div className={styles.infoContainer}>
-        <h1 className={styles.title}>{service.ServiceName}</h1>
-        <p className={styles.description}>{service.Description}</p>
+        <h1 className={styles.title}>{service.serviceName}</h1>
+        <p className={styles.description}>{service.description}</p>
 
-        <div className={styles.priceType}>
-          <span className={styles.price}>
-            ${service.Price.toLocaleString()}
-          </span>
-          <span className={styles.serviceType}>
-            <span className={styles.dot}></span> {serviceType}
-          </span>
+        <div className={styles.detailsSection}>
+          <span className={styles.price}>${service.price.toLocaleString()}</span>
+          {service.serviceType && (
+            <span className={styles.serviceType}>
+              <span className={styles.dot}></span> {service.serviceType}
+            </span>
+          )}
         </div>
 
         <div className={styles.purchaseSection}>

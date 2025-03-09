@@ -10,7 +10,7 @@ const SkincareServiceCard = ({ service, Name }) => {
       <Link to={`/services/${service.serviceId}`}>
         <img
           className={styles.image}
-          src={service.imageUrl || "https://via.placeholder.com/300"}
+          src={service.imageUrl || "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"}
           alt={service.serviceName || "Unnamed Service"}
         />
         <div className={styles.header}>

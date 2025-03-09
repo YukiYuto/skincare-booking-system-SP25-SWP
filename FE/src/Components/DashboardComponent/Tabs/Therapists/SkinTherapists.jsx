@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import api from "../../../../config/axios";
+import { GET_ALL_THERAPISTS_API } from "../../../../config/apiConfig";
 import styles from "./SkinTherapists.module.css";
 import infoIcon from "../../../../assets/icon/infoIcon.svg";
 import SkinTherapistDetail from "./SkinTherapistDetail";
@@ -12,14 +12,23 @@ const SkinTherapists = () => {
     key: null,
     direction: "ascending",
   });
+  const [error, setError] = useState(null);
 
   const fetchData = useCallback(async () => {
-    setLoading(true);
     try {
-      const therapistsRes = await api.get("therapists");
-      setTherapists(therapistsRes.data.result);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(GET_ALL_THERAPISTS_API);
+      const data = await response.json();
+
+      if (data.isSuccess) {
+        setTherapists(data.result);
+      } else {
+        setError("Failed to fetch data");
+      }
+    } catch (err) {
+      setError("Error fetching data: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -71,41 +80,19 @@ const SkinTherapists = () => {
       </div>
       {loading ? (
         <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
       ) : (
         <div className={styles.therapistTableContainer}>
           <table className={styles.therapistTable}>
             <thead>
               <tr>
-                <th onClick={() => handleSort("fullName")}>
-                  Name{" "}
-                  {sortConfig.key === "fullName" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("email")}>
-                  Email{" "}
-                  {sortConfig.key === "email" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("age")}>
-                  Age{" "}
-                  {sortConfig.key === "age" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("gender")}>
-                  Gender{" "}
-                  {sortConfig.key === "gender" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("phoneNumber")}>
-                  Phone Number{" "}
-                  {sortConfig.key === "phoneNumber" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("experience")}>
-                  Experience{" "}
-                  {sortConfig.key === "experience" &&
-                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                </th>
+                <th onClick={() => handleSort("fullName")}>Name {sortConfig.key === "fullName" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
+                <th onClick={() => handleSort("email")}>Email {sortConfig.key === "email" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
+                <th onClick={() => handleSort("age")}>Age {sortConfig.key === "age" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
+                <th onClick={() => handleSort("gender")}>Gender {sortConfig.key === "gender" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
+                <th onClick={() => handleSort("phoneNumber")}>Phone Number {sortConfig.key === "phoneNumber" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
+                <th onClick={() => handleSort("experience")}>Experience {sortConfig.key === "experience" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
                 <th>Action</th>
               </tr>
             </thead>

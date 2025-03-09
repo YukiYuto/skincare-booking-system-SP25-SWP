@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import styles from "./Orders.module.css";
-import { GET_ALL_ORDERS_API } from "../../../../config/apiConfig";
-import { GET_ALL_CUSTOMERS_API } from "../../../../config/apiConfig"
+import {
+  GET_ALL_ORDERS_API,
+  GET_ALL_CUSTOMERS_API,
+} from "../../../../config/apiConfig";
+import OrderEditModal from "./OrderEditModal";
 
 const OrderTable = () => {
   const [orders, setOrders] = useState([]);
@@ -9,6 +12,7 @@ const OrderTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [modal, setModal] = useState({ type: null, data: null });
 
   const fetchData = useCallback(async () => {
     try {
@@ -113,6 +117,7 @@ const OrderTable = () => {
                   "Order Number",
                   "Total Price",
                   "Created Time",
+                  "Actions",
                 ].map((key) => (
                   <th
                     key={key}
@@ -138,11 +143,27 @@ const OrderTable = () => {
                       : "0 đ"}
                   </td>
                   <td>{formatDate(order.createdTime)}</td>
+                  <td>
+                    <button
+                      onClick={() => setModal({ type: "edit", data: order })}
+                      className={styles.iconButton}
+                    >
+                      Edit
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {modal.type === "edit" && (
+        <OrderEditModal
+          order={modal.data}
+          onClose={() => setModal({ type: null })}
+          refresh={fetchData}
+        />
       )}
     </div>
   );

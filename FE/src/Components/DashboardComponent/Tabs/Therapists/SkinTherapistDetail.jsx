@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import api from "../../../../config/axios";
+import { GET_THERAPIST_BY_ID_API } from "../../../../config/apiConfig";
 import styles from "./SkinTherapistDetail.module.css";
 
 const SkinTherapistDetail = ({ therapist, onClose }) => {
@@ -9,25 +9,38 @@ const SkinTherapistDetail = ({ therapist, onClose }) => {
   const modalRef = useRef(null);
 
   useEffect(() => {
+    console.log("Full therapist object:", therapist);
+  
+    if (!therapist?.skinTherapistId) {
+      setError("Invalid therapist ID");
+      setLoading(false);
+      return;
+    }
+  
     const fetchTherapistDetail = async () => {
       setLoading(true);
       try {
-        const response = await api.get(
-          `therapists/${therapist.therapistId}`
+        const response = await fetch(
+          GET_THERAPIST_BY_ID_API.replace("{therapistId}", therapist.skinTherapistId)
         );
-        setTherapistDetail(response.data.result);
-        setError(null);
+        const data = await response.json();
+  
+        if (data.isSuccess) {
+          setTherapistDetail(data.result);
+          setError(null);
+        } else {
+          setError("Failed to load therapist details.");
+        }
       } catch (error) {
         console.error("Error fetching therapist detail:", error);
-        setError("Failed to load therapist details. Please try again.");
+        setError("Failed to load therapist details.");
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchTherapistDetail();
 
-    // Add event listener for escape key
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
         onClose();
@@ -35,7 +48,6 @@ const SkinTherapistDetail = ({ therapist, onClose }) => {
     };
     document.addEventListener("keydown", handleEscKey);
 
-    // Handle clicks outside the modal
     const handleOutsideClick = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         onClose();
@@ -43,16 +55,14 @@ const SkinTherapistDetail = ({ therapist, onClose }) => {
     };
     document.addEventListener("mousedown", handleOutsideClick);
 
-    // Prevent background scrolling when modal is open
     document.body.style.overflow = "hidden";
 
-    // Clean up
     return () => {
       document.removeEventListener("keydown", handleEscKey);
       document.removeEventListener("mousedown", handleOutsideClick);
       document.body.style.overflow = "auto";
     };
-  }, [therapist.therapistId, onClose]);
+  }, [therapist, onClose]);
 
   return (
     <div className={styles.modalContainer}>

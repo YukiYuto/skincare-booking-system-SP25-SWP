@@ -78,9 +78,9 @@ export const GET_SERVICE_TYPE_BY_ID_API = `${BASE_URL}/service-type/{id}`;
 export const DELETE_SERVICE_TYPE_API = `${BASE_URL}/service-type/{id}`;
 
 // Thêm API cho SkinTherapist
-export const GET_THERAPIST_BY_ID_API = `${BASE_URL}/therapists/{therapistId}`;
+export const GET_THERAPIST_BY_ID_API = `${BASE_URL}/therapists/details/{therapistId}`;
 export const GET_ALL_THERAPISTS_API = `${BASE_URL}/therapists`;
-export const GET_THERAPIST_BY_SERVICE_API = `${BASE_URL}/therapists/{serviceTypeId}`;
+export const GET_THERAPIST_BY_SERVICE_API = `${BASE_URL}/therapists/service/{serviceTypeId}`;
 
 // Thêm API cho Slot
 export const POST_SLOT_API = `${BASE_URL}/slot`;
