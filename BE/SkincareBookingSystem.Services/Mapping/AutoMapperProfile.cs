@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.Repositories;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.Blog;
+using SkincareBookingSystem.Models.Dto.TestQuestion;
 
 
 namespace SkincareBookingSystem.Services.Mapping;
@@ -25,6 +26,17 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        //TestQuestion
+        CreateMap<CreateTestQuestionDto, TestQuestion>()
+            .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type));
+        CreateMap<UpdateTestQuestionDto, TestQuestion>()
+            .ForMember(dest => dest.TestQuestionId, opt => opt.MapFrom(src => src.TestQuestionId))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+            .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId));
+
         //Blog 
         CreateMap<CreateBlogDto, Blog>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))

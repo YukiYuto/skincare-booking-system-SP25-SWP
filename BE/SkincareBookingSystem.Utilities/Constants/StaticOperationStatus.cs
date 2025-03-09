@@ -152,5 +152,13 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Deleted = "DELETED";    // Xóa Blog
         }
 
+        // Constants related to TestQuestion
+        public static class TestQuestion
+        {
+            public const string Created = "CREATED";
+            public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+        }
+
     }
 }
