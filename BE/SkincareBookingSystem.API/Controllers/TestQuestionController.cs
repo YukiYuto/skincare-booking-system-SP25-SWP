@@ -2,6 +2,7 @@
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -17,6 +18,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("create")]
+        [SwaggerOperation(Summary = "Create a test question", Description = "Requires staff, customer role")]
         public async Task<ActionResult<ResponseDto>> CreateTestQuestion([FromBody] CreateTestQuestionDto testQuestionDto)
         {
             if (!ModelState.IsValid)
@@ -32,21 +34,24 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet]
+        [HttpGet("all")]
+        [SwaggerOperation(Summary = "Get all test questions", Description = "Requires staff, customer role")]
         public async Task<ActionResult<ResponseDto>> GetAllTestQuestions()
         {
             var result = await _testQuestionService.GetAllTestQuestions();
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("{testQuestionId}")]
+        [HttpGet("get/{testQuestionId}")]
+        [SwaggerOperation(Summary = "Get a test question by id", Description = "Requires staff, customer role")]
         public async Task<ActionResult<ResponseDto>> GetTestQuestionById(Guid testQuestionId)
         {
             var result = await _testQuestionService.GetTestQuestionById(User, testQuestionId);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
+        [SwaggerOperation(Summary = "Update a test question", Description = "Requires staff, customer role")]
         public async Task<ActionResult<ResponseDto>> UpdateTestQuestion([FromBody] UpdateTestQuestionDto testQuestionDto)
         {
             if (!ModelState.IsValid)
@@ -63,6 +68,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("delete")]
+        [SwaggerOperation(Summary = "Delete a test question", Description = "Requires staff, customer role")]
         public async Task<ActionResult<ResponseDto>> DeleteTestQuestion(Guid testQuestionId)
         {
             var result = await _testQuestionService.DeleteTestQuestion(User, testQuestionId);
