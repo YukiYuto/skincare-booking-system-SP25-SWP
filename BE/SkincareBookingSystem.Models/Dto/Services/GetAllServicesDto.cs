@@ -8,5 +8,5 @@ public class GetAllServicesDto
     public double Price { get; set; }
     public string? ImageUrl { get; set; }
     public string Status { get; set; } = null!;
-
+    public Guid ServiceTypeId { get; set; }
 }

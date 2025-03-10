@@ -43,13 +43,6 @@ namespace SkincareBookingSystem.API
             // Thêm dịch vụ Swagger  
             builder.Services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Skincare Booking System API",
-                    Version = "v1",
-                    Description = "API documentation for Skincare Booking System"
-                });
-
                 // Bảo mật Swagger với JWT
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

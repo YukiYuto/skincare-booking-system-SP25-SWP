@@ -112,7 +112,8 @@ namespace SkincareBookingSystem.Services.Services
         // TODO: Implement GetAllAppointments with pagination, sorting, and filtering
         public async Task<ResponseDto> GetAllAppointments()
         {
-            var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync();
+            var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => a.Status != StaticOperationStatus.Appointment.Deleted);
 
             return (appointmentsFromDb.Any()) ?
                 SuccessResponse.Build(
