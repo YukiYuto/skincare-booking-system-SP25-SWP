@@ -10,11 +10,31 @@ import AppointmentSection from "../../Components/AppointmentSection/AppointmentS
 import SkincareTips from "../../Components/SkincareTips/SkincareTips";
 import TrustSection from "../../Components/TrustSection/TrustSection";
 import SkincareExperts from "../../Components/SkincareExperts/SkincareExperts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookingModal from "../../Components/BookingModal/BookingModal";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function HomePage() {
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate(); // Hook để điều hướng
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Lấy trạng thái đăng nhập
+
+  const handleBookingClick = () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+      setVisible(true);
+    }
+  };
+
+  // Theo dõi thay đổi trạng thái đăng nhập, nếu logout thì đóng modal
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setVisible(false);
+    }
+  }, [isAuthenticated]);
+  
   return (
     <div>
       <Header />
@@ -30,11 +50,13 @@ function HomePage() {
               Our skincare line is crafted with pure, high-quality <br />{" "}
               ingredients for visible results.
             </p>
-            <Button type="primary" size="large" className={styles.button} onClick={() => setVisible(true)}>
+            <Button type="primary" size="large" className={styles.button} onClick={handleBookingClick}>
               <img src={phone} alt="phone icon" className={styles.phoneIcon} />
               Book an appointment
             </Button>
-            <BookingModal visible={visible} onClose={() => setVisible(false)} />
+            {isAuthenticated && (
+              <BookingModal visible={visible} onClose={() => setVisible(false)} />
+            )}
           </div>
 
           {/* Right Side - Image */}

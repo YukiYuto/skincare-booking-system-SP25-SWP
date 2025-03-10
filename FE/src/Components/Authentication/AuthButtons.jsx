@@ -17,7 +17,6 @@ const AuthButtons = () => {
     setLoading(true);
     try{
       dispatch(logoutAction());
-      navigate("/");
       toast.success("Logout Successfully!")
       navigate("/")
     } finally {

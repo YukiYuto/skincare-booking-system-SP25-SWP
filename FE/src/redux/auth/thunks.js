@@ -17,6 +17,8 @@ export const login = createAsyncThunk("auth/login", async (credentials, { dispat
       const tokens = await authService.login(credentials);
   
       const accessToken = tokens.result.accessToken; // Lấy accessToken
+
+      localStorage.setItem("accessToken", accessToken);
   
       // Gọi API để lấy thông tin user
       const userProfile = await authService.fetchUserProfile(accessToken);
