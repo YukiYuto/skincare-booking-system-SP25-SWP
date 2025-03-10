@@ -36,7 +36,7 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var bookingScheduleToCreate = _mapper.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
-            bookingScheduleToCreate.CreatedBy = User.FindFirstValue("FullName");
+            bookingScheduleToCreate.CreatedBy = User.Identity?.Name;
 
             try
             {

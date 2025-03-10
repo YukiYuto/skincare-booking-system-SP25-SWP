@@ -14,6 +14,9 @@ using SkincareBookingSystem.Models.Dto.Customer;
 using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.Repositories;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
+using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
+using SkincareBookingSystem.Models.Dto.Payment;
+using SkincareBookingSystem.Models.Dto.Booking.Appointment;
 using SkincareBookingSystem.Models.Dto.Blog;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.Feedbacks;
@@ -62,11 +65,50 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
+        // BookAppointmentDto to Appointments
+        CreateMap<BookAppointmentDto, Appointments>()
+            .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
+            .ForMember(dest => dest.AppointmentTime, opt => opt.MapFrom(src => src.AppointmentTime))
+            .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Appointment.Created))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam)); // UTC+7
+
+        // Appointment to AppointmentDto
+        CreateMap<Appointments, Models.Dto.Booking.Appointment.FinalizeAppointment.AppointmentDto>()
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+            .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
+            .ForMember(dest => dest.AppointmentTime, opt => opt.MapFrom(src => src.AppointmentTime))
+            .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note));
+
+        // TherapistSchedule to ScheduleDto
+        CreateMap<TherapistSchedule, Models.Dto.Booking.Appointment.FinalizeAppointment.ScheduleDto>()
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
+
+        // BookingService.BundleOrder - Order response to avoid cyclic references when returned
+        CreateMap<Order, Models.Dto.Booking.Order.OrderDto>()
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+            .ForMember(dest => dest.OrderNumber, opt => opt.MapFrom(src => src.OrderNumber))
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice))
+            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime))
+            .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
 
         CreateMap<OrderDetail, Models.Dto.Booking.Order.OrderDetailDto>();
 
         //BookingSchedule
-        CreateMap<CreateTherapistScheduleDto, TherapistSchedule>();
+        CreateMap<CreateTherapistScheduleDto, TherapistSchedule>()
+            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId))
+            .ForMember(dest => dest.ScheduleStatus, opt => opt.MapFrom(src => ScheduleStatus.Confirmed))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.BaseEntity.Active))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam)); // UTC+7
+
         CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>();
 
         CreateMap<UpdateOrderDto, Order>()
@@ -110,7 +152,7 @@ public class AutoMapperProfile : Profile
 
         //Service
         CreateMap<Models.Domain.Services, GetAllServicesDto>().ReverseMap();
-        
+
         CreateMap<CreateServiceDto, Models.Domain.Services>()
             .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
@@ -120,7 +162,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CreatedTime,
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Service.Active));
-        
+
         CreateMap<UpdateServiceDto, Models.Domain.Services>()
             .ForMember(dest => dest.UpdatedTime,
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
@@ -236,7 +278,7 @@ public class AutoMapperProfile : Profile
                 src => src.TherapistServiceTypes.Select(tst => tst.ServiceType).ToList()));
 
         CreateMap<ServiceType, Models.Dto.TherapistServiceTypes.ServiceTypeDto>();
-        
+
         //Payment
         CreateMap<GetAllPaymentDto, Payment>().ReverseMap();
         CreateMap<GetPaymentByIdDto, Payment>().ReverseMap();
