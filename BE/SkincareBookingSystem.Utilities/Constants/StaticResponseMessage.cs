@@ -80,10 +80,11 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update Blog";
             public const string NotRetrieved = "Failed to retrieve Blog(s)";
 
-        public static class Payment
-        {
-            public const string Pending = "Payment Not Paid";
+            public static class Payment
+            {
+                public const string Pending = "Payment Not Paid";
 
+            }
         }
     }
 }
