@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.OrderDetails;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -17,6 +18,7 @@ namespace SkincareBookingSystem.API.Controllers
 
         
         [HttpGet]
+        [SwaggerOperation(Summary = "API gets all order details", Description = "Requires admin role")]
         public async Task<IActionResult> GetAllOrderDetails()
         {
             var result = await _orderDetailService.GetAllOrderDetails();
@@ -24,6 +26,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "API gets an order detail by id", Description = "Requires id")]
         public async Task<IActionResult> GetOrderDetailById([FromQuery] Guid id)
         {
             var result = await _orderDetailService.GetOrderDetailById(id);
@@ -31,6 +34,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut]
+        [SwaggerOperation(Summary = "API updates an order detail", Description = "Requires user role")]
         public async Task<IActionResult> UpdateOrderDetail([FromBody] UpdateOrderDetailDto updateOrderDetailDto)
         {
             var result = await _orderDetailService.UpdateOrderDetail(User, updateOrderDetailDto);
@@ -38,6 +42,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete]
+        [SwaggerOperation(Summary = "API soft deletes an order detail", Description = "Requires id")]
         public async Task<IActionResult> DeleteOrderDetail([FromQuery] Guid id)
         {
             var result = await _orderDetailService.DeleteOrderDetail(id);

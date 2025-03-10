@@ -12,7 +12,7 @@ namespace SkincareBookingSystem.Models.Domain
         [ForeignKey("CustomerId")] public virtual Customer Customer { get; set; } = null!;
         public Guid OrderId { get; set; }
         [ForeignKey("OrderId")] public virtual Order Order { get; set; } = null!;
-        public DateTime AppointmentDate { get; set; }
+        public DateOnly AppointmentDate { get; set; }
         [StringLength(30)] public string AppointmentTime { get; set; } = string.Empty;
         [StringLength(200)] public string? Note { get; set; }
 
