@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SkincareBookingSystem.Models.Domain
 {
-    public class TestAnswer
+    public class TestAnswer : BaseEntity<string,string,string>
     {
         [Key]
         public Guid TestAnswerId { get; set; }
