@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SkincareBookingSystem.Services.Services
 {
-    public class FeedbackService
+    public class FeedbackService : IFeedbackService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAutoMapperService _autoMapperService;
@@ -88,7 +88,7 @@ namespace SkincareBookingSystem.Services.Services
                     result: feedback);
         }
 
-        public async Task<ResponseDto> GetFeedbackByAppointmentI(Guid appointmentId)
+        public async Task<ResponseDto> GetFeedbackByAppointmentId(Guid appointmentId)
         {
             if (await _unitOfWork.Feedbacks.GetAsync(f => f.AppointmentId == appointmentId) is null)
             {
@@ -178,5 +178,6 @@ namespace SkincareBookingSystem.Services.Services
         {
             return await _unitOfWork.SaveAsync() == StaticOperationStatus.Database.Success;
         }
+
     }
 }

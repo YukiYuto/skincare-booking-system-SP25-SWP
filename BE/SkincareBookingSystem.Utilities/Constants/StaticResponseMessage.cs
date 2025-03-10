@@ -68,7 +68,7 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string CancelWithinGracePeriod = "Cancellation is only allowed up to 24 hours before the appointment";
         }
         /// <summary>
-        /// Error messages related to Booking Schedules
+        /// Error messages related to booking schedules
         /// </summary>
         public static class BookingSchedule
         {
@@ -105,7 +105,6 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotRetrieved = "Failed to retrieve order(s)";
         }
 
-        public static class Payment
         /// <summary>
         /// Error messages related to Blog
         /// </summary>
@@ -145,11 +144,17 @@ namespace SkincareBookingSystem.Utilities.Constants
         /// </summary>
         public static class Feedback
         {
-            public const string Pending = "Payment is pending";
-            public const string Paid = "Payment paid";
-            public const string Cancelled = "Payment cancelled";
-            public const string NotFound = "Payment not found";
-            public const string NotCompleted = "Payment not completed for the specified order";
+            public const string Created = "Feedback created successfully";
+            public const string Deleted = "Feedback deleted successfully";
+            public const string AlreadyDeleted = "Feedback already deleted";
+            public const string RetrievedAll = "All feedbacks retrieved successfully";
+            public const string Retrieved = "Feedback retrieved successfully";
+            public const string Updated = "Feedback updated successfully";
+            public const string NotFound = "Feedback(s) not found";
+            public const string NotCreated = "Failed to create Feedback";
+            public const string NotDeleted = "Failed to delete Feedback";
+            public const string NotUpdated = "Failed to update Feedback";
+            public const string NotRetrieved = "Failed to retrieve Feedback(s)";
         }
 
         public static class Slot
@@ -162,17 +167,7 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NoTherapistForSlot = "No available therapist for this time slot. Please try another date, or slot.";
             public const string AutoAssignmentHandled = "Therapist auto-assignment handled successfully";
             public const string AlreadyScheduled = "The therapist is already scheduled for this slot";
-            public const string Created = "Feedback created successfully";
-            public const string Deleted = "Feedback deleted successfully";
-            public const string AlreadyDeleted = "Feedback already deleted";
-            public const string RetrievedAll = "All feedbacks retrieved successfully";
-            public const string Retrieved = "Feedback retrieved successfully";
-            public const string Updated = "Feedback updated successfully";
-            public const string NotFound = "Feedback(s) not found";
-            public const string NotCreated = "Failed to create feedback";
-            public const string NotDeleted = "Failed to delete feedback";
-            public const string NotUpdated = "Failed to update feedback";
-            public const string NotRetrieved = "Failed to retrieve feedback(s)";
         }
+
     }
 }
