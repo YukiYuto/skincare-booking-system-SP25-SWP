@@ -15,18 +15,10 @@ const BASE_URL = 'https://localhost:7037/api';
 export const BASE_API_URL = BASE_URL;
 // API endpoints
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes
-export const LOGIN_API = `${BASE_URL}/Auth/signin`;
-export const REGISTER_CUSTOMER_API = `${BASE_URL}/Auth/customers`;
-export const USER_PROFILE_API = `${BASE_URL}/Auth/user`;
-export const VERIFY_EMAIL_API = `${BASE_URL}/Auth/email/verification/send`; // Gửi email xác thực
-export const CONFIRM_EMAIL_API = `${BASE_URL}/Auth/email/verification/confirm`; // Xác thực email
-
-// Thêm API cho Forgot Password & Reset Password
-export const FORGOT_PASSWORD_API = `${BASE_URL}/Auth/password/forgot`;
-export const RESET_PASSWORD_API = `${BASE_URL}/Auth/password/reset`;
-
-// // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
-export const AUTH_HEADERS = (token) => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${token}`,
-});
+export const LOGIN_API = `${BASE_URL}/auth/signin`;
+export const REGISTER_CUSTOMER_API = `${BASE_URL}/auth/customers`;
+export const USER_PROFILE_API = `${BASE_URL}/auth/user`;
+export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`; // Gửi email xác thực
+export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`; // Xác thực email
+export const FORGOT_PASSWORD_API = `${BASE_URL}/auth/password/forgot`;
+export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;

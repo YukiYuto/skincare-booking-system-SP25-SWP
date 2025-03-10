@@ -135,7 +135,7 @@ function RegisterForm() {
 
   return (
     <form
-      className={styles.registerForm}
+      className={`${styles.registerForm} ${isLoading ? styles.disabledForm : ""}`}
       aria-labelledby="register-title"
       onSubmit={handleRegisterSubmit}
     >
@@ -153,15 +153,29 @@ function RegisterForm() {
           error={errors.fullName}
         />
 
-        <InputField
-          label="Gender"
-          type="text"
-          name="gender"
-          placeholder="Gender"
-          value={registerData.gender}
-          onChange={handleRegisterChange}
-          error={errors.gender}
-        />
+        <div className={styles.genderContainer}>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="Male"
+              checked={registerData.gender === "Male"}
+              onChange={handleRegisterChange}
+            />
+            Male
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="Female"
+              checked={registerData.gender === "Female"}
+              onChange={handleRegisterChange}
+            />
+            Female
+          </label>
+        </div>
+        {errors.gender && <span className={styles.error}>{errors.gender}</span>}
       </div>
       
 
@@ -235,7 +249,9 @@ function RegisterForm() {
 
       <div className={styles.termsContainer}>
         <span>By registering you agree to </span>
-        <a href="/terms" className={styles.termsLink}>
+        <a 
+        style={{ pointerEvents: isLoading ? "none" : "auto", opacity: isLoading ? 0.5 : 1 }}
+        href="/terms" className={styles.termsLink}>
           terms and conditions
         </a>
         <span> of our center.</span>
@@ -248,7 +264,12 @@ function RegisterForm() {
       <button
         type="button"
         className={styles.loginButton}
-        onClick={() => navigate("/login")}
+        onClick={() => {
+          if (!isLoading) {
+            navigate("/login")
+            }
+          }}
+          disabled={isLoading} 
       >
         Login
       </button>
