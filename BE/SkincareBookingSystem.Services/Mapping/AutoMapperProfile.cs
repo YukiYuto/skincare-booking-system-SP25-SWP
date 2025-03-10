@@ -18,6 +18,7 @@ using SkincareBookingSystem.Models.Dto.Blog;
 using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Payment;
 using SkincareBookingSystem.Models.Dto.Booking.Appointment;
+using SkincareBookingSystem.Models.Dto.BlogCategories;
 
 
 
@@ -27,6 +28,19 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // BlogCategory
+        CreateMap<CreateBlogCategoryDto, BlogCategory>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Appointment.Created))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam));
+        CreateMap<UpdateBlogCategoryDto, BlogCategory>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Appointment.Created))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
+            .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.BlogCategoryId));
+
         // BookAppointmentDto to Appointments
         CreateMap<BookAppointmentDto, Appointments>()
             .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
