@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SkincareBookingSystem.DataAccess.DBContext;
@@ -11,9 +12,11 @@ using SkincareBookingSystem.DataAccess.DBContext;
 namespace SkincareBookingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250310073008_MigrationDb_BaseEntity-TestQ&A")]
+    partial class MigrationDb_BaseEntityTestQA
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,7 +275,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Admin St",
                             Age = 30,
-                            ConcurrencyStamp = "6da734df-a854-4a03-bc22-d2672e241e65",
+                            ConcurrencyStamp = "63303d9a-4c90-41d1-968f-d6858971a2f1",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Admin",
@@ -280,10 +283,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMfRyS0AdYdneWIbPeN6R/HVMHJbkK3T2OSKpVUXCPifhquWoweCjnSgJcYpQ5G3ZA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHpoKy4wQ7hBAwgCSwCzjAcmaVqZTr2FaODlX8Ofg+weJPHTq1fqzioY4+fT+tbFIw==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "f8d7d78f-9550-4a10-913c-caf2f3df798a",
+                            SecurityStamp = "2482a74f-7de0-4cfa-820f-003807fc9d74",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         },
@@ -293,7 +296,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Manager St",
                             Age = 30,
-                            ConcurrencyStamp = "04fbde80-f9d9-4877-b092-3077befaad64",
+                            ConcurrencyStamp = "e3e47dbe-2f66-4414-bb4e-0009a5456283",
                             Email = "manager@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Manager",
@@ -301,10 +304,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "MANAGER@GMAIL.COM",
                             NormalizedUserName = "MANAGER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDX2uR/aI8zFCm27xxPZJYUv30F6W9FjltFSnWJapYZuQJq7PuKkGabuY3WS/M0cOQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFY6t0zwO3974nPrP4LHoAqJ7h7fgcSi0BSmxYsImjKwQVA5lWqA7Omp8vF/W1gn1w==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "314659a7-704c-421d-83ac-ef5b43bf5e90",
+                            SecurityStamp = "66adf8e7-50c7-458f-b132-4e80825ef1e2",
                             TwoFactorEnabled = false,
                             UserName = "manager@gmail.com"
                         });
@@ -316,8 +319,8 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateOnly>("AppointmentDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("AppointmentTime")
                         .IsRequired()

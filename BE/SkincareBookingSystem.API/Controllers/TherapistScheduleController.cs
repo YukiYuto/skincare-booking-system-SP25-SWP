@@ -2,6 +2,7 @@
 using SkincareBookingSystem.Models.Dto.BookingSchedule;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -17,6 +18,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "API creates a new therapist schedule", Description = "Requires user role")]
         public async Task<ActionResult<ResponseDto>> CreateTherapistSchedule([FromBody] CreateTherapistScheduleDto bookingScheduleDto)
         {
             if (!ModelState.IsValid)
@@ -35,6 +37,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "API gets all therapist schedules", Description = "Requires admin role")]
         public async Task<ActionResult<ResponseDto>> GetAllTherapistSchedules()
         {
             var result = await _bookingScheduleService.GetAllTherapistSchedules();
@@ -42,6 +45,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("{scheduleId:guid}")]
+        [SwaggerOperation(Summary = "API gets a therapist schedule by id", Description = "Requires admin role")]
         public async Task<ActionResult<ResponseDto>> GetTherapistScheduleById(Guid scheduleId)
         {
             var result = await _bookingScheduleService.GetTherapistScheduleById(User, scheduleId);
@@ -49,6 +53,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("therapist/{therapistId:guid}")]
+        [SwaggerOperation(Summary = "API gets therapist schedules by therapist id", Description = "Requires therapistId")]
         public async Task<ActionResult<ResponseDto>> GetTherapistScheduleByTherapistId(Guid therapistId)
         {
             var result = await _bookingScheduleService.GetTherapistScheduleByTherapistId(therapistId);
@@ -56,6 +61,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut]
+        [SwaggerOperation(Summary = "API updates a therapist schedule", Description = "Requires user role")]
         public async Task<ActionResult<ResponseDto>> UpdateTherapistSchedule([FromBody] UpdateTherapistScheduleDto bookingScheduleDto)
         {
             if (!ModelState.IsValid)
@@ -73,6 +79,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("{scheduleId:guid}")]
+        [SwaggerOperation(Summary = "API soft deletes a therapist schedule", Description = "Requires user role")]
         public async Task<ActionResult<ResponseDto>> DeleteTherapistSchedule(Guid scheduleId)
         {
             var result = await _bookingScheduleService.DeleteTherapistSchedule(User, scheduleId);

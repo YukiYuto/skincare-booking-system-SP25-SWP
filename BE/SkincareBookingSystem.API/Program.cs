@@ -85,8 +85,6 @@ namespace SkincareBookingSystem.API
                 });
                 options.EnableAnnotations();
 
-            });
-
                 // Đọc comment từ XML để hiển thị trên Swagger
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
