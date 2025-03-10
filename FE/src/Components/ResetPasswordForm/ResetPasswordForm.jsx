@@ -66,13 +66,6 @@ export function ResetPasswordForm() {
   
     if (!validateResetForm()) return;   
 
-    console.log("Sending data:", {
-      email,
-      token,
-      newPassword: passwordData.newPassword,
-      confirmPassword: passwordData.confirmNewPassword
-    });
-
     setIsLoading(true);
     try {
       // ✅ Gửi cả 4 dữ liệu đến API backend

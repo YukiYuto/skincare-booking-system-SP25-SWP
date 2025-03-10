@@ -9,22 +9,33 @@ import { setUser, clearUser, setLoading, setError } from "./slice";
  * @returns {Promise} - Promise object representing the user
  * @throws {error} - Error message
  */
-export const login = createAsyncThunk('auth/login', async (credentials, { dispatch }) =>{
+export const login = createAsyncThunk("auth/login", async (credentials, { dispatch }) => {
     try {
-        dispatch(setLoading(true));
-        const tokens = await authService.login(credentials);
-        const response = await authService.fetchUserProfile(tokens.result.accessToken);
-        // const user = response.result;
-            //! Now the user object will contain both the tokens and the user profile data
-        const user = { ...tokens.result, ...response.result };
-        dispatch(setUser(user));
-        return user;
-    } catch (error) {
-        dispatch(setError(error || "Login failed. Please try again."));
-        throw error;
-    }
-});
+      dispatch(setLoading(true));
+      
+      // Gọi API đăng nhập để lấy token
+      const tokens = await authService.login(credentials);
+  
+      const accessToken = tokens.result.accessToken; // Lấy accessToken
 
+      localStorage.setItem("accessToken", accessToken);
+  
+      // Gọi API để lấy thông tin user
+      const userProfile = await authService.fetchUserProfile(accessToken);
+  
+      // Gộp thông tin user với token
+      const user = { ...tokens.result, ...userProfile.result };
+  
+      // Lưu vào Redux
+      dispatch(setUser(user));
+  
+      return user;
+    } catch (error) {
+      dispatch(setError(error || "Login failed. Please try again."));
+      throw error;
+    }
+  });
+  
 /**
  * Register Thunk for registering user
  * @param {Object} userData - User registration data
