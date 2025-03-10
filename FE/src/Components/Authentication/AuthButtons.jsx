@@ -17,8 +17,8 @@ const AuthButtons = () => {
     setLoading(true);
     try{
       dispatch(logoutAction());
-      navigate("/");
       toast.success("Logout Successfully!")
+      navigate("/")
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ const AuthButtons = () => {
   return isAuthenticated ? (
     <Dropdown overlay={menu} trigger={["click"]} placement="bottomRight">
        <Button className={styles.profileButton}>
-        {user?.fullName || "Profile"} <DownOutlined />
+        Hello, {user?.fullName || "Profile"} <DownOutlined />
       </Button>
     </Dropdown>
   ) : (

@@ -1,28 +1,41 @@
-
+.bodyPage{
+  background-image: url("../../assets/images/background-spa.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 900px;
+}
 /* Profile container sẽ có background mờ và form lùi xuống một chút */
 .profileContainer {
   max-width: 800px;
+  max-height: 800px;
   margin: 0 auto;
   padding: 20px;
   background: rgba(255, 255, 255, 0.8); /* Nền mờ giúp dễ nhìn chữ */
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   color: black;
-  margin-top: 100px; /* Đẩy form xuống dưới */
-  background-image: url("../../assets/images/profile.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  margin-top: 50px; /* Đẩy form xuống dưới */
 }
 
-
-/* Các nút điều khiển */
-.buttonContainer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+.fileinput {
+  padding: 8px;
+  border: 2px dashed #4caf50;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
-button {
-  width: 48%;
+.fileinput:hover {
+  border-color: #388e3c;
+}
+
+.avatarpreview {
+  width: 150px;
+  height: 150px;
+  border-radius: 20%;
+  object-fit: cover;
+  margin-top: 10px;
+  border: 3px solid #e2e8e2;
 }

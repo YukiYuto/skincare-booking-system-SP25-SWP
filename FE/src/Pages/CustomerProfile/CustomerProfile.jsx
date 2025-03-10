@@ -1,198 +1,277 @@
-import { useEffect, useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Row,
-  Col,
-  Upload,
-  notification,
-  Flex,
-} from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Button, Col, Form, Input, Modal, Row, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../redux/auth/slice";
 import styles from "./CustomerProfile.module.css";
-import { AUTH_HEADERS, USER_PROFILE_API } from "../../config/apiConfig";
-import * as authService from "../../services/authService";
-import axios from "axios";
+import Header from "../../Components/Common/Header";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { updateUser } from "../../redux/auth/slice";
 
-const CustomerProfile = () => {
-  const dispatch = useDispatch();
+const UserProfile = () => {
   const { user } = useSelector((state) => state.auth);
-  const [isEditing, setIsEditing] = useState(false);
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const [imageUrl, setImageUrl] = useState("");
-  const [formChanged, setFormChanged] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(user.imageUrl);
+  const [userData, setUserData] = useState({ ...user });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
-  // Trong useEffect, gọi API để lấy dữ liệu user
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const token = user.accessToken;
-      console.log(token);
+  const accessToken = user.accessToken;
 
-      // Use of .then() to get the result from the response, which is the user data object
-      const userData = await authService.fetchUserProfile(token).then((res) => res.result);
-      dispatch(setUser(userData));
-      form.setFieldsValue(userData);
+  // Khi chọn file, upload luôn avatar
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-      setImageUrl(userData.imageUrl || "");
-    };
-    fetchUserProfile();
-  }, []);
+    setUploadLoading(true);
 
-  const handleUpdate = async (values) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
     try {
-      const token = localStorage.getItem("token");
-      const updatedData = { ...values, image: imageUrl };
+      const response = await fetch(
+        `https://localhost:7037/api/UserManagement/avatar`,
+        {
+          method: "POST",
+          headers: {
+              Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+        }
+      );
 
-      // Gửi yêu cầu PUT lên API
-      const response = await axios.put(USER_PROFILE_API, updatedData, {
-        headers: AUTH_HEADERS(token),
-      });
+      const data = await response.json();
 
-      // Cập nhật Redux với dữ liệu mới từ API
-      dispatch(setUser(response.data));
-
-      notification.success({
-        message: "Update Successful",
-        description: "Your profile has been updated successfully.",
-      });
-
-      setIsEditing(false);
+      if (data.isSuccess && data.result) {
+        setImageUrl(data.result); // Cập nhật ảnh mới
+        setUserData((prevData) => ({
+          ...prevData,
+          imageUrl: data.result, // Cập nhật imageUrl vào userData để đảm bảo gửi đúng khi save
+        }));
+        // dispatch(updateUser({ imageUrl: data.result })); // Cập nhật Redux store
+        toast.success("Upload Successfully!");
+      } else {
+        toast.error("Upload Failed!");
+      }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      notification.error({
-        message: "Update Failed",
-        description: "Could not update profile. Please try again.",
+      toast.error("Error uploading image!");
+    } finally {
+      setUploadLoading(false);
+    }
+  };
+
+  // Bắt đầu chỉnh sửa
+  const handleInputChange = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
+  // Gửi API cập nhật profile
+  const handleUpdateProfile = async () => {
+    setUpdateLoading(true);
+    console.log("Final userData before sending:", userData);
+    try {
+      const response = await fetch("https://localhost:7037/api/Auth/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(userData),
       });
+
+      const data = await response.json();
+
+      if (data.isSuccess) {
+        dispatch(updateUser(userData)); // Cập nhật Redux store
+        localStorage.setItem("user", JSON.stringify(userData));
+        toast.success("Update Successfully!");
+      } else {
+        toast.error("Update Failed!");
+      }
+    } catch (error) {
+      toast.error("Error updating information!");
+    } finally{
+      setUpdateLoading(false);
     }
   };
 
-  const handleEdit = () => setIsEditing(true);
+  // Hiển thị modal đổi mật khẩu
+const showChangePasswordModal = () => {
+  setIsModalVisible(true);
+};
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    form.setFieldsValue(user);
-    setImageUrl(user.image || "");
-    setFormChanged(false);
-  };
+// Đóng modal
+const handleCancel = () => {
+  setIsModalVisible(false);
+  setPasswords({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
+};
 
-  const handleChange = (info) => {
-    if (info.file.status === "uploading") return;
-    if (info.file.status === "done") {
-      const reader = new FileReader();
-      reader.readAsDataURL(info.file.originFileObj);
-      reader.onload = () => {
-        setImageUrl(reader.result);
-        form.setFieldValue("avatar", reader.result);
-      };
+// Xử lý input thay đổi
+const handlePasswordChange = (e) => {
+  setPasswords({ ...passwords, [e.target.name]: e.target.value });
+};
+
+// Gửi yêu cầu đổi mật khẩu
+const handleChangePassword = async () => {
+  if (passwords.newPassword !== passwords.confirmNewPassword) {
+    toast.error("New Password and Confirm Password do not match!");
+    return;
+  }
+
+  setPasswordLoading(true);
+
+  try {
+    const response = await fetch("https://localhost:7037/api/Auth/password/change", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        userId: user.id, // Truyền userId từ state
+        oldPassword: passwords.oldPassword,
+        newPassword: passwords.newPassword,
+        confirmNewPassword: passwords.confirmNewPassword,
+      }),
+    });
+
+    // Kiểm tra nếu server trả về text thay vì JSON
+    const textResponse = await response.text();
+
+    if (response.ok) {
+      toast.success(textResponse); // Hiển thị thông báo thành công
+      handleCancel(); // Đóng modal nếu có
+    } else {
+      toast.error(`Error: ${textResponse}`); // Hiển thị lỗi nếu có
     }
-  };
 
+  } catch (error) {
+    toast.error("Error changing password!");
+  } finally {
+    setPasswordLoading(false);
+  }
+};
+  
   return (
-    <div className={styles.profileContainer}>
-      <h2>Customer Profile</h2>
-
-      <Flex gap="middle" wrap>
-        <Upload
-          name="avatar"
-          listType="picture-card"
-          showUploadList={false}
-          action="#"
-          onChange={handleChange}
-        >
-          {imageUrl ? (
-            <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-          ) : (
-            <div>
-              {<PlusOutlined />} <div>Upload</div>
-            </div>
-          )}
-        </Upload>
-      </Flex>
-
-      <Form
-        form={form}
-        onFinish={handleUpdate}
-        layout="vertical"
-        disabled={!isEditing}
-        onValuesChange={() => setFormChanged(true)}
-      >
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Full Name"
-              name="fullName"
-              rules={[
-                { required: true, message: "Please enter your full name!" },
-              ]}
-            >
-              <Input style={{ backgroundColor: "white" }} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                { required: true, message: "Please enter your email!" },
-                { type: "email", message: "Invalid email!" },
-              ]}
-            >
-              <Input style={{ backgroundColor: "white" }} disabled />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Phone"
-              name="phone"
-              rules={[
-                { required: true, message: "Please enter your phone number!" },
-              ]}
-            >
-              <Input style={{ backgroundColor: "white" }} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Address" name="address">
-              <Input style={{ backgroundColor: "white" }} />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              style={{ width: "70px" }}
-              label="Age"
-              name="age"
-              rules={[{ required: true, message: "Please enter your age!" }]}
-            >
-              <Input style={{ backgroundColor: "white" }} />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <div className={styles.buttonContainer}>
-          <Button type="primary" htmlType="submit" disabled={!formChanged}>
-            Update
-          </Button>
-          <Button onClick={handleCancel} style={{ marginLeft: 8 }}>
-            Cancel
-          </Button>
+    <div className={styles.bodyPage}>
+      <Header />
+      <div className={styles.profileContainer}>
+        <h2>Customer Profile</h2>
+        <div>
+          <p>Choose file here:</p><input className={styles.fileinput} type="file" onChange={handleFileChange} disabled={uploadLoading} />
+          <img 
+            className={styles.avatarpreview}
+            src={imageUrl || userData.imageUrl} 
+            alt="Avatar" 
+          />
+          {uploadLoading && <p>Uploading...</p>}
         </div>
-      </Form>
 
-      {!isEditing && (
-        <Button onClick={handleEdit} type="default" style={{ marginTop: 20 }}>
-          Edit Profile
-        </Button>
-      )}
+        <Form form={form} layout="vertical">
+          <Row style={{marginTop: "20px"}} gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Full Name">
+              <Input
+                  name="fullName"
+                  value={userData.fullName}
+                  onChange={handleInputChange}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Email">
+              <p>{userData.email}</p>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Phone">
+              <Input
+                  name="phoneNumber"
+                  value={userData.phoneNumber}
+                  onChange={handleInputChange}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Address">
+              <Input
+                  name="address"
+                  value={userData.address}
+                  onChange={handleInputChange}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Age">
+              <Input
+                  name="age"
+                  value={userData.age}
+                  onChange={handleInputChange}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Gender">
+              <Input
+                  name="gender"
+                  value={userData.gender}
+                  onChange={handleInputChange}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+        <div style={{ marginTop: "20px" }}>
+              <Button type="primary" onClick={handleUpdateProfile}>
+              {updateLoading ? "Saving..." : "Save"}
+              </Button>
+              <Button type="default" onClick={showChangePasswordModal}>
+                Change password
+              </Button>
+        </div>
+        {/* Modal đổi mật khẩu */}
+        <Modal
+          title="Change Password"
+          open={isModalVisible}
+          onCancel={handleCancel}
+          footer={[
+            <Button key="cancel" onClick={handleCancel}>
+              Cancel
+            </Button>,
+            <Button key="submit" type="primary" onClick={handleChangePassword} disabled={passwordLoading}>
+              {passwordLoading ? <Spin /> : "Save"}
+            </Button>,
+          ]}
+        >
+          <Form layout="vertical">
+            <Form.Item label="Old Password">
+              <Input.Password name="oldPassword" value={passwords.oldPassword} onChange={handlePasswordChange} />
+            </Form.Item>
+            <Form.Item label="New Password">
+              <Input.Password name="newPassword" value={passwords.newPassword} onChange={handlePasswordChange} />
+            </Form.Item>
+            <Form.Item label="Confirm New Password">
+              <Input.Password name="confirmNewPassword" value={passwords.confirmNewPassword} onChange={handlePasswordChange} />
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
     </div>
   );
 };
 
-export default CustomerProfile;
+export default UserProfile;
+
+
