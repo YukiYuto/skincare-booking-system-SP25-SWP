@@ -1,4 +1,5 @@
 ﻿using SkincareBookingSystem.Models.Dto.Booking.Appointment;
+using SkincareBookingSystem.Models.Dto.Booking.Appointment.RescheduleAppointment;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.Response;
 using System;
@@ -20,6 +21,8 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> BundleOrder(BundleOrderDto bundleOrderDto, ClaimsPrincipal User);
         Task<ResponseDto> FinalizeAppointment(BookAppointmentDto bookAppointmentDto, ClaimsPrincipal User);
         Task<ResponseDto> HandleTherapistAutoAssignment(AutoAssignmentDto autoAssignmentDto);
+        Task<ResponseDto> RescheduleAppointment(RescheduleAppointmentDto rescheduleRequest, ClaimsPrincipal User);
+        Task<ResponseDto> CancelAppointment(Guid appointmentId, ClaimsPrincipal User);
 
     }
 }

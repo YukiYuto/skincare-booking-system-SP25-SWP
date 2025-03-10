@@ -38,6 +38,7 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string AlreadyExists = "An appointment has already been booked for this order";
             public const string Created = "Appointment created successfully";
             public const string Deleted = "Appointment deleted successfully";
+            public const string Cancelled = "Appointment cancelled successfully";
             public const string RetrievedAll = "All appointments retrieved successfully";
             public const string Retrieved = "Appointment retrieved successfully";
             public const string Updated = "Appointment updated successfully";
@@ -46,6 +47,14 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotDeleted = "Failed to delete appointment";
             public const string NotUpdated = "Failed to update appointment";
             public const string NotRetrieved = "Failed to retrieve appointment(s)";
+            public const string NotMatchedToCustomer = "Appointment does not match the customer";
+            public const string NotReschedulable = "Appointment cannot be rescheduled";
+            public const string NotCancellable = "Appointment cannot be cancelled";
+            public const string NotCancelled = "Failed to cancel appointment";
+            public const string NotRescheduled = "Failed to reschedule appointment";
+            public const string Rescheduled = "Appointment rescheduled successfully";
+            public const string RescheduleWithinGracePeriod = "Rescheduling is only allowed up to 24 hours before the appointment";
+            public const string CancelWithinGracePeriod = "Cancellation is only allowed up to 24 hours before the appointment";
         }
         /// <summary>
         /// Error messages related to booking schedules

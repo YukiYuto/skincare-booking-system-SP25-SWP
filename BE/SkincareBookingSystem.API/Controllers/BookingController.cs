@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Booking.Appointment;
+using SkincareBookingSystem.Models.Dto.Booking.Appointment.RescheduleAppointment;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Services.IServices;
 
@@ -27,6 +28,20 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<ActionResult> FinalizeAppointment([FromBody] BookAppointmentDto bookingRequest)
         {
             var result = await _bookingService.FinalizeAppointment(bookingRequest, User);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPut("rescheduling")]
+        public async Task<IActionResult> RescheduleAppointment([FromBody] RescheduleAppointmentDto rescheduleRequest)
+        {
+            var result = await _bookingService.RescheduleAppointment(rescheduleRequest, User);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpDelete("cancellation/{appointmentId}")]
+        public async Task<ActionResult> CancelAppointment(Guid appointmentId)
+        {
+            var result = await _bookingService.CancelAppointment(appointmentId, User);
             return StatusCode(result.StatusCode, result);
         }
 
