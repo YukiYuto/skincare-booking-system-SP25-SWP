@@ -76,6 +76,12 @@
     color: white !important;
     border: 1px solid #1890ff !important;
   }
+
+  .disabledSlot {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
   
 
   
