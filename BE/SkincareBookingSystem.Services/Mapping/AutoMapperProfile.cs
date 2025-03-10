@@ -16,6 +16,7 @@ using SkincareBookingSystem.DataAccess.Repositories;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.Blog;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
+using SkincareBookingSystem.Models.Dto.Feedbacks;
 
 
 namespace SkincareBookingSystem.Services.Mapping;
@@ -24,6 +25,19 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        //Feedback
+        CreateMap<CreateFeedbackDto, Feedbacks>()
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId));
+        CreateMap<UpdateFeedbackDto, Feedbacks>()
+            .ForMember(dest => dest.FeedbackId, opt => opt.MapFrom(src => src.FeedbackId))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId));
+
         //TestQuestion
         CreateMap<CreateTestQuestionDto, TestQuestion>()
             .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId))

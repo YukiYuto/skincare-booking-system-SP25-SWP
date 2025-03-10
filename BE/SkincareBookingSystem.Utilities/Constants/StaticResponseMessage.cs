@@ -31,6 +31,17 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotRetrieved = "Failed to retrieve user(s)";
         }
         /// <summary>
+        /// Error messages related to Payment
+        /// </summary>
+        public static class Payment
+        {
+            public const string Pending = "Payment is pending";
+            public const string Paid = "Payment paid";
+            public const string Cancelled = "Payment cancelled";
+            public const string NotFound = "Payment not found";
+            public const string NotCompleted = "Payment not completed for the specified order";
+        }
+        /// <summary>
         /// Error messages related to appointments
         /// </summary>
         public static class Appointment
@@ -96,6 +107,23 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotDeleted = "Failed to delete test question";
             public const string NotUpdated = "Failed to update test question";
             public const string NotRetrieved = "Failed to retrieve test question(s)";
+        }
+        /// <summary>
+        /// Error messages related to Feedback
+        /// </summary>
+        public static class Feedback
+        {
+            public const string Created = "Feedback created successfully";
+            public const string Deleted = "Feedback deleted successfully";
+            public const string AlreadyDeleted = "Feedback already deleted";
+            public const string RetrievedAll = "All feedbacks retrieved successfully";
+            public const string Retrieved = "Feedback retrieved successfully";
+            public const string Updated = "Feedback updated successfully";
+            public const string NotFound = "Feedback(s) not found";
+            public const string NotCreated = "Failed to create feedback";
+            public const string NotDeleted = "Failed to delete feedback";
+            public const string NotUpdated = "Failed to update feedback";
+            public const string NotRetrieved = "Failed to retrieve feedback(s)";
         }
     }
 }
