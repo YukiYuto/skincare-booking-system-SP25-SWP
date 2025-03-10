@@ -43,8 +43,43 @@ namespace SkincareBookingSystem.Services.Helpers.Schedules
             return (
                 therapistSchedule.ScheduleStatus == ScheduleStatus.Unavailable ||
                 therapistSchedule.ScheduleStatus == ScheduleStatus.Cancelled ||
-                therapistSchedule.ScheduleStatus == ScheduleStatus.Rejected
+                therapistSchedule.ScheduleStatus == ScheduleStatus.Rejected ||
+                therapistSchedule.ScheduleStatus == ScheduleStatus.Rescheduled
             );
+        }
+        /// <summary>
+        /// Helper method to check if a schedule is reschedulable.
+        /// </summary>
+        /// <param name="therapistSchedules">A Collection of TherapistSchedule to be validated</param>
+        /// <returns>true if there is no schedule completed / cancelled, false otherwise</returns>
+        public static bool IsScheduleReschedulable(ICollection<TherapistSchedule> therapistSchedules)
+        {
+            return therapistSchedules.Any(
+                    ts => ts.ScheduleStatus != ScheduleStatus.Completed &&
+                    ts.ScheduleStatus != ScheduleStatus.Cancelled);
+        }
+        /// <summary>
+        /// Helper method to check if an appointment is within the grace period (24 hours).
+        /// If the appointment is within the grace period, it cannot be rescheduled or cancelled.
+        /// </summary>
+        /// <param name="appointment">The appointment to be checked on rescheduling/cancellation request</param>
+        /// <returns>true if the appointment's due time is within 24 hours, false otherwise</returns>
+        public static bool IsWithinGracePeriod(Appointments appointment)
+        {
+            var latestSchedule = appointment.TherapistSchedules
+                .Where(ts => ts.ScheduleStatus != ScheduleStatus.Rescheduled &&
+                             ts.ScheduleStatus != ScheduleStatus.Cancelled)
+                .OrderByDescending(ts => ts.CreatedTime)
+                .FirstOrDefault();
+
+            if (latestSchedule is null)
+                return false;  // No schedule found, return false
+
+
+            var appointmentDueTime = Convert.ToDateTime(appointment.AppointmentDate + " " + latestSchedule.Slot.StartTime);
+            var utcNowVietnam = StaticOperationStatus.Timezone.Vietnam;
+
+            return (appointmentDueTime - utcNowVietnam) < TimeSpan.FromHours(24);
         }
     }
 }

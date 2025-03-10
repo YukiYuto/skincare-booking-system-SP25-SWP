@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Payment;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers;
 
@@ -19,6 +20,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPost("create-link")]
+    [SwaggerOperation(Summary = "API creates a payment link", Description = "Requires user role")]
     public async Task<ActionResult<ResponseDto>> CreatePaymentLink([FromBody] CreatePaymentLinkDto createPaymentLinkDTO)
     {
         var responseDto = await _paymentService.CreatePayOsPaymentLink(User, createPaymentLinkDTO);
@@ -26,6 +28,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPost("confirm-transaction")]
+    [SwaggerOperation(Summary = "API confirms a payment transaction", Description = "Requires order number")]
     public async Task<ActionResult<ResponseDto>> ConfirmPayment([FromBody] ConfirmPaymentDto confirmPaymentDto)
     {
         var responseDto = await _paymentService.ConfirmPayOsTransaction(confirmPaymentDto);
@@ -34,6 +37,7 @@ public class PaymentController : ControllerBase
 
     [HttpGet]
     [Authorize]
+    [SwaggerOperation(Summary = "API gets all payments", Description = "Requires admin role")]
     public async Task<ActionResult<ResponseDto>> GetAll
     (
         [FromQuery] 
@@ -49,6 +53,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("get-by-id")]
+    [SwaggerOperation(Summary = "API gets a payment by id", Description = "Requires admin role")]
     public async Task<ActionResult<ResponseDto>> GetPaymentById(Guid paymentTransactionId)
     {
         var responseDto = await _paymentService.GetPaymentById(User, paymentTransactionId);

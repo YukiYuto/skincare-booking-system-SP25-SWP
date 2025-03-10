@@ -36,6 +36,22 @@
   height: 30px;
 }
 
+.flexContainer2 {
+  display: flex;
+  text-align: center;
+  gap: 12px;
+}
+
+.genderContainer label {
+  display: flex;
+  font-size: 32px;
+}
+
+.genderContainer input {
+  width: 30px;
+  height: 30px;
+}
+
 .termsContainer {
   font-size: 16px;
   margin: 23px 26px 15px 0;
@@ -45,6 +61,7 @@
 .termsLink {
   color: rgb(0, 61, 252);
   text-decoration: none;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .registerButton {
@@ -75,6 +92,11 @@
 
 .loginButton:hover {
   background-color: lightgray;
+}
+
+.disabledForm {
+  pointer-events: none; 
+  opacity: 0.7;
 }
 
 @media (max-width: 991px) {

@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+const storedUser = localStorage.getItem("user");  
 const initialState = {
   isAuthenticated: false,
-  user: null,
+  user: storedUser ? JSON.parse(storedUser) : null, 
   loading: false,
   error: null,
 };
@@ -17,11 +17,17 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    updateUser: (state, action) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload }; // Cập nhật thông tin user
+      }
+    },
     clearUser: (state) => {
       state.isAuthenticated = false;
       state.user = null;
       state.loading = false;
       state.error = null;
+      localStorage.clear();
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -51,6 +57,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, setLoading, setError } = authSlice.actions;
+export const { setUser, updateUser, clearUser, setLoading, setError } = authSlice.actions;
 
 export default authSlice.reducer;
