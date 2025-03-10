@@ -158,7 +158,7 @@ const BookingModal = ({ visible, onClose }) => {
     const customerId = customerResponse.data.result;
     const orderData = {
       order: {
-        customerId: customerId, // Lấy từ Redux store
+        customerId: customerId, 
         totalPrice: selectedService?.price || 0,
       },
       orderDetails: [

@@ -120,8 +120,7 @@ namespace SkincareBookingSystem.API
             // Đăng ký PayOS vào DI Container
             builder.Services.AddSingleton(new PayOS(payOSClientId, payOSApiKey, payOSChecksumKey));
 
-            // Register services from Extensions
-            builder.Services.RegisterServices(builder.Configuration);
+            
 
             var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
             builder.Services.AddCors(options =>
