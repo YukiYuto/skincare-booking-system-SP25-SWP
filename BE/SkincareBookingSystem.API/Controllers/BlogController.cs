@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Blog;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 
@@ -79,7 +81,8 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        [SwaggerOperation(Summary = "API soft deletes an exist Blog", Description = "Requires user role")]
+        [Authorize(Roles = StaticUserRoles.ManagerStaff)]
+        [SwaggerOperation(Summary = "API soft deletes an exist Blog", Description = "Requires staff, manager role")]
         public async Task<ActionResult<ResponseDto>> DeleteBlog(Guid blogId)
         {
             var result = await _blogService.DeleteBlog(User, blogId);
