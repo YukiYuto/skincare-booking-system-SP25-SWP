@@ -103,13 +103,13 @@ function RegisterForm() {
       }
       return errors;
     });
-  
+
     if (!validateRegisterForm()) return;
 
     setIsLoading(true);
-  
+
     const formattedFullname = formatFullname(registerData.fullName);
-  
+
     try {
       await register({
         email: registerData.email,
@@ -124,25 +124,27 @@ function RegisterForm() {
 
       await sendVerificationEmail(registerData.email);
 
-      toast.success("Registration successful! Please check your email to verify your account.");
+      toast.success(
+        "Registration successful! Please check your email to verify your account."
+      );
     } catch (error) {
       console.error("Registration error:", error.message);
       toast.error(error.message || "Registration failed. Please try again.");
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   return (
     <form
-      className={styles.registerForm}
+      className={`${styles.registerForm} ${isLoading ? styles.disabledForm : ""}`}
       aria-labelledby="register-title"
       onSubmit={handleRegisterSubmit}
     >
       <h1 id="register-title" className={styles.registerTitle}>
         Register
       </h1>
-      <div className={styles.flexContainer1}>
+      <div className={styles.flexContainer}>
         <InputField
           label="Full Name"
           type="text"
@@ -153,19 +155,32 @@ function RegisterForm() {
           error={errors.fullName}
         />
 
-        <InputField
-          label="Gender"
-          type="text"
-          name="gender"
-          placeholder="Gender"
-          value={registerData.gender}
-          onChange={handleRegisterChange}
-          error={errors.gender}
-        />
+        <div className={styles.genderContainer}>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="Male"
+              checked={registerData.gender === "Male"}
+              onChange={handleRegisterChange}
+            />
+            Male
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="Female"
+              checked={registerData.gender === "Female"}
+              onChange={handleRegisterChange}
+            />
+            Female
+          </label>
+        </div>
+        {errors.gender && <span className={styles.error}>{errors.gender}</span>}
       </div>
-      
 
-      <div className={styles.flexContainer1}>
+      <div className={styles.flexContainer}>
         <InputField
           label="Phone Number"
           type="text"
@@ -187,7 +202,7 @@ function RegisterForm() {
         />
       </div>
 
-      <div className={styles.flexContainer2}>
+      <div className={styles.flexContainer}>
         <InputField
           label="Password"
           type="password"
@@ -211,7 +226,7 @@ function RegisterForm() {
         />
       </div>
 
-      <div className={styles.flexContainer3}>
+      <div className={styles.flexContainer}>
         <InputField
           label="Address"
           type="text"
@@ -235,20 +250,31 @@ function RegisterForm() {
 
       <div className={styles.termsContainer}>
         <span>By registering you agree to </span>
-        <a href="/terms" className={styles.termsLink}>
+        <a 
+        style={{ pointerEvents: isLoading ? "none" : "auto", opacity: isLoading ? 0.5 : 1 }}
+        href="/terms" className={styles.termsLink}>
           terms and conditions
         </a>
         <span> of our center.</span>
       </div>
 
-      <button type="submit" className={styles.registerButton} disabled={isLoading}>
+      <button
+        type="submit"
+        className={styles.registerButton}
+        disabled={isLoading}
+      >
         {isLoading ? "Registering..." : "Register"}
       </button>
 
       <button
         type="button"
         className={styles.loginButton}
-        onClick={() => navigate("/login")}
+        onClick={() => {
+          if (!isLoading) {
+            navigate("/login")
+            }
+          }}
+          disabled={isLoading} 
       >
         Login
       </button>

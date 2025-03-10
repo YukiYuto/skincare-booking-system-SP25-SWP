@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using SkincareBookingSystem.DataAccess.DBContext;
-using SkincareBookingSystem.DataAccess.IRepositories;
+﻿using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.DataAccess.Repositories;
-using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Services.Mapping;
 using SkincareBookingSystem.Services.Services;
@@ -41,7 +38,10 @@ namespace SkincareBookingSystem.API.Extensions
             // more services to be added here
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IServicesService, ServicesService>();
+            services.AddScoped<IServiceComboService, ServiceComboService>();
+            services.AddScoped<IComboItemService, ComboItemService>();
             services.AddScoped<ISlotService, SlotService>();
+            services.AddScoped<ITypeItemService, TypeItemService>();
 
             services.AddScoped<ISkinTherapistService, SkinTherapistService>();
             services.AddScoped<ITherapistServiceTypeService, TherapistServiceTypeService>();

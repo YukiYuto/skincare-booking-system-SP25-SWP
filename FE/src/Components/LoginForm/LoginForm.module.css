@@ -23,15 +23,17 @@
   .termsLink {
     color: rgb(0, 61, 252);
     text-decoration: none;
+    transition: opacity 0.3s ease-in-out;
   }
 
   .forgotLink{
     color: rgb(0, 61, 252);
     text-decoration: none;
+    transition: opacity 0.3s ease-in-out;
   }
 
   .forgotLink:hover{
-    color: red; /* Màu khi hover */
+    color: red; 
     text-decoration: underline;
   }
   
@@ -67,6 +69,12 @@
   .createAccountButton:hover{
     background-color: lightgray;
   }
+
+  .disabledForm {
+    pointer-events: none; 
+    opacity: 0.7; 
+  }
+  
   
   @media (max-width: 991px) {
     .loginForm {

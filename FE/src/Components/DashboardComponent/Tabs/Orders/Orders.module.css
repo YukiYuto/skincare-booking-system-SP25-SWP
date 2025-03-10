@@ -1,0 +1,232 @@
+/* Card styling */
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.cardHeader {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.cardTitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.cardContent {
+    padding: 20px;
+}
+
+.tableContainer {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table th {
+    background-color: #f5f5f5;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #e0e0e0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.table th:hover {
+    background-color: #e0e0e0;
+}
+
+.table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.rightAlign {
+    text-align: right;
+}
+
+/* State styling */
+.loading {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 16px;
+    border-radius: 4px;
+}
+
+.errorContainer {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 16px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.retryButton {
+    background-color: #b91c1c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.retryButton:hover {
+    background-color: #991b1b;
+}
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.orderTableContainer {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.orderTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orderTable th,
+.orderTable td {
+    border: 1px solid var(--secondary-color);
+    padding: 10px;
+    text-align: left;
+}
+
+.orderTable th {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    cursor: pointer;
+    user-select: none;
+}
+
+.orderTable th:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.orderTable tr:nth-child(even) {
+    background-color: var(--secondary-color);
+}
+
+.orderTable tr:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.tabContainer {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 8px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tabHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.tabTitleContainer {
+    display: flex;
+    gap: 16px;
+}
+
+.filterContainer,
+.tabTitleContainer {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    width: fit-content;
+}
+
+.filterSelect {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: max-content;
+}
+
+.filterSelect {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--secondary-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.tabHeader button {
+    background: transparent;
+    border: none;
+    padding: 4px 2px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.tabHeader button:hover {
+    padding: 4px;
+    background-color: var(--text-color);
+}
+
+.tabHeader img {
+    width: 30px;
+    height: 30px;
+}
+
+.tabTitle {
+    font-family: Raleway;
+    color: var(--accent-color);
+}
+
+.order,
+.orderType {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 16px;
+    color: var(--text-color);
+    transition: 0.2s;
+}
