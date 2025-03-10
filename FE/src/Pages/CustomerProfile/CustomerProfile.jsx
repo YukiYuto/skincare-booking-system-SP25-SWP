@@ -5,6 +5,7 @@ import Header from "../../Components/Common/Header";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { updateUser } from "../../redux/auth/slice";
+import { CHANGE_PASSWORD, UPDATE_PROFILE, UPLOAD_AVATAR } from "../../config/apiConfig";
 
 const UserProfile = () => {
   const { user } = useSelector((state) => state.auth);
@@ -36,7 +37,7 @@ const UserProfile = () => {
 
     try {
       const response = await fetch(
-        `https://localhost:7037/api/UserManagement/avatar`,
+        UPLOAD_AVATAR,
         {
           method: "POST",
           headers: {
@@ -76,7 +77,7 @@ const UserProfile = () => {
     setUpdateLoading(true);
     console.log("Final userData before sending:", userData);
     try {
-      const response = await fetch("https://localhost:7037/api/Auth/profile", {
+      const response = await fetch(UPDATE_PROFILE, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +128,7 @@ const handleChangePassword = async () => {
   setPasswordLoading(true);
 
   try {
-    const response = await fetch("https://localhost:7037/api/Auth/password/change", {
+    const response = await fetch(CHANGE_PASSWORD, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -141,14 +142,11 @@ const handleChangePassword = async () => {
       }),
     });
 
-    // Kiểm tra nếu server trả về text thay vì JSON
-    const textResponse = await response.text();
-
     if (response.ok) {
-      toast.success(textResponse); // Hiển thị thông báo thành công
+      toast.success("Change password successfully!"); // Hiển thị thông báo thành công
       handleCancel(); // Đóng modal nếu có
     } else {
-      toast.error(`Error: ${textResponse}`); // Hiển thị lỗi nếu có
+      toast.error("Cannot change password!"); // Hiển thị lỗi nếu có
     }
 
   } catch (error) {

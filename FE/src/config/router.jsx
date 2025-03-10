@@ -19,6 +19,7 @@ import Orders from "../Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "../Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import TableCustomer from "../Components/TableCustomer/TableCustomer";
+import PaymentPage from "../Pages/PaymentPage/PaymentPage";
 
 
 export const router = createBrowserRouter([
@@ -71,5 +72,9 @@ export const router = createBrowserRouter([
   {
     path: "table-customer",
     element: <TableCustomer />,
+  },
+  {
+    path: "/payment",
+    element: <PaymentPage />,
   }
 ]);

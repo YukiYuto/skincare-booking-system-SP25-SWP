@@ -5,6 +5,8 @@ import styles from "./BookingModal.module.css"; // Import CSS module
 import dayjs from "dayjs";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { CREATE_ORDERS_BUNDLES, GET_CUSTOMER, GET_SERVICES, GET_SLOT } from "../../config/apiConfig";
 
 const { Step } = Steps;
 
@@ -26,6 +28,8 @@ const BookingModal = ({ visible, onClose }) => {
   const [occupiedSlots, setOccupiedSlots] = useState([]);
   const { user } = useSelector((state) => state.auth);
 
+  const navigate = useNavigate();
+
   const next = () => setCurrent(current + 1);
   const prev = () => setCurrent(current - 1);
 
@@ -45,7 +49,7 @@ const BookingModal = ({ visible, onClose }) => {
 
   // Lấy danh sách dịch vụ
   useEffect(() => {
-    fetch("https://localhost:7037/api/services", {
+    fetch(GET_SERVICES, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -67,7 +71,7 @@ const BookingModal = ({ visible, onClose }) => {
       return;
     }
 
-    fetch(`https://localhost:7037/api/services/${serviceId}`)
+    fetch(`https://lumiconnect.azurewebsites.net/api/services/${serviceId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data?.result) {
@@ -85,7 +89,7 @@ const BookingModal = ({ visible, onClose }) => {
   // Lấy danh sách therapists theo serviceTypeId
   const fetchTherapists = (serviceTypeId) => {
     fetch(
-      `https://localhost:7037/api/bookings/therapists?serviceTypeId=${serviceTypeId}`,
+      `https://lumiconnect.azurewebsites.net/api/bookings/therapists?serviceTypeId=${serviceTypeId}`,
       {
         method: "GET",
         headers: {
@@ -110,7 +114,7 @@ const BookingModal = ({ visible, onClose }) => {
   };
 
   useEffect(() => {
-    fetch("https://localhost:7037/api/slot")
+    fetch(GET_SLOT)
       .then((res) => res.json())
       .then((data) => {
         if (data?.result) {
@@ -123,7 +127,7 @@ const BookingModal = ({ visible, onClose }) => {
   useEffect(() => {
     if (selectedDate && selectedTherapist) {
       fetch(
-        `https://localhost:7037/api/bookings/occupied-slots?therapistId=${selectedTherapist}&date=${selectedDate}`
+        `https://lumiconnect.azurewebsites.net/api/bookings/occupied-slots?therapistId=${selectedTherapist}&date=${selectedDate}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -148,7 +152,7 @@ const BookingModal = ({ visible, onClose }) => {
       return;
     }
     const customerResponse = await axios.get(
-      `https://localhost:7037/api/customer/user`,
+      GET_CUSTOMER,
       {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
@@ -173,7 +177,7 @@ const BookingModal = ({ visible, onClose }) => {
       ],
     };
 
-    fetch("https://localhost:7037/api/bookings/orders-bundles", {
+    fetch(CREATE_ORDERS_BUNDLES, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -195,6 +199,7 @@ const BookingModal = ({ visible, onClose }) => {
         localStorage.setItem("orderNumber",data.result.orderNumber);
         onClose();
         resetState();
+        navigate("/payment");
       })
       .catch((err) => {
         toast.error(`Có lỗi xảy ra: ${err.message}`);
