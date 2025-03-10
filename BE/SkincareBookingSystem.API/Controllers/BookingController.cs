@@ -4,6 +4,7 @@ using SkincareBookingSystem.Models.Dto.Booking.Appointment;
 using SkincareBookingSystem.Models.Dto.Booking.Appointment.RescheduleAppointment;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -18,6 +19,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("orders-bundles")]
+        [SwaggerOperation(Summary = "API creates a new bundle order", Description = "Requires user role")]
         public async Task<IActionResult> BundleOrder([FromBody] BundleOrderDto bundleOrderDto)
         {
             var result = await _bookingService.BundleOrder(bundleOrderDto, User);
@@ -46,6 +48,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("therapists")]
+        [SwaggerOperation(Summary = "API gets therapists for a service type", Description = "Requires serviceTypeId")]
         public async Task<IActionResult> GetTherapistsForServiceType(Guid serviceTypeId)
         {
             var result = await _bookingService.GetTherapistsForServiceType(serviceTypeId);
@@ -53,6 +56,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("occupied-slots")]
+        [SwaggerOperation(Summary = "API gets occupied slots from a therapist", Description = "Requires therapistId and date")]
         public async Task<IActionResult> GetOccupiedSlotsFromTherapist(Guid therapistId, DateOnly date)
         {
             var result = await _bookingService.GetOccupiedSlotsFromTherapist(therapistId, date);

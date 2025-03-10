@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Slot;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers;
 
@@ -16,6 +17,7 @@ public class SlotController : Controller
     }
 
     [HttpPost]
+    [SwaggerOperation(Summary = "API creates a slot", Description = "Requires Therapist's schedule")]
     public async Task<IActionResult> CreateSlot([FromBody] CreateSlotDto createSlotDto)
     {
         var result = await _slotService.CreateSlot(User, createSlotDto);
@@ -23,6 +25,7 @@ public class SlotController : Controller
     }
 
     [HttpGet("{slotId}")]
+    [SwaggerOperation(Summary = "API gets a slot by id", Description = "Requires slotId")]
     public async Task<IActionResult> GetSlotById(Guid slotId)
     {
         var result = await _slotService.GetSlotById(slotId);
@@ -30,6 +33,7 @@ public class SlotController : Controller
     }
 
     [HttpGet]
+    [SwaggerOperation(Summary = "API gets all slots", Description = "Requires admin role")]
     public async Task<IActionResult> GetAllSlots()
     {
         var result = await _slotService.GetAllSlots();
@@ -37,6 +41,7 @@ public class SlotController : Controller
     }
 
     [HttpPut]
+    [SwaggerOperation(Summary = "API updates a slot", Description = "Requires admin role")]
     public async Task<IActionResult> UpdateSlot([FromBody] UpdateSlotDto updateSlotDto)
     {
         var result = await _slotService.UpdateSlot(User, updateSlotDto);
@@ -44,6 +49,7 @@ public class SlotController : Controller
     }
 
     [HttpDelete("{slotId}")]
+    [SwaggerOperation(Summary = "API soft deletes a slot", Description = "Requires slotId")]
     public async Task<IActionResult> DeleteSlot(Guid slotId)
     {
         var result = await _slotService.DeleteSlot(User, slotId);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Orders;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -15,6 +16,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "API gets all orders", Description = "Requires admin role")]
         public async Task<IActionResult> GetAllOrders()
         {
             var result = await _orderService.GetAllOrders();
@@ -22,6 +24,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "API gets an order by id", Description = "Requires admin role")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
             var result = await _orderService.GetOrderById(id);
@@ -29,6 +32,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut]
+        [SwaggerOperation(Summary = "API updates an order", Description = "Requires admin role")]
         public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderDto updateOrderDto)
         {
             var result = await _orderService.UpdateOrder(User, updateOrderDto);
@@ -36,6 +40,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "API soft deletes an order", Description = "Requires admin role")]
         public async Task<IActionResult> DeleteOrder(Guid id)
         {
             var result = await _orderService.DeleteOrder(id);
