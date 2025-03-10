@@ -188,9 +188,9 @@ namespace SkincareBookingSystem.DataAccess.DBContext
                 .HasPrincipalKey(o => o.OrderNumber)
                 .OnDelete(DeleteBehavior.Restrict);
             
-            /*modelBuilder.Entity<Payment>()
-                .Property(p => p.Status)
-                .HasConversion<string>();*/
+            /*modelBuilder.Entity<ComboItem>()
+                .HasIndex(p => p.Priority)
+                .IsUnique();*/
         }
             
     }
