@@ -25,6 +25,14 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             var maxOrderNumber = await _context.Order.MaxAsync(o => (long?)o.OrderNumber) ?? 0;
             return maxOrderNumber + 1;
         }
+        
+        public async Task<Order?> GetLatestOrderByCustomerIdAsync(Guid customerId)
+        {
+            return await _context.Order
+                .Where(o => o.CustomerId == customerId)
+                .OrderByDescending(o => o.OrderNumber)
+                .FirstOrDefaultAsync();
+        }
 
         public void Update(Order target, Order source)
         {

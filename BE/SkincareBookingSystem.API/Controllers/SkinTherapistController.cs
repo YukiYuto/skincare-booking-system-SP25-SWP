@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Booking.ServiceType;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/therapists")]
     [ApiController]
     public class SkinTherapistController : ControllerBase
     {
@@ -16,21 +17,24 @@ namespace SkincareBookingSystem.API.Controllers
             _skinTherapistService = skinTherapistService;
         }
 
-        [HttpGet("skin-therapists/{therapistId}")]
+        [HttpGet("{therapistId}")]
+        [SwaggerOperation(Summary = "API gets a therapist detail by id", Description = "Requires admin role")]
         public async Task<ActionResult> GetTherapistDetailsById(Guid therapistId)
         {
             var response = await _skinTherapistService.GetTherapistDetailsById(therapistId);
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("skin-therapists")]
+        [HttpGet]
+        [SwaggerOperation(Summary = "API gets all therapists", Description = "Requires admin role")]
         public async Task<ActionResult> GetAllTherapists()
         {
             var response = await _skinTherapistService.GetAllTherapists();
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("skin-therapists/service-type/{serviceTypeId}")]
+        [HttpGet("{serviceTypeId}")]
+        [SwaggerOperation(Summary = "API gets therapists by service type", Description = "Requires serviceTypeId")]
         public async Task<ActionResult> GetTherapistsByServiceType(Guid serviceTypeId)
         {
             var response = await _skinTherapistService.GetTherapistsByServiceTypeId(serviceTypeId);

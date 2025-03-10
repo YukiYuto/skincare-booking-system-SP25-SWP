@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/service-type")]
     [ApiController]
     public class ServiceTypeController : ControllerBase
     {
@@ -16,35 +17,40 @@ namespace SkincareBookingSystem.API.Controllers
             _serviceTypeService = serviceTypeService;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
+        [SwaggerOperation(Summary = "API creates a ServiceType", Description = "Requires admin role")]
         public async Task<IActionResult> CreateServiceType([FromBody] CreateServiceTypeDto createServiceTypeDto)
         {
             var result = await _serviceTypeService.CreateServiceType(User ,createServiceTypeDto);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
+        [SwaggerOperation(Summary = "API gets all ServiceTypes", Description = "Requires admin role")]
         public async Task<IActionResult> GetAllServiceTypes()
         {
             var result = await _serviceTypeService.GetAllServiceTypes();
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "API gets a ServiceType by id", Description = "Requires admin role")]
         public async Task<IActionResult> GetServiceTypeById([FromQuery] Guid id)
         {
             var result = await _serviceTypeService.GetServiceTypeById(id);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut("update")]
+        [HttpPut]
+        [SwaggerOperation(Summary = "API updates a ServiceType", Description = "Requires admin role")]
         public async Task<IActionResult> UpdateServiceType([FromBody] UpdateServiceTypeDto updateServiceTypeDto)
         {
             var result = await _serviceTypeService.UpdateServiceType(User, updateServiceTypeDto);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "API soft deletes a ServiceType", Description = "Requires admin role")]
         public async Task<IActionResult> DeleteServiceType([FromQuery] Guid id)
         {
             var result = await _serviceTypeService.DeleteServiceType(id);

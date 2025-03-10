@@ -12,8 +12,8 @@ using SkincareBookingSystem.DataAccess.DBContext;
 namespace SkincareBookingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250301074456_MigrationDb_PaymentAndTransaction")]
-    partial class MigrationDb_PaymentAndTransaction
+    [Migration("20250304173229_MigrationDb_AppointmentDateTimeNotNullable")]
+    partial class MigrationDb_AppointmentDateTimeNotNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,22 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8fa7c7bb-b4dd-480d-a660-e07a90855d5s",
+                            ConcurrencyStamp = "MANAGER",
+                            Name = "MANAGER",
+                            NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "8fa7c7bb-daa5-a660-bf02-82301a5eb32a",
+                            ConcurrencyStamp = "ADMIN",
+                            Name = "ADMIN",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -136,6 +152,18 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "SkinBookingSystem-Admin",
+                            RoleId = "8fa7c7bb-daa5-a660-bf02-82301a5eb32a"
+                        },
+                        new
+                        {
+                            UserId = "SkinBookingSystem-Manager",
+                            RoleId = "8fa7c7bb-b4dd-480d-a660-e07a90855d5s"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -239,6 +267,50 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "SkinBookingSystem-Admin",
+                            AccessFailedCount = 0,
+                            Address = "123 Admin St",
+                            Age = 30,
+                            ConcurrencyStamp = "13c1bcc1-b8d0-41c4-af2e-78cd54155e30",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            FullName = "Admin",
+                            ImageUrl = "https://example.com/avatar.png",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEClOe8fSAnWDKBiSTpWHEeRIvXa22qJQcDqGyCSaCpxEtUjkA4gU2KAz4vIFEpDsPg==",
+                            PhoneNumber = "1234567890",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "09f03bd9-7668-44d2-add4-4d468379e379",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@gmail.com"
+                        },
+                        new
+                        {
+                            Id = "SkinBookingSystem-Manager",
+                            AccessFailedCount = 0,
+                            Address = "123 Manager St",
+                            Age = 30,
+                            ConcurrencyStamp = "9a6bd1c6-1852-4886-aa74-3bcda87bb4fd",
+                            Email = "manager@gmail.com",
+                            EmailConfirmed = true,
+                            FullName = "Manager",
+                            ImageUrl = "https://example.com/avatarManager.png",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "MANAGER@GMAIL.COM",
+                            NormalizedUserName = "MANAGER@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMGYwOZvTFgHxbFRsycGYacA0uWgduuYO2K2qAfhQGwhzxnLmTdg+ZnH3tuJsfEDHQ==",
+                            PhoneNumber = "0123456789",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "61e94526-195f-4be2-8e24-81f4099d3959",
+                            TwoFactorEnabled = false,
+                            UserName = "manager@gmail.com"
+                        });
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Appointments", b =>
@@ -247,10 +319,11 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("AppointmentDate")
+                    b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("AppointmentTime")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
@@ -597,8 +670,9 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<string>("ReturnUrl")
                         .HasColumnType("text");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("PaymentTransactionId");
 
@@ -1060,9 +1134,8 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uuid");
@@ -1455,7 +1528,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Transaction", b =>
                 {
-                    b.HasOne("SkincareBookingSystem.Models.Domain.ApplicationUser", "ApplicationUser")
+                    b.HasOne("SkincareBookingSystem.Models.Domain.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1471,7 +1544,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationUser");
+                    b.Navigation("Customer");
 
                     b.Navigation("Orders");
 
