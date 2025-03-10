@@ -21,6 +21,8 @@
     font-family: Raleway;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1001;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 h2 {
@@ -86,7 +88,8 @@ select {
     border-radius: 4px;
 }
 
-.cancelButton, .deleteButton {
+.cancelButton,
+.deleteButton {
     background-color: var(--accent-color);
     color: white;
     padding: 10px;

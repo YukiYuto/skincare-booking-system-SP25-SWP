@@ -10,21 +10,29 @@ const SkinTherapistDetail = ({ therapist, onClose }) => {
 
   useEffect(() => {
     console.log("Full therapist object:", therapist);
-  
+    const url = GET_THERAPIST_BY_ID_API.replace(
+      "{therapistId}",
+      therapist.skinTherapistId
+    );
+    console.log("Fetching from URL:", url);
+
     if (!therapist?.skinTherapistId) {
       setError("Invalid therapist ID");
       setLoading(false);
       return;
     }
-  
+
     const fetchTherapistDetail = async () => {
       setLoading(true);
       try {
         const response = await fetch(
-          GET_THERAPIST_BY_ID_API.replace("{therapistId}", therapist.skinTherapistId)
+          GET_THERAPIST_BY_ID_API.replace(
+            "{therapistId}",
+            therapist.skinTherapistId
+          )
         );
         const data = await response.json();
-  
+
         if (data.isSuccess) {
           setTherapistDetail(data.result);
           setError(null);
@@ -38,7 +46,7 @@ const SkinTherapistDetail = ({ therapist, onClose }) => {
         setLoading(false);
       }
     };
-  
+
     fetchTherapistDetail();
 
     const handleEscKey = (event) => {

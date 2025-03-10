@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { GET_CUSTOMER_BY_ID_API } from "../../../../config/apiConfig";
 import styles from "./CustomerDetail.module.css";
@@ -8,14 +9,20 @@ const CustomerDetail = ({ customer, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const modalRef = useRef(null);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const fetchCustomerDetail = async () => {
       try {
         const response = await axios.get(
-          GET_CUSTOMER_BY_ID_API.replace("{customerId}", customer.customerId)
+          GET_CUSTOMER_BY_ID_API.replace("{customerId}", customer.customerId),
+          {
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          }
         );
-        setCustomerDetail(response.data);
+        setCustomerDetail(response.data.result);
       } catch (err) {
         if (err.response && err.response.status === 404) {
           setError("Customer not found (404)");

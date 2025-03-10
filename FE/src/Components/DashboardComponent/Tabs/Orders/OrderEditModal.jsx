@@ -3,19 +3,25 @@ import axios from "axios";
 import {
   PUT_ORDER_API,
   GET_ALL_CUSTOMERS_API,
+  DELETE_ORDER_API,
 } from "../../../../config/apiConfig";
 import styles from "./OrderEditModal.module.css";
 
 const OrderEditModal = ({ order, onClose, refresh }) => {
   const [formState, setFormState] = useState({
     orderId: order.orderId,
-    orderNumber: order.orderNumber,
-    totalPrice: order.totalPrice,
     customerId: order.customerId,
+    totalPrice: order.totalPrice,
   });
   const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
+    setFormState({
+      orderId: order.orderId,
+      customerId: order.customerId,
+      totalPrice: order.totalPrice,
+    });
+
     const fetchCustomers = async () => {
       try {
         const response = await axios.get(GET_ALL_CUSTOMERS_API);
@@ -25,11 +31,10 @@ const OrderEditModal = ({ order, onClose, refresh }) => {
       }
     };
     fetchCustomers();
-  }, []);
+  }, [order]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: value }));
+    setFormState((prev) => ({ ...prev, totalPrice: e.target.value }));
   };
 
   const handleSubmit = useCallback(
@@ -48,7 +53,7 @@ const OrderEditModal = ({ order, onClose, refresh }) => {
 
   const handleDelete = useCallback(async () => {
     try {
-      await axios.delete(`${PUT_ORDER_API}/${order.orderId}`);
+      await axios.delete(`${DELETE_ORDER_API}/${order.orderId}`);
       refresh();
       onClose();
     } catch (error) {
@@ -63,16 +68,9 @@ const OrderEditModal = ({ order, onClose, refresh }) => {
         <div className={styles.contentWrapper}>
           <div className={styles.formSection}>
             <form onSubmit={handleSubmit}>
-              <label>
-                Order Number:
-                <input
-                  name="orderNumber"
-                  type="text"
-                  value={formState.orderNumber}
-                  onChange={handleChange}
-                  required
-                />
-              </label>
+              <p>
+                <strong>Order Number:</strong> {order.orderNumber}
+              </p>
               <label>
                 Total Price:
                 <input
@@ -83,38 +81,17 @@ const OrderEditModal = ({ order, onClose, refresh }) => {
                   required
                 />
               </label>
-              <label>
-                Customer:
-                <select
-                  name="customerId"
-                  value={formState.customerId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a customer</option>
-                  {customers.map(({ customerId, fullName }) => (
-                    <option key={customerId} value={customerId}>
-                      {fullName}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <p>
+                <strong>Customer:</strong> {customers.find(c => c.customerId === order.customerId)?.fullName || "N/A"}
+              </p>
               <div className={styles.buttonContainer}>
                 <button className={styles.submitButton} type="submit">
                   Update
                 </button>
-                <button
-                  className={styles.cancelButton}
-                  type="button"
-                  onClick={onClose}
-                >
+                <button className={styles.cancelButton} type="button" onClick={onClose}>
                   Cancel
                 </button>
-                <button
-                  className={styles.deleteButton}
-                  type="button"
-                  onClick={handleDelete}
-                >
+                <button className={styles.deleteButton} type="button" onClick={handleDelete}>
                   Delete
                 </button>
               </div>

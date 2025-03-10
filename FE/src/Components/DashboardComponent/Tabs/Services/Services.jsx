@@ -29,13 +29,17 @@ const Services = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
+      // Fetch services
       const response = await fetch(
-        `${GET_ALL_SERVICES_API}?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`
+        `${GET_ALL_SERVICES_API}?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}${
+          selectedServiceType !== "all" ? `&serviceTypeId=${selectedServiceType}` : ""
+        }`
       );
       const data = await response.json();
       setServices(data.result.services);
-      setTotalPages(data.result.totalPages); // Assuming the API returns totalPages
+      setTotalPages(data.result.totalPages);
 
+      // Fetch service types
       const serviceTypesResponse = await fetch(GET_ALL_SERVICE_TYPES_API);
       const serviceTypesData = await serviceTypesResponse.json();
       setServiceTypes(serviceTypesData.result);
@@ -44,11 +48,27 @@ const Services = () => {
     } finally {
       setLoading(false);
     }
-  }, [pagination]);
+  }, [pagination, selectedServiceType]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Function to get service type name based on serviceTypeId
+  const getServiceTypeName = (serviceTypeId) => {
+    const serviceType = serviceTypes.find(
+      (type) => type.serviceTypeId === serviceTypeId
+    );
+    return serviceType ? serviceType.serviceTypeName : "Unknown";
+  };
+
+  // Reset page number when changing service type filter
+  useEffect(() => {
+    setPagination((prev) => ({
+      ...prev,
+      pageNumber: DEFAULT_PAGE_NUMBER,
+    }));
+  }, [selectedServiceType]);
 
   return (
     <div className={styles.tabContainer}>
@@ -70,6 +90,7 @@ const Services = () => {
               setPagination((prev) => ({
                 ...prev,
                 pageSize: prev.pageSize === 10 ? 20 : 10,
+                pageNumber: DEFAULT_PAGE_NUMBER, // Reset to page 1 when changing page size
               }))
             }
             className={styles.iconButton}
@@ -121,7 +142,7 @@ const Services = () => {
                 <tr key={service.serviceId}>
                   <td>{service.serviceName}</td>
                   <td>${service.price}</td>
-                  <td>{service.serviceTypeName || "Unknown"}</td>
+                  <td>{getServiceTypeName(service.serviceTypeId)}</td>
                   <td>
                     <button
                       onClick={() => setModal({ type: "edit", data: service })}
@@ -152,7 +173,7 @@ const Services = () => {
         </button>
         <span>{pagination.pageNumber}</span>
         <button
-          disabled={pagination.pageNumber === totalPages} // Disable when on the last page
+          disabled={pagination.pageNumber === totalPages}
           onClick={() =>
             setPagination((prev) => ({
               ...prev,
