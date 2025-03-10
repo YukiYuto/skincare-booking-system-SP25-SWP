@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as authService from "../../services/authService";
-import { setUser, clearUser, setLoading, setError } from "./slice";
+import { setUser, setTokens, clearUser, setLoading, setError } from "./slice";
 
 /**
  * Login Thunk for authenticating user
@@ -11,25 +11,15 @@ import { setUser, clearUser, setLoading, setError } from "./slice";
  */
 export const login = createAsyncThunk("auth/login", async (credentials, { dispatch }) => {
     try {
-      dispatch(setLoading(true));
-      
-      // Gọi API đăng nhập để lấy token
-      const tokens = await authService.login(credentials);
-  
-      const accessToken = tokens.result.accessToken; // Lấy accessToken
-
-      localStorage.setItem("accessToken", accessToken);
-  
-      // Gọi API để lấy thông tin user
-      const userProfile = await authService.fetchUserProfile(accessToken);
-  
-      // Gộp thông tin user với token
-      const user = { ...tokens.result, ...userProfile.result };
-  
-      // Lưu vào Redux
-      dispatch(setUser(user));
-  
-      return user;
+        dispatch(setLoading(true));
+        const tokens = await authService.login(credentials);
+        const response = await authService.fetchUserProfile(tokens.result.accessToken);
+        // const user = response.result;
+            //! Now the user object will contain both the tokens and the user profile data
+        const user = { ...response.result };
+        dispatch(setUser(user));
+        dispatch(setTokens(tokens.result));
+        return user;
     } catch (error) {
       dispatch(setError(error || "Login failed. Please try again."));
       throw error;
