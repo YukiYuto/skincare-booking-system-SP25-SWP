@@ -18,6 +18,7 @@ using SkincareBookingSystem.Models.Dto.Blog;
 using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Payment;
 using SkincareBookingSystem.Models.Dto.Booking.Appointment;
+using SkincareBookingSystem.Models.Dto.Feedbacks;
 
 
 
@@ -27,6 +28,18 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // Feedbacks
+        CreateMap<CreateFeedbackDto, Feedbacks>()
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId));
+        CreateMap<UpdateFeedbackDto, Feedbacks>()
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
         // BookAppointmentDto to Appointments
         CreateMap<BookAppointmentDto, Appointments>()
             .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))

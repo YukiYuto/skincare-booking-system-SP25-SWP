@@ -144,12 +144,19 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> DeleteFeedback (ClaimsPrincipal User, Guid feedbackId)
         {
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
-            {
-                return ErrorResponse.Build(
-                    message: StaticResponseMessage.User.NotFound,
-                    statusCode: StaticOperationStatus.StatusCode.NotFound);
-            }
+            //if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            //{
+            //    return ErrorResponse.Build(
+            //        message: StaticResponseMessage.User.NotFound,
+            //        statusCode: StaticOperationStatus.StatusCode.NotFound);
+            //}
+            //var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            ////if(userRole is not "Manager" or "Staff")
+            //{
+            //    return ErrorResponse.Build(
+            //        message: StaticResponseMessage.User.Unauthorized,
+            //        statusCode: StaticOperationStatus.StatusCode.Unauthorized);
+            //}
             var feedbackFromDb = await _unitOfWork.Feedbacks.GetAsync(f => f.FeedbackId == feedbackId);
             if (feedbackFromDb is null)
             {

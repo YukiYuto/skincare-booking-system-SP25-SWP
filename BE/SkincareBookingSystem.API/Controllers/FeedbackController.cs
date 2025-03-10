@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Feedbacks;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 
@@ -42,7 +44,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get/{appointmentId}")]
+        [HttpGet("appointment/{appointmentId}")]
         [SwaggerOperation(Summary = "API retrieves a feedback by Appointment ID", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> GetFeedbackByAppointmentId(Guid appointmentId)
         {
@@ -50,7 +52,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get/{feedbackId}")]
+        [HttpGet("{feedbackId}")]
         [SwaggerOperation(Summary = "API retrieves a feedback by Feedback ID", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> GetFeedbackById(Guid feedbackId)
         {
@@ -76,7 +78,8 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("delete/{feedbackId}")]
-        [SwaggerOperation(Summary = "API deletes a feedback", Description = "Requires customer, staff roles")]
+        [Authorize(Roles = StaticUserRoles.ManagerStaff)]
+        [SwaggerOperation(Summary = "API deletes a feedback", Description = "Requires manager, staff roles")]
         public async Task<ActionResult<ResponseDto>> DeleteFeedback(Guid feedbackId)
         {
             var result = await _feedbackService.DeleteFeedback(User, feedbackId);
