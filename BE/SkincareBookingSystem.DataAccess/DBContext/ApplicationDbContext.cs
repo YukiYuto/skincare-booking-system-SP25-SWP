@@ -187,6 +187,10 @@ namespace SkincareBookingSystem.DataAccess.DBContext
                 .HasForeignKey(p => p.OrderNumber)
                 .HasPrincipalKey(o => o.OrderNumber)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            /*modelBuilder.Entity<Payment>()
+                .Property(p => p.Status)
+                .HasConversion<string>();*/
         }
             
     }
