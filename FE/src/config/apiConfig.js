@@ -1,5 +1,3 @@
-// Used for API configuration
-// HTTP methods
 export const HTTP_METHODS = {
   GET: "GET",
   POST: "POST",
@@ -7,22 +5,24 @@ export const HTTP_METHODS = {
   DELETE: "DELETE",
 };
 
-// Base URL for backend API calls
-// TODO: Replace this with the deployed backend URL (if applicable)
-const BASE_URL = 'https://localhost:7037/api';
+const BASE_URL =
+  "https://skincare-booking-system-878be679972e.herokuapp.com/api";
 
-// Base URL for customized API calls
 export const BASE_API_URL = BASE_URL;
-// API endpoints
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes
+
 // Thêm API cho Forgot Password & Reset Password
 export const LOGIN_API = `${BASE_URL}/auth/signin`;
 export const REGISTER_CUSTOMER_API = `${BASE_URL}/auth/customers`;
 export const USER_PROFILE_API = `${BASE_URL}/auth/user`;
-export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`; // Gửi email xác thực
-export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`; // Xác thực email
+export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`; 
+export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`; 
 export const FORGOT_PASSWORD_API = `${BASE_URL}/auth/password/forgot`;
 export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;
+
+// Thêm API cho Customer
+export const GET_CUSTOMER_PROFILE_API = `${BASE_URL}/auth/profile`;
+export const POST_CUSTOMER_AVATAR_API = `${BASE_URL}/UserManagement/avatar`;
 
 // Thêm API cho Appointment
 export const POST_APPOINTMENT_API = `${BASE_URL}/appointment`;
@@ -34,8 +34,12 @@ export const DELETE_APPOINTMENT_API = `${BASE_URL}/appointment`;
 
 // Thêm API cho Booking
 export const POST_BOOKING_API = `${BASE_URL}/bookings/orders-bundles`;
+export const POST_APPOINTMENT_SCHEDULE_API = `${BASE_URL}/bookings/appointment-schedule`;
+export const PUT_RESCHEDULING_API = `${BASE_URL}/bookings/rescheduling`;
+export const DELETE_BOOKING_API = `${BASE_URL}/bookings/cancellation/{appointmentId}`;
 export const GET_BOOKING_THERAPIST_API = `${BASE_URL}/bookings/therapists`;
 export const GET_BOOKING_SLOT_API = `${BASE_URL}/bookings/occupied-slots`;
+export const POST_BOOKING_AUTO_ASSIGN_API = `${BASE_URL}/bookings/auto-assign`;
 
 // Thêm API cho Customer
 export const GET_ALL_CUSTOMERS_API = `${BASE_URL}/customer`;
@@ -105,4 +109,3 @@ export const AUTH_HEADERS = (token) => ({
   "Content-Type": "application/json",
   Authorization: `Bearer ${token}`,
 });
-
