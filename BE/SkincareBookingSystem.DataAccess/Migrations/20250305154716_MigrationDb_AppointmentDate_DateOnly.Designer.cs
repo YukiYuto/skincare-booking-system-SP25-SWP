@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SkincareBookingSystem.DataAccess.DBContext;
@@ -11,9 +12,11 @@ using SkincareBookingSystem.DataAccess.DBContext;
 namespace SkincareBookingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250305154716_MigrationDb_AppointmentDate_DateOnly")]
+    partial class MigrationDb_AppointmentDate_DateOnly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1016,26 +1019,11 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("Score")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("text");
-
                     b.Property<Guid>("TestQuestionId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("TestAnswerId");
 
@@ -1055,28 +1043,13 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("SkinTestId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("text");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("TestQuestionId");
 

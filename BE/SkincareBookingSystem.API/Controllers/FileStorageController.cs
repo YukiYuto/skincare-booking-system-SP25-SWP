@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.FileStorage;
 using SkincareBookingSystem.Services.IServices;
 using System.Security.Claims;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -19,6 +20,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("service")]
+        [SwaggerOperation(Summary = "API uploads a service image", Description = "Requires user role")]
         public async Task<ActionResult> UploadServiceImage(UploadFileDto uploadFileDto)
         {
             var responseDto = await _fileStorageService.UploadServiceImage(User, uploadFileDto);
@@ -26,6 +28,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("service-combo")]
+        [SwaggerOperation(Summary = "API uploads a service combo image", Description = "Requires user role")]
         public async Task<ActionResult> UploadServiceComboImage(UploadFileDto uploadFileDto)
         {
             var responseDto = await _fileStorageService.UploadServiceComboImage(User, uploadFileDto);

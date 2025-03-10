@@ -10,7 +10,7 @@ namespace SkincareBookingSystem.Models.Dto.Appointment
     {
         public Guid AppointmentId { get; set; }
         public Guid? OrderId { get; set; }
-        public DateTime? AppointmentDate { get; set; }
+        public DateOnly? AppointmentDate { get; set; }
         public string? AppointmentTime { get; set; }
     }
 }

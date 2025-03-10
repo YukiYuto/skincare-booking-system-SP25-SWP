@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -17,6 +18,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "API creates a ServiceType", Description = "Requires admin role")]
         public async Task<IActionResult> CreateServiceType([FromBody] CreateServiceTypeDto createServiceTypeDto)
         {
             var result = await _serviceTypeService.CreateServiceType(User ,createServiceTypeDto);
@@ -24,6 +26,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "API gets all ServiceTypes", Description = "Requires admin role")]
         public async Task<IActionResult> GetAllServiceTypes()
         {
             var result = await _serviceTypeService.GetAllServiceTypes();
@@ -31,6 +34,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "API gets a ServiceType by id", Description = "Requires admin role")]
         public async Task<IActionResult> GetServiceTypeById([FromQuery] Guid id)
         {
             var result = await _serviceTypeService.GetServiceTypeById(id);
@@ -38,6 +42,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut]
+        [SwaggerOperation(Summary = "API updates a ServiceType", Description = "Requires admin role")]
         public async Task<IActionResult> UpdateServiceType([FromBody] UpdateServiceTypeDto updateServiceTypeDto)
         {
             var result = await _serviceTypeService.UpdateServiceType(User, updateServiceTypeDto);
@@ -45,6 +50,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "API soft deletes a ServiceType", Description = "Requires admin role")]
         public async Task<IActionResult> DeleteServiceType([FromQuery] Guid id)
         {
             var result = await _serviceTypeService.DeleteServiceType(id);

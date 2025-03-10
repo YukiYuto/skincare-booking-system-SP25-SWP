@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -16,6 +17,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "API assigns ServiceType to Therapist assigned", Description = "Requires user role")]
         public async Task<IActionResult> AssignServiceTypeToTherapist([FromBody] TherapistServiceTypesDto therapistServiceTypesDto)
         {
             var response = await _therapistServiceTypeService.AssignServiceTypesToTherapist(User, therapistServiceTypesDto);
@@ -23,6 +25,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete]
+        [SwaggerOperation(Summary = "API soft deletes ServiceType from Therapist assigned", Description = "Requires user role")]
         public async Task<IActionResult> RemoveServiceTypeFromTherapist([FromBody] TherapistServiceTypesDto therapistServiceTypesDto)
         {
             var response = await _therapistServiceTypeService.RemoveServiceTypesForTherapist(User, therapistServiceTypesDto);

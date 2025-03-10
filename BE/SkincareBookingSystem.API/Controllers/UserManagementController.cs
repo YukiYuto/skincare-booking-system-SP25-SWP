@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.FileStorage;
 using SkincareBookingSystem.Services.IServices;
 using System.Security.Claims;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -18,6 +19,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("avatar")]
+        [SwaggerOperation(Summary = "API uploads an avatar image", Description = "Requires user role")]
         public async Task<ActionResult> UploadAvatarImage(UploadFileDto uploadFileDto)
         {
             var responseDto = await _fileStorageService.UploadAvatarImage(uploadFileDto, User);

@@ -76,6 +76,15 @@ namespace SkincareBookingSystem.API
                     }
                 });
 
+                // Thêm API document để hiển thị trên Swagger
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Skincare Booking API",
+                    Version = "v1",
+                    Description = "API documentation for Skincare Booking System"
+                });
+                options.EnableAnnotations();
+
                 // Đọc comment từ XML để hiển thị trên Swagger
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
