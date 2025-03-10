@@ -57,7 +57,7 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string CancelWithinGracePeriod = "Cancellation is only allowed up to 24 hours before the appointment";
         }
         /// <summary>
-        /// Error messages related to Booking Schedules
+        /// Error messages related to booking schedules
         /// </summary>
         public static class BookingSchedule
         {
@@ -73,22 +73,6 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update booking schedule";
             public const string NotRetrieved = "Failed to retrieve booking schedule(s)";
         }
-        /// <summary>
-        /// Error messages related to Blog
-        /// </summary>
-        public static class Blog
-        {
-            public const string Created = "Blog created successfully";
-            public const string Deleted = "Blog deleted successfully";
-            public const string AlreadyDeleted = "Blog already deleted";
-            public const string RetrievedAll = "All Blog(s) retrieved successfully";
-            public const string Retrieved = "Blog retrieved successfully";
-            public const string Updated = "Blog updated successfully";
-            public const string NotFound = "Blog(s) not found";
-            public const string NotCreated = "Failed to create Blog";
-            public const string NotDeleted = "Failed to delete Blog";
-            public const string NotUpdated = "Failed to update Blog";
-            public const string NotRetrieved = "Failed to retrieve Blog(s)";
 
         public static class Customer
         {
@@ -129,6 +113,21 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NoTherapistForSlot = "No available therapist for this time slot. Please try another date, or slot.";
             public const string AutoAssignmentHandled = "Therapist auto-assignment handled successfully";
             public const string AlreadyScheduled = "The therapist is already scheduled for this slot";
+        }
+
+        public static class Blog
+        {
+            public const string Created = "Blog created successfully";
+            public const string Deleted = "Blog deleted successfully";
+            public const string AlreadyDeleted = "Blog already deleted";
+            public const string RetrievedAll = "All blogs retrieved successfully";
+            public const string Retrieved = "Blog retrieved successfully";
+            public const string Updated = "Blog updated successfully";
+            public const string NotFound = "Blog(s) not found";
+            public const string NotCreated = "Failed to create blog";
+            public const string NotDeleted = "Failed to delete blog";
+            public const string NotUpdated = "Failed to update blog";
+            public const string NotRetrieved = "Failed to retrieve blog(s)";
         }
     }
 }
