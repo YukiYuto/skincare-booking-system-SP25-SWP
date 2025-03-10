@@ -6,17 +6,11 @@ const ServiceList = ({ services, serviceTypes }) => {
   return (
     <div className={styles.itemList}>
       {services.map((serviceItem) => {
-        const matchedServiceType = serviceTypes.find(
-          (type) => type.ID === String(serviceItem.ServiceTypeID)
-        );
-        const serviceName = matchedServiceType ? matchedServiceType.Name : "Unknown";
+        const matchedServiceType = serviceTypes.find((type) => type.serviceId === serviceItem.serviceTypeId);
+        const serviceName = matchedServiceType ? matchedServiceType.serviceName : "Unknown";
 
         return (
-          <ServiceCard
-            key={serviceItem.ID}
-            service={serviceItem}
-            serviceName={serviceName}
-          />
+          <ServiceCard key={serviceItem.serviceId} service={serviceItem} serviceName={serviceName} />
         );
       })}
     </div>
