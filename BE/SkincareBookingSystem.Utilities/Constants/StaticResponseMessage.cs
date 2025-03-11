@@ -68,7 +68,7 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string CancelWithinGracePeriod = "Cancellation is only allowed up to 24 hours before the appointment";
         }
         /// <summary>
-        /// Error messages related to booking schedules
+        /// Error messages related to Booking Schedules
         /// </summary>
         public static class BookingSchedule
         {
@@ -83,6 +83,40 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotDeleted = "Failed to delete booking schedule";
             public const string NotUpdated = "Failed to update booking schedule";
             public const string NotRetrieved = "Failed to retrieve booking schedule(s)";
+        }
+        /// <summary>
+        /// Error messages related to Blog
+        /// </summary>
+        public static class Blog
+        {
+            public const string Created = "Blog created successfully";
+            public const string Deleted = "Blog deleted successfully";
+            public const string AlreadyDeleted = "Blog already deleted";
+            public const string RetrievedAll = "All Blog(s) retrieved successfully";
+            public const string Retrieved = "Blog retrieved successfully";
+            public const string Updated = "Blog updated successfully";
+            public const string NotFound = "Blog(s) not found";
+            public const string NotCreated = "Failed to create Blog";
+            public const string NotDeleted = "Failed to delete Blog";
+            public const string NotUpdated = "Failed to update Blog";
+            public const string NotRetrieved = "Failed to retrieve Blog(s)";
+        }
+        /// <summary>
+        /// Error messages related to TestQuestion
+        /// </summary>
+        public static class TestQuestion
+        {
+            public const string Created = "Test question created successfully";
+            public const string Deleted = "Test question deleted successfully";
+            public const string AlreadyDeleted = "Test question already deleted";
+            public const string RetrievedAll = "All test questions retrieved successfully";
+            public const string Retrieved = "Test question retrieved successfully";
+            public const string Updated = "Test question updated successfully";
+            public const string NotFound = "Test question(s) not found";
+            public const string NotCreated = "Failed to create test question";
+            public const string NotDeleted = "Failed to delete test question";
+            public const string NotUpdated = "Failed to update test question";
+            public const string NotRetrieved = "Failed to retrieve test question(s)";
         }
 
         public static class Customer

@@ -31,7 +31,7 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var testQuestionToCreate = _autoMapperService.Map<CreateTestQuestionDto, Models.Domain.TestQuestion>(testQuestionDto);
-            //testQuestionToCreate.CreatedBy = user.FindFirstValue("FullName");
+            testQuestionToCreate.CreatedBy = User.FindFirstValue("FullName");
 
             try
             {
@@ -52,7 +52,7 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> GetAllTestQuestions()
         {
-            var testQuestionsFromDb = await _unitOfWork.Appointments.GetAllAsync();
+            var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync(q => q.Status != StaticOperationStatus.TestQuestion.Deleted);
 
             return (testQuestionsFromDb.Any()) ?
                 SuccessResponse.Build(
@@ -75,7 +75,7 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var testQuestionFromDB = await _unitOfWork.TestQuestion.GetAsync(a => a.TestQuestionId == testQuestionId);
+            var testQuestionFromDB = await _unitOfWork.TestQuestion.GetAsync(a => a.TestQuestionId == testQuestionId && a.Status != StaticOperationStatus.TestQuestion.Deleted);
             return (testQuestionFromDB is null) ?
                 ErrorResponse.Build(
                     message: StaticResponseMessage.TestQuestion.NotFound,
@@ -87,28 +87,28 @@ namespace SkincareBookingSystem.Services.Services
                     result: testQuestionFromDB);
         }
 
-        //public async Task<ResponseDto> GetTestQuestionByStaffId(Guid staffId)
-        //{
-        //    if (await _unitOfWork.Staff.GetAsync(c => c.StaffId == staffId) is null)
-        //    {
-        //        return ErrorResponse.Build(
-        //            message: StaticResponseMessage.User.NotFound,
-        //        statusCode: StaticOperationStatus.StatusCode.NotFound);
-        //    }
+        public async Task<ResponseDto> GetTestQuestionBySkinTestId(Guid skinTestId)
+        {
+            if (await _unitOfWork.SkinTest.GetAsync(c => c.SkinTestId == skinTestId) is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
 
-        //    var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync(a => a.SkinTestId == staffId); 
+            var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync(a => a.SkinTestId == skinTestId && a.Status != StaticOperationStatus.TestQuestion.Deleted);
 
-        //    return (testQuestionsFromDb.Any()) ?
-        //        SuccessResponse.Build(
-        //            message: StaticResponseMessage.TestQuestion.RetrievedAll,
-        //            statusCode: StaticOperationStatus.StatusCode.Ok,
-        //            result: testQuestionsFromDb)
-        //        :
-        //        SuccessResponse.Build(
-        //            message: StaticResponseMessage.TestQuestion.NotFound,
-        //            statusCode: StaticOperationStatus.StatusCode.Ok,
-        //            result: new List<Models.Domain.TestQuestion>());
-        //}
+            return (testQuestionsFromDb.Any()) ?
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.TestQuestion.RetrievedAll,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: testQuestionsFromDb)
+                :
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.TestQuestion.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: new List<Models.Domain.TestQuestion>());
+        }
 
         public async Task<ResponseDto> UpdateTestQuestion(ClaimsPrincipal User, UpdateTestQuestionDto testQuestionDto)
         {
@@ -123,7 +123,7 @@ namespace SkincareBookingSystem.Services.Services
             if (testQuestionFromDb is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.Appointment.NotFound,
+                    message: StaticResponseMessage.TestQuestion.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
@@ -153,13 +153,13 @@ namespace SkincareBookingSystem.Services.Services
             if (testQuestionToDelete is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.Appointment.NotFound,
+                    message: StaticResponseMessage.TestQuestion.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            //testQuestionToDelete.Status = StaticOperationStatus.Appointment.Deleted;
-            //testQuestionToDelete.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
-            //testQuestionToDelete.UpdatedBy = User.FindFirstValue("FullName");
+            testQuestionToDelete.Status = StaticOperationStatus.TestQuestion.Deleted;
+            testQuestionToDelete.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
+            testQuestionToDelete.UpdatedBy = User.FindFirstValue("FullName");
 
             return (await SaveChangesAsync()) ?
                 SuccessResponse.Build(
