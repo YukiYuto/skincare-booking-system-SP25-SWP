@@ -40,7 +40,8 @@ namespace SkincareBookingSystem.Services.Services
             bool isManager = userRole == StaticUserRoles.Manager;
 
             var (services, totalServices) = await _unitOfWork.Services.GetServicesAsync
-                (pageNumber, pageSize, filterOn, filterQuery, sortBy, isManager);
+                (pageNumber, pageSize, filterOn, filterQuery, sortBy, isManager,
+                includeProperties: nameof(Models.Domain.Services.TypeItems));
 
             if (!services.Any())
             {
@@ -76,7 +77,9 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> GetServiceById(Guid id)
         {
-            var service = await _unitOfWork.Services.GetAsync(s => s.ServiceId == id);
+            var service = await _unitOfWork.Services.GetAsync(s => s.ServiceId == id,
+                includeProperties: nameof(Models.Domain.Services.TypeItems));
+
             if (service == null)
             {
                 return new ResponseDto
@@ -88,12 +91,13 @@ namespace SkincareBookingSystem.Services.Services
                 };
             }
 
+            var serviceResponseDto = _mapper.Map<Models.Domain.Services, GetAllServicesDto>(service);
             return new ResponseDto
             {
-                Result = service,
                 Message = "Service retrieved successfully",
                 IsSuccess = true,
-                StatusCode = 200
+                StatusCode = 200,
+                Result = serviceResponseDto
             };
         }
 

@@ -9,6 +9,6 @@ namespace SkincareBookingSystem.DataAccess.IRepositories
 {
     public interface IFeedbacksRepository : IRepository<Feedbacks>
     {
-
+        void Update(Feedbacks target, Feedbacks source);
     }
 }
