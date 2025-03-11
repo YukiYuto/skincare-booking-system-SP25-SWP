@@ -25,14 +25,40 @@ namespace SkincareBookingSystem.Services.Services
         }
         public async Task<ResponseDto> CreateAppointment(ClaimsPrincipal user, CreateAppointmentDto appointmentDto)
         {
-            if (user.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
             {
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
+            
+            var customerId = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId);
+            if (customerId is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+            
+            var order = await _unitOfWork.Order.GetLatestOrderByCustomerIdAsync(customerId.CustomerId);
+            if (order is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticOperationStatus.Order.Message.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
 
+            var payment = await _unitOfWork.Payment.GetAsync(p => p.OrderNumber == order.OrderNumber && p.Status == PaymentStatus.Paid);
+            if(payment == null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Payment.Pending,
+                    statusCode: StaticOperationStatus.StatusCode.BadRequest);
+            }
+            
             var appointmentToCreate = _autoMapperService.Map<CreateAppointmentDto, Appointments>(appointmentDto);
+            appointmentToCreate.CustomerId = customerId.CustomerId;
             appointmentToCreate.CreatedBy = user.FindFirstValue("FullName");
 
             try
@@ -86,7 +112,8 @@ namespace SkincareBookingSystem.Services.Services
         // TODO: Implement GetAllAppointments with pagination, sorting, and filtering
         public async Task<ResponseDto> GetAllAppointments()
         {
-            var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync();
+            var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => a.Status != StaticOperationStatus.Appointment.Deleted);
 
             return (appointmentsFromDb.Any()) ?
                 SuccessResponse.Build(

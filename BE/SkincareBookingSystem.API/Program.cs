@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Net.payOS;
+//using Net.payOS;
 using SkincareBookingSystem.API.Extensions;
 using SkincareBookingSystem.API.Middlewares;
 using SkincareBookingSystem.DataAccess.DBContext;
@@ -22,8 +24,7 @@ namespace SkincareBookingSystem.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.  
-            builder.Services.AddControllers().AddJsonOptions(
-                opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            builder.Services.AddControllers();
 
             // Configure DbContext with SQL Server  
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -42,6 +43,7 @@ namespace SkincareBookingSystem.API
             // Thêm dịch vụ Swagger  
             builder.Services.AddSwaggerGen(options =>
             {
+                // Bảo mật Swagger với JWT
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -66,7 +68,8 @@ namespace SkincareBookingSystem.API
                         new List<string>()
                     }
                 });
-                // API document
+
+                // Thêm API document để hiển thị trên Swagger
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Skincare Booking API",
@@ -75,8 +78,15 @@ namespace SkincareBookingSystem.API
                 });
                 options.EnableAnnotations();
 
+                // Đọc comment từ XML để hiển thị trên Swagger
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+                if (File.Exists(xmlPath))
+                {
+                    options.IncludeXmlComments(xmlPath);
+                }
             });
-
+            
             // Add JWT Authentication
             builder.Services.AddAuthentication(options =>
             {
@@ -96,8 +106,6 @@ namespace SkincareBookingSystem.API
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                 };
             });
-            
-            //PayOs
 
             // Lấy thông tin từ `appsettings.json`
             var payOSClientId = builder.Configuration["Environment:PAYOS_CLIENT_ID"]
@@ -161,7 +169,7 @@ namespace SkincareBookingSystem.API
             });
 
             app.UseCors("AllowSpecificOrigin");
-            
+
 
             // Apply database migrations  
             ApplyMigration(app);
@@ -180,7 +188,20 @@ namespace SkincareBookingSystem.API
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Skincare Booking API v1");
+                    c.RoutePrefix = "swagger"; 
+                });
+            }
+            else
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Skincare Booking API v1");
+                    c.RoutePrefix = string.Empty; 
+                });
             }
 
             app.UseSwagger();

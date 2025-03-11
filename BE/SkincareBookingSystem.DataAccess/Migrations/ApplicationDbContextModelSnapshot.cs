@@ -244,10 +244,11 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("AppointmentDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("AppointmentDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("AppointmentTime")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
@@ -262,6 +263,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.Property<Guid?>("CustomerId1")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
@@ -385,6 +390,9 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.Property<Guid>("ServiceComboId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
 
                     b.HasKey("ServiceId", "ServiceComboId");
 
@@ -594,8 +602,9 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<string>("ReturnUrl")
                         .HasColumnType("text");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("PaymentTransactionId");
 
@@ -714,8 +723,8 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(200)
@@ -729,9 +738,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("ServiceTypeId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Status")
                         .HasColumnType("text");
 
@@ -742,8 +748,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ServiceId");
-
-                    b.HasIndex("ServiceTypeId");
 
                     b.ToTable("Services");
                 });
@@ -938,11 +942,26 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("Score")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
                     b.Property<Guid>("TestQuestionId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("TestAnswerId");
 
@@ -962,13 +981,28 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("SkinTestId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("TestQuestionId");
 
@@ -991,6 +1025,14 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.Property<DateTime?>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("ScheduleStatus")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
 
                     b.Property<Guid>("SlotId")
                         .HasColumnType("uuid");
@@ -1057,9 +1099,8 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uuid");
@@ -1315,17 +1356,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Services", b =>
-                {
-                    b.HasOne("SkincareBookingSystem.Models.Domain.ServiceType", "ServiceType")
-                        .WithMany()
-                        .HasForeignKey("ServiceTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ServiceType");
-                });
-
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.SkinServiceType", b =>
                 {
                     b.HasOne("SkincareBookingSystem.Models.Domain.ServiceType", "ServiceType")
@@ -1452,7 +1482,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Transaction", b =>
                 {
-                    b.HasOne("SkincareBookingSystem.Models.Domain.ApplicationUser", "ApplicationUser")
+                    b.HasOne("SkincareBookingSystem.Models.Domain.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1468,7 +1498,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationUser");
+                    b.Navigation("Customer");
 
                     b.Navigation("Orders");
 

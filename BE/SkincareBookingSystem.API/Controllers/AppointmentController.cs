@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using SkincareBookingSystem.Models.Dto.Appointment;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/appointment")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
@@ -19,6 +20,7 @@ namespace SkincareBookingSystem.API.Controllers
 
         // POST : api/Appointment
         [HttpPost]
+        [SwaggerOperation(Summary = "API creates a new Appointment", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> CreateAppointment([FromBody] CreateAppointmentDto appointmentDto)
         {
             if (!ModelState.IsValid)
@@ -35,6 +37,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "API gets all available Appointments", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> GetAllAppointments()
         {
             var result = await _appointmentService.GetAllAppointments();
@@ -42,6 +45,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("{customerId}/appointments")]
+        [SwaggerOperation(Summary = "API gets all available Appointments by customer id", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> GetAppointmentsByCustomerId(Guid customerId)
         {
             var result = await _appointmentService.GetAppointmentsByCustomerId(customerId);
@@ -49,6 +53,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("{appointmentId}")]
+        [SwaggerOperation(Summary = "API gets an available Appointment by id", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> GetAppointmentById(Guid appointmentId)
         {
             var result = await _appointmentService.GetAppointmentById(User, appointmentId);
@@ -56,6 +61,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut]
+        [SwaggerOperation(Summary = "API updates an available Appointment", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> UpdateAppointment([FromBody] UpdateAppointmentDto appointmentDto)
         {
             if (!ModelState.IsValid)
@@ -72,6 +78,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("{appointmentId}")]
+        [SwaggerOperation(Summary = "API soft deletes an available Appointment", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> DeleteAppointment(Guid appointmentId)
         {
             var result = await _appointmentService.DeleteAppointment(User, appointmentId);

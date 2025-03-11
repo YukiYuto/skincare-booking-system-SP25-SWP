@@ -1,4 +1,6 @@
-﻿using SkincareBookingSystem.Models.Dto.Booking.Order;
+﻿using SkincareBookingSystem.Models.Dto.Booking.Appointment;
+using SkincareBookingSystem.Models.Dto.Booking.Appointment.RescheduleAppointment;
+using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.Response;
 using System;
 using System.Collections.Generic;
@@ -15,8 +17,12 @@ namespace SkincareBookingSystem.Services.IServices
     public interface IBookingService
     {
         Task<ResponseDto> GetTherapistsForServiceType(Guid serviceTypeId);
-        Task<ResponseDto> GetOccupiedSlots(Guid therapistId, DateTime date);
+        Task<ResponseDto> GetOccupiedSlotsFromTherapist(Guid therapistId, DateOnly date);
         Task<ResponseDto> BundleOrder(BundleOrderDto bundleOrderDto, ClaimsPrincipal User);
+        Task<ResponseDto> FinalizeAppointment(BookAppointmentDto bookAppointmentDto, ClaimsPrincipal User);
+        Task<ResponseDto> HandleTherapistAutoAssignment(AutoAssignmentDto autoAssignmentDto);
+        Task<ResponseDto> RescheduleAppointment(RescheduleAppointmentDto rescheduleRequest, ClaimsPrincipal User);
+        Task<ResponseDto> CancelAppointment(Guid appointmentId, ClaimsPrincipal User);
 
     }
 }

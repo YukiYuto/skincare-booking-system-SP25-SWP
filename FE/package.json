@@ -37,6 +37,7 @@
     "caniuse-lite": "^1.0.30001667",
     "chart.js": "^4.4.4",
     "chroma-js": "^2.4.2",
+    "cloudinary": "^2.5.1",
     "firebase": "^10.14.0",
     "font-awesome": "^4.7.0",
     "framer-motion": "^11.0.3",
