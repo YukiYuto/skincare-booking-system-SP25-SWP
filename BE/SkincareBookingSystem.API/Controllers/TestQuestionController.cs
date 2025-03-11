@@ -50,6 +50,14 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [HttpGet("SkinTest/{skinTestId}")]
+        [SwaggerOperation(Summary = "Get a test question by skin test id", Description = "Requires staff, customer role")]
+        public async Task<ActionResult<ResponseDto>> GetTestQuestionBySkinTestId(Guid skinTestId)
+        {
+            var result = await _testQuestionService.GetTestQuestionBySkinTestId(skinTestId);
+            return StatusCode(result.StatusCode, result);
+        }
+
         [HttpPut("update")]
         [SwaggerOperation(Summary = "Update a test question", Description = "Requires staff, customer role")]
         public async Task<ActionResult<ResponseDto>> UpdateTestQuestion([FromBody] UpdateTestQuestionDto testQuestionDto)

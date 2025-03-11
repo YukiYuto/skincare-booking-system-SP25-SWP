@@ -2,6 +2,7 @@
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Appointment;
 using SkincareBookingSystem.Models.Dto.Authentication;
+using SkincareBookingSystem.Models.Dto.Blog;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.BookingSchedule;
@@ -17,6 +18,8 @@ using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Slot;
+using SkincareBookingSystem.Models.Dto.TestAnswer;
+using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
 using SkincareBookingSystem.Models.Dto.BookingSchedule;
@@ -30,7 +33,6 @@ using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Payment;
 using SkincareBookingSystem.Models.Dto.Booking.Appointment;
 using SkincareBookingSystem.Models.Dto.Feedbacks;
-
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -174,10 +176,37 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
 
         CreateMap<OrderDetail, OrderDetailDto>();
+        
+        //TestAnswer
+        CreateMap<CreateTestAnswerDto, TestAnswer>()
+            .ForMember(dest => dest.TestQuestionId, opt => opt.MapFrom(src => src.TestQuestionId))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score));
+        CreateMap<UpdateTestAnswerDto, TestAnswer>()
+            .ForMember(dest => dest.TestAnswerId, opt => opt.MapFrom(src => src.TestAnswerId))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score))
+            .ForMember(dest => dest.TestQuestionId, opt => opt.MapFrom(src => src.TestQuestionId));
+
+        //TestQuestion
+        CreateMap<CreateTestQuestionDto, TestQuestion>()
+            .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type));
+        CreateMap<UpdateTestQuestionDto, TestQuestion>()
+            .ForMember(dest => dest.TestQuestionId, opt => opt.MapFrom(src => src.TestQuestionId))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+            .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId));
 
         //BookingSchedule
         CreateMap<CreateTherapistScheduleDto, TherapistSchedule>();
         CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>();
+
+        //Order
+        CreateMap<CreateOrderDto, Order>()
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<UpdateOrderDto, Order>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
