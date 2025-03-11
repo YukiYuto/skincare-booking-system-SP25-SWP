@@ -83,8 +83,8 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string EmptyList = "Service type list is empty";
             public const string Invalid = "Invalid service type(s)";
         }
-        
-        public static class Service 
+
+        public static class Service
         {
             public const string Active = "Active";
             public const string Disable = "Disable";
@@ -180,6 +180,9 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public const string Created = "CREATED";
             public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+
+        }
 
         // Constants related to BlogCategory
         public static class BlogCategory
@@ -190,7 +193,8 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Completed = "COMPLETED";
             public const string Rescheduled = "RESCHEDULED";
             public const string Deleted = "DELETED";
-        }
+        }    
 
+        
     }
 }
