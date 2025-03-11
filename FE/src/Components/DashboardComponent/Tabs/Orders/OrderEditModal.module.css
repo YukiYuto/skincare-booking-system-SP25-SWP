@@ -1,0 +1,92 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: var(--background-color);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 8px;
+    width: 700px;
+    max-width: 90%;
+    font-family: Raleway;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+}
+
+h2 {
+    font-family: Raleway;
+    color: var(--accent-color);
+    margin-top: 0;
+}
+
+.contentWrapper {
+    display: flex;
+    gap: 20px;
+}
+
+.formSection {
+    flex: 1;
+}
+
+.orderDetailsSection {
+    flex: 1;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 10px;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: Lora;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.submitButton {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.cancelButton,
+.deleteButton {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.deleteButton {
+    background-color: #f44336;
+}

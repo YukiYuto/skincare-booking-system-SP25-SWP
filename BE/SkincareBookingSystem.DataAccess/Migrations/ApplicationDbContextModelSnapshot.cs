@@ -46,22 +46,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "8fa7c7bb-b4dd-480d-a660-e07a90855d5s",
-                            ConcurrencyStamp = "MANAGER",
-                            Name = "MANAGER",
-                            NormalizedName = "MANAGER"
-                        },
-                        new
-                        {
-                            Id = "8fa7c7bb-daa5-a660-bf02-82301a5eb32a",
-                            ConcurrencyStamp = "ADMIN",
-                            Name = "ADMIN",
-                            NormalizedName = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -149,18 +133,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "SkinBookingSystem-Admin",
-                            RoleId = "8fa7c7bb-daa5-a660-bf02-82301a5eb32a"
-                        },
-                        new
-                        {
-                            UserId = "SkinBookingSystem-Manager",
-                            RoleId = "8fa7c7bb-b4dd-480d-a660-e07a90855d5s"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -264,50 +236,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "SkinBookingSystem-Admin",
-                            AccessFailedCount = 0,
-                            Address = "123 Admin St",
-                            Age = 30,
-                            ConcurrencyStamp = "5afa3eae-5dd6-40ae-94a7-923bf03e1c30",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = true,
-                            FullName = "Admin",
-                            ImageUrl = "https://example.com/avatar.png",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHt1bMCLCRHK52UxrtrmMVjQVTMirNidK/ZYbhxRWVtZuoE/+cGimAj9bOYETppVKg==",
-                            PhoneNumber = "1234567890",
-                            PhoneNumberConfirmed = true,
-                            SecurityStamp = "513fdfcb-232a-477b-b362-ced2519095f7",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@gmail.com"
-                        },
-                        new
-                        {
-                            Id = "SkinBookingSystem-Manager",
-                            AccessFailedCount = 0,
-                            Address = "123 Manager St",
-                            Age = 30,
-                            ConcurrencyStamp = "af91853d-9d4e-470c-8b79-549376e8c944",
-                            Email = "manager@gmail.com",
-                            EmailConfirmed = true,
-                            FullName = "Manager",
-                            ImageUrl = "https://example.com/avatarManager.png",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "MANAGER@GMAIL.COM",
-                            NormalizedUserName = "MANAGER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEL4MYE9U8dF6XBPGSrfHaBQlGLI5gTNMUwediLtzaimj0mZAXDHwd3ihaQEM2W2rKQ==",
-                            PhoneNumber = "0123456789",
-                            PhoneNumberConfirmed = true,
-                            SecurityStamp = "e31b5840-8c96-4907-b5c5-4dd95d117d42",
-                            TwoFactorEnabled = false,
-                            UserName = "manager@gmail.com"
-                        });
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Appointments", b =>
@@ -462,6 +390,9 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.Property<Guid>("ServiceComboId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
 
                     b.HasKey("ServiceId", "ServiceComboId");
 

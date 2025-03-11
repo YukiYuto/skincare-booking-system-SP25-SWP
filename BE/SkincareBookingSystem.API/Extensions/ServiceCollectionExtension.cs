@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+
+using Microsoft.AspNetCore.Identity;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.DataAccess.Repositories;
@@ -42,6 +43,10 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IServicesService, ServicesService>();
             services.AddScoped<ISlotService, SlotService>();
+            services.AddScoped<IServiceComboService, ServiceComboService>();
+            services.AddScoped<IComboItemService, ComboItemService>();
+            services.AddScoped<ISlotService, SlotService>();
+            services.AddScoped<ITypeItemService, TypeItemService>();
 
             services.AddScoped<ISkinTherapistService, SkinTherapistService>();
             services.AddScoped<ITherapistServiceTypeService, TherapistServiceTypeService>();
@@ -56,6 +61,7 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
 
             services.AddScoped<IFeedbackService, FeedbackService>();
+
 
             return services;
         }

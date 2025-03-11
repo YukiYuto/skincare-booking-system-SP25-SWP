@@ -7,7 +7,7 @@ namespace SkincareBookingSystem.DataAccess.Seed;
 
 public class ApplicationDbContextSeed
 {
-    public static void SeedAdminAndManagerAccount(ModelBuilder modelBuilder)
+    /*public static void SeedAdminAndManagerAccount(ModelBuilder modelBuilder)
     {
         var managerRoleId = "8fa7c7bb-b4dd-480d-a660-e07a90855d5s";
         var adminRoleId = "8fa7c7bb-daa5-a660-bf02-82301a5eb32a";
@@ -98,5 +98,5 @@ public class ApplicationDbContextSeed
             RoleId = managerRoleId,
             UserId = managerUserId
         });
-    }
+    }*/
 }

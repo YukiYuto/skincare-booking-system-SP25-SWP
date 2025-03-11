@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 /* Reset default margins and paddings */
 * {
   /*margin: 0;
@@ -44,6 +45,9 @@ p {
   --accent-color: #c49e85;
   --background-color: #f5e9e2;
   --text-color: #6f4e37;
+  --scrollbar-width: 8px;
+  --scrollbar-track: var(--background-color);
+  --scrollbar-thumb: var(--accent-color);
 }
 
 @layer components {
@@ -60,13 +64,15 @@ p {
   .nav-header-wrapper {
     @apply block relative;
   }
+
   .header-wrapper--border-bottom {
     @apply border-gray-600 border-0;
   }
 
   .nav-page-width {
     @apply mt-0 mb-0 ml-auto mr-auto;
-    padding: 0.4rem 1.25rem; /* Increase specificity */
+    padding: 0.4rem 1.25rem;
+    /* Increase specificity */
   }
 
   .nav-header__left-icon {
@@ -100,9 +106,11 @@ p {
     @apply text-center justify-center;
     grid-area: icons;
   }
-  .nav-header__inline-menu > .list-menu--inline {
+
+  .nav-header__inline-menu>.list-menu--inline {
     @apply justify-center;
   }
+
   .nav-header__inline-menu {
     @apply mt-1 block justify-self-center;
     grid-area: navigation-center;
@@ -115,6 +123,7 @@ p {
   .list-menu {
     @apply list-none;
   }
+
   .list-menu--inline {
     @apply inline-flex flex-wrap gap-8;
   }
@@ -135,4 +144,30 @@ p {
   .list-menu-link:hover {
     @apply font-semibold;
   }
+}
+
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-color);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) var(--background-color);
 }

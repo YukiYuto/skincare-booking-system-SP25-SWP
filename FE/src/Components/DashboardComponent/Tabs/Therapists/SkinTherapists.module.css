@@ -1,0 +1,144 @@
+.tabContainer {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    /* For proper modal positioning */
+    /* Add these to make container fit available space */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Prevent container from scrolling */
+}
+
+.tabTitleContainer {
+    display: flex;
+    gap: 16px;
+}
+
+.tabHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filterContainer {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+}
+
+.filterGroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filterSelect {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--secondary-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.tabHeader button {
+    background: transparent;
+    border: none;
+    padding: 4px 2px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tabHeader button:hover {
+    padding: 4px;
+    background-color: var(--text-color);
+}
+
+.tabHeader img {
+    width: 30px;
+    height: 30px;
+}
+
+.tabTitle {
+    font-family: Raleway, sans-serif;
+    color: var(--accent-color);
+    margin: 0;
+}
+
+.therapistTableContainer {
+    max-height: 70vh;
+    overflow-y: auto;
+    border-radius: 4px;
+    border: 1px solid var(--secondary-color);
+}
+
+.therapistTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.therapistTable th,
+.therapistTable td {
+    border: 1px solid var(--secondary-color);
+    padding: 10px;
+    text-align: left;
+}
+
+.therapistTable th {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    cursor: pointer;
+    user-select: none;
+}
+
+.therapistTable th:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.therapistTable tr:nth-child(even) {
+    background-color: var(--secondary-color);
+}
+
+.therapistTable tr:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.infoButton {
+    background: transparent;
+    border: none;
+    padding: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.infoButton:hover {
+    background-color: var(--text-color);
+}
+
+.infoButton img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Added loading state styles */
+.loadingMessage {
+    text-align: center;
+    padding: 20px;
+    color: var(--accent-color);
+    font-style: italic;
+}

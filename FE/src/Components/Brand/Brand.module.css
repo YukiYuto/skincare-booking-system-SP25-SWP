@@ -1,9 +1,14 @@
 .brand {
     display: flex;
     font-family: Bodoni Moda, serif;
-    /* color: rgb(21, 44, 91); */
     color: #ac632c;
     text-align: center;
+    text-decoration: none;
+}
+
+.brand span {
+    font-size: 32px;
+    font-weight: 700;
 }
 
 .brandHighlight {
