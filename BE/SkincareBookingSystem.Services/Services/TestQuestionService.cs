@@ -52,7 +52,7 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> GetAllTestQuestions()
         {
-            var testQuestionsFromDb = await _unitOfWork.Appointments.GetAllAsync();
+            var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync();
 
             return (testQuestionsFromDb.Any()) ?
                 SuccessResponse.Build(
@@ -123,7 +123,7 @@ namespace SkincareBookingSystem.Services.Services
             if (testQuestionFromDb is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.Appointment.NotFound,
+                    message: StaticResponseMessage.TestQuestion.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
