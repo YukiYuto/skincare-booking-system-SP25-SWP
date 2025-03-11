@@ -67,8 +67,8 @@ const ServiceDetail = () => {
         serviceData.serviceTypeId
       );
       const therapistsEndpoint = GET_THERAPIST_BY_SERVICE_API.replace(
-        "{serviceTypeId}",
-        serviceData.serviceTypeId
+        "{serviceId}",
+        serviceData.serviceId
       );
       console.log("Therapists API URL:", therapistsEndpoint);
 
