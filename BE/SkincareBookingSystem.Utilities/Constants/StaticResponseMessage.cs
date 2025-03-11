@@ -31,6 +31,17 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotRetrieved = "Failed to retrieve user(s)";
         }
         /// <summary>
+        /// Error messages related to Payment
+        /// </summary>
+        public static class Payment
+        {
+            public const string Pending = "Payment is pending";
+            public const string Paid = "Payment paid";
+            public const string Cancelled = "Payment cancelled";
+            public const string NotFound = "Payment not found";
+            public const string NotCompleted = "Payment not completed for the specified order";
+        }
+        /// <summary>
         /// Error messages related to appointments
         /// </summary>
         public static class Appointment
@@ -94,13 +105,56 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotRetrieved = "Failed to retrieve order(s)";
         }
 
-        public static class Payment
+        /// <summary>
+        /// Error messages related to Blog
+        /// </summary>
+        public static class Blog
         {
-            public const string Pending = "Payment is pending";
-            public const string Paid = "Payment paid";
-            public const string Cancelled = "Payment cancelled";
-            public const string NotFound = "Payment not found";
-            public const string NotCompleted = "Payment not completed for the specified order";
+            public const string Created = "Blog created successfully";
+            public const string Deleted = "Blog deleted successfully";
+            public const string AlreadyDeleted = "Blog already deleted";
+            public const string RetrievedAll = "All Blog(s) retrieved successfully";
+            public const string Retrieved = "Blog retrieved successfully";
+            public const string Updated = "Blog updated successfully";
+            public const string NotFound = "Blog(s) not found";
+            public const string NotCreated = "Failed to create Blog";
+            public const string NotDeleted = "Failed to delete Blog";
+            public const string NotUpdated = "Failed to update Blog";
+            public const string NotRetrieved = "Failed to retrieve Blog(s)";
+        }
+        /// <summary>
+        /// Error messages related to TestQuestion
+        /// </summary>
+        public static class TestQuestion
+        {
+            public const string Created = "Test question created successfully";
+            public const string Deleted = "Test question deleted successfully";
+            public const string AlreadyDeleted = "Test question already deleted";
+            public const string RetrievedAll = "All test questions retrieved successfully";
+            public const string Retrieved = "Test question retrieved successfully";
+            public const string Updated = "Test question updated successfully";
+            public const string NotFound = "Test question(s) not found";
+            public const string NotCreated = "Failed to create test question";
+            public const string NotDeleted = "Failed to delete test question";
+            public const string NotUpdated = "Failed to update test question";
+            public const string NotRetrieved = "Failed to retrieve test question(s)";
+        }
+        /// <summary>
+        /// Error messages related to Feedback
+        /// </summary>
+        public static class Feedback
+        {
+            public const string Created = "Feedback created successfully";
+            public const string Deleted = "Feedback deleted successfully";
+            public const string AlreadyDeleted = "Feedback already deleted";
+            public const string RetrievedAll = "All feedbacks retrieved successfully";
+            public const string Retrieved = "Feedback retrieved successfully";
+            public const string Updated = "Feedback updated successfully";
+            public const string NotFound = "Feedback(s) not found";
+            public const string NotCreated = "Failed to create Feedback";
+            public const string NotDeleted = "Failed to delete Feedback";
+            public const string NotUpdated = "Failed to update Feedback";
+            public const string NotRetrieved = "Failed to retrieve Feedback(s)";
         }
 
         public static class Slot
@@ -113,21 +167,6 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NoTherapistForSlot = "No available therapist for this time slot. Please try another date, or slot.";
             public const string AutoAssignmentHandled = "Therapist auto-assignment handled successfully";
             public const string AlreadyScheduled = "The therapist is already scheduled for this slot";
-        }
-
-        public static class Blog
-        {
-            public const string Created = "Blog created successfully";
-            public const string Deleted = "Blog deleted successfully";
-            public const string AlreadyDeleted = "Blog already deleted";
-            public const string RetrievedAll = "All blogs retrieved successfully";
-            public const string Retrieved = "Blog retrieved successfully";
-            public const string Updated = "Blog updated successfully";
-            public const string NotFound = "Blog(s) not found";
-            public const string NotCreated = "Failed to create blog";
-            public const string NotDeleted = "Failed to delete blog";
-            public const string NotUpdated = "Failed to update blog";
-            public const string NotRetrieved = "Failed to retrieve blog(s)";
         }
 
         public static class BlogCategory

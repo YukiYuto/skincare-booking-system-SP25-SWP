@@ -78,11 +78,11 @@ namespace SkincareBookingSystem.Services.Services
             if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.Blog.NotFound,
+                    message: StaticResponseMessage.BlogCategory.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var getBlogCategoryById = await _unitOfWork.BlogCategory.GetAsync(b => b.BlogCategoryId == blogCategoryId && b.Status != StaticOperationStatus.BlogC.Deleted);
+            var getBlogCategoryById = await _unitOfWork.BlogCategory.GetAsync(b => b.BlogCategoryId == blogCategoryId && b.Status != StaticOperationStatus.BlogCategory.Deleted);
             return (getBlogCategoryById is null) ?
                 ErrorResponse.Build(
                     message: StaticResponseMessage.BlogCategory.NotFound,

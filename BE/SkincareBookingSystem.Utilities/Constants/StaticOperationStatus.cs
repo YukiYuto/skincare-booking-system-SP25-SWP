@@ -83,8 +83,8 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string EmptyList = "Service type list is empty";
             public const string Invalid = "Invalid service type(s)";
         }
-        
-        public static class Service 
+
+        public static class Service
         {
             public const string Active = "Active";
             public const string Disable = "Disable";
@@ -167,6 +167,23 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Deleted = "DELETED";    // Xóa Blog
         }
 
+        // Constants related to TestQuestion
+        public static class TestQuestion
+        {
+            public const string Created = "CREATED";
+            public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+        }
+
+        // Constants related to Feedback
+        public static class Feedback
+        {
+            public const string Created = "CREATED";
+            public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+
+        }
+
         // Constants related to BlogCategory
         public static class BlogCategory
         {
@@ -177,6 +194,5 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Rescheduled = "RESCHEDULED";
             public const string Deleted = "DELETED";
         }
-
     }
 }
