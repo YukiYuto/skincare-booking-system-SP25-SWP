@@ -2,6 +2,7 @@
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Appointment;
 using SkincareBookingSystem.Models.Dto.Authentication;
+using SkincareBookingSystem.Models.Dto.Blog;
 using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.BookingSchedule;
@@ -15,16 +16,10 @@ using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Slot;
+using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
-using SkincareBookingSystem.Models.Dto.BookingSchedule;
-//using SkincareBookingSystem.Models.Dto.SkinTherapist;
-//using SkincareBookingSystem.Models.Dto.Customer;
-using SkincareBookingSystem.Models.Dto.SkinTherapist;
-using SkincareBookingSystem.Models.Dto.Customer;
-using Microsoft.EntityFrameworkCore;
-using SkincareBookingSystem.DataAccess.Repositories;
-using SkincareBookingSystem.Models.Dto.Booking.Order;
+
 
 
 namespace SkincareBookingSystem.Services.Mapping;
@@ -71,6 +66,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
 
         CreateMap<OrderDetail, OrderDetailDto>();
+
         //TestQuestion
         CreateMap<CreateTestQuestionDto, TestQuestion>()
             .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId))
