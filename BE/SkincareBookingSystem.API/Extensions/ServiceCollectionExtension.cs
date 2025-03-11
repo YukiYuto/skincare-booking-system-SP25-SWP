@@ -61,6 +61,7 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
 
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IBlogService, BlogService>();
 
 
             return services;
