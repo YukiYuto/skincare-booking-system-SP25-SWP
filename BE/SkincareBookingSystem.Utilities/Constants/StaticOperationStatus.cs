@@ -156,5 +156,27 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Deleted = "DELETED";
         }
 
+        // Constants related to Blog
+        public static class Blog
+        {
+            public const string Drafting = "DRAFTING...";   // Blog đang trong giai đoạn thai nghén, chưa công khai
+            public const string Pending_review = "PENDING...";  // Blog đang chờ kiểm duyệt
+            public const string Approved = "APPROVED";  // Blog đã được kiểm duyệt và sẵn sàng công khai
+            public const string Published = "PUBLISHED"; // Blog đã được lưu lại và công khai
+            public const string Archieved = "ARCHIEVED"; // Blog đã được lưu lại nhưng không công khai
+            public const string Deleted = "DELETED";    // Xóa Blog
+        }
+
+        // Constants related to BlogCategory
+        public static class BlogCategory
+        {
+            public const string Created = "CREATED";
+            public const string Confirmed = "CONFIRMED";
+            public const string Cancelled = "CANCELLED";
+            public const string Completed = "COMPLETED";
+            public const string Rescheduled = "RESCHEDULED";
+            public const string Deleted = "DELETED";
+        }
+
     }
 }
