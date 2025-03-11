@@ -22,7 +22,8 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             string? filterOn,
             string? filterQuery,
             string? sortBy,
-            bool isManager = false
+            bool isManager = false,
+            string? includeProperties = null
         )
         {
             var query = _context.Services.AsQueryable();
@@ -44,7 +45,13 @@ namespace SkincareBookingSystem.DataAccess.Repositories
                     _ => query
                 };
             }
-
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
             int totalServices = await query.CountAsync();
 
             query = sortBy?.ToLower() switch

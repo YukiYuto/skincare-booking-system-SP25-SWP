@@ -166,7 +166,10 @@ public class AutoMapperProfile : Profile
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
         //Service
-        CreateMap<Models.Domain.Services, GetAllServicesDto>().ReverseMap();
+        CreateMap<Models.Domain.Services, GetAllServicesDto>()
+            .ForMember(dest => dest.ServiceTypeIds,
+                opt => opt.MapFrom(src => src.TypeItems.Select(ti => ti.ServiceTypeId).ToList()))
+            .ReverseMap();
 
         CreateMap<CreateServiceDto, Models.Domain.Services>()
             .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
