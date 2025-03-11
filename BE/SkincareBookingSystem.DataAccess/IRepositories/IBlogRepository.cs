@@ -9,6 +9,6 @@ namespace SkincareBookingSystem.DataAccess.IRepositories
 {
     public interface IBlogRepository : IRepository<Blog>
     {
-
+        void Update(Blog target, Blog source);
     }
 }

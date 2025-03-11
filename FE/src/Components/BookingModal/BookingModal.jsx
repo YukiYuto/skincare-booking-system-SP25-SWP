@@ -5,6 +5,15 @@ import styles from "./BookingModal.module.css"; // Import CSS module
 import dayjs from "dayjs";
 import axios from "axios";
 import { toast } from "react-toastify";
+import {
+  GET_ALL_SERVICES_API,
+  GET_SERVICE_BY_ID_API,
+  GET_THERAPIST_BY_SERVICE_API,
+  GET_ALL_SLOTS_API,
+  GET_BOOKING_SLOT_API,
+  GET_CUSTOMER_USER_API,
+  POST_BOOKING_API,
+} from "../../config/apiConfig";
 
 const { Step } = Steps;
 
@@ -45,7 +54,7 @@ const BookingModal = ({ visible, onClose }) => {
 
   // Lấy danh sách dịch vụ
   useEffect(() => {
-    fetch("https://localhost:7037/api/services", {
+    fetch(GET_ALL_SERVICES_API, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -67,7 +76,7 @@ const BookingModal = ({ visible, onClose }) => {
       return;
     }
 
-    fetch(`https://localhost:7037/api/services/${serviceId}`)
+    fetch(GET_SERVICE_BY_ID_API.replace("{id}", serviceId))
       .then((res) => res.json())
       .then((data) => {
         if (data?.result) {
@@ -84,15 +93,12 @@ const BookingModal = ({ visible, onClose }) => {
 
   // Lấy danh sách therapists theo serviceTypeId
   const fetchTherapists = (serviceTypeId) => {
-    fetch(
-      `https://localhost:7037/api/bookings/therapists?serviceTypeId=${serviceTypeId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${user.accessToken}`,
-        },
-      }
-    )
+    fetch(`${GET_THERAPIST_BY_SERVICE_API}?serviceTypeId=${serviceTypeId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${user.accessToken}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data?.result) {
@@ -110,7 +116,7 @@ const BookingModal = ({ visible, onClose }) => {
   };
 
   useEffect(() => {
-    fetch("https://localhost:7037/api/slot")
+    fetch(GET_ALL_SLOTS_API)
       .then((res) => res.json())
       .then((data) => {
         if (data?.result) {
@@ -123,7 +129,7 @@ const BookingModal = ({ visible, onClose }) => {
   useEffect(() => {
     if (selectedDate && selectedTherapist) {
       fetch(
-        `https://localhost:7037/api/bookings/occupied-slots?therapistId=${selectedTherapist}&date=${selectedDate}`
+        `${GET_BOOKING_SLOT_API}?therapistId=${selectedTherapist}&date=${selectedDate}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -147,14 +153,11 @@ const BookingModal = ({ visible, onClose }) => {
       message.error("Vui lòng chọn đầy đủ thông tin trước khi đặt lịch!");
       return;
     }
-    const customerResponse = await axios.get(
-      `https://localhost:7037/api/customer/user`,
-      {
-        headers: {
-          Authorization: `Bearer ${user.accessToken}`,
-        },
-      }
-    );
+    const customerResponse = await axios.get(GET_CUSTOMER_USER_API, {
+      headers: {
+        Authorization: `Bearer ${user.accessToken}`,
+      },
+    });
     const customerId = customerResponse.data.result;
     const orderData = {
       order: {
@@ -173,7 +176,7 @@ const BookingModal = ({ visible, onClose }) => {
       ],
     };
 
-    fetch("https://localhost:7037/api/bookings/orders-bundles", {
+    fetch(POST_BOOKING_API, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -192,7 +195,7 @@ const BookingModal = ({ visible, onClose }) => {
       .then((data) => {
         console.log("API Response:", data); // Debug dữ liệu API trả về
         toast.success("Đặt lịch thành công!");
-        localStorage.setItem("orderNumber",data.result.orderNumber);
+        localStorage.setItem("orderNumber", data.result.orderNumber);
         onClose();
         resetState();
       })

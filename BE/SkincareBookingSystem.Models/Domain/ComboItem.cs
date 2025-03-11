@@ -11,5 +11,7 @@ namespace SkincareBookingSystem.Models.Domain
         public Guid ServiceComboId { get; set; }
         [ForeignKey("ServiceComboId")]
         public virtual ServiceCombo ServiceCombo { get; set; } = null!;
+        
+        public int Priority { get; set; }
     }
 }

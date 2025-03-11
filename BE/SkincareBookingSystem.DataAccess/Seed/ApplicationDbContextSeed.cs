@@ -17,19 +17,19 @@ public class ApplicationDbContextSeed
 
         var roles = new List<IdentityRole>
         {
-            new IdentityRole
+            new()
             {
                 Id = managerRoleId,
                 ConcurrencyStamp = StaticUserRoles.Manager,
                 Name = StaticUserRoles.Manager,
-                NormalizedName = StaticUserRoles.Manager.ToUpper(),
+                NormalizedName = StaticUserRoles.Manager.ToUpper()
             },
-            new IdentityRole
+            new()
             {
                 Id = adminRoleId,
                 ConcurrencyStamp = StaticUserRoles.Admin,
                 Name = StaticUserRoles.Admin,
-                NormalizedName = StaticUserRoles.Admin.ToUpper(),
+                NormalizedName = StaticUserRoles.Admin.ToUpper()
             }
         };
 
