@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Modal, Button, Steps, message, DatePicker } from "antd";

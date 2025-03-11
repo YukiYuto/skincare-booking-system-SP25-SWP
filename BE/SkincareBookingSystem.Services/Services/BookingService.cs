@@ -429,5 +429,5 @@ namespace SkincareBookingSystem.Services.Services
             return Convert.ToInt32(orderDetails.Sum(detail => detail.Price));
         }
 
-    }
+        }
 }

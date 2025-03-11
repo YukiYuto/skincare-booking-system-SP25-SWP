@@ -5,8 +5,8 @@ export const HTTP_METHODS = {
   DELETE: "DELETE",
 };
 
-const BASE_URL =
-  "https://skincare-booking-system-878be679972e.herokuapp.com/api";
+// Base URL for backend API call
+const BASE_URL = "https://lumiconnect.azurewebsites.net/api";
 
 export const BASE_API_URL = BASE_URL;
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes

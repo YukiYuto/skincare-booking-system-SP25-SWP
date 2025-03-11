@@ -20,6 +20,7 @@ const ServiceDetail = () => {
     isLoading: true,
     error: null,
   });
+  const [bookSelected, setBookSelected] = useState(false);
 
   const fetchData = async () => {
     try {

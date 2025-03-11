@@ -1,7 +1,8 @@
 import React from "react";
 import styles from "./ServiceLayout.module.css";
 
-const ServiceLayout = ({ service, therapists = [] }) => {
+const ServiceLayout = ({ service, serviceType, therapists = [], isBookSelected = false }) => {
+
   return (
     <div className={styles.layout}>
       <div className={styles.imageContainer}>
@@ -34,7 +35,7 @@ const ServiceLayout = ({ service, therapists = [] }) => {
               </option>
             ))}
           </select>
-          <button className={styles.order}>BOOK NOW</button>
+          <button className={styles.order} onClick={isBookSelected = !isBookSelected}>BOOK NOW</button>
         </div>
       </div>
     </div>
