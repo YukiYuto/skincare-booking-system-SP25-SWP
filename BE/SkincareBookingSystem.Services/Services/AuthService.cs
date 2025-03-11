@@ -105,7 +105,7 @@ public class AuthService : IAuthService
             {
                 await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Customer));
             }
-
+            
             // Thêm role "Customer" cho người dùng
             var isRoleAdded = await _userManager.AddToRoleAsync(newUser, StaticUserRoles.Customer);
 

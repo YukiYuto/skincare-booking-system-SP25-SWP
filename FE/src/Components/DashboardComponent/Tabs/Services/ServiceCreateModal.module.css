@@ -1,13 +1,12 @@
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    z-index: 1000;
 }
 
 .modalContent {
@@ -15,68 +14,48 @@
     color: var(--text-color);
     padding: 20px;
     border-radius: 8px;
-    width: 500px;
+    width: 600px;
     max-width: 90%;
-    font-family: Raleway;
+    max-height: 90vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
 }
 
-h2 {
-    font-family: Raleway;
-    color: var(--accent-color);
-    margin-top: 0;
-}
-
-form {
+.formContainer {
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
-label {
-    margin-bottom: 10px;
-}
-
-input,
-textarea,
-select {
+.imagePreview {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid var(--secondary-color);
-    border-radius: 4px;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: Lora;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 2px solid var(--secondary-color);
 }
 
-.btn {
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.submitButton, .btn {
+    flex: 1;
     padding: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: Montserrat;
-    transition: background-color 0.3s ease;
 }
 
 .submitButton {
-    background-color: var(--primary-color);
+    background: var(--primary-color);
     color: var(--text-color);
-    font-family: Montserrat;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 12px;
+    margin-right: 10px;
 }
 
-.btn {
-    background-color: var(--accent-color);
-    color: white;
-    font-family: Montserrat;
-}
-
-.btn:hover {
-    background-color: var(--secondary-color);
+.submitButton:hover, .btn:hover {
+    background: var(--accent-color);
 }
