@@ -42,7 +42,7 @@ const ServiceDetail = () => {
       console.log("Service Response:", serviceResponse);
 
       const serviceData = serviceResponse.result;
-      if (!serviceData || !serviceData.serviceTypeId) {
+      if (!serviceData || !serviceData.serviceTypeIds) {
         throw new Error("Invalid service data structure");
       }
 

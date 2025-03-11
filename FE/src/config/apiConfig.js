@@ -5,8 +5,7 @@ export const HTTP_METHODS = {
   DELETE: "DELETE",
 };
 
-// Base URL for backend API call
-const BASE_URL = "https://lumiconnect.azurewebsites.net/api";
+const BASE_URL = "https://localhost:7037/api";
 
 export const BASE_API_URL = BASE_URL;
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes
