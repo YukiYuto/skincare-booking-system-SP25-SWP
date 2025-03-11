@@ -53,7 +53,6 @@ namespace SkincareBookingSystem.Services.Services
         public async Task<ResponseDto> GetAllTestQuestions()
         {
             var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync();
-
             return (testQuestionsFromDb.Any()) ?
                 SuccessResponse.Build(
                     message: StaticResponseMessage.TestQuestion.RetrievedAll,
@@ -153,11 +152,11 @@ namespace SkincareBookingSystem.Services.Services
             if (testQuestionToDelete is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.Appointment.NotFound,
+                    message: StaticResponseMessage.TestQuestion.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            testQuestionToDelete.Status = StaticOperationStatus.Appointment.Deleted;
+            testQuestionToDelete.Status = StaticOperationStatus.TestQuestion.Deleted;
             testQuestionToDelete.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
             testQuestionToDelete.UpdatedBy = User.FindFirstValue("FullName");
 
