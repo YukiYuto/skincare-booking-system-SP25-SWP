@@ -1,4 +1,4 @@
-﻿import { apiCall } from '../utils/apiUtils';
+import { apiCall } from '../utils/apiUtils';
 import { LOGIN_API, REGISTER_CUSTOMER_API, HTTP_METHODS, VERIFY_EMAIL_API, CONFIRM_EMAIL_API, FORGOT_PASSWORD_API, RESET_PASSWORD_API, USER_PROFILE_API } from '../config/apiConfig';
 
 /**
@@ -40,7 +40,7 @@ export async function forgotPassword(email) {
 }
 
 export async function resetPassword(email, token, newPassword, confirmPassword) {
-  // const encodedToken = encodeURIComponent(token);  // ✅ Cần mã hóa token trước khi gửi
+  // const encodedToken = encodeURIComponent(token); 
 
   const response = await fetch(RESET_PASSWORD_API, {
     method: "POST",
