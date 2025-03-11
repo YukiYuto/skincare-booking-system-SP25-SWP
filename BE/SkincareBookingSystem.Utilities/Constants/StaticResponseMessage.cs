@@ -129,5 +129,16 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update blog";
             public const string NotRetrieved = "Failed to retrieve blog(s)";
         }
+
+        public static class BlogCategory
+        {
+            public const string Created = "Blog category created successfully.";
+            public const string NotCreated = "Failed to create blog category.";
+            public const string Retrieved = "Blog category retrieved successfully.";
+            public const string RetrievedAll = "All blog categories retrieved successfully.";
+            public const string NotFound = "Blog category not found.";
+            public const string Updated = "Blog category updated successfully.";
+            public const string NotUpdated = "Failed to update blog category.";
+        }
     }
 }

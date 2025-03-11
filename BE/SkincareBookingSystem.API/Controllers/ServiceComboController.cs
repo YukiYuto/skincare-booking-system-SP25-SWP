@@ -9,12 +9,27 @@ namespace SkincareBookingSystem.API.Controllers;
 public class ServiceComboController : Controller
 {
     private readonly IServiceComboService _serviceComboService;
-    
+
     public ServiceComboController(IServiceComboService serviceComboService)
     {
         _serviceComboService = serviceComboService;
     }
-    
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllServiceCombos
+    (
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? filterOn = null,
+        [FromQuery] string? filterQuery = null,
+        [FromQuery] string? sortBy = null
+    )
+    {
+        var result =
+            await _serviceComboService.GetAllServiceCombos(User, pageNumber, pageSize, filterOn, filterQuery, sortBy);
+        return StatusCode(result.StatusCode, result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateService([FromBody] CreateServiceComboDto createServiceComboDtoDto)
     {
