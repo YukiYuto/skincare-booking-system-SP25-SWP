@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Blog;
 using SkincareBookingSystem.Models.Dto.Response;
