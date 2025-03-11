@@ -173,6 +173,7 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Created = "CREATED";
             public const string Updated = "UPDATED";
             public const string Deleted = "DELETED";
+
         }
 
         // Constants related to TestAnswer

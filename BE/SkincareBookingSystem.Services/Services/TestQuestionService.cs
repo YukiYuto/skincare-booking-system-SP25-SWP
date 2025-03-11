@@ -52,7 +52,8 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> GetAllTestQuestions()
         {
-            var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync();
+            var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync(q => q.Status != StaticOperationStatus.TestQuestion.Deleted);
+            
             return (testQuestionsFromDb.Any()) ?
                 SuccessResponse.Build(
                     message: StaticResponseMessage.TestQuestion.RetrievedAll,
@@ -74,7 +75,7 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var testQuestionFromDB = await _unitOfWork.TestQuestion.GetAsync(a => a.TestQuestionId == testQuestionId);
+            var testQuestionFromDB = await _unitOfWork.TestQuestion.GetAsync(a => a.TestQuestionId == testQuestionId && a.Status != StaticOperationStatus.TestQuestion.Deleted);
             return (testQuestionFromDB is null) ?
                 ErrorResponse.Build(
                     message: StaticResponseMessage.TestQuestion.NotFound,
@@ -95,7 +96,7 @@ namespace SkincareBookingSystem.Services.Services
                 statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync(a => a.SkinTestId == skinTestId);
+            var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync(a => a.SkinTestId == skinTestId && a.Status != StaticOperationStatus.TestQuestion.Deleted);
 
             return (testQuestionsFromDb.Any()) ?
                 SuccessResponse.Build(
