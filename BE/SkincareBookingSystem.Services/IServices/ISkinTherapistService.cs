@@ -12,6 +12,7 @@ namespace SkincareBookingSystem.Services.IServices
     {
         Task<ResponseDto> GetTherapistDetailsById(Guid therapistId);
         Task<ResponseDto> GetTherapistsByServiceTypeId(Guid serviceTypeId);
+        Task<ResponseDto> GetTherapistsByServiceId(Guid serviceId);
         Task<ResponseDto> GetAllTherapists();
     }
 }

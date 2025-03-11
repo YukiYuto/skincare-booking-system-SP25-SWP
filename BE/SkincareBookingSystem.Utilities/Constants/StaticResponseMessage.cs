@@ -208,6 +208,10 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotRetrieved = "Failed to retrieve Feedback(s)";
         }
 
+        public static class Service
+        {
+            public const string NotFound = "Service not found";
+        }
         public static class Slot
         {
             public const string InvalidSelected = "Invalid time slot selected";
