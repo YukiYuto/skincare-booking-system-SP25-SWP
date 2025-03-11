@@ -78,7 +78,7 @@ namespace SkincareBookingSystem.Services.Services
             if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.Blog.NotFound,
+                    message: StaticResponseMessage.BlogCategory.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
