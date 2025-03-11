@@ -4,14 +4,15 @@ using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Models.Dto.ServiceCombo;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 
 namespace SkincareBookingSystem.Services.Services;
 
 public class ServiceComboService : IServiceComboService
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IAutoMapperService _mapper;
-    
+    private readonly IUnitOfWork _unitOfWork;
+
     public ServiceComboService(IUnitOfWork unitOfWork, IAutoMapperService mapper)
     {
         _unitOfWork = unitOfWork;
@@ -53,10 +54,47 @@ public class ServiceComboService : IServiceComboService
         throw new NotImplementedException();
     }
 
-    public Task<ResponseDto> GetAllServiceCombos(ClaimsPrincipal user)
+    public async Task<ResponseDto> GetAllServiceCombos
+    (
+        ClaimsPrincipal User,
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? filterOn = null,
+        string? filterQuery = null,
+        string? sortBy = null
+    )
     {
-        throw new NotImplementedException();
+        var userRole = User.FindFirstValue(ClaimTypes.Role);
+        var isManager = userRole == StaticUserRoles.Manager;
+
+        var (serviceCombo, total) =
+            await _unitOfWork.ServiceCombo.GetAll(pageNumber, pageSize, filterOn, filterQuery, sortBy, isManager);
+
+        if (!serviceCombo.Any())
+            return new ResponseDto
+            {
+                Result = serviceCombo,
+                Message = "No ServiceCombo found",
+                IsSuccess = false,
+                StatusCode = 200
+            };
+
+        return new ResponseDto
+        {
+            Result = new
+            {
+                TotalServiceCombos = total,
+                TotalPages = (int)Math.Ceiling((double)total / pageSize),
+                PageSize = pageSize,
+                CurrentPage = pageNumber,
+                ServiceCombos = serviceCombo
+            },
+            Message = "ServiceCombo(s) retrieved successfully",
+            IsSuccess = true,
+            StatusCode = 200
+        };
     }
+
 
     public Task<ResponseDto> GetServiceComboById(ClaimsPrincipal user, Guid serviceComboId)
     {
