@@ -56,6 +56,7 @@ namespace SkincareBookingSystem.API.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
 
             services.AddScoped<ITestQuestionService, TestQuestionService>();
+            services.AddScoped<ITestAnswerService, TestAnswerService>();
 
             return services;
         }
