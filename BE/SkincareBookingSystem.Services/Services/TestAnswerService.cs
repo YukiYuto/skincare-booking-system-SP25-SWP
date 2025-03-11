@@ -159,7 +159,7 @@ namespace SkincareBookingSystem.Services.Services
             if (testAnswerFromDb is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.TestQuestion.NotFound,
+                    message: StaticResponseMessage.TestAnswer.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
