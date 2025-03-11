@@ -182,5 +182,16 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Updated = "UPDATED";
             public const string Deleted = "DELETED";
         }
+
+        // Constants related to BlogCategory
+        public static class BlogCategory
+        {
+            public const string Created = "CREATED";
+            public const string Confirmed = "CONFIRMED";
+            public const string Cancelled = "CANCELLED";
+            public const string Completed = "COMPLETED";
+            public const string Rescheduled = "RESCHEDULED";
+            public const string Deleted = "DELETED";
+        }
     }
 }

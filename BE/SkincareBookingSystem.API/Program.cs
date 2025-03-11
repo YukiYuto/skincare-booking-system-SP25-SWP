@@ -69,7 +69,7 @@ namespace SkincareBookingSystem.API
                     }
                 });
 
-                // Thêm API document để hiển thị trên Swagger
+                // API document
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Skincare Booking API",

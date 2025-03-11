@@ -7,5 +7,14 @@ namespace SkincareBookingSystem.Services.IServices;
 public interface ITypeItemService
 {
     Task<ResponseDto> CreateTypeItem(ClaimsPrincipal user, CreateTypeItemDto createTypeItemDto);
-    Task<ResponseDto> RemoveTypeItem(ClaimsPrincipal user, CreateTypeItemDto removeTypeItemDto);
+
+    Task<ResponseDto> GetAllTypeItem
+    (
+        ClaimsPrincipal User,
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? filterOn = null,
+        string? filterQuery = null,
+        string? sortBy = null
+    );
 }
