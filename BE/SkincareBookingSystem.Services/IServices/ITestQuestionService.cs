@@ -17,5 +17,6 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> GetAllTestQuestions();
         Task<ResponseDto> DeleteTestQuestion(ClaimsPrincipal User, Guid testQuestionId);
         Task<ResponseDto> GetTestQuestionBySkinTestId(Guid skinTestId);
+
     }
 }
