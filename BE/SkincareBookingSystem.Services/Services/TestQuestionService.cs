@@ -53,7 +53,7 @@ namespace SkincareBookingSystem.Services.Services
         public async Task<ResponseDto> GetAllTestQuestions()
         {
             var testQuestionsFromDb = await _unitOfWork.TestQuestion.GetAllAsync(q => q.Status != StaticOperationStatus.TestQuestion.Deleted);
-
+            
             return (testQuestionsFromDb.Any()) ?
                 SuccessResponse.Build(
                     message: StaticResponseMessage.TestQuestion.RetrievedAll,

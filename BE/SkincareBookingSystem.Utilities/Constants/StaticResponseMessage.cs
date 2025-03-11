@@ -118,6 +118,23 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update test question";
             public const string NotRetrieved = "Failed to retrieve test question(s)";
         }
+        /// <summary>
+        /// Error messages related to TestAnswer
+        /// </summary>
+        public static class TestAnswer
+        {
+            public const string Created = "Test answer created successfully";
+            public const string Deleted = "Test answer deleted successfully";
+            public const string AlreadyDeleted = "Test answer already deleted";
+            public const string RetrievedAll = "All test answers retrieved successfully";
+            public const string Retrieved = "Test answer retrieved successfully";
+            public const string Updated = "Test answer updated successfully";
+            public const string NotFound = "Test answer(s) not found";
+            public const string NotCreated = "Failed to create test answer";
+            public const string NotDeleted = "Failed to delete test answer";
+            public const string NotUpdated = "Failed to update test answer";
+            public const string NotRetrieved = "Failed to retrieve test answer(s)";
+        }
 
         public static class Customer
         {
