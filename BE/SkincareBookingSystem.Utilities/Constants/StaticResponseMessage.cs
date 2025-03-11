@@ -148,5 +148,31 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string AutoAssignmentHandled = "Therapist auto-assignment handled successfully";
             public const string AlreadyScheduled = "The therapist is already scheduled for this slot";
         }
+
+        public static class Blog
+        {
+            public const string Created = "Blog created successfully";
+            public const string Deleted = "Blog deleted successfully";
+            public const string AlreadyDeleted = "Blog already deleted";
+            public const string RetrievedAll = "All blogs retrieved successfully";
+            public const string Retrieved = "Blog retrieved successfully";
+            public const string Updated = "Blog updated successfully";
+            public const string NotFound = "Blog(s) not found";
+            public const string NotCreated = "Failed to create blog";
+            public const string NotDeleted = "Failed to delete blog";
+            public const string NotUpdated = "Failed to update blog";
+            public const string NotRetrieved = "Failed to retrieve blog(s)";
+        }
+
+        public static class BlogCategory
+        {
+            public const string Created = "Blog category created successfully.";
+            public const string NotCreated = "Failed to create blog category.";
+            public const string Retrieved = "Blog category retrieved successfully.";
+            public const string RetrievedAll = "All blog categories retrieved successfully.";
+            public const string NotFound = "Blog category not found.";
+            public const string Updated = "Blog category updated successfully.";
+            public const string NotUpdated = "Failed to update blog category.";
+        }
     }
 }
