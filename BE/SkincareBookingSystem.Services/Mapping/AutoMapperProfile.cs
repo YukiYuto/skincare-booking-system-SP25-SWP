@@ -16,6 +16,7 @@ using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Slot;
+using SkincareBookingSystem.Models.Dto.TestAnswer;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
@@ -66,6 +67,17 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
 
         CreateMap<OrderDetail, OrderDetailDto>();
+
+        //TestAnswer
+        CreateMap<CreateTestAnswerDto, TestAnswer>()
+            .ForMember(dest => dest.TestQuestionId, opt => opt.MapFrom(src => src.TestQuestionId))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score));
+        CreateMap<UpdateTestAnswerDto, TestAnswer>()
+            .ForMember(dest => dest.TestAnswerId, opt => opt.MapFrom(src => src.TestAnswerId))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score))
+            .ForMember(dest => dest.TestQuestionId, opt => opt.MapFrom(src => src.TestQuestionId));
 
         //TestQuestion
         CreateMap<CreateTestQuestionDto, TestQuestion>()
