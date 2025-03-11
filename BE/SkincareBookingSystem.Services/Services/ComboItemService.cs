@@ -32,7 +32,7 @@ public class ComboItemService : IComboItemService
                 StatusCode = 404
             };
 
-        if (createComboItemDto.ServicePriorityDtos == null || !createComboItemDto.ServicePriorityDtos.Any())
+        if (!createComboItemDto.ServicePriorityDtos.Any())
             return new ResponseDto
             {
                 Message = "ServicePriorityDtos cannot be empty",
@@ -79,8 +79,13 @@ public class ComboItemService : IComboItemService
                 StatusCode = 404
             };
 
-        var (comboItems, totalComboItems) = await _unitOfWork.ComboItem.GetAllComboItemAsync(
-            pageNumber, pageSize, filterOn, filterQuery, sortBy
+        var (comboItems, totalComboItems) = await _unitOfWork.ComboItem.GetAllComboItemAsync
+        (
+            pageNumber,
+            pageSize,
+            filterOn,
+            filterQuery,
+            sortBy
         );
 
         if (!comboItems.Any())
@@ -89,7 +94,7 @@ public class ComboItemService : IComboItemService
                 Message = "No combo items found",
                 IsSuccess = true,
                 StatusCode = 200,
-                Result = new List<object>()
+                Result = comboItems
             };
 
         var groupedComboItems = comboItems

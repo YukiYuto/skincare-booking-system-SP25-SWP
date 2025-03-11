@@ -28,7 +28,6 @@ public class ComboItemRepository : Repository<ComboItem>, IComboItemRepository
             .Include(ci => ci.Services)
             .AsQueryable();
 
-        // 🔹 Lọc dữ liệu
         if (!string.IsNullOrEmpty(filterOn) && !string.IsNullOrEmpty(filterQuery))
             query = filterOn.Trim().ToLower() switch
             {
@@ -37,7 +36,6 @@ public class ComboItemRepository : Repository<ComboItem>, IComboItemRepository
                 _ => query
             };
 
-        // 🔹 Sắp xếp
         if (!string.IsNullOrEmpty(sortBy))
         {
             var sortParams = sortBy.Trim().ToLower().Split('_');

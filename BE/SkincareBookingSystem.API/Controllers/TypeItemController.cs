@@ -9,17 +9,27 @@ namespace SkincareBookingSystem.API.Controllers;
 public class TypeItemController : Controller
 {
     private readonly ITypeItemService _typeItemService;
-    
+
     public TypeItemController(ITypeItemService typeItemService)
     {
         _typeItemService = typeItemService;
     }
-    
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllTypeItems([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10,
+        [FromQuery] string? filterOn = null, [FromQuery] string? filterQuery = null, [FromQuery] string? sortBy = null)
+    {
+        var response =
+            await _typeItemService.GetAllTypeItem(User, pageNumber, pageSize, filterOn, filterQuery, sortBy);
+
+        return StatusCode(response.StatusCode, response);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateTypeItem([FromBody] CreateTypeItemDto createTypeItemDto)
     {
         var response = await _typeItemService.CreateTypeItem(User, createTypeItemDto);
-        
+
         return StatusCode(response.StatusCode, response);
     }
 }
