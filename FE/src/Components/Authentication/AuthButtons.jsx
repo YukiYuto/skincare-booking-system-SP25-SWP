@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Dropdown, Menu, Button, Spin } from "antd";
+import { Dropdown, Menu, Spin, Avatar, Divider } from "antd";
 import { toast } from "react-toastify";
-import { LogoutOutlined, UserOutlined, ProfileOutlined, DownOutlined } from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, DownOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { logout as logoutAction } from "../../redux/auth/thunks";
 import styles from "./AuthButtons.module.css";
 import { useState } from "react";
@@ -27,25 +27,44 @@ const AuthButtons = () => {
 
   // Menu dropdown
   const menu = (
-    <Menu>
-      <Menu.Item key="profile" icon={<UserOutlined />}>
+    <Menu className={styles.dropdownMenu}>
+      {/* Phần hiển thị user */}
+      <div className={styles.userInfo}>
+        <Avatar
+          src={user?.imageUrl}
+          icon={!user?.imageUrl && <UserOutlined />}
+          size={48}
+        />
+        <div>
+          <span className={styles.userName}>{user?.fullName || "Profile"}</span>
+        </div>
+      </div>
+
+      <Divider className={styles.menuDivider} />
+
+      <Menu.Item key="profile" icon={<UserOutlined className={styles.menuIcon} />}>
         <Link to="/profile">Profile</Link>
       </Menu.Item>
-      <Menu.Item key="orders" icon={<ProfileOutlined />}>
+      <Menu.Item key="orders" icon={<ShoppingCartOutlined className={styles.menuIcon} />}>
         <Link to="/orders">Orders</Link>
       </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout} disabled={loading}>
-         {loading ? <Spin size="small" /> : "Logout"}
+
+      <Divider className={styles.menuDivider} />
+
+      <Menu.Item key="logout" icon={<LogoutOutlined className={styles.menuIcon} />} onClick={handleLogout} disabled={loading}>
+        {loading ? <Spin size="small" /> : "Logout"}
       </Menu.Item>
     </Menu>
   );
-
   return isAuthenticated ? (
     <Dropdown overlay={menu} trigger={["click"]} placement="bottomRight">
-       <Button className={styles.profileButton}>
-        Hello, {user?.fullName || "Profile"} <DownOutlined />
-      </Button>
+       <div className={styles.profileButton}>
+       <Avatar 
+          src={user?.imageUrl} 
+          size={60} 
+        />
+        <DownOutlined className={styles.downIcon} />
+      </div>
     </Dropdown>
   ) : (
     <div className={styles.authButtons}>

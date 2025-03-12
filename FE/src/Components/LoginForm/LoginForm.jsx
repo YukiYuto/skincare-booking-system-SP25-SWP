@@ -106,8 +106,19 @@ export function LoginForm() {
           }}
       href="forgot-password" 
       className={styles.forgotLink}>
-          Forgot Password
+          Forgot Password?
         </a>
+      </div>
+      
+      <div>
+          <p>Do not have an account? <a 
+              className={styles.registerLink}
+              href="/register" 
+              disabled={loading} 
+            >
+            Sign up
+          </a>
+        </p>
       </div>
 
       <div className={styles.termsContainer}>
@@ -124,18 +135,7 @@ export function LoginForm() {
         {loading ? "Logging in..." : "Login"}
       </button>
 
-      <button
-        type="button"
-        className={styles.createAccountButton}
-        onClick={() => {
-          if (!loading) {
-            window.location.href = "/register";
-          }
-        }}
-        disabled={loading} 
-      >
-        Create Account
-      </button>
+      
     </form>
   );
 }
