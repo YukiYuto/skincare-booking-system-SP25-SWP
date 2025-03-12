@@ -5,7 +5,8 @@ export const HTTP_METHODS = {
   DELETE: "DELETE",
 };
 
-const BASE_URL = "https://localhost:7037/api";
+const BASE_URL = "https://lumiconnect.azurewebsites.net/api";
+// const BASE_URL = "https://localhost:7037/api";
 
 export const BASE_API_URL = BASE_URL;
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes
@@ -18,6 +19,7 @@ export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`;
 export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`; 
 export const FORGOT_PASSWORD_API = `${BASE_URL}/auth/password/forgot`;
 export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;
+export const REFRESH_TOKEN_API = `${BASE_URL}/auth/refresh-token`;
 
 // Thêm API cho Customer
 export const GET_CUSTOMER_PROFILE_API = `${BASE_URL}/auth/profile`;

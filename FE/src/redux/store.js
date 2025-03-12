@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import rootReducer from "./index";
+import { setupInterceptors } from "../config/axios";
 
 const persistConfig = {
   key: "root",
@@ -20,5 +21,7 @@ const store = configureStore({
 });
 
 const persistor = persistStore(store);
+
+setupInterceptors(store);
 
 export { store, persistor };

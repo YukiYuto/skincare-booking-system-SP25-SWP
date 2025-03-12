@@ -1,5 +1,5 @@
 import { apiCall } from '../utils/apiUtils';
-import { LOGIN_API, REGISTER_CUSTOMER_API, HTTP_METHODS, VERIFY_EMAIL_API, CONFIRM_EMAIL_API, FORGOT_PASSWORD_API, RESET_PASSWORD_API, USER_PROFILE_API } from '../config/apiConfig';
+import { LOGIN_API, REGISTER_CUSTOMER_API, HTTP_METHODS, VERIFY_EMAIL_API, CONFIRM_EMAIL_API, FORGOT_PASSWORD_API, RESET_PASSWORD_API, USER_PROFILE_API, REFRESH_TOKEN_API, AUTH_HEADERS } from '../config/apiConfig';
 
 /**
  * Login API call
@@ -24,8 +24,24 @@ export const register = async (userData) => {
  * @returns {Promise} - Resolves with response data (user data) or rejects with an error
  */
 export const fetchUserProfile = async (token) => {
-  return await apiCall(HTTP_METHODS.GET, USER_PROFILE_API, null, { token });
-}
+  return await apiCall(HTTP_METHODS.GET, USER_PROFILE_API, null, { token }, AUTH_HEADERS(token),
+  );
+};
+
+/**
+ * Refresh access token API call, using the refresh token
+ * @param {string} refreshToken - Refresh token
+ * @returns {Promise} - Resolves with response data (tokens) or rejects with an error
+ * @throws {error} - Error message
+ */
+export const refreshTokens = async (refreshToken) => {
+  try {
+    const response = await apiCall(HTTP_METHODS.POST, REFRESH_TOKEN_API, { refreshToken });
+    return response;
+  } catch (error) {
+    throw new Error("Failed to refresh token", error.message);
+  }
+};
 
 export async function forgotPassword(email) {
   const response = await fetch(FORGOT_PASSWORD_API, {
