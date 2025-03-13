@@ -242,7 +242,11 @@ public class AutoMapperProfile : Profile
 
         //ServiceType
         CreateMap<CreateServiceTypeDto, ServiceType>()
-            .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceTypeName));
+            .ForMember(dest => dest.ServiceTypeId, opt => opt.MapFrom(src => Guid.NewGuid()))
+            .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.ServiceTypeName))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => "0"));
 
         CreateMap<UpdateServiceTypeDto, ServiceType>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
