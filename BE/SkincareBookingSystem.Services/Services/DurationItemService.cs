@@ -50,8 +50,61 @@ public class DurationItemService : IDurationItemService
         };
     }
 
-    public Task<ResponseDto> DeleteDurationItemAsync(Guid id)
+    public async Task<ResponseDto> GetAllDurationItem(ClaimsPrincipal User, int pageNumber, int pageSize)
     {
-        throw new NotImplementedException();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return new ResponseDto
+            {
+                Message = "User not found",
+                IsSuccess = false,
+                StatusCode = 404
+            };
+
+        var (durationItems, totalDurationItems) = await _unitOfWork.DurationItem.GetAllDurationItemsAsync
+        (
+            pageNumber,
+            pageSize
+        );
+
+        if (!durationItems.Any())
+            return new ResponseDto
+            {
+                Message = "No duration items found",
+                IsSuccess = false,
+                StatusCode = 404
+            };
+
+        return new ResponseDto
+        {
+            IsSuccess = true,
+            Message = "All duration items",
+            StatusCode = 200,
+            Result = durationItems
+        };
+    }
+
+    public async Task<ResponseDto> DeleteDuration(CreateDurationItemDto durationItemDto)
+    {
+        var duration = await _unitOfWork.DurationItem.GetAsync(d =>
+            d.ServiceId == durationItemDto.ServiceId &&
+            d.ServiceDurationId == durationItemDto.ServiceDurationId);
+        if (duration == null)
+            return new ResponseDto
+            {
+                Message = "Duration not found",
+                IsSuccess = false,
+                StatusCode = 404
+            };
+
+        _unitOfWork.DurationItem.Remove(duration);
+        await _unitOfWork.SaveAsync();
+
+        return new ResponseDto
+        {
+            IsSuccess = true,
+            Message = "Duration deleted successfully",
+            StatusCode = 200
+        };
     }
 }
