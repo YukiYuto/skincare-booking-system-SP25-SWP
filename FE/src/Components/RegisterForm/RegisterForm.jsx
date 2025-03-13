@@ -138,7 +138,7 @@ function RegisterForm() {
       onSubmit={handleRegisterSubmit}
     >
       <h1 id="register-title" className={styles.registerTitle}>
-        Register
+        Register Account
       </h1>
       <div className={styles.flexContainer1}>
         <InputField
