@@ -168,9 +168,6 @@ namespace SkincareBookingSystem.API
                 }
             });
 
-            app.UseCors("AllowSpecificOrigin");
-
-
             // Apply database migrations  
             ApplyMigration(app);
 

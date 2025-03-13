@@ -11,7 +11,7 @@ import {
 } from "../../config/apiConfig";
 
 const UserProfile = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user, accessToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -26,8 +26,8 @@ const UserProfile = () => {
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
 
-  const accessToken = user.accessToken;
-
+  console.log(user);
+  console.log(accessToken);
   // Khi chọn file, upload luôn avatar
   const handleFileChange = async (event) => {
     const file = event.target.files[0];

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import api from "../../../../../config/axios";
+import { apiClient } from "../../../../../config/axios";
 import styles from "./ServiceTypeCreateModal.module.css";
 import { PUT_SERVICE_TYPE_API } from "../../../../../config/apiConfig";
 
@@ -22,7 +22,7 @@ const ServiceTypeCreateModal = ({ onClose }) => {
     
     try {
       // Use the imported API endpoint constant
-      await api.post(PUT_SERVICE_TYPE_API, formState);
+      await apiClient.post(PUT_SERVICE_TYPE_API, formState);
       onClose();
     } catch (error) {
       console.error("Error creating service type:", error);

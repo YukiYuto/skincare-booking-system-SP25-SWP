@@ -10,6 +10,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using SkincareBookingSystem.Services.Helpers.Responses;
+using SkincareBookingSystem.Utilities.Constants;
 
 namespace SkincareBookingSystem.Services.Services
 {
@@ -22,6 +24,35 @@ namespace SkincareBookingSystem.Services.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper; // Inject IMapper
+        }
+
+        public async Task<ResponseDto> CreateBulkServiceTypes(ClaimsPrincipal User, List<CreateServiceTypeDto> createServiceTypeDtos)
+        {
+            var serviceTypes = _mapper.MapCollection<CreateServiceTypeDto, ServiceType>(createServiceTypeDtos);
+            foreach (var serviceType in serviceTypes)
+            {
+                serviceType.CreatedBy = User.Identity?.Name;
+            }
+
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _unitOfWork.ServiceType.AddRangeAsync(serviceTypes);
+                await _unitOfWork.SaveAsync();
+                await transaction.CommitAsync();
+
+                return SuccessResponse.Build(
+                    message: "Service type(s) created successfully",
+                    statusCode: StaticOperationStatus.StatusCode.Created,
+                    result: serviceTypes);
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                return ErrorResponse.Build(
+                    message: $"Error when creating service type(s): {e.Message}",
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
         }
 
         public async Task<ResponseDto> CreateServiceType(ClaimsPrincipal User, CreateServiceTypeDto createServiceTypeDto)
