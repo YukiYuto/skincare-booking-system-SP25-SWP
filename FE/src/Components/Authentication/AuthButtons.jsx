@@ -61,6 +61,7 @@ const AuthButtons = () => {
        <div className={styles.profileButton}>
        <Avatar 
           src={user?.imageUrl} 
+          icon={!user?.imageUrl && <UserOutlined />}
           size={60} 
         />
         <DownOutlined className={styles.downIcon} />

@@ -61,6 +61,16 @@
     color: red; 
     text-decoration: underline;
   }
+
+  .verifyLink{
+    text-decoration: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .verifyLink:hover{
+    color: red; 
+    text-decoration: underline;
+  }
   
   .loginButton {
     border-radius: 10px;
