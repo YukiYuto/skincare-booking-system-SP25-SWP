@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using SkincareBookingSystem.Utilities.Constants;
+using SkincareBookingSystem.Services.Helpers.Responses;
 
 namespace SkincareBookingSystem.Services.Services
 {
@@ -43,7 +44,9 @@ namespace SkincareBookingSystem.Services.Services
                 (pageNumber, pageSize, filterOn, filterQuery, sortBy, isManager,
                 includeProperties: nameof(Models.Domain.Services.TypeItems));
 
-            if (!services.Any())
+            var activeServices = services.Where(s => s.Status == StaticOperationStatus.Service.Active).ToList();
+
+            if (!activeServices.Any())
             {
                 return new ResponseDto
                 {
@@ -57,7 +60,7 @@ namespace SkincareBookingSystem.Services.Services
             int totalPages = (int)Math.Ceiling((double)totalServices / pageSize);
 
             var serviceDtos =
-                _mapper.MapCollection<Models.Domain.Services, GetAllServicesDto>(services);
+                _mapper.MapCollection<Models.Domain.Services, GetAllServicesDto>(activeServices);
 
             return new ResponseDto
             {
@@ -187,6 +190,42 @@ namespace SkincareBookingSystem.Services.Services
                 IsSuccess = true,
                 StatusCode = 200
             };
+        }
+
+        public async Task<ResponseDto> CreateBulkServices(ClaimsPrincipal User, List<CreateServiceDto> createServiceDtos)
+        {
+            if (createServiceDtos is null || createServiceDtos.Count == 0)
+            {
+                return ErrorResponse.Build(
+                    message: "No services to create",
+                    statusCode: StaticOperationStatus.StatusCode.BadRequest);
+            }
+
+            var servicesToCreate = _mapper.MapCollection<CreateServiceDto, Models.Domain.Services>(createServiceDtos);
+            foreach (var service in servicesToCreate)
+            {
+                service.CreatedBy = User.Identity?.Name;
+            }
+
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _unitOfWork.Services.AddRangeAsync(servicesToCreate);
+                await _unitOfWork.SaveAsync();
+                await transaction.CommitAsync();
+
+                return SuccessResponse.Build(
+                    message: "Services created successfully",
+                    statusCode: StaticOperationStatus.StatusCode.Created,
+                    result: servicesToCreate);
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                return ErrorResponse.Build(
+                    message: "An error occurred while creating services: " + e.Message,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
         }
     }
 }

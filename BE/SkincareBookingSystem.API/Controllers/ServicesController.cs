@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Utilities.Constants;
-using Swashbuckle.AspNetCore.Annotations;   
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
@@ -25,6 +25,15 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<IActionResult> CreateService([FromBody] CreateServiceDto createServiceDto)
         {
             var result = await _servicesService.CreateService(User, createServiceDto);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("bulk")]
+        [SwaggerOperation(Summary = "API create multiple Services", Description = "Requires admin role")]
+        [Authorize(Roles = StaticUserRoles.Manager)]
+        public async Task<IActionResult> CreateBulkServices([FromBody] List<CreateServiceDto> createServiceDtos)
+        {
+            var result = await _servicesService.CreateBulkServices(User, createServiceDtos);
             return StatusCode(result.StatusCode, result);
         }
 
