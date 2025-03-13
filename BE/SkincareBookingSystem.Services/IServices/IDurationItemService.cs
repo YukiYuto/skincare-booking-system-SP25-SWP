@@ -7,5 +7,8 @@ namespace SkincareBookingSystem.Services.IServices;
 public interface IDurationItemService
 {
     Task<ResponseDto> AddDurationItemAsync(ClaimsPrincipal User, CreateDurationItemDto durationItemDto);
-    Task<ResponseDto> DeleteDurationItemAsync(Guid id);
+
+    Task<ResponseDto> GetAllDurationItem(ClaimsPrincipal User, int pageNumber, int pageSize);
+
+    Task<ResponseDto> DeleteDuration(CreateDurationItemDto deleteDurationDto);
 }

@@ -38,6 +38,7 @@ public class AutoMapperProfile : Profile
 
         //Duration
         CreateMap<CreateDurationItemDto, DurationItem>();
+        CreateMap<GetDurationItemDto, DurationItem>().ReverseMap();
 
         // Feedbacks
         CreateMap<CreateFeedbackDto, Feedbacks>()
