@@ -7,5 +7,13 @@ namespace SkincareBookingSystem.Services.IServices;
 public interface IComboItemService
 {
     Task<ResponseDto> CreateComboItem(ClaimsPrincipal user, CreateComboItemDto createComboItemDto);
-    
+    Task<ResponseDto> GetAllComboItem
+    (
+        ClaimsPrincipal User,
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? filterOn = null,
+        string? filterQuery = null,
+        string? sortBy = null
+    );
 }

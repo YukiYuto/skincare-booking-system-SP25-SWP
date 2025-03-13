@@ -1,5 +1,4 @@
-import axios from "axios";
-
+import { apiClient } from "../config/axios";
 /**
  * Generic API call function
  * @param {string} method - HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE')
@@ -8,22 +7,22 @@ import axios from "axios";
  * @returns {Promise} - Resolves with response data or rejects with an error
  */
 
-export const apiCall = async (method, url, data = null, query) => {
+export const apiCall = async (method, url, data = null, query = null, headers = null) => {
   try {
-    const response = await axios({
+    const response = await apiClient({
       method,
       url,
       data,
       params: query,
+      headers: headers || {},
     });
 
     return response.data;
   } catch (error) {
-    console.error("API call error:", error.message);
     // Handle error response
     if (error.response) {
+      console.log("Response data:", error.response.data);
       const { status, data } = error.response;
-
       throw {
         status,
         message:

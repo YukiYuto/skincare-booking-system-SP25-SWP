@@ -69,7 +69,7 @@ namespace SkincareBookingSystem.API
                     }
                 });
 
-                // Thêm API document để hiển thị trên Swagger
+                // API document
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Skincare Booking API",
@@ -167,9 +167,6 @@ namespace SkincareBookingSystem.API
                         $"Response Access-Control-Allow-Origin: {context.Response.Headers["Access-Control-Allow-Origin"]}");
                 }
             });
-
-            app.UseCors("AllowSpecificOrigin");
-
 
             // Apply database migrations  
             ApplyMigration(app);

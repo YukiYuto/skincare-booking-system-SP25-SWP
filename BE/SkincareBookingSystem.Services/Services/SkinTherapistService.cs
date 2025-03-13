@@ -63,6 +63,42 @@ namespace SkincareBookingSystem.Services.Services
                 result: therapistDto);
         }
 
+        public async Task<ResponseDto> GetTherapistsByServiceId(Guid serviceId)
+        {
+            var serviceFromDb = await _unitOfWork.Services.GetAsync(
+                filter: s => s.ServiceId == serviceId,
+                includeProperties: nameof(Models.Domain.Services.TypeItems));
+
+            if (serviceFromDb is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Service.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var serviceTypeIds = serviceFromDb.TypeItems.Select(ti => ti.ServiceTypeId).ToList();
+
+            var therapistsFromDb = await _unitOfWork.SkinTherapist.GetAllAsync(
+                filter: s => s.TherapistServiceTypes.Any(
+                    tst => serviceTypeIds.Contains(tst.ServiceTypeId)),
+                includeProperties: $"{nameof(SkinTherapist.TherapistServiceTypes)},{nameof(ApplicationUser)}");
+
+            if (therapistsFromDb.Any())
+            {
+                var therapistListDto = _autoMapperService.MapCollection<SkinTherapist, GetSkinTherapistDto>(therapistsFromDb);
+
+                return SuccessResponse.Build(
+                    message: StaticOperationStatus.SkinTherapist.Found,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: therapistListDto);
+            }
+
+            return SuccessResponse.Build(
+                message: StaticOperationStatus.SkinTherapist.NotFound,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: new List<SkinTherapist>());
+        }
+
         public async Task<ResponseDto> GetTherapistsByServiceTypeId(Guid serviceTypeId)
         {
             var therapistsFromDb = await _unitOfWork.SkinTherapist.GetAllAsync(

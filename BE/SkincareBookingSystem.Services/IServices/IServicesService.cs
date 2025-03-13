@@ -25,6 +25,7 @@ namespace SkincareBookingSystem.Services.IServices
         );
 
         Task<ResponseDto> CreateService(ClaimsPrincipal User, CreateServiceDto createServiceDto);
+        Task<ResponseDto> CreateBulkServices(ClaimsPrincipal User, List<CreateServiceDto> createServiceDtos);
         Task<ResponseDto> UpdateService(ClaimsPrincipal User, UpdateServiceDto updateServiceDto);
         Task<ResponseDto> DeleteService(Guid id);
     }
