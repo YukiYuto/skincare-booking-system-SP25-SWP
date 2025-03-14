@@ -6,6 +6,8 @@ using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Utilities.Constants;
 using System.Security.Claims;
 using SkincareBookingSystem.Services.Helpers.Responses;
+using SkincareBookingSystem.DataAccess.Repositories;
+using SkincareBookingSystem.Models.Dto.GetInfo;
 
 namespace SkincareBookingSystem.Services.Services
 {
@@ -17,11 +19,13 @@ namespace SkincareBookingSystem.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAutoMapperService _autoMapperService;
+        private readonly IAppointmentsRepository _appointmentsRepository;
 
-        public AppointmentService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService)
+        public AppointmentService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService, IAppointmentsRepository appointmentsRepository)
         {
             _unitOfWork = unitOfWork;
             _autoMapperService = autoMapperService;
+            _appointmentsRepository = appointmentsRepository;
         }
         public async Task<ResponseDto> CreateAppointment(ClaimsPrincipal user, CreateAppointmentDto appointmentDto)
         {
@@ -200,6 +204,18 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.Appointment.Updated,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
                     result: appointmentToUpdate);
+        }
+
+        public async Task<ResponseDto> GetAppointmentsByDateAsync(Guid customerId, DateTime date)
+        {
+            var appointments = await _appointmentsRepository.GetAppointmentsByDateAsync(customerId, date);
+            if (appointments == null || !appointments.Any())
+            {
+                return ErrorResponse.Build("No appointments found", 404);
+            }
+
+            var appointmentDtos = _autoMapperService.Map<List<Appointments>, List<GetAppointmentInfoDto>>(appointments);
+            return SuccessResponse.Build("Appointments retrieved successfully", 200, appointmentDtos);
         }
 
         private async Task<bool> SaveChangesAsync()

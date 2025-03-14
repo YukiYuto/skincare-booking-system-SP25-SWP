@@ -66,6 +66,7 @@ namespace SkincareBookingSystem.API.Extensions
 
             // add services related to Repository
             services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IAppointmentsRepository, AppointmentsRepository>();
 
             return services;
         }

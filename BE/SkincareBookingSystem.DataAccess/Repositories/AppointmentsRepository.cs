@@ -13,6 +13,25 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             _context = context;
         }
 
+        public async Task<List<Appointments>> GetAppointmentsByDateAsync(Guid customerId, DateTime date, string? includeProperties = null)
+        {
+            var query = _context.Appointments.AsQueryable();
+
+            // Filter by customer ID and date
+            query = query.Where(a => a.CustomerId == customerId && a.AppointmentDate == DateOnly.FromDateTime(date));
+
+            // Include related properties
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
+
+            return await query.ToListAsync();
+        }
+
         public void Update(Appointments target, Appointments source)
         {
             _context.Attach(target);
