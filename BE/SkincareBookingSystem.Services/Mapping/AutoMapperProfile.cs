@@ -22,17 +22,8 @@ using SkincareBookingSystem.Models.Dto.TestAnswer;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
-using SkincareBookingSystem.Models.Dto.BookingSchedule;
-using SkincareBookingSystem.Models.Dto.SkinTherapist;
-using SkincareBookingSystem.Models.Dto.Customer;
-using Microsoft.EntityFrameworkCore;
-using SkincareBookingSystem.DataAccess.Repositories;
-using SkincareBookingSystem.Models.Dto.Booking.Order;
-using SkincareBookingSystem.Models.Dto.Blog;
-using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
-using SkincareBookingSystem.Models.Dto.Payment;
-using SkincareBookingSystem.Models.Dto.Booking.Appointment;
 using SkincareBookingSystem.Models.Dto.Feedbacks;
+using SkincareBookingSystem.Models.Dto.GetCustomerInfo;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -40,6 +31,11 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // GetCustomerInfo
+        CreateMap<Customer, GetCustomerInfoDto>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName));
 
         // Feedbacks
         CreateMap<CreateFeedbackDto, Feedbacks>()
