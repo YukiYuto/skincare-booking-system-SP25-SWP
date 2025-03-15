@@ -130,8 +130,6 @@ public class Program
                         .AllowCredentials();
                 });
         });
-            // Apply database migrations  
-            ApplyMigration(app);
 
         var app = builder.Build();
 
