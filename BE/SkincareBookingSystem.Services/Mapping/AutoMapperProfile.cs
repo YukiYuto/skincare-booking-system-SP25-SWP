@@ -26,6 +26,8 @@ using SkincareBookingSystem.Models.Dto.TestAnswer;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
+using SkincareBookingSystem.Models.Dto.Feedbacks;
+using SkincareBookingSystem.Models.Dto.GetCustomerInfo;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -33,6 +35,13 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+
+        // GetCustomerInfo
+        CreateMap<Customer, GetCustomerInfoDto>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName));
+
         //ServiceDuration 
         CreateMap<CreateServiceDurationDto, ServiceDuration>();
 

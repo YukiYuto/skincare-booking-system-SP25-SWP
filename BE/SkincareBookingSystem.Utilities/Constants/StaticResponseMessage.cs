@@ -140,6 +140,8 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public const string Invalid = "Invalid customer information provided";
             public const string NotFound = "No customer found";
+            public const string Found = "Customer found";
+            public const string Retrieved = "Customer information retrieved successfully";
         }
 
         public static class Order
@@ -199,6 +201,13 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotFound = "Blog category not found.";
             public const string Updated = "Blog category updated successfully.";
             public const string NotUpdated = "Failed to update blog category.";
+        }
+
+        public static class GetCustInfo
+        {
+            public const string Retrieved = "Customer information retrieved successfully";
+            public const string NotFound = "Customer information not found";
+
         }
     }
 }

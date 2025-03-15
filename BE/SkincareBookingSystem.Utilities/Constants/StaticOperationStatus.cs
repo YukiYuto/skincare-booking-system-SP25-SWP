@@ -28,6 +28,8 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public const string NotFound = "Customer(s) not found";
             public const string Found = "Customer(s) found";
+            public const string Active = "Active";
+            public const string Disable = "Disable";
         }
 
         public static class Database
