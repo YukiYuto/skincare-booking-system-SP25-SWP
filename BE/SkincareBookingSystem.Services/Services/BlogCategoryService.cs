@@ -1,8 +1,10 @@
 ﻿using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
-//using SkincareBookingSystem.Models.Dto.BlogCategory;
+using SkincareBookingSystem.Models.Dto.BlogCategories;
 using SkincareBookingSystem.Models.Dto.Response;
+using SkincareBookingSystem.Services.Helpers.Responses;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using System.ComponentModel;
 using System.Net;
 using System.Security.Claims;
@@ -11,7 +13,7 @@ namespace SkincareBookingSystem.Services.Services
 {
     public class BlogCategoryService : IBlogCategoryService
     {
-        /*private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IAutoMapperService _mapperService;
         public BlogCategoryService(IUnitOfWork unitOfWork, IAutoMapperService mapperService)
         {
@@ -27,94 +29,118 @@ namespace SkincareBookingSystem.Services.Services
         /// </returns>
         public async Task<ResponseDto> CreateBlogCategory(ClaimsPrincipal User, CreateBlogCategoryDto blogCategoryDto)
         {
-            BlogCategory blogCategory = _mapperService.Map<CreateBlogCategoryDto, BlogCategory>(blogCategoryDto);
-
-            await _unitOfWork.BlogCategory.AddAsync(blogCategory);
-            await _unitOfWork.SaveAsync();
-
-            return new ResponseDto()
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
-                Result = blogCategory,
-                IsSuccess = true,
-                Message = "Blog Category created successfully",
-                StatusCode = 201
-            };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var blogCategory = _mapperService.Map<CreateBlogCategoryDto, BlogCategory>(blogCategoryDto);
+            blogCategory.CreatedBy = User.FindFirstValue("Fullname");
+
+            try
+            {
+                await _unitOfWork.BlogCategory.AddAsync(blogCategory);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BlogCategory.NotCreated,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
+
+            return SuccessResponse.Build(
+                message: StaticResponseMessage.BlogCategory.Created,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: blogCategory);
         }
 
         public async Task<ResponseDto> GetAllBlogCategories()
         {
-            IEnumerable<BlogCategory> blogCategories = await _unitOfWork.BlogCategory.GetAllAsync();
-            // Map the BlogCategory collection to a BlogCategoryDto collection
-            IEnumerable<GetBlogCategoryDto> blogCategoryDtos = _mapperService.MapCollection<BlogCategory, GetBlogCategoryDto>(blogCategories);
+            var blogCategoryFromDb = await _unitOfWork.BlogCategory.GetAllAsync(a => a.Status != StaticOperationStatus.BlogCategory.Deleted);
 
-            return new ResponseDto()
-            {
-                Result = blogCategoryDtos,
-                IsSuccess = true,
-                Message = "All Blog Categories",
-                StatusCode = 200
-            };
+            return (blogCategoryFromDb.Any()) ?
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BlogCategory.RetrievedAll,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: blogCategoryFromDb)
+                :
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BlogCategory.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: new List<BlogCategory>());
         }
 
-        public async Task<ResponseDto> GetBlogCategory(Guid blogCategoryId)
+        public async Task<ResponseDto> GetBlogCategory(ClaimsPrincipal User, Guid blogCategoryId)
         {
-            BlogCategory? dataFromDb = await _unitOfWork.BlogCategory.GetAsync(x => x.BlogCategoryId == blogCategoryId);
-
-            if (dataFromDb is null)
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
-                return new ResponseDto()
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = "Blog Category not found",
-                    StatusCode = 404
-                };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BlogCategory.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            GetBlogCategoryDto blogCategoryDto = _mapperService.Map<BlogCategory, GetBlogCategoryDto>(dataFromDb);
-
-            return new ResponseDto()
-            {
-                Result = blogCategoryDto,
-                IsSuccess = true,
-                Message = "Blog Category found",
-                StatusCode = 200
-            };
+            var getBlogCategoryById = await _unitOfWork.BlogCategory.GetAsync(b => b.BlogCategoryId == blogCategoryId && b.Status != StaticOperationStatus.BlogCategory.Deleted);
+            return (getBlogCategoryById is null) ?
+                ErrorResponse.Build(
+                    message: StaticResponseMessage.BlogCategory.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound)
+                :
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BlogCategory.Retrieved,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: getBlogCategoryById);
         }
 
         public async Task<ResponseDto> UpdateBlogCategory(ClaimsPrincipal User, UpdateBlogCategoryDto updateBlogCategoryDto)
         {
-            BlogCategory? dataFromDb = await _unitOfWork.BlogCategory
-                .GetAsync(x => x.BlogCategoryId == updateBlogCategoryDto.Id);
-
-            if (dataFromDb is null)
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
-                return new ResponseDto()
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = "Blog Category not found",
-                    StatusCode = 404
-                };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            BlogCategory dataUpdate = _mapperService.Map<UpdateBlogCategoryDto, BlogCategory>(updateBlogCategoryDto);
+            var blogCategoryFromDb = await _unitOfWork.BlogCategory
+                .GetAsync(x => x.BlogCategoryId == updateBlogCategoryDto.BlogCategoryId);
 
-            _unitOfWork.BlogCategory.Update(dataFromDb, dataUpdate);
-            await _unitOfWork.SaveAsync();
-
-            return new ResponseDto()
+            if (blogCategoryFromDb is null)
             {
-                Result = dataFromDb,
-                IsSuccess = true,
-                Message = "Blog Category updated successfully",
-                StatusCode = 200
-            };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BlogCategory.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var blogCategoryToUpdate = _mapperService.Map<UpdateBlogCategoryDto, BlogCategory>(updateBlogCategoryDto);
+            blogCategoryToUpdate.UpdatedBy = User.FindFirstValue("FullName");
+            blogCategoryToUpdate.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
+
+            _unitOfWork.BlogCategory.Update(blogCategoryFromDb, blogCategoryToUpdate);
+
+            if (!await SaveChangesAsync())
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.BlogCategory.NotUpdated,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
+
+            return SuccessResponse.Build(
+                message: StaticResponseMessage.BlogCategory.Updated,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: blogCategoryToUpdate);
         }
 
         public Task<ResponseDto> DeleteBlogCategory(ClaimsPrincipal User, Guid blogCategoryId)
         {
             throw new NotImplementedException();
-        }*/
+        }
+
+        private async Task<bool> SaveChangesAsync()
+        {
+            return await _unitOfWork.SaveAsync() == StaticOperationStatus.Database.Success;
+        }
+
     }
 }

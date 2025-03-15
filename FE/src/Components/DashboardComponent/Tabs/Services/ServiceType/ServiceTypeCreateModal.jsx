@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import api from "../../../../../config/axios";
+import { apiClient } from "../../../../../config/axios";
 import styles from "./ServiceTypeCreateModal.module.css";
+import { PUT_SERVICE_TYPE_API } from "../../../../../config/apiConfig";
 
 const ServiceTypeCreateModal = ({ onClose }) => {
   const [formState, setFormState] = useState({
     serviceTypeName: "",
     description: "",
   });
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
@@ -14,13 +17,22 @@ const ServiceTypeCreateModal = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+    
     try {
-      await api.post("ServiceType/create", {
-        ...formState,
-      });
+      // Use the imported API endpoint constant
+      await apiClient.post(PUT_SERVICE_TYPE_API, formState);
       onClose();
     } catch (error) {
       console.error("Error creating service type:", error);
+      setError(
+        error.response?.status === 404
+          ? "API endpoint not found. Please check your server configuration."
+          : `Error: ${error.response?.data?.message || error.message}`
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -28,6 +40,7 @@ const ServiceTypeCreateModal = ({ onClose }) => {
     <div className={styles.modal}>
       <div className={styles.modalContent}>
         <h2>New Service Type</h2>
+        {error && <div className={styles.errorMessage}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <label>
             Service Type Name:
@@ -48,12 +61,23 @@ const ServiceTypeCreateModal = ({ onClose }) => {
               required
             />
           </label>
-          <button className={styles.submitButton} type="submit">
-            Create
-          </button>
-          <button className={styles.btn} type="button" onClick={onClose}>
-            Cancel
-          </button>
+          <div className={styles.buttonContainer}>
+            <button 
+              className={styles.submitButton} 
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating..." : "Create"}
+            </button>
+            <button
+              className={styles.btn}
+              type="button"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

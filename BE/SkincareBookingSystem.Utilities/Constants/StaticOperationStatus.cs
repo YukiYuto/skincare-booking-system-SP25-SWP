@@ -28,6 +28,8 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public const string NotFound = "Customer(s) not found";
             public const string Found = "Customer(s) found";
+            public const string Active = "Active";
+            public const string Disable = "Disable";
         }
 
         public static class Database
@@ -83,8 +85,8 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string EmptyList = "Service type list is empty";
             public const string Invalid = "Invalid service type(s)";
         }
-        
-        public static class Service 
+
+        public static class Service
         {
             public const string Active = "Active";
             public const string Disable = "Disable";
@@ -156,5 +158,51 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Deleted = "DELETED";
         }
 
+        // Constants related to Blog
+        public static class Blog
+        {
+            public const string Drafting = "DRAFTING...";   // Blog đang trong giai đoạn thai nghén, chưa công khai
+            public const string Pending_review = "PENDING...";  // Blog đang chờ kiểm duyệt
+            public const string Approved = "APPROVED";  // Blog đã được kiểm duyệt và sẵn sàng công khai
+            public const string Published = "PUBLISHED"; // Blog đã được lưu lại và công khai
+            public const string Archieved = "ARCHIEVED"; // Blog đã được lưu lại nhưng không công khai
+            public const string Deleted = "DELETED";    // Xóa Blog
+        }
+
+        // Constants related to TestQuestion
+        public static class TestQuestion
+        {
+            public const string Created = "CREATED";
+            public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+
+        }
+
+        // Constants related to TestAnswer
+        public static class TestAnswer
+        {
+            public const string Created = "CREATED";
+            public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+        }
+      
+        // Constants related to Feedback
+        public static class Feedback
+        {
+            public const string Created = "CREATED";
+            public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+        }
+
+        // Constants related to BlogCategory
+        public static class BlogCategory
+        {
+            public const string Created = "CREATED";
+            public const string Confirmed = "CONFIRMED";
+            public const string Cancelled = "CANCELLED";
+            public const string Completed = "COMPLETED";
+            public const string Rescheduled = "RESCHEDULED";
+            public const string Deleted = "DELETED";
+        }
     }
 }

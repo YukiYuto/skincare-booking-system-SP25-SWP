@@ -413,7 +413,8 @@ namespace SkincareBookingSystem.Services.Services
                         AppointmentId = appointmentFromDb.AppointmentId,
                         Status = ScheduleStatus.Cancelled
                     });
-            } catch
+            }
+            catch
             {
                 await transaction.RollbackAsync();
                 return ErrorResponse.Build(
@@ -428,5 +429,5 @@ namespace SkincareBookingSystem.Services.Services
             return Convert.ToInt32(orderDetails.Sum(detail => detail.Price));
         }
 
-    }
+        }
 }

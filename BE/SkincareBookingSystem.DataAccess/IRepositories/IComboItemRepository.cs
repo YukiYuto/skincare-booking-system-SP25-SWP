@@ -1,14 +1,15 @@
 ﻿using SkincareBookingSystem.Models.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SkincareBookingSystem.DataAccess.IRepositories
+namespace SkincareBookingSystem.DataAccess.IRepositories;
+
+public interface IComboItemRepository : IRepository<ComboItem>
 {
-    public interface IComboItemRepository : IRepository<ComboItem>
-    {
-
-    }
+    public Task<(List<ComboItem> ComboItems, int TotalComboItems)> GetAllComboItemAsync
+    (
+        int pageNumber,
+        int pageSize,
+        string? filterOn,
+        string? filterQuery,
+        string? sortBy
+    );
 }

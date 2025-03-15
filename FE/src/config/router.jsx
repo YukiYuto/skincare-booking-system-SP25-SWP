@@ -14,7 +14,7 @@ import Dashboard from "../Pages/DashBoard/Dashboard";
 import Revenue from "../Components/DashboardComponent/Tabs/Revenue/Revenue";
 import Customers from "../Components/DashboardComponent/Tabs/Customers/Customers";
 import SkinTherapists from "../Components/DashboardComponent/Tabs/Therapists/SkinTherapists";
-import Services from '../Components/DashboardComponent/Tabs/Services/Services';
+import Services from "../Components/DashboardComponent/Tabs/Services/Services";
 import Orders from "../Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "../Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";

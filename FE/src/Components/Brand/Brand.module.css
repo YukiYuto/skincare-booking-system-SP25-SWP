@@ -9,6 +9,12 @@
     letter-spacing: 1.2px;
     color: #5a5a5a;
     text-align: center;
+    text-decoration: none;
+}
+
+.brand span {
+    font-size: 32px;
+    font-weight: 700;
 }
 
 .brandHighlight {

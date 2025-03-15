@@ -9,6 +9,12 @@ namespace SkincareBookingSystem.DataAccess.IRepositories
 {
     public interface ICustomerRepository : IRepository<Customer>
     {
+        void Update (Customer target, Customer source);
+
+        
+            Task<Customer?> GetCustomerByEmailAsync(string email, string? includeProperties = null);
+            Task<Customer?> GetCustomerByPhoneNumberAsync(string phoneNumber, string? includeProperties = null);
+        
 
     }
 }

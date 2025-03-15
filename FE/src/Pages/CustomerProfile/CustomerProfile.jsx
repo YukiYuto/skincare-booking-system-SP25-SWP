@@ -5,10 +5,13 @@ import Header from "../../Components/Common/Header";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { updateUser } from "../../redux/auth/slice";
-import { CHANGE_PASSWORD, UPDATE_PROFILE, UPLOAD_AVATAR } from "../../config/apiConfig";
+import {
+  GET_CUSTOMER_PROFILE_API,
+  POST_CUSTOMER_AVATAR_API,
+} from "../../config/apiConfig";
 
 const UserProfile = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user, accessToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -23,8 +26,8 @@ const UserProfile = () => {
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
 
-  const accessToken = user.accessToken;
-
+  console.log(user);
+  console.log(accessToken);
   // Khi chọn file, upload luôn avatar
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -36,16 +39,13 @@ const UserProfile = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch(
-        UPLOAD_AVATAR,
-        {
-          method: "POST",
-          headers: {
-              Authorization: `Bearer ${accessToken}`,
-          },
-          body: formData,
-        }
-      );
+      const response = await fetch(POST_CUSTOMER_AVATAR_API, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
 
       const data = await response.json();
 
@@ -77,7 +77,7 @@ const UserProfile = () => {
     setUpdateLoading(true);
     console.log("Final userData before sending:", userData);
     try {
-      const response = await fetch(UPDATE_PROFILE, {
+      const response = await fetch(GET_CUSTOMER_PROFILE_API, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -97,85 +97,96 @@ const UserProfile = () => {
       }
     } catch (error) {
       toast.error("Error updating information!");
-    } finally{
+    } finally {
       setUpdateLoading(false);
     }
   };
 
   // Hiển thị modal đổi mật khẩu
-const showChangePasswordModal = () => {
-  setIsModalVisible(true);
-};
+  const showChangePasswordModal = () => {
+    setIsModalVisible(true);
+  };
 
-// Đóng modal
-const handleCancel = () => {
-  setIsModalVisible(false);
-  setPasswords({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
-};
+  // Đóng modal
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setPasswords({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
+  };
 
-// Xử lý input thay đổi
-const handlePasswordChange = (e) => {
-  setPasswords({ ...passwords, [e.target.name]: e.target.value });
-};
+  // Xử lý input thay đổi
+  const handlePasswordChange = (e) => {
+    setPasswords({ ...passwords, [e.target.name]: e.target.value });
+  };
 
-// Gửi yêu cầu đổi mật khẩu
-const handleChangePassword = async () => {
-  if (passwords.newPassword !== passwords.confirmNewPassword) {
-    toast.error("New Password and Confirm Password do not match!");
-    return;
-  }
-
-  setPasswordLoading(true);
-
-  try {
-    const response = await fetch(CHANGE_PASSWORD, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        userId: user.id, // Truyền userId từ state
-        oldPassword: passwords.oldPassword,
-        newPassword: passwords.newPassword,
-        confirmNewPassword: passwords.confirmNewPassword,
-      }),
-    });
-
-    if (response.ok) {
-      toast.success("Change password successfully!"); // Hiển thị thông báo thành công
-      handleCancel(); // Đóng modal nếu có
-    } else {
-      toast.error("Cannot change password!"); // Hiển thị lỗi nếu có
+  // Gửi yêu cầu đổi mật khẩu
+  const handleChangePassword = async () => {
+    if (passwords.newPassword !== passwords.confirmNewPassword) {
+      toast.error("New Password and Confirm Password do not match!");
+      return;
     }
 
-  } catch (error) {
-    toast.error("Error changing password!");
-  } finally {
-    setPasswordLoading(false);
-  }
-};
-  
+    setPasswordLoading(true);
+
+    try {
+      const response = await fetch(
+        "https://localhost:7037/api/Auth/password/change",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            userId: user.id, // Truyền userId từ state
+            oldPassword: passwords.oldPassword,
+            newPassword: passwords.newPassword,
+            confirmNewPassword: passwords.confirmNewPassword,
+          }),
+        }
+      );
+
+      // Kiểm tra nếu server trả về text thay vì JSON
+      const textResponse = await response.text();
+
+      if (response.ok) {
+        toast.success(textResponse); // Hiển thị thông báo thành công
+        handleCancel(); // Đóng modal nếu có
+      } else {
+        toast.error(`Error: ${textResponse}`); // Hiển thị lỗi nếu có
+      }
+    } catch (error) {
+      toast.error("Error changing password!");
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   return (
     <div className={styles.bodyPage}>
       <Header />
       <div className={styles.profileContainer}>
         <h2>Customer Profile</h2>
         <div>
-          <p>Choose file here:</p><input className={styles.fileinput} type="file" onChange={handleFileChange} disabled={uploadLoading} />
-          <img 
+          <p>Choose file here:</p>
+          <input
+            className={styles.fileinput}
+            type="file"
+            onChange={handleFileChange}
+            disabled={uploadLoading}
+          />
+          <img
             className={styles.avatarpreview}
-            src={imageUrl || userData.imageUrl} 
-            alt="Avatar" 
+            src={imageUrl || userData.imageUrl}
+            alt="Avatar"
           />
           {uploadLoading && <p>Uploading...</p>}
         </div>
 
         <Form form={form} layout="vertical">
-          <Row style={{marginTop: "20px"}} gutter={16}>
+          <Row style={{ marginTop: "20px" }} gutter={16}>
             <Col span={12}>
               <Form.Item label="Full Name">
-              <Input
+                <Input
                   name="fullName"
                   value={userData.fullName}
                   onChange={handleInputChange}
@@ -184,7 +195,7 @@ const handleChangePassword = async () => {
             </Col>
             <Col span={12}>
               <Form.Item label="Email">
-              <p>{userData.email}</p>
+                <p>{userData.email}</p>
               </Form.Item>
             </Col>
           </Row>
@@ -192,7 +203,7 @@ const handleChangePassword = async () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="Phone">
-              <Input
+                <Input
                   name="phoneNumber"
                   value={userData.phoneNumber}
                   onChange={handleInputChange}
@@ -201,7 +212,7 @@ const handleChangePassword = async () => {
             </Col>
             <Col span={12}>
               <Form.Item label="Address">
-              <Input
+                <Input
                   name="address"
                   value={userData.address}
                   onChange={handleInputChange}
@@ -213,7 +224,7 @@ const handleChangePassword = async () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="Age">
-              <Input
+                <Input
                   name="age"
                   value={userData.age}
                   onChange={handleInputChange}
@@ -222,7 +233,7 @@ const handleChangePassword = async () => {
             </Col>
             <Col span={12}>
               <Form.Item label="Gender">
-              <Input
+                <Input
                   name="gender"
                   value={userData.gender}
                   onChange={handleInputChange}
@@ -232,12 +243,12 @@ const handleChangePassword = async () => {
           </Row>
         </Form>
         <div style={{ marginTop: "20px" }}>
-              <Button type="primary" onClick={handleUpdateProfile}>
-              {updateLoading ? "Saving..." : "Save"}
-              </Button>
-              <Button type="default" onClick={showChangePasswordModal}>
-                Change password
-              </Button>
+          <Button type="primary" onClick={handleUpdateProfile}>
+            {updateLoading ? "Saving..." : "Save"}
+          </Button>
+          <Button type="default" onClick={showChangePasswordModal}>
+            Change password
+          </Button>
         </div>
         {/* Modal đổi mật khẩu */}
         <Modal
@@ -248,20 +259,37 @@ const handleChangePassword = async () => {
             <Button key="cancel" onClick={handleCancel}>
               Cancel
             </Button>,
-            <Button key="submit" type="primary" onClick={handleChangePassword} disabled={passwordLoading}>
+            <Button
+              key="submit"
+              type="primary"
+              onClick={handleChangePassword}
+              disabled={passwordLoading}
+            >
               {passwordLoading ? <Spin /> : "Save"}
             </Button>,
           ]}
         >
           <Form layout="vertical">
             <Form.Item label="Old Password">
-              <Input.Password name="oldPassword" value={passwords.oldPassword} onChange={handlePasswordChange} />
+              <Input.Password
+                name="oldPassword"
+                value={passwords.oldPassword}
+                onChange={handlePasswordChange}
+              />
             </Form.Item>
             <Form.Item label="New Password">
-              <Input.Password name="newPassword" value={passwords.newPassword} onChange={handlePasswordChange} />
+              <Input.Password
+                name="newPassword"
+                value={passwords.newPassword}
+                onChange={handlePasswordChange}
+              />
             </Form.Item>
             <Form.Item label="Confirm New Password">
-              <Input.Password name="confirmNewPassword" value={passwords.confirmNewPassword} onChange={handlePasswordChange} />
+              <Input.Password
+                name="confirmNewPassword"
+                value={passwords.confirmNewPassword}
+                onChange={handlePasswordChange}
+              />
             </Form.Item>
           </Form>
         </Modal>
@@ -271,5 +299,3 @@ const handleChangePassword = async () => {
 };
 
 export default UserProfile;
-
-

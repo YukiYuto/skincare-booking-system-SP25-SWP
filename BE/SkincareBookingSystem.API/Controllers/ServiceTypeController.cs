@@ -21,7 +21,15 @@ namespace SkincareBookingSystem.API.Controllers
         [SwaggerOperation(Summary = "API creates a ServiceType", Description = "Requires admin role")]
         public async Task<IActionResult> CreateServiceType([FromBody] CreateServiceTypeDto createServiceTypeDto)
         {
-            var result = await _serviceTypeService.CreateServiceType(User ,createServiceTypeDto);
+            var result = await _serviceTypeService.CreateServiceType(User, createServiceTypeDto);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("bulk")]
+        [SwaggerOperation(Summary = "API creates multiple ServiceTypes", Description = "Requires admin role")]
+        public async Task<IActionResult> CreateBulkServiceTypes([FromBody] List<CreateServiceTypeDto> createServiceTypeDtos)
+        {
+            var result = await _serviceTypeService.CreateBulkServiceTypes(User, createServiceTypeDtos);
             return StatusCode(result.StatusCode, result);
         }
 

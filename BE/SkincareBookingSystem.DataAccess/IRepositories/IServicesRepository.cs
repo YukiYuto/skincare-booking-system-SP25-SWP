@@ -1,4 +1,3 @@
-using System;
 using SkincareBookingSystem.Models.Domain;
 
 namespace SkincareBookingSystem.DataAccess.IRepositories;
@@ -12,7 +11,8 @@ public interface IServicesRepository : IRepository<Services>
         string? filterOn,
         string? filterQuery,
         string? sortBy,
-        bool isManager = false
+        bool isManager = false,
+        string? includeProperties = null
     );
 
     void Update(Services target, Services source);

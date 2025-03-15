@@ -15,6 +15,7 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> GetServiceTypeById(Guid id);
         Task<ResponseDto> GetAllServiceTypes();
         Task<ResponseDto> CreateServiceType(ClaimsPrincipal User, CreateServiceTypeDto createServiceTypeDto);
+        Task<ResponseDto> CreateBulkServiceTypes(ClaimsPrincipal User, List<CreateServiceTypeDto> createServiceTypeDtos);
         Task<ResponseDto> UpdateServiceType(ClaimsPrincipal User, UpdateServiceTypeDto updateServiceTypeDto);
         Task<ResponseDto> DeleteServiceType(Guid id);
     }
