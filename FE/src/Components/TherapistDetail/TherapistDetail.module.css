@@ -1,0 +1,29 @@
+.therapistDetail{
+  background-image: url("../../assets/images/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0px auto;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+  
+  .image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
+  
+  .backButton {
+    margin-top: 30px;
+    margin-left: 30px;
+  }
+  
