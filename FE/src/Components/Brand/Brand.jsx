@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import styles from "./Brand.module.css";
-import { Link } from "react-router-dom";
 
 const Brand = ({ override }) => {
   return (
