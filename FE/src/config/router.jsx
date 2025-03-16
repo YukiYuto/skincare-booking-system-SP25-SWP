@@ -21,7 +21,10 @@ import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import TableCustomer from "../Components/TableCustomer/TableCustomer";
 import TherapistCard from "../Components/TherapistCard/TherapistCard";
 import TherapistDetail from "../Components/TherapistDetail/TherapistDetail";
-
+import StaffManagement from "../Pages/Staff/StaffManagement/StaffManagement";
+import ScheduleManagement from "../Pages/Staff/ScheduleManagement/ScheduleManagement";
+import TherapistManagement from "../Pages/Therapist/TherapistManagement/TherapistManagement";
+import TherapistSchedule from "../Pages/Therapist/TherapistSchedule/TherapistSchedule";
 
 export const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -81,5 +84,21 @@ export const router = createBrowserRouter([
   {
     path: "/therapist/:therapistId",
     element: <TherapistDetail />,
+  },
+  {
+    path: "staff-management",
+    element: <StaffManagement />,
+  },
+  {
+    path: "schedule-management",
+    element: <ScheduleManagement />,
+  },
+  {
+    path: "therapist-management",
+    element: <TherapistManagement />,
+  },
+  {
+    path: "therapist-schedule",
+    element: <TherapistSchedule />,
   }
 ]);

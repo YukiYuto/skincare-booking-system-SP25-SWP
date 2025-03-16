@@ -1,22 +1,22 @@
 import { useState } from "react";
 import { Calendar, Badge, Card } from "antd";
 import dayjs from "dayjs";
-import styles from "./TableCustomer.module.css";
+import styles from "./TableTherapist.module.css";
 
 const bookings = [
-  { date: "2025-02-28", service: "Facial Treatment", therapist: "Dr. Alice", time: "10:00 AM" },
-  { date: "2025-03-01", service: "Acne Removal", therapist: "Dr. Bob", time: "2:00 PM" },
-  { date: "2025-03-05", service: "Skin Hydration", therapist: "Dr. Charlie", time: "4:00 PM" },
+  { date: "2025-02-28", service: "Facial Treatment", customer: "Alice", time: "10:00 AM" },
+  { date: "2025-03-01", service: "Acne Removal", customer: "Bob", time: "2:00 PM" },
+  { date: "2025-03-05", service: "Skin Hydration", customer: "Charlie", time: "4:00 PM" },
 ];
 
-const TableCustomer = () => {
+const TableTherapist = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const selectedBooking = bookings.find((b) => b.date === selectedDate);
 
   const cellRender = (value) => {
     const dateStr = dayjs(value).format("YYYY-MM-DD");
     const isBooked = bookings.some((b) => b.date === dateStr);
-    return isBooked ? <Badge status="success" text="Reserved" className={styles.badge} /> : null;
+    return isBooked ? <Badge status="success" text="Booked" className={styles.badge} /> : null;
   };
 
   const onSelectDate = (value) => {
@@ -39,7 +39,7 @@ const TableCustomer = () => {
             <>
               <p className={styles.text}><strong>Date:</strong> {selectedBooking.date}</p>
               <p className={styles.text}><strong>Service:</strong> {selectedBooking.service}</p>
-              <p className={styles.text}><strong>Therapist:</strong> {selectedBooking.therapist}</p>
+              <p className={styles.text}><strong>Customer:</strong> {selectedBooking.customer}</p>
               <p className={styles.text}><strong>Time:</strong> {selectedBooking.time}</p>
             </>
           ) : (
@@ -51,4 +51,4 @@ const TableCustomer = () => {
   );
 };
 
-export default TableCustomer;
+export default TableTherapist;

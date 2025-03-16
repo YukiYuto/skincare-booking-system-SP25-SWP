@@ -75,7 +75,7 @@ const TherapistCard = () => {
   return (
     <div className={styles.therapistList}>
     <Header />
-    <h1 style={{ textAlign: 'center', margin: '20px 0' }}>Therapist</h1>
+    <h1 style={{ textAlign: 'center', marginTop: "130px" }}>Therapist</h1>
     <div className={styles.container}>
       <div className={styles.controls}>
         <Search
