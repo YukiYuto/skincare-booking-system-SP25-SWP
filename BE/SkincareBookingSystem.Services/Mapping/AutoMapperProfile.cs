@@ -209,7 +209,9 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId));
 
         //BookingSchedule
-        CreateMap<CreateTherapistScheduleDto, TherapistSchedule>();
+        CreateMap<CreateTherapistScheduleDto, TherapistSchedule>()
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.BaseEntity.Active));
         CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>();
 
         //Order
