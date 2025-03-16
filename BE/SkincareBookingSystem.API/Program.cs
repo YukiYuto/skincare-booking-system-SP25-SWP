@@ -131,6 +131,7 @@ public class Program
                         .AllowCredentials();
                 });
         });
+      
         // Apply database migrations  
         //ApplyMigration(app);
 
