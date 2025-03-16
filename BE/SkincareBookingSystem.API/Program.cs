@@ -11,6 +11,7 @@ using SkincareBookingSystem.API.Middlewares;
 using SkincareBookingSystem.DataAccess.DBContext;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Utilities.Constants;
+
 //using Net.payOS;
 
 namespace SkincareBookingSystem.API;
@@ -130,6 +131,9 @@ public class Program
                         .AllowCredentials();
                 });
         });
+      
+        // Apply database migrations  
+        //ApplyMigration(app);
 
         var app = builder.Build();
 

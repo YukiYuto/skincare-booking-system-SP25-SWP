@@ -56,4 +56,9 @@ public class ComboItemRepository : Repository<ComboItem>, IComboItemRepository
 
         return (comboItems, totalComboItems);
     }
+
+    public void Update(ComboItem comboItem)
+    {
+        _context.ComboItem.Update(comboItem);
+    }
 }
