@@ -161,11 +161,14 @@ namespace SkincareBookingSystem.Services.Services
                 return ErrorResponse.Build(StaticResponseMessage.Slot.InvalidSelected, StaticOperationStatus.StatusCode.BadRequest);
 
             // 3. Check if the therapist is already scheduled for the selected slot
-            var existingTherapistSchedule = await _unitOfWork.TherapistSchedule
-                .GetAsync(
-                    filter: ts => IsScheduleExisting(ts, bookingRequest) && !IsScheduleDisabled(ts),
+            var therapistScheduleFromDb = await _unitOfWork.TherapistSchedule
+                .GetAllAsync(
+                    filter: ts => ts.SlotId == bookingRequest.SlotId,
                     includeProperties: nameof(TherapistSchedule.Appointment))
                 .ConfigureAwait(false);
+
+            var existingTherapistSchedule = therapistScheduleFromDb
+                .FirstOrDefault(ts => IsScheduleExisting(ts, bookingRequest));
 
             if (existingTherapistSchedule is not null)
                 return ErrorResponse.Build(StaticResponseMessage.TherapistSchedule.AlreadyScheduled, StaticOperationStatus.StatusCode.BadRequest);
@@ -429,5 +432,5 @@ namespace SkincareBookingSystem.Services.Services
             return Convert.ToInt32(orderDetails.Sum(detail => detail.Price));
         }
 
-        }
+    }
 }
