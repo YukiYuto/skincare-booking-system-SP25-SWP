@@ -225,34 +225,10 @@ public class BookingService : IBookingService
                     StaticOperationStatus.StatusCode.BadRequest);
 
             // 3. Check if the therapist is already scheduled for the selected slot
-            /*var existingTherapistSchedule = await _unitOfWork.TherapistSchedule
-                .GetAsync(
-                    ts => IsScheduleExisting(ts, bookingRequest) && !IsScheduleDisabled(ts),
-                    nameof(TherapistSchedule.Appointment))
-                .ConfigureAwait(false);
-*/
-
-
-            /*var existingTherapistSchedule = await _unitOfWork.TherapistSchedule
-                .GetListAsync(ts =>
-                        ts.TherapistId == bookingRequest.TherapistId &&
-                        ts.Appointment.AppointmentDate == bookingRequest.AppointmentDate &&
-                        ts.SlotId == bookingRequest.SlotId &&
-                        ts.ScheduleStatus != ScheduleStatus.Unavailable &&
-                        ts.ScheduleStatus != ScheduleStatus.Cancelled &&
-                        ts.ScheduleStatus != ScheduleStatus.Rejected &&
-                        ts.ScheduleStatus != ScheduleStatus.Rescheduled,
-                    nameof(TherapistSchedule.Appointment));
-
-            if (existingTherapistSchedule.Any())
-                return ErrorResponse.Build(StaticResponseMessage.TherapistSchedule.AlreadyScheduled,
-                    StaticOperationStatus.StatusCode.BadRequest);
-                    */
-
             var therapistScheduleFromDb = await _unitOfWork.TherapistSchedule
                 .GetAllAsync(
-                    ts => ts.SlotId == bookingRequest.SlotId,
-                    nameof(TherapistSchedule.Appointment))
+                    filter: ts => ts.SlotId == bookingRequest.SlotId,
+                    includeProperties: nameof(TherapistSchedule.Appointment))
                 .ConfigureAwait(false);
 
             var existingTherapistSchedule = therapistScheduleFromDb
@@ -566,3 +542,4 @@ public class BookingService : IBookingService
         return Convert.ToInt32(orderDetails.Sum(detail => detail.Price));
     }
 }
+
