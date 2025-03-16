@@ -296,7 +296,7 @@ public class PaymentService : IPaymentService
                     PaymentId = payment.PaymentTransactionId,
                     Amount = payment.Amount,
                     TransactionMethod = "Transfer",
-                    TransactionDateTime = DateTime.UtcNow
+                    TransactionDateTime = DateTime.UtcNow.AddHours(7)
                 };
 
                 await _unitOfWork.Transaction.AddAsync(transaction);
