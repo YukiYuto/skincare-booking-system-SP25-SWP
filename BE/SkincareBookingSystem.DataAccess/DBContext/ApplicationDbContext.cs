@@ -22,6 +22,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Feedbacks> Feedbacks { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<OrderDetail> OrderDetail { get; set; }
+
+    public DbSet<OrderServiceTracking> OrderServiceTracking { get; set; }
     public DbSet<ServiceDuration> ServiceDurations { get; set; }
     public DbSet<Services> Services { get; set; }
     public DbSet<ServiceCombo> ServiceCombo { get; set; }

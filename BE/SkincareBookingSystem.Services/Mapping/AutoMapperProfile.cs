@@ -13,6 +13,7 @@ using SkincareBookingSystem.Models.Dto.ComboItem;
 using SkincareBookingSystem.Models.Dto.Customer;
 using SkincareBookingSystem.Models.Dto.DurationItem;
 using SkincareBookingSystem.Models.Dto.Feedbacks;
+using SkincareBookingSystem.Models.Dto.GetCustomerInfo;
 using SkincareBookingSystem.Models.Dto.OrderDetails;
 using SkincareBookingSystem.Models.Dto.Orders;
 using SkincareBookingSystem.Models.Dto.Payment;
@@ -26,8 +27,6 @@ using SkincareBookingSystem.Models.Dto.TestAnswer;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
-using SkincareBookingSystem.Models.Dto.Feedbacks;
-using SkincareBookingSystem.Models.Dto.GetCustomerInfo;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -35,7 +34,6 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-
         // GetCustomerInfo
         CreateMap<Customer, GetCustomerInfoDto>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
@@ -117,6 +115,8 @@ public class AutoMapperProfile : Profile
         CreateMap<ComboItem, ServicePriorityDto>()
             .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
             .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority));
+
+        CreateMap<ComboItem, GetComboItemDto>().ReverseMap();
 
         CreateMap<ServicePriorityDto, ComboItem>()
             .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
