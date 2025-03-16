@@ -1,6 +1,4 @@
-﻿namespace SkincareBookingSystem.Models.Dto.Booking.Appointment;
-
-namespace SkincareBookingSystem.Models.Dto.Booking.Appointment
+﻿namespace SkincareBookingSystem.Models.Dto.Booking.Appointment
 {
     public class BookAppointmentDto
     {
