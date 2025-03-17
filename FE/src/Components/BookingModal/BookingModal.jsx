@@ -16,6 +16,7 @@ import {
   GET_CUSTOMER_USER_API,
   POST_BOOKING_API,
 } from "../../config/apiConfig";
+import { useNavigate } from "react-router-dom";
 
 const { Step } = Steps;
 
@@ -36,6 +37,8 @@ const BookingModal = ({ visible, onClose }) => {
 
   const [occupiedSlots, setOccupiedSlots] = useState([]);
   const { user } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
 
   const next = () => setCurrent(current + 1);
   const prev = () => setCurrent(current - 1);
@@ -163,7 +166,7 @@ const BookingModal = ({ visible, onClose }) => {
     const customerId = customerResponse.data.result;
     const orderData = {
       order: {
-        customerId: customerId, // Lấy từ Redux store
+        customerId: customerId, 
         totalPrice: selectedService?.price || 0,
       },
       orderDetails: [
@@ -200,6 +203,7 @@ const BookingModal = ({ visible, onClose }) => {
         localStorage.setItem("orderNumber", data.result.orderNumber);
         onClose();
         resetState();
+        navigate("/payment");
       })
       .catch((err) => {
         toast.error(`Có lỗi xảy ra: ${err.message}`);

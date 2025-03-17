@@ -40,6 +40,36 @@ public class ComboItemService : IComboItemService
                 StatusCode = 400
             };
 
+        var serviceIds = createComboItemDto.ServicePriorityDtos.Select(sp => sp.ServiceId).ToList();
+
+        var services = await _unitOfWork.Services.GetAllAsync(s => serviceIds.Contains(s.ServiceId));
+
+        if (services == null || !services.Any())
+            return new ResponseDto
+            {
+                Message = "No valid services found",
+                IsSuccess = false,
+                StatusCode = 404
+            };
+
+        // Calculate total price of all services
+        var totalPrice = services.Sum(s => s.Price);
+
+        // Get the ServiceCombo to update its price
+        var serviceCombo =
+            (await _unitOfWork.ServiceCombo.GetAllAsync(sc => sc.ServiceComboId == createComboItemDto.ServiceComboId))
+            .FirstOrDefault();
+
+        if (serviceCombo == null)
+            return new ResponseDto
+            {
+                Message = "Service combo not found",
+                IsSuccess = false,
+                StatusCode = 404
+            };
+
+        serviceCombo.Price = totalPrice;
+
         var comboItems = createComboItemDto.ServicePriorityDtos.Select(sp => new ComboItem
         {
             ServiceComboId = createComboItemDto.ServiceComboId,
@@ -47,18 +77,25 @@ public class ComboItemService : IComboItemService
             Priority = sp.Priority
         }).ToList();
 
-        //var comboItem = _mapper.Map<CreateComboItemDto, ComboItem>(createComboItemDto);
         await _unitOfWork.ComboItem.AddRangeAsync(comboItems);
+        _unitOfWork.ServiceCombo.Update(serviceCombo);
         await _unitOfWork.SaveAsync();
+
+        var comboItemDtos = _autoMapper.MapCollection<ComboItem, GetComboItemDto>(comboItems);
 
         return new ResponseDto
         {
             Message = "Create Combo Item Successful",
             IsSuccess = true,
             StatusCode = 201,
-            Result = comboItems
+            Result = new
+            {
+                ComboItems = comboItemDtos,
+                TotalPrice = totalPrice
+            }
         };
     }
+
 
     public async Task<ResponseDto> GetAllComboItem
     (

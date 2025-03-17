@@ -34,19 +34,76 @@
 }
 
 .profileButton {
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 6px 12px;
+    border-radius: 40px;
     cursor: pointer;
-    display: flex;
+    position: relative;
+    display: inline-block;
     align-items: center;
-    gap: 5px; /* Khoảng cách giữa text và icon */
-    transition: background 0.3s ease-in-out;
-    width: 200px;
+    width: fit-content;
     margin-right: 50px;
+    transition: box-shadow 0.3s ease;
 }
 
-.profileButton:hover {
-    background: #f5f5f5;
+.profileButton :hover {
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
 }
+
+.downIcon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: white; 
+    border-radius: 50%;
+    padding: 2px;
+    font-size: 10px; 
+}
+
+/* Phần menu dropdown */
+.dropdownMenu {
+    width: 250px;
+    border-radius: 10px;
+    padding: 10px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Phần hiển thị thông tin user */
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+}
+
+.userName {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Đường phân cách */
+.menuDivider {
+    margin: 8px 0;
+    background: #eaeaea;
+}
+
+/* Tùy chỉnh menu item */
+.ant-dropdown-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px !important;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.ant-dropdown-menu-item:hover {
+    background: #f0f2f5;
+}
+
+/* Icon trong menu */
+.menuIcon {
+    font-size: 18px;
+    color: #555;
+}
+
+

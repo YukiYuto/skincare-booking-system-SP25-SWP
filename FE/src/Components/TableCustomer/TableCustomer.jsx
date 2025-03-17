@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Calendar, Badge, Card } from "antd";
 import dayjs from "dayjs";
-import styles from "./TableCustomer.module.css"; // Import file CSS module
+import styles from "./TableCustomer.module.css";
 
 const bookings = [
   { date: "2025-02-28", service: "Facial Treatment", therapist: "Dr. Alice", time: "10:00 AM" },
@@ -16,7 +16,7 @@ const TableCustomer = () => {
   const cellRender = (value) => {
     const dateStr = dayjs(value).format("YYYY-MM-DD");
     const isBooked = bookings.some((b) => b.date === dateStr);
-    return isBooked ? <Badge status="error" text="Booked" /> : null;
+    return isBooked ? <Badge status="success" text="Reserved" className={styles.badge} /> : null;
   };
 
   const onSelectDate = (value) => {
@@ -26,25 +26,26 @@ const TableCustomer = () => {
   return (
     <div className={styles.container}>
       <div className={styles.calendarSection}>
+        <h2 className={styles.title}>Booking Calendar</h2>
         <Calendar 
-          cellRender={cellRender}
+          cellRender={cellRender} 
           onSelect={onSelectDate} 
-          className={styles.calendar}
+          className={styles.calendar} 
         />
       </div>
       <div className={styles.detailSection}>
-        {selectedBooking ? (
-          <Card title="Booking Details" className={styles.card}>
-            <p><strong>Date:</strong> {selectedBooking.date}</p>
-            <p><strong>Service:</strong> {selectedBooking.service}</p>
-            <p><strong>Therapist:</strong> {selectedBooking.therapist}</p>
-            <p><strong>Time:</strong> {selectedBooking.time}</p>
-          </Card>
-        ) : (
-          <Card title="Booking Details" className={styles.card}>
-            <p>No booking for this date.</p>
-          </Card>
-        )}
+        <Card title="Booking Details" className={styles.card}>
+          {selectedBooking ? (
+            <>
+              <p className={styles.text}><strong>Date:</strong> {selectedBooking.date}</p>
+              <p className={styles.text}><strong>Service:</strong> {selectedBooking.service}</p>
+              <p className={styles.text}><strong>Therapist:</strong> {selectedBooking.therapist}</p>
+              <p className={styles.text}><strong>Time:</strong> {selectedBooking.time}</p>
+            </>
+          ) : (
+            <p className={styles.noBooking}>Select a date to view details</p>
+          )}
+        </Card>
       </div>
     </div>
   );

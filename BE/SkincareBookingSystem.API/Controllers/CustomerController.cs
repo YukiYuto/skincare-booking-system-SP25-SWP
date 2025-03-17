@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
@@ -37,6 +39,24 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<IActionResult> GetCustomerIdByUserId()
         {
             var response = await _customerService.GetCustomerIdByUserId(User);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("email")]
+        [Authorize(Roles = StaticUserRoles.Staff)]
+        [SwaggerOperation(Summary = "API gets a customer's info by email", Description = "Requires staff, admin roles")]
+        public async Task<IActionResult> GetCustomerInfoByEmailAsync([FromQuery] string email)
+        {
+            var response = await _customerService.GetCustomerInfoByEmailAsync(email);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("phone")]
+        [Authorize(Roles = StaticUserRoles.Staff)]
+        [SwaggerOperation(Summary = "API gets a customer's info by phone number", Description = "Requires staff, admin roles")]
+        public async Task<IActionResult> GetCustomerInfoByPhoneNumberAsync([FromQuery] string phoneNumber)
+        {
+            var response = await _customerService.GetCustomerInfoByPhoneNumberAsync(phoneNumber);
             return StatusCode(response.StatusCode, response);
         }
     }
