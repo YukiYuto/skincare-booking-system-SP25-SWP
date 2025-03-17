@@ -90,7 +90,7 @@ const BookingModal = ({ visible, onClose, selectedService }) => {
     if (selectedDate && selectedTherapist) {
       const fetchOccupiedSlots = async () => {
         const response = await getOccupiedSlots(
-          selectedTherapist,
+          selectedTherapist.skinTherapistId,
           selectedDate
         );
         if (response?.result) {
@@ -100,11 +100,7 @@ const BookingModal = ({ visible, onClose, selectedService }) => {
 
       fetchOccupiedSlots();
     }
-  }, [selectedDate, selectedTherapist]);
-
-  useEffect(() => {
-    console.log("Updated Booking Details in Redux:", bookingDetails);
-  }, [bookingDetails]);
+  }, [selectedDate]);
 
   const handleFinish = async () => {
     if (!selectedTherapist || !selectedDate || !selectedTime) {
