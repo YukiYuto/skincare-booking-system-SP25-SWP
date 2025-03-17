@@ -25,6 +25,7 @@ using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Slot;
 using SkincareBookingSystem.Models.Dto.TestAnswer;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
+using SkincareBookingSystem.Models.Dto.TherapistSchedules;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
 
@@ -217,6 +218,10 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.TherapistScheduleId, opt => opt.MapFrom(src => src.TherapistScheduleId))
             .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
             .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
+        CreateMap<TherapistSchedule, GetTherapistScheduleDto>()
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
             .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
 
         //Order

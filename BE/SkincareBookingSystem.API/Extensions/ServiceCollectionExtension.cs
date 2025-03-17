@@ -65,6 +65,7 @@ public static class ServiceCollectionExtension
 
         // add services related to Repository
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<ITherapistScheduleRepository, TherapistScheduleRepository>();
 
         return services;
     }

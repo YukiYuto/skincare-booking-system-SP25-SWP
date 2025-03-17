@@ -12,18 +12,21 @@ using SkincareBookingSystem.Services.IServices;
 using System.Security.Claims;
 using SkincareBookingSystem.Utilities.Constants;
 using SkincareBookingSystem.Services.Helpers.Responses;
+using SkincareBookingSystem.Models.Dto.TherapistSchedules;
 
 namespace SkincareBookingSystem.Services.Services
 {
     public class TherapistScheduleService : ITherapistScheduleService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IAutoMapperService _autoMapperService;
+        private readonly ITherapistScheduleRepository _therapistScheduleRepository;
 
-        public TherapistScheduleService(IUnitOfWork unitOfWork, IMapper mapper)
+        public TherapistScheduleService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService, ITherapistScheduleRepository therapistScheduleRepository)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            _autoMapperService = autoMapperService;
+            _therapistScheduleRepository = therapistScheduleRepository;
         }
 
         public async Task<ResponseDto> CreateTherapistSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto createBookingScheduleDto)
@@ -35,7 +38,7 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var bookingScheduleToCreate = _mapper.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
+            var bookingScheduleToCreate = _autoMapperService.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
             bookingScheduleToCreate.CreatedBy = User.Identity?.Name;
 
             try
@@ -91,27 +94,20 @@ namespace SkincareBookingSystem.Services.Services
                     result: bookingSchedule);
         }
 
-        public async Task<ResponseDto> GetTherapistScheduleByTherapistId(Guid therapistId)
+        public async Task<ResponseDto> GetTherapistScheduleByTherapistIdAsync(Guid therapistId)
         {
-            if (await _unitOfWork.SkinTherapist.GetAsync(t => t.SkinTherapistId == therapistId) is null)
+            var bookingSchedule = await _therapistScheduleRepository.GetTherapistScheduleByTherapistIdAsync(therapistId);
+            if (bookingSchedule == null)
             {
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.BookingSchedule.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
-
-            var bookingSchedules = await _unitOfWork.TherapistSchedule.GetAllAsync(b => b.TherapistId == therapistId && b.Status != StaticOperationStatus.BookingSchedule.Deleted);
-
-            return (bookingSchedules.Any()) ?
-                SuccessResponse.Build(
-                    message: StaticResponseMessage.BookingSchedule.RetrievedAll,
-                    statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: bookingSchedules)
-                :
-                SuccessResponse.Build(
-                    message: StaticResponseMessage.BookingSchedule.NotFound,
-                    statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: new List<TherapistSchedule>());
+            var bookingScheduleDto = _autoMapperService.Map<TherapistSchedule, GetTherapistScheduleDto>(bookingSchedule);
+            return SuccessResponse.Build(
+                message: StaticResponseMessage.BookingSchedule.Retrieved,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: bookingScheduleDto);
         }
 
         public async Task<ResponseDto> UpdateTherapistSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto updateBookingScheduleDto)
@@ -131,7 +127,7 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var updatedData = _mapper.Map<UpdateTherapistScheduleDto, TherapistSchedule>(updateBookingScheduleDto);
+            var updatedData = _autoMapperService.Map<UpdateTherapistScheduleDto, TherapistSchedule>(updateBookingScheduleDto);
             _unitOfWork.TherapistSchedule.Update(bookingSchedule, updatedData);
 
             return (await SaveChangesAsync()) ?
