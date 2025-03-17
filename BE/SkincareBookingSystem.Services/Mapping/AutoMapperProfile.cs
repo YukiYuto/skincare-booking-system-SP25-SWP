@@ -200,8 +200,15 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId));
 
         //BookingSchedule
-        CreateMap<CreateTherapistScheduleDto, TherapistSchedule>();
-        CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>();
+        CreateMap<CreateTherapistScheduleDto, TherapistSchedule>()
+            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
+        CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>()
+            .ForMember(dest => dest.TherapistScheduleId, opt => opt.MapFrom(src => src.TherapistScheduleId))
+            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
 
         //Order
         CreateMap<CreateOrderDto, Order>()
