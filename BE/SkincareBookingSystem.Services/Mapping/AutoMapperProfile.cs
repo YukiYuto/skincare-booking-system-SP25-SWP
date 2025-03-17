@@ -182,9 +182,14 @@ public class AutoMapperProfile : Profile
 
         //BookingSchedule
         CreateMap<CreateTherapistScheduleDto, TherapistSchedule>()
-            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.BaseEntity.Active));
-        CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>();
+            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
+        CreateMap<UpdateTherapistScheduleDto, TherapistSchedule>()
+            .ForMember(dest => dest.TherapistScheduleId, opt => opt.MapFrom(src => src.TherapistScheduleId))
+            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
 
         //Order
         CreateMap<CreateOrderDto, Order>()

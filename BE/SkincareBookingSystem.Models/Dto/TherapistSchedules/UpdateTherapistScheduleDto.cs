@@ -8,7 +8,7 @@ namespace SkincareBookingSystem.Models.Dto.BookingSchedule
 {
     public class UpdateTherapistScheduleDto
     {
-        public Guid BookingScheduleId { get; set; }
+        public Guid TherapistScheduleId { get; set; }
         public Guid? TherapistId { get; set; }
         public Guid? AppointmentId { get; set; }
         public Guid? SlotId { get; set; }
