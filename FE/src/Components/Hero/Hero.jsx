@@ -1,5 +1,3 @@
-import React from "react";
-import Brand from "../Brand/Brand";
 import styles from "./Hero.module.css";
 
 const Hero = () => {

@@ -10,46 +10,26 @@ const Header = () => {
     <header className={styles.stickyHeaderContainer}>
       <div className={styles.navHeaderWrapper}>
         <div className={styles.navHeader}>
-          {/* Logo */}
+          {/* Logo - Sát trái */}
           <div className={styles.navLogoSection}>
             <Link to="/" className={styles.navLogo} aria-label="Home">
               <Brand />
             </Link>
           </div>
 
-          {/* Navigation Menu */}
-          <nav className={styles.navHeaderInlineMenu}>
-            <ul className={styles.listMenu}>
-              <li className={styles.listMenuItem}>
-                <Link to="/services" className={styles.listMenuLink} aria-label="Services">
-                  Services
-                </Link>
-              </li>
-              <li className={styles.listMenuItem}>
-                <Link to="/contact" className={styles.listMenuLink} aria-label="Contact">
-                  Contact
-                </Link>
-              </li>
-              <li className={styles.listMenuItem}>
-                <Link to="/about" className={styles.listMenuLink} aria-label="About">
-                  About
-                </Link>
-              </li>
-              <li className={styles.listMenuItem}>
-                <Link to="/skin-test" className={styles.listMenuLink} aria-label="Skin Mapper">
-                  Skin Mapper
-                </Link>
-              </li>
-              <li className={styles.listMenuItem}>
-                <Link to="/promotion" className={styles.listMenuLink} aria-label="Promotion">
-                  Promotion
-                </Link>
-              </li>
+          {/* Navigation Menu - Căn giữa */}
+          <nav className={styles.navModern}>
+            <ul className={styles.navList}>
+              <li><Link to="/services" className={styles.navLink}>Services</Link></li>
+              <li><Link to="/therapist" className={styles.navLink}>Therapists</Link></li>
+              <li><Link to="/about" className={styles.navLink}>About</Link></li>
+              <li><Link to="/skin-test" className={styles.navLink}>Skin Test</Link></li>
+              <li><Link to="/promotion" className={styles.navLink}>Promotions</Link></li>
+              <li><Link to="/contact" className={styles.navLink}>Contact</Link></li>
             </ul>
           </nav>
 
-          {/* Login & Register Buttons */}
-          <div className={styles.navHeaderAuth}>
+          <div className={styles.navActions}>
             <AuthButton />
           </div>
         </div>
