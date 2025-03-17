@@ -1,4 +1,4 @@
-export const BASE_CLIENT_URL = "http://localhost:5173";
+export const BASE_CLIENT_URL = "https://lumiconnect-beauty.vercel.app";
 
 //TODO: Change these URLs to the actual URLs of the client application
 // export const PAYMENT_CONFIRMATION_URL = "https://chatgpt.com";
