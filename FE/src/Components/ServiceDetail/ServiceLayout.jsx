@@ -1,7 +1,6 @@
 import styles from "./ServiceLayout.module.css";
 
-const ServiceLayout = ({ service, serviceType, therapists = [], isBookSelected = false }) => {
-
+const ServiceLayout = ({ service, serviceType, therapists = [], onBookButtonClick }) => {
   return (
     <div className={styles.layout}>
       <div className={styles.imageContainer}>
@@ -34,7 +33,7 @@ const ServiceLayout = ({ service, serviceType, therapists = [], isBookSelected =
               </option>
             ))}
           </select>
-          <button className={styles.order} onClick={isBookSelected = !isBookSelected}>BOOK NOW</button>
+          <button className={styles.order} onClick={onBookButtonClick}>BOOK NOW</button>
         </div>
       </div>
     </div>

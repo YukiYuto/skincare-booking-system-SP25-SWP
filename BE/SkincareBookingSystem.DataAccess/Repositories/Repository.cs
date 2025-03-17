@@ -81,9 +81,19 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet.Remove(entity);
     }
 
-    public async Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate)
+    public async Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null)
     {
-        return await _dbSet.Where(predicate).ToListAsync();
+        IQueryable<T> query = _dbSet.Where(predicate);
+
+        if (!string.IsNullOrEmpty(includeProperties))
+        {
+            foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+        }
+
+        return await query.ToListAsync();
     }
 
     public void RemoveRange(IEnumerable<T> entities)

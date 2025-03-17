@@ -10,6 +10,7 @@ import {
   HTTP_METHODS,
 } from "../../config/apiConfig";
 import Header from "../../Components/Common/Header";
+import BookingModal from "../../Components/BookingModal/BookingModal";
 
 const ServiceDetail = () => {
   const { id } = useParams();
@@ -20,7 +21,12 @@ const ServiceDetail = () => {
     isLoading: true,
     error: null,
   });
-  const [bookSelected, setBookSelected] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const [visible, setVisible] = useState(false);
+
+  const handleBook = () => {
+    setVisible(true);
+  };
 
   const fetchData = async () => {
     try {
@@ -31,7 +37,7 @@ const ServiceDetail = () => {
 
       const serviceRes = await fetch(serviceEndpoint, {
         method: HTTP_METHODS.GET,
-        headers: { "Content-Type": "application/json" }, 
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!serviceRes.ok) {
@@ -63,10 +69,6 @@ const ServiceDetail = () => {
 
       console.log("All Services Data:", allServicesData);
 
-      console.log(
-        "Fetching therapists for serviceTypeId:",
-        serviceData.serviceTypeId
-      );
       const therapistsEndpoint = GET_THERAPIST_BY_SERVICE_API.replace(
         "{serviceId}",
         serviceData.serviceId
@@ -147,7 +149,13 @@ const ServiceDetail = () => {
     <>
       <Header />
       <div className={styles.container}>
-        <ServiceLayout service={service} therapists={therapists || []} />
+        <ServiceLayout
+          service={service}
+          therapists={therapists || []}
+          onBookButtonClick={handleBook}
+        />
+
+        <BookingModal visible={visible} onClose={() => setVisible(false)} selectedService={service} />
         {similarServices.length > 0 && (
           <div className={styles.similarSection}>
             <h2 className={styles.similarTitle}>Similar Services</h2>

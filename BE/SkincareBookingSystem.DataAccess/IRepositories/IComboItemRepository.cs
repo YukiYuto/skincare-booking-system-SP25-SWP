@@ -12,4 +12,6 @@ public interface IComboItemRepository : IRepository<ComboItem>
         string? filterQuery,
         string? sortBy
     );
+
+    void Update(ComboItem comboItem);
 }

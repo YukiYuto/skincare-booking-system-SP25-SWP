@@ -7,7 +7,7 @@ import { setupInterceptors } from "../config/axios";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"],  // Only auth slice will be persisted
+  whitelist: ["auth", "booking"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

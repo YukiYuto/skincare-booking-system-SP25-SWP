@@ -19,6 +19,8 @@ import Orders from "../Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "../Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import TableCustomer from "../Components/TableCustomer/TableCustomer";
+import PaymentConfirmationPage from "../Pages/Payment/PaymentConfirmationPage";
+
 import TherapistCard from "../Components/TherapistCard/TherapistCard";
 import TherapistDetail from "../Components/TherapistDetail/TherapistDetail";
 import StaffManagement from "../Pages/Staff/StaffManagement/StaffManagement";
@@ -76,6 +78,10 @@ export const router = createBrowserRouter([
   {
     path: "table-customer",
     element: <TableCustomer />,
+  },
+  {
+    path: "payment-confirmation",
+    element: <PaymentConfirmationPage />,
   },
   {
     path: "/therapist",
