@@ -1,14 +1,13 @@
 ﻿using SkincareBookingSystem.Models.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SkincareBookingSystem.Models.Dto.DurationItem;
 
-namespace SkincareBookingSystem.DataAccess.IRepositories
+namespace SkincareBookingSystem.DataAccess.IRepositories;
+
+public interface IDurationItemRepository : IRepository<DurationItem>
 {
-    public interface IDurationItemRepository : IRepository<DurationItem>
-    {
-
-    }
+    Task<(List<GetDurationItemDto> durationItemsDto, int TotalDurationItems)> GetAllDurationItemsAsync
+    (
+        int pageNumber,
+        int pageSize
+    );
 }

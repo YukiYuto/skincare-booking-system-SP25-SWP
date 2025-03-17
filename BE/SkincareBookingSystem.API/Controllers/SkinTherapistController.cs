@@ -33,7 +33,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("/service-type/{serviceTypeId}")]
+        [HttpGet("service-type/{serviceTypeId}")]
         [SwaggerOperation(Summary = "API gets therapists by service type", Description = "Requires serviceTypeId")]
         public async Task<ActionResult> GetTherapistsByServiceType(Guid serviceTypeId)
         {
@@ -41,7 +41,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("/service/{serviceId}")]
+        [HttpGet("service/{serviceId}")]
         [SwaggerOperation(Summary = "API gets therapists by service", Description = "Requires serviceId")]
         public async Task<ActionResult> GetTherapistsByServiceId(Guid serviceId)
         {

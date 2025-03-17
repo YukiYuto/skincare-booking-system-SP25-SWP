@@ -1,6 +1,7 @@
 ﻿using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Customer;
+using SkincareBookingSystem.Models.Dto.GetCustomerInfo;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.Helpers.Responses;
 using SkincareBookingSystem.Services.Helpers.Users;
@@ -19,11 +20,13 @@ namespace SkincareBookingSystem.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAutoMapperService _autoMapperService;
+        private readonly ICustomerRepository _customerRepository;
 
-        public CustomerService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService)
+        public CustomerService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService, ICustomerRepository customerRepository)
         {
             _unitOfWork = unitOfWork;
             _autoMapperService = autoMapperService;
+            _customerRepository = customerRepository;
         }
 
         public async Task<ResponseDto> GetAllCustomers()
@@ -95,6 +98,40 @@ namespace SkincareBookingSystem.Services.Services
                 message: StaticOperationStatus.Customer.Found,
                 statusCode: StaticOperationStatus.StatusCode.Ok,
                 result: customerFromDb.CustomerId);
+        }
+
+        public async Task<ResponseDto> GetCustomerInfoByEmailAsync(string email)
+        {
+            var customer = await _customerRepository.GetCustomerByEmailAsync(email, "ApplicationUser");
+            if (customer == null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Customer.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var customerDto = _autoMapperService.Map<Customer, GetCustomerInfoDto>(customer);
+            return SuccessResponse.Build(
+                message: StaticResponseMessage.Customer.Retrieved, 
+                statusCode: StaticOperationStatus.StatusCode.Ok, 
+                result: customerDto);
+        }
+
+        public async Task<ResponseDto> GetCustomerInfoByPhoneNumberAsync(string phoneNumber)
+        {
+            var customer = await _customerRepository.GetCustomerByPhoneNumberAsync(phoneNumber, "ApplicationUser");
+            if (customer == null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Customer.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var customerDto = _autoMapperService.Map<Customer, GetCustomerInfoDto>(customer);
+            return SuccessResponse.Build(
+                message: StaticResponseMessage.Customer.Retrieved,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: customerDto);
         }
     }
 }

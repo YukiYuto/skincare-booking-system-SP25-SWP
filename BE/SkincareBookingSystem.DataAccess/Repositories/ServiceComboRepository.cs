@@ -60,4 +60,9 @@ public class ServiceComboRepository : Repository<ServiceCombo>, IServiceComboRep
 
         return (serviceCombos, total);
     }
+
+    public void Update(ServiceCombo serviceCombo)
+    {
+        _context.ServiceCombo.Update(serviceCombo);
+    }
 }

@@ -1,0 +1,66 @@
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.search {
+  width: 60%;
+}
+
+.sort {
+  width: 200px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  justify-content: center;
+}
+
+.therapistList h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-family: Playfair Display;
+  color: var(--text-color);
+}
+  
+.card {
+  width: 100%;
+  max-width: 300px;
+  margin: auto;
+  background-color: antiquewhite;
+}
+  
+.image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+  
+.button {
+  width: 50%;
+  margin-top: 10px;
+}
+  
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+  

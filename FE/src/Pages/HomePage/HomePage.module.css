@@ -3,8 +3,6 @@
   flex-direction: column; 
   align-items: center;
   width: 100%;
-  
-  /* Đặt background cho toàn bộ phần HomePage */
   background-image: url("../../assets/images/background.jpg");
   background-size: cover;
   background-position: center;

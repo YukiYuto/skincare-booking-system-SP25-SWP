@@ -15,8 +15,8 @@ export const BASE_API_URL = BASE_URL;
 export const LOGIN_API = `${BASE_URL}/auth/signin`;
 export const REGISTER_CUSTOMER_API = `${BASE_URL}/auth/customers`;
 export const USER_PROFILE_API = `${BASE_URL}/auth/user`;
-export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`; 
-export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`; 
+export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`;
+export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`;
 export const FORGOT_PASSWORD_API = `${BASE_URL}/auth/password/forgot`;
 export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;
 export const REFRESH_TOKEN_API = `${BASE_URL}/auth/refresh-token`;
@@ -93,6 +93,14 @@ export const PUT_SLOT_API = `${BASE_URL}/slot`;
 export const GET_SLOT_BY_ID_API = `${BASE_URL}/slot/{slotId}`;
 export const DELETE_SLOT_API = `${BASE_URL}/slot/{slotId}`;
 
+//Thêm API cho TestAnswer
+export const POST_TEST_ANSWER_API = `${BASE_URL}/testAnswer/update`;
+export const PUT_TEST_ANSWER_API = `${BASE_URL}/testAnswer/update`;
+export const GET_ALL_TEST_ANSWER_API = `${BASE_URL}/testAnswer/all`;
+export const GET_TEST_ANSWER_BY_ID_API = `${BASE_URL}/testAnswer/get/{testAnswerId}`;
+export const GET_TEST_QUESTIONS_API = `${BASE_URL}/testAnswer/TestQuestion/{testQuestionId}`;
+export const DELETE_TEST_ANSWER_API = `${BASE_URL}/testAnswer/delete/{testAnswerId}`;
+
 // Thêm API cho TherapistSchedule
 export const POST_THERAPIST_SCHEDULE_API = `${BASE_URL}/therapist-schedules`;
 export const GET_ALL_THERAPIST_SCHEDULE_API = `${BASE_URL}/therapist-schedules`;
@@ -104,6 +112,10 @@ export const GET_THERAPIST_SCHEDULE_BY_THERAPIST_API = `${BASE_URL}/therapist-sc
 // Thêm API cho TherapistServiceType
 export const POST_THERAPIST_SERVICE_TYPE_API = `${BASE_URL}/therapist-service-type`;
 export const DELETE_THERAPIST_SERVICE_TYPES_API = `${BASE_URL}/therapist-service-type`;
+
+// Thêm API cho TypeItem
+export const GET_TYPE_ITEMS_API = `${BASE_URL}/type-item`;
+export const POST_TYPE_ITEM_API = `${BASE_URL}/type-item`;
 
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
 export const AUTH_HEADERS = (token) => ({

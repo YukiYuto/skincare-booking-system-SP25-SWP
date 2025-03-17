@@ -1,7 +1,13 @@
 .brand {
     display: flex;
-    font-family: Bodoni Moda, serif;
-    color: #ac632c;
+    align-items: center;
+    justify-content: center;
+    font-family: "Playfair Display", serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 28px;
+    letter-spacing: 1.2px;
+    color: #5a5a5a;
     text-align: center;
     text-decoration: none;
 }
@@ -12,5 +18,17 @@
 }
 
 .brandHighlight {
-    color: #f4b34d
+    background: linear-gradient(135deg, #a0e7e5, #f8e2c4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.brandText {
+    font-family: "Poppins", sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: #6b6b6b;
+    margin-left: 6px;
 }

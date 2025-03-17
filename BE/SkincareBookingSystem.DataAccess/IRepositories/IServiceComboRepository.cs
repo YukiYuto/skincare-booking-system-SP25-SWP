@@ -13,4 +13,6 @@ public interface IServiceComboRepository : IRepository<ServiceCombo>
         string? sortBy,
         bool isManager = false
     );
+
+    void Update(ServiceCombo serviceCombo);
 }

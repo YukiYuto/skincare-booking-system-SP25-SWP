@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./ServiceLayout.module.css";
 
 const ServiceLayout = ({ service, serviceType, therapists = [], isBookSelected = false }) => {
