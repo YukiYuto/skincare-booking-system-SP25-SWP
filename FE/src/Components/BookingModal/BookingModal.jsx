@@ -1,31 +1,33 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Modal, Button, Steps, message, DatePicker } from "antd";
 import styles from "./BookingModal.module.css"; // Import CSS module
 import dayjs from "dayjs";
-import axios from "axios";
 import { toast } from "react-toastify";
 import {
-  GET_ALL_SERVICES_API,
-  GET_SERVICE_BY_ID_API,
-  GET_THERAPIST_BY_SERVICE_API,
-  GET_ALL_SLOTS_API,
-  GET_BOOKING_SLOT_API,
-  GET_CUSTOMER_USER_API,
-  POST_BOOKING_API,
-} from "../../config/apiConfig";
-import { useNavigate } from "react-router-dom";
+  bundleOrder,
+  getAllSlots,
+  getOccupiedSlots,
+  getTherapistsByService,
+} from "../../services/bookingService";
+import { getCustomerDetails } from "../../services/customerService";
+import TherapistSelection from "./TherapistSelection";
+import DateTimeSelection from "./DateTimeSelection";
+import Confirmation from "./Confirmation";
+import { createPaymentLink } from "../../services/paymentService";
+import {
+  PAYMENT_CANCEL_URL,
+  PAYMENT_CONFIRMATION_URL,
+} from "../../config/clientUrlConfig";
+import { setBookingDetails } from "../../redux/booking/slice";
 
 const { Step } = Steps;
 
-// Dữ liệu mẫu
-
-const BookingModal = ({ visible, onClose }) => {
+const BookingModal = ({ visible, onClose, selectedService }) => {
   const [current, setCurrent] = useState(0);
-  const [services, setServices] = useState([]); // Danh sách dịch vụ
-  const [selectedService, setSelectedService] = useState(null); // Dịch vụ được chọn
+  const [isLoading, setIsLoading] = useState(false);
 
   const [therapists, setTherapists] = useState([]); // Danh sách therapists
   const [selectedTherapist, setSelectedTherapist] = useState(""); // Therapist được chọn
@@ -33,19 +35,21 @@ const BookingModal = ({ visible, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
 
+  const [note, setNote] = useState("");
+
   const [timeSlots, setTimeSlots] = useState([]);
-
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const [occupiedSlots, setOccupiedSlots] = useState([]);
-  const { user } = useSelector((state) => state.auth);
 
-  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const bookingDetails = useSelector((state) => state.booking);
+  const dispatch = useDispatch();
 
   const next = () => setCurrent(current + 1);
   const prev = () => setCurrent(current - 1);
 
   const resetState = () => {
     setCurrent(0);
-    setSelectedService(null);
     setSelectedTherapist("");
     setSelectedDate(null);
     setSelectedTime(null);
@@ -57,329 +61,191 @@ const BookingModal = ({ visible, onClose }) => {
     onClose();
   };
 
-  // Lấy danh sách dịch vụ
+  // Fetch therapists based on selectedService
   useEffect(() => {
-    fetch(GET_ALL_SERVICES_API, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.result?.services) {
-          setServices(data.result.services);
+    if (selectedService?.serviceId && visible) {
+      const fetchTherapists = async (serviceId) => {
+        const response = await getTherapistsByService(serviceId);
+        if (response?.result) {
+          setTherapists(response.result);
         }
-      })
-      .catch((err) => console.error("Lỗi khi lấy danh sách dịch vụ:", err));
-  }, []);
+      };
 
-  // Xử lý khi chọn dịch vụ
-  const handleSelectService = (e) => {
-    const serviceId = e.target.value;
-
-    if (!serviceId) {
-      setSelectedService(null);
-      setTherapists([]);
-      return;
+      fetchTherapists(selectedService.serviceId);
     }
-
-    fetch(GET_SERVICE_BY_ID_API.replace("{id}", serviceId))
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.result) {
-          setSelectedService(data.result);
-          if (data.result.serviceTypeId) {
-            fetchTherapists(data.result.serviceTypeId);
-          } else {
-            setTherapists([]);
-          }
-        }
-      })
-      .catch((err) => console.error("Lỗi khi lấy chi tiết dịch vụ:", err));
-  };
-
-  // Lấy danh sách therapists theo serviceTypeId
-  const fetchTherapists = (serviceTypeId) => {
-    fetch(`${GET_THERAPIST_BY_SERVICE_API}?serviceTypeId=${serviceTypeId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.result) {
-          setTherapists(data.result);
-        } else {
-          setTherapists([]); // Nếu không có therapists thì reset
-        }
-      })
-      .catch((err) => console.error("Lỗi khi lấy therapists:", err));
-  };
-
-  // Xử lý khi chọn therapist
-  const handleSelectTherapist = (e) => {
-    setSelectedTherapist(e.target.value);
-  };
+  }, [selectedService, visible]);
 
   useEffect(() => {
-    fetch(GET_ALL_SLOTS_API)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.result) {
-          setTimeSlots(data.result);
-        }
-      })
-      .catch((err) => console.error("Lỗi khi lấy danh sách slot:", err));
+    const fetchTimeSlots = async () => {
+      const response = await getAllSlots();
+      if (response?.result) {
+        setTimeSlots(response.result);
+      }
+    };
+
+    fetchTimeSlots();
   }, []);
 
   useEffect(() => {
     if (selectedDate && selectedTherapist) {
-      fetch(
-        `${GET_BOOKING_SLOT_API}?therapistId=${selectedTherapist}&date=${selectedDate}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data?.result) {
-            setOccupiedSlots(data.result);
-          } else {
-            setOccupiedSlots([]);
-          }
-        })
-        .catch((err) => console.error("Lỗi khi lấy slot đã đặt:", err));
+      const fetchOccupiedSlots = async () => {
+        const response = await getOccupiedSlots(
+          selectedTherapist,
+          selectedDate
+        );
+        if (response?.result) {
+          setOccupiedSlots(response.result);
+        }
+      };
+
+      fetchOccupiedSlots();
     }
   }, [selectedDate, selectedTherapist]);
 
+  useEffect(() => {
+    console.log("Updated Booking Details in Redux:", bookingDetails);
+  }, [bookingDetails]);
+
   const handleFinish = async () => {
-    if (
-      !selectedService ||
-      !selectedTherapist ||
-      !selectedDate ||
-      !selectedTime
-    ) {
-      message.error("Vui lòng chọn đầy đủ thông tin trước khi đặt lịch!");
+    if (!selectedTherapist || !selectedDate || !selectedTime) {
+      message.error(
+        "Please complete all selections before proceed to booking!"
+      );
       return;
     }
-    const customerResponse = await axios.get(GET_CUSTOMER_USER_API, {
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`,
-      },
-    });
-    const customerId = customerResponse.data.result;
-    const orderData = {
-      order: {
-        customerId: customerId, 
-        totalPrice: selectedService?.price || 0,
-      },
-      orderDetails: [
-        {
-          serviceId: selectedService?.serviceId,
-          price: selectedService?.price || 0,
-          description: `Booking for ${selectedService?.serviceName} with ${
-            therapists.find((t) => t.therapistId === selectedTherapist)
-              ?.fullName
-          } on ${selectedDate} at ${selectedTime}`,
-        },
-      ],
-    };
+    setIsLoading(true);
 
-    fetch(POST_BOOKING_API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.accessToken}`,
-      },
-      body: JSON.stringify(orderData),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.text().then((text) => {
-            throw new Error(`Lỗi API: ${text}`);
-          });
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("API Response:", data); // Debug dữ liệu API trả về
-        toast.success("Đặt lịch thành công!");
-        localStorage.setItem("orderNumber", data.result.orderNumber);
-        onClose();
+    try {
+      const customerResponse = await getCustomerDetails();
+      const customerId = customerResponse.result;
+      const orderData = {
+        order: {
+          customerId,
+          totalPrice: selectedService?.price || 0,
+        },
+        orderDetails: [
+          {
+            serviceId: selectedService?.serviceId,
+            price: selectedService?.price || 0,
+            description: `Booking for ${selectedService?.serviceName} with ${selectedTherapist.fullName} 
+            on ${selectedDate} at ${selectedTime}`,
+          },
+        ],
+      };
+
+      //~ Call the Booking API to bundle a new order
+      const bookingResponse = await bundleOrder(orderData);
+      const orderNumber = bookingResponse.result.orderNumber;
+      localStorage.setItem("orderNumber", orderNumber);
+
+      const bookingData = {
+        therapistId: selectedTherapist.skinTherapistId,
+        slotId: selectedSlot.slotId,
+        customerId,
+        appointmentDate: selectedDate,
+        appointmentTime: selectedTime,
+        note: note,
+        orderNumber,
+      };
+      console.log(bookingData);
+      //~ Store booking details in Redux
+      dispatch(setBookingDetails(bookingData));
+
+      // Call the Payment API
+      const paymentResponse = await createPaymentLink(
+        bookingResponse.result.orderNumber,
+        PAYMENT_CANCEL_URL,
+        PAYMENT_CONFIRMATION_URL
+      );
+
+      const checkoutUrl = paymentResponse.result.result.checkoutUrl;
+
+      if (checkoutUrl) {
+        toast.success("Booking successful! Redirecting to payment page...");
+        setTimeout(() => {
+          onClose();
+          window.open(checkoutUrl, "_blank");
+        }, 1000);
         resetState();
-        navigate("/payment");
-      })
-      .catch((err) => {
-        toast.error(`Có lỗi xảy ra: ${err.message}`);
-      });
+      } else {
+        toast.error(
+          "Error occurred while initiating payment. Please try again."
+        );
+      }
+    } catch (err) {
+      toast.error(`Error occurred: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  const steps = [
+    {
+      title: "Therapist",
+      content: (
+        <TherapistSelection
+          therapists={therapists}
+          selectedTherapist={selectedTherapist}
+          setSelectedTherapist={setSelectedTherapist}
+        />
+      ),
+    },
+    {
+      title: "Date & Time",
+      content: (
+        <DateTimeSelection
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+          selectedSlot={selectedSlot}
+          setSelectedSlot={setSelectedSlot}
+          timeSlots={timeSlots}
+          occupiedSlots={occupiedSlots}
+        />
+      ),
+    },
+    {
+      title: "Confirm",
+      content: (
+        <Confirmation
+          selectedService={selectedService}
+          selectedTherapist={selectedTherapist}
+          selectedDate={selectedDate}
+          selectedTime={selectedTime}
+        />
+      ),
+    },
+  ];
+
   return (
-    <Modal open={visible} onCancel={handleClose} footer={null} width={700}>
+    <Modal
+      open={visible}
+      onCancel={() => {
+        resetState();
+        onClose();
+      }}
+      footer={null}
+      width={700}
+    >
       <h2 className={styles.modalTitle}>Book Your Appointment</h2>
-
-      {/* Step Indicator */}
       <Steps current={current} className={styles.steps}>
-        <Step title="Service" />
-        <Step title="Therapist" />
-        <Step title="Date & Time" />
-        <Step title="Confirm" />
+        {steps.map((item) => (
+          <Step key={item.title} title={item.title} />
+        ))}
       </Steps>
-
-      {/* Step Content */}
-      <div className={styles.content}>
-        {current === 0 && (
-          <div className={styles.stepContainer}>
-            <select onChange={handleSelectService}>
-              <option value="">-- Chọn dịch vụ --</option>
-              {services.map((service) => (
-                <option key={service.serviceId} value={service.serviceId}>
-                  {service.serviceName}
-                </option>
-              ))}
-            </select>
-
-            {selectedService && (
-              <div className={styles.detailContainer}>
-                <img
-                  src={selectedService.imageUrl}
-                  alt={selectedService.serviceName}
-                  className={styles.image}
-                />
-                <div className={styles.info}>
-                  <h3>{selectedService.serviceName}</h3>
-                  <p>{selectedService.description}</p>
-                  <p>
-                    <strong>Price:</strong> {selectedService.price}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {current === 1 && (
-          <div className={styles.stepContainer}>
-            <select onChange={handleSelectTherapist}>
-              <option value="">-- Chọn therapist --</option>
-              {therapists.map((therapist) => (
-                <option
-                  key={therapist.therapistId}
-                  value={therapist.therapistId}
-                >
-                  {therapist.fullName}
-                </option>
-              ))}
-            </select>
-
-            {selectedTherapist && (
-              <div className={styles.detailContainer}>
-                <img
-                  src={
-                    therapists.find((t) => t.therapistId === selectedTherapist)
-                      ?.imageUrl
-                  }
-                  alt={selectedTherapist.fullName}
-                  className={styles.image}
-                />
-                <div className={styles.info}>
-                  <h3>
-                    {
-                      therapists.find(
-                        (t) => t.therapistId === selectedTherapist
-                      )?.fullName
-                    }
-                  </h3>
-                  <p>
-                    <strong>Experience:</strong>{" "}
-                    {
-                      therapists.find(
-                        (t) => t.therapistId === selectedTherapist
-                      )?.experience
-                    }
-                  </p>
-                  <p>
-                    <strong>Age:</strong>{" "}
-                    {
-                      therapists.find(
-                        (t) => t.therapistId === selectedTherapist
-                      )?.age
-                    }
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {current === 2 && (
-          <div className={styles.content}>
-            <DatePicker
-              style={{ width: "100%", marginBottom: 10 }}
-              onChange={(date) =>
-                setSelectedDate(dayjs(date).format("YYYY-MM-DD"))
-              }
-            />
-
-            {/* Chỉ hiển thị time slots nếu đã chọn ngày */}
-            {selectedDate && (
-              <div className={styles.slotContainer}>
-                {timeSlots.map((slot, index) => {
-                  const slotValue = `${slot.startTime} - ${slot.endTime}`;
-                  const isOccupied = occupiedSlots.includes(slotValue);
-
-                  return (
-                    <Button
-                      key={index}
-                      type="default"
-                      disabled={isOccupied}
-                      className={`${styles.slotButton} ${
-                        selectedTime === slotValue ? styles.selectedSlot : ""
-                      } ${isOccupied ? styles.disabledSlot : ""}`}
-                      onClick={() =>
-                        !isOccupied &&
-                        setSelectedTime(
-                          selectedTime === slotValue ? null : slotValue
-                        )
-                      }
-                    >
-                      {slot.startTime} - {slot.endTime}
-                    </Button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-
-        {current === 3 && (
-          <div className={styles.summary}>
-            <h3>Review Your Booking</h3>
-            <p>
-              <strong>Service:</strong>{" "}
-              {selectedService?.serviceName || "Not selected"}
-            </p>
-            <p>
-              <strong>Therapist:</strong>{" "}
-              {therapists.find((t) => t.therapistId === selectedTherapist)
-                ?.fullName || "Not selected"}
-            </p>
-            <p>
-              <strong>Date:</strong> {selectedDate || "Not selected"}
-            </p>
-            <p>
-              <strong>Time:</strong> {selectedTime || "Not selected"}
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Buttons */}
+      <div className={styles.content}>{steps[current].content}</div>
       <div className={styles.buttons}>
-        {current > 0 && <Button onClick={prev}>Previous</Button>}
-        {current < 3 && (
-          <Button type="primary" onClick={next}>
+        {current > 0 && (
+          <Button onClick={() => setCurrent(current - 1)}>Previous</Button>
+        )}
+        {current < steps.length - 1 && (
+          <Button type="primary" onClick={() => setCurrent(current + 1)}>
             Next
           </Button>
         )}
-        {current === 3 && (
-          <Button type="primary" onClick={handleFinish}>
+        {current === steps.length - 1 && (
+          <Button type="primary" onClick={handleFinish} loading={isLoading}>
             Confirm
           </Button>
         )}
