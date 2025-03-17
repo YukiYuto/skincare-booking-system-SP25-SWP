@@ -46,7 +46,7 @@ const AuthButtons = () => {
         <Link to="/profile">Profile</Link>
       </Menu.Item>
       <Menu.Item key="orders" icon={<ShoppingCartOutlined className={styles.menuIcon} />}>
-        <Link to="/orders">Orders</Link>
+        <Link to="/appointment">Appointment</Link>
       </Menu.Item>
 
       <Divider className={styles.menuDivider} />
