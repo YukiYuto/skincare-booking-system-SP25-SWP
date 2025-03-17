@@ -37,19 +37,16 @@ const AppRoutes = () => {
   
   return (
     <Routes>
-      {/* Các route công khai */}
-      <Route path="/" element={<Home />} />
-      <Route path="contact" element={<Contact />} />
-      <Route path="about" element={<AboutPage />} />
-      <Route path="services" element={<AllService />} />
-      <Route path="services/:id" element={<ServiceDetail />} />
-      <Route path="therapist" element={<TherapistCard />} />
-      <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="error" element={<ErrorPage />} />
-
-      {/* Nếu chưa đăng nhập */}
       {!accessToken && (
         <>
+          <Route path="/" element={<Home />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="services" element={<AllService />} />
+          <Route path="services/:id" element={<ServiceDetail />} />
+          <Route path="therapist" element={<TherapistCard />} />
+          <Route path="therapist/:therapistId" element={<TherapistDetail />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="forgot-password" element={<ForgotPage />} />
@@ -57,13 +54,17 @@ const AppRoutes = () => {
           <Route path="verify-email" element={<VerifyEmail />} />
         </>
       )}
-
-      {/* Nếu đã đăng nhập */}
       {accessToken && (
         <>
-          
           {roles.includes("CUSTOMER") && (
             <>
+              <Route path="/" element={<Home />} />
+              <Route path="contact" element={<Contact />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="services" element={<AllService />} />
+              <Route path="services/:id" element={<ServiceDetail />} />
+              <Route path="therapist" element={<TherapistCard />} />
+              <Route path="therapist/:therapistId" element={<TherapistDetail />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="table-customer" element={<TableCustomer />} />
               <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
@@ -105,8 +106,6 @@ const AppRoutes = () => {
           )}
         </>
       )}
-
-      {/* Nếu không khớp route nào, chuyển hướng đến trang lỗi */}
       <Route path="*" element={<Navigate to="/error" replace />} />
     </Routes>
   );
