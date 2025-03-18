@@ -44,11 +44,11 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("{customerId}/appointments")]
+        [HttpGet("customer/appointments")]
         [SwaggerOperation(Summary = "API gets all available Appointments by customer id", Description = "Requires customer, staff roles")]
-        public async Task<ActionResult<ResponseDto>> GetAppointmentsByCustomerId(Guid customerId)
+        public async Task<ActionResult<ResponseDto>> GetAppointmentsByCustomer()
         {
-            var result = await _appointmentService.GetAppointmentsByCustomerId(customerId);
+            var result = await _appointmentService.GetAppointmentsByCustomer(User);
             return StatusCode(result.StatusCode, result);
         }
 

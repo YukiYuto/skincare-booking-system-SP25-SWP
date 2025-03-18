@@ -11,7 +11,6 @@ import {
   validatePasswordLength,
 } from "../../utils/validationUtils";
 import styles from "./LoginForm.module.css";
-import { sendVerificationEmail } from "../../services/authService";
 
 export function LoginForm() {
   const [loginData, setLoginData] = useState({
@@ -58,9 +57,11 @@ export function LoginForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErrors({ email: "", password: "" }); // Reset errors
-  
+
+    // If form is invalid, return early
     if (!validateLoginForm()) return;
-  
+
+    // If form is valid, call the auth service to login
     try {
       const userData = await dispatch(loginAction(loginData)).unwrap();
       toast.success(`Login successful! Welcome, ${loginData.email}!`);
@@ -78,28 +79,8 @@ export function LoginForm() {
       
     } catch (error) {
       console.error("Login error", error.message);
-  
-      if (error.message === "You need to confirm email!") {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          email: "You need to confirm your email!",
-        }));
-      } else {
-        toast.error(error.message || "An unexpected error occurred.");
-      }
     }
   };
-  
-
-  const handleSendVerifyEmail = async () => {
-    try {
-      await sendVerificationEmail(loginData.email);
-      toast.success("Verification email sent. Please check your inbox.");
-    } catch (error) {
-      toast.error("Failed to send verification email.");
-    }
-  };
-  
 
   return (
     <form
@@ -126,25 +107,6 @@ export function LoginForm() {
         onChange={handleLoginDataChange}
         error={errors.password}
       />
-
-      {errors.email && (
-        <div>
-          <a 
-            style={{
-              fontSize: "20px",
-              color: "red",
-              pointerEvents: loading ? "none" : "auto",
-              opacity: loading ? 0.5 : 1,
-              cursor: "pointer",
-            }} 
-            onClick={handleSendVerifyEmail}
-            className={styles.verifyLink}
-          >
-            Click here to send verify!
-          </a>
-        </div>
-      )}
-
       
       <div>
       <a 
@@ -155,19 +117,8 @@ export function LoginForm() {
           }}
       href="forgot-password" 
       className={styles.forgotLink}>
-          Forgot Password?
+          Forgot Password
         </a>
-      </div>
-      
-      <div>
-          <p>Do not have an account? <a 
-              className={styles.registerLink}
-              href="/register" 
-              disabled={loading} 
-            >
-            Sign up
-          </a>
-        </p>
       </div>
 
       <div className={styles.termsContainer}>
@@ -184,7 +135,18 @@ export function LoginForm() {
         {loading ? "Logging in..." : "Login"}
       </button>
 
-      
+      <button
+        type="button"
+        className={styles.createAccountButton}
+        onClick={() => {
+          if (!loading) {
+            window.location.href = "/register";
+          }
+        }}
+        disabled={loading} 
+      >
+        Create Account
+      </button>
     </form>
   );
 }

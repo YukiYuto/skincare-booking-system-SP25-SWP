@@ -7,6 +7,7 @@ import {
   GET_SERVICE_BY_ID_API,
   GET_ALL_SERVICES_API,
   GET_THERAPIST_BY_SERVICE_API,
+GET_TYPE_ITEMS_API,
   HTTP_METHODS,
 } from "../../config/apiConfig";
 import Header from "../../Components/Common/Header";
@@ -26,6 +27,32 @@ const ServiceDetail = () => {
 
   const handleBook = () => {
     setVisible(true);
+  };
+
+  const fetchSimilarServices = async (serviceTypeName) => {
+    try {
+      const endpoint = `${GET_TYPE_ITEMS_API}?pageNumber=1&pageSize=10&filterOn=serviceTypeName&filterQuery=${serviceTypeName}`;
+      const response = await fetch(endpoint, {
+        method: HTTP_METHODS.GET,
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch similar services: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.isSuccess && data.result && Array.isArray(data.result.typeItems)) {
+        const typeItem = data.result.typeItems.find(
+          (item) => item.serviceTypeName === serviceTypeName
+        );
+        return typeItem ? typeItem.services : [];
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching similar services:", error);
+      return [];
+    }
   };
 
   const fetchData = async () => {
@@ -51,6 +78,9 @@ const ServiceDetail = () => {
       if (!serviceData || !serviceData.serviceId) {
         throw new Error("Invalid service data structure");
       }
+
+      // Fetch similar services
+      const similarServices = await fetchSimilarServices(serviceData.serviceTypeName);
 
       console.log("Fetching all services...");
       const allServicesRes = await fetch(GET_ALL_SERVICES_API, {
@@ -97,15 +127,7 @@ const ServiceDetail = () => {
         console.warn("Therapist API error:", therapistError);
       }
 
-      const similarServices = allServicesData
-        .filter(
-          (s) =>
-            s.serviceTypeId === serviceData.serviceTypeId &&
-            s.serviceId !== serviceData.serviceId
-        )
-        .slice(0, 4);
-
-      console.log("Similar Services:", similarServices);
+            console.log("Similar Services:", similarServices);
 
       setState({
         service: serviceData,

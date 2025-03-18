@@ -9,4 +9,5 @@ public class GetAllServicesDto
     public string? ImageUrl { get; set; }
     public string Status { get; set; } = null!;
     public List<Guid> ServiceTypeIds { get; set; } = new();
+    public List<int> ServiceDurations { get; set; } = new();
 }

@@ -179,6 +179,8 @@ namespace SkincareBookingSystem.Utilities.Constants
         public static class Service
         {
             public const string NotFound = "Service not found";
+            public const string NoSimilarServices = "No similar service found";
+            public const string SimilarServicesRetrieved = "Similar services retrieved successfully";
         }
         public static class Slot
         {
