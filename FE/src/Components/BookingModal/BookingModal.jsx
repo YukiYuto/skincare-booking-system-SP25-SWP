@@ -236,7 +236,14 @@ const BookingModal = ({ visible, onClose, selectedService }) => {
           <Button onClick={() => setCurrent(current - 1)}>Previous</Button>
         )}
         {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => setCurrent(current + 1)}>
+          <Button
+            type="primary"
+            onClick={() => setCurrent(current + 1)}
+            disabled={
+              (current === 0 && !selectedTherapist) ||
+              (current === 1 && (!selectedDate || !selectedTime))
+            }
+          >
             Next
           </Button>
         )}
