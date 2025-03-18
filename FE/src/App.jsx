@@ -30,6 +30,7 @@ import StaffManagement from "./Pages/Staff/StaffManagement/StaffManagement";
 import ScheduleManagement from "./Pages/Staff/ScheduleManagement/ScheduleManagement";
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import TherapistSchedule from "./Pages/Therapist/TherapistSchedule/TherapistSchedule";
+import AppointmentPage from "./Pages/Appointment/AppointmentPage";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -61,6 +62,7 @@ const AppRoutes = () => {
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="table-customer" element={<TableCustomer />} />
               <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
+              <Route path="appointments" element={<AppointmentPage />} />
             </>
           )}
           {roles.includes("ADMIN") && (
