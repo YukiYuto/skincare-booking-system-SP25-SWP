@@ -4,6 +4,10 @@ import { DatePicker, Button } from "antd";
 import dayjs from "dayjs";
 import styles from "./BookingModal.module.css";
 
+const disabledPastDates = (current) => {
+  return current && current < dayjs().startOf("day"); // Disable past dates
+};
+
 const DateTimeSelection = ({
   selectedDate,
   setSelectedDate,
@@ -20,6 +24,7 @@ const DateTimeSelection = ({
       onChange={(date) =>
         setSelectedDate(date ? dayjs(date).format("YYYY-MM-DD") : null)
       }
+      disabledDate={disabledPastDates}
     />
     {selectedDate && (
       <div className={styles.slotContainer}>
