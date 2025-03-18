@@ -29,7 +29,7 @@ const AuthButtons = () => {
     if (!user?.roles || !Array.isArray(user.roles)) return null;
 
     if (user.roles.includes("CUSTOMER")) {
-      return { path: "/orders", label: "Orders", icon: <ShoppingCartOutlined /> };
+      return { path: "/appointment", label: "Appointment", icon: <ShoppingCartOutlined /> };
     }
 
     if (user.roles.includes("THERAPIST")) {
