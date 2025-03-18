@@ -84,7 +84,7 @@ const AppRoutes = () => {
               <Route path="schedule-management" element={<ScheduleManagement />} />
             </>
           )}
-          {roles.includes("THERAPIST") && (
+          {roles.includes("SKINTHERAPIST") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="therapist-management" element={<TherapistManagement />} />
