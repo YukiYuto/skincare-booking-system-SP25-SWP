@@ -80,7 +80,7 @@ public class TypeItemService : ITypeItemService
         var isManager = userRole == StaticUserRoles.Manager;
 
         // Lấy danh sách TypeItems đã được filter/sort
-        var (typeItems, totalTypeItems) = await _unitOfWork.TypeItem.GetAllTypeItemAsync
+        var (typeItemsFromDb, totalTypeItems) = await _unitOfWork.TypeItem.GetAllTypeItemAsync
         (
             pageNumber,
             pageSize,
@@ -88,14 +88,16 @@ public class TypeItemService : ITypeItemService
             filterQuery,
             sortBy
         );
-
-        if (!typeItems.Any())
+        
+        if (!typeItemsFromDb.Any())
             return new ResponseDto
             {
                 Message = "No Type Items found",
                 IsSuccess = false,
                 StatusCode = 404
             };
+
+        var typeItems = typeItemsFromDb.Distinct().ToList();
 
         return new ResponseDto
         {
