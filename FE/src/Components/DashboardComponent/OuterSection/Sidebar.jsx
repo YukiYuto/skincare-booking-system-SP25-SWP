@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 import Brand from '../../Brand/Brand';
+import { logout as logoutAction } from "../../../redux/auth/thunks";
 import { 
   BarChart3, 
   Users, 
@@ -10,6 +11,10 @@ import {
   ShoppingCart, 
   Calendar
 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Spin } from 'antd';
+import { LogoutOutlined } from '@ant-design/icons';
 
 const Sidebar = ({ onExpandChange }) => {
   const [expanded, setExpanded] = useState(false);
@@ -21,6 +26,23 @@ const Sidebar = ({ onExpandChange }) => {
   const handleMouseLeave = () => {
     setExpanded(false);
   };
+
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+     setLoading(true);
+        try {
+            dispatch(logoutAction()); 
+            toast.success("Logout Successfully!");
+            navigate("/");
+        } catch (error) {
+            toast.error("Logout failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
   // Notify parent component when expansion state changes
   useEffect(() => {
@@ -61,9 +83,15 @@ const Sidebar = ({ onExpandChange }) => {
           >
             <span className={styles.icon}>{item.icon}</span>
             <span className={styles.label}>{item.label}</span>
+
           </NavLink>
         ))}
+        <button onClick={handleLogout} className={styles.logoutButton} disabled={loading}>
+            <span className={styles.logouticon}><LogoutOutlined /></span>
+            <span className={styles.label}>{loading ? <Spin size="small" /> : "Logout"}</span>
+        </button>
       </nav>
+      
     </div>
   );
 };

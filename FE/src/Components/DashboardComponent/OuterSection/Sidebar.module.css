@@ -98,3 +98,32 @@
   :global(.sidebar-expanded .main-content) {
     margin-left: 250px;
   }
+
+  .logoutButton {
+    background: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    justify-content: center;
+    margin-top: 350px;
+  }
+  
+  .logoutButton:hover {
+    background: var(--background-color);
+    transform: translateX(5px);
+  }
+
+  .logouticon{
+    margin-left: 15px;
+  }
+  
+  
+  
