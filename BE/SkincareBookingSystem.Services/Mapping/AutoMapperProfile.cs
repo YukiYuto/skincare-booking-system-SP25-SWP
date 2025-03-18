@@ -272,6 +272,8 @@ public class AutoMapperProfile : Profile
         CreateMap<Models.Domain.Services, GetAllServicesDto>()
             .ForMember(dest => dest.ServiceTypeIds,
                 opt => opt.MapFrom(src => src.TypeItems.Select(ti => ti.ServiceTypeId).ToList()))
+            .ForMember(dest => dest.ServiceDurations,
+            opt => opt.MapFrom(src => src.DurationItems.Select(di => di.ServiceDuration.DurationMinutes).ToList()))
             .ReverseMap();
 
         CreateMap<CreateServiceDto, Models.Domain.Services>()
