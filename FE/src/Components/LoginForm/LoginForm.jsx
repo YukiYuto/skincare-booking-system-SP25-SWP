@@ -71,7 +71,7 @@ export function LoginForm() {
         navigate("/dashboard");
       } else if (userData.roles.includes("STAFF") ){
         navigate("/staff-management");
-      } else if (userData.roles.includes("THERAPIST") ){
+      } else if (userData.roles.includes("SKINTHERAPIST") ){
         navigate("/therapist-management");
       } else if (userData.roles.includes("MANAGER") ){
         navigate("/dashboard");
