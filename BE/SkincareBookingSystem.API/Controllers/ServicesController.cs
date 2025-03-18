@@ -77,5 +77,16 @@ namespace SkincareBookingSystem.API.Controllers
             var result = await _servicesService.DeleteService(id);
             return StatusCode(result.StatusCode, result);
         }
+
+        [HttpGet("similar")]
+        [SwaggerOperation(Summary = "API get similar Services")]
+        public async Task<IActionResult> GetSimilarServices(
+            [FromQuery] Guid serviceId,
+            int batch = 1,
+            int itemPerBatch = 4)
+        {
+            var result = await _servicesService.GetSimilarServices(serviceId, batch, itemPerBatch);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

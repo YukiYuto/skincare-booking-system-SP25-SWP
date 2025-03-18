@@ -28,5 +28,6 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> CreateBulkServices(ClaimsPrincipal User, List<CreateServiceDto> createServiceDtos);
         Task<ResponseDto> UpdateService(ClaimsPrincipal User, UpdateServiceDto updateServiceDto);
         Task<ResponseDto> DeleteService(Guid id);
+        Task<ResponseDto> GetSimilarServices(Guid serviceId, int batch = 1, int itemPerBatch = 4);
     }
 }

@@ -81,7 +81,7 @@ namespace SkincareBookingSystem.Services.Services
         public async Task<ResponseDto> GetServiceById(Guid id)
         {
             var service = await _unitOfWork.Services.GetAsync(s => s.ServiceId == id,
-                includeProperties: nameof(Models.Domain.Services.TypeItems));
+                includeProperties: $"{nameof(Models.Domain.Services.TypeItems)},{nameof(Models.Domain.Services.DurationItems)}.{nameof(DurationItem.ServiceDuration)}");
 
             if (service == null)
             {
@@ -226,6 +226,49 @@ namespace SkincareBookingSystem.Services.Services
                     message: "An error occurred while creating services: " + e.Message,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
             }
+        }
+
+        public async Task<ResponseDto> GetSimilarServices(Guid serviceId, int batch = 1, int itemPerBatch = 4)
+        {
+            var serviceFromDb = await _unitOfWork.Services.GetAsync(
+                filter: s => s.ServiceId == serviceId,
+                includeProperties: $"{nameof(Models.Domain.Services.TypeItems)}");
+
+            if (serviceFromDb is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Service.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var serviceTypeIds = serviceFromDb.TypeItems.Select(ti => ti.ServiceTypeId).ToList();
+
+            var similarServices = await _unitOfWork.Services.GetAllAsync(
+                filter: s => s.TypeItems.Any(ti => serviceTypeIds.Contains(ti.ServiceTypeId)),
+                includeProperties: $"{nameof(Models.Domain.Services.TypeItems)}," +
+                                   $"{nameof(Models.Domain.Services.DurationItems)}.{nameof(DurationItem.ServiceDuration)}");
+
+            var similarServicesBatch = similarServices
+                .Where(s => s.ServiceId != serviceId)
+                .Skip((batch - 1) * itemPerBatch)
+                .Take(itemPerBatch)
+                .ToList();
+
+            // If there are no more similar services, return an empty list
+            if (!similarServicesBatch.Any())
+            {
+                return SuccessResponse.Build(
+                    message: StaticResponseMessage.Service.NoSimilarServices,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: new List<Models.Domain.Services>());
+            }
+
+            var similarServicesDto = _mapper.MapCollection<Models.Domain.Services, GetAllServicesDto>(similarServicesBatch);
+
+            return SuccessResponse.Build(
+                message: StaticResponseMessage.Service.SimilarServicesRetrieved,
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: similarServicesDto);
         }
     }
 }
