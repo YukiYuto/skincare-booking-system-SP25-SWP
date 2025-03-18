@@ -14,7 +14,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Spin } from 'antd';
-import { LogoutOutlined } from '@ant-design/icons';
+import { HomeOutlined, LogoutOutlined } from '@ant-design/icons';
 
 const Sidebar = ({ onExpandChange }) => {
   const [expanded, setExpanded] = useState(false);
@@ -52,6 +52,7 @@ const Sidebar = ({ onExpandChange }) => {
   }, [expanded, onExpandChange]);
 
   const menuItems = [
+    { path: '/', label: 'Home', icon: <HomeOutlined size={20} /> },
     { path: '/dashboard/revenue', label: 'Revenue', icon: <BarChart3 size={20} /> },
     { path: '/dashboard/customers', label: 'Customers', icon: <Users size={20} /> },
     { path: '/dashboard/therapists', label: 'Skin Therapists', icon: <UserCog size={20} /> },

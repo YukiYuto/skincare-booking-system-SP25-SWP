@@ -97,7 +97,7 @@
     cursor: pointer;
     border-radius: 5px;
     transition: background 0.2s;
-    margin-top: 520px;
+    margin-top: 500px;
 }
 
 .logoutButton:hover {

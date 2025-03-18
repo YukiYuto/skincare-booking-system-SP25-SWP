@@ -37,16 +37,16 @@ const AppRoutes = () => {
   
   return (
     <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="contact" element={<Contact />} />
+      <Route path="about" element={<AboutPage />} />
+      <Route path="services" element={<AllService />} />
+      <Route path="services/:id" element={<ServiceDetail />} />
+      <Route path="therapist" element={<TherapistCard />} />
+      <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="error" element={<ErrorPage />} />
       {!accessToken && (
         <>
-          <Route path="/" element={<Home />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="services" element={<AllService />} />
-          <Route path="services/:id" element={<ServiceDetail />} />
-          <Route path="therapist" element={<TherapistCard />} />
-          <Route path="therapist/:therapistId" element={<TherapistDetail />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="forgot-password" element={<ForgotPage />} />
@@ -58,51 +58,52 @@ const AppRoutes = () => {
         <>
           {roles.includes("CUSTOMER") && (
             <>
-              <Route path="/" element={<Home />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="about" element={<AboutPage />} />
-              <Route path="services" element={<AllService />} />
-              <Route path="services/:id" element={<ServiceDetail />} />
-              <Route path="therapist" element={<TherapistCard />} />
-              <Route path="therapist/:therapistId" element={<TherapistDetail />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="table-customer" element={<TableCustomer />} />
               <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
             </>
           )}
           {roles.includes("ADMIN") && (
-            <Route path="dashboard" element={<Dashboard />}>
-              <Route index element={<Revenue />} />
-              <Route path="revenue" element={<Revenue />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="therapists" element={<SkinTherapists />} />
-              <Route path="services" element={<Services />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="schedule" element={<Schedule />} />
-            </Route>
+            <>
+              <Route path="profile" element={<CustomerProfile />} />
+              <Route path="dashboard" element={<Dashboard />}>
+                <Route index element={<Revenue />} />
+                <Route path="revenue" element={<Revenue />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="therapists" element={<SkinTherapists />} />
+                <Route path="services" element={<Services />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="schedule" element={<Schedule />} />
+              </Route>
+            </>
           )}
           {roles.includes("STAFF") && (
             <>
+              <Route path="profile" element={<CustomerProfile />} />
               <Route path="staff-management" element={<StaffManagement />} />
               <Route path="schedule-management" element={<ScheduleManagement />} />
             </>
           )}
           {roles.includes("THERAPIST") && (
             <>
+              <Route path="profile" element={<CustomerProfile />} />
               <Route path="therapist-management" element={<TherapistManagement />} />
               <Route path="therapist-schedule" element={<TherapistSchedule />} />
             </>
           )}
           {roles.includes("MANAGER") && (
-            <Route path="dashboard" element={<Dashboard />}>
-              <Route index element={<Revenue />} />
-              <Route path="revenue" element={<Revenue />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="therapists" element={<SkinTherapists />} />
-              <Route path="services" element={<Services />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="schedule" element={<Schedule />} />
-            </Route>
+            <>
+              <Route path="profile" element={<CustomerProfile />} />
+              <Route path="dashboard" element={<Dashboard />}>
+                <Route index element={<Revenue />} />
+                <Route path="revenue" element={<Revenue />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="therapists" element={<SkinTherapists />} />
+                <Route path="services" element={<Services />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="schedule" element={<Schedule />} />
+              </Route>
+            </>
           )}
         </>
       )}
