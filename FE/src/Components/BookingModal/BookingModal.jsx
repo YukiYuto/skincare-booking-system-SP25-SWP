@@ -123,7 +123,7 @@ const BookingModal = ({ visible, onClose, selectedService }) => {
           {
             serviceId: selectedService?.serviceId,
             price: selectedService?.price || 0,
-            description: `Booking for ${selectedService?.serviceName}`
+            description: `Booking for service`
           },
         ],
       };
