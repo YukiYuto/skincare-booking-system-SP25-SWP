@@ -137,14 +137,16 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
             .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.BlogCategoryId))
-            .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.AuthorId))
+            .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
         CreateMap<UpdateBlogDto, Blog>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags))
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
+            .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.BlogCategoryId));
 
         // BookingService.BundleOrder - Order response to avoid cyclic references when returned
         CreateMap<Order, OrderDto>()

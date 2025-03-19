@@ -46,7 +46,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet("get/{blogId}")]
         [SwaggerOperation(Summary = "API gets a Blog by its Id", Description = "Requires user role")]
         public async Task<ActionResult<ResponseDto>> GetBlogById(Guid blogId)
         {

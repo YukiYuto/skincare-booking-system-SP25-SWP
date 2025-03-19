@@ -33,7 +33,7 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
-
+                        
             var createBlog = _autoMapperService.Map<CreateBlogDto, Blog>(createBlogDto);
             createBlog.CreatedBy = User.FindFirstValue("Fullname");
             createBlog.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
@@ -146,11 +146,12 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.Blog.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
-
+                       
             var updatedData = _autoMapperService.Map<UpdateBlogDto, Blog>(updateBlogDto);
             updatedData.UpdatedBy = User.FindFirstValue("Fullname");
             updatedData.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
             updatedData.Status = StaticOperationStatus.Blog.Modified;
+
             _unitOfWork.Blog.Update(updateBlog, updatedData);
 
             return (await SaveChangesAsync()) ?

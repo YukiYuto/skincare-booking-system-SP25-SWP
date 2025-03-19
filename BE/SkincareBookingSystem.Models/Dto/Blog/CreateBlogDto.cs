@@ -11,7 +11,7 @@ namespace SkincareBookingSystem.Models.Dto.Blog
         public string? Title { get; set; }
         public string? Content { get; set; }
         public Guid BlogCategoryId { get; set; }
-        public string? AuthorId { get; set; }
+        public string? UserId { get; set; }
         public string? Tags { get; set; }
         public string? ImageUrl { get; set; }
     }
