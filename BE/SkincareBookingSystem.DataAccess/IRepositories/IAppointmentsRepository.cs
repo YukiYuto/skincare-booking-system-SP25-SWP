@@ -12,5 +12,7 @@ namespace SkincareBookingSystem.DataAccess.IRepositories
         void Update(Appointments target, Appointments source);
 
         Task<List<Appointments>> GetAppointmentsByDateAsync(Guid customerId, DateTime date, string? includeProperties = null);
+        
+        void UpdateStatus(Appointments appointments);
     }
 }

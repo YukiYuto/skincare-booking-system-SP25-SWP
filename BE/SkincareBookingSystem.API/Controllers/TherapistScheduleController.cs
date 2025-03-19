@@ -53,10 +53,10 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("therapist/{therapistId:guid}")]
-        [SwaggerOperation(Summary = "API gets therapist schedules by therapist id", Description = "Requires therapistId")]
-        public async Task<ActionResult<ResponseDto>> GetTherapistScheduleByTherapistId(Guid therapistId)
+        [SwaggerOperation(Summary = "API gets therapist schedules by therapist id", Description = "Requires staff role")]
+        public async Task<ActionResult<ResponseDto>> GetTherapistScheduleByTherapistIdAsync(Guid therapistId)
         {
-            var result = await _bookingScheduleService.GetTherapistScheduleByTherapistId(therapistId);
+            var result = await _bookingScheduleService.GetTherapistScheduleByTherapistIdAsync(therapistId);
             return StatusCode(result.StatusCode, result);
         }
 

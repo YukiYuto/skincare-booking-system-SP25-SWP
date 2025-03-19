@@ -29,7 +29,7 @@ export const POST_CUSTOMER_AVATAR_API = `${BASE_URL}/UserManagement/avatar`;
 export const POST_APPOINTMENT_API = `${BASE_URL}/appointment`;
 export const GET_ALL_APPOINTMENTS_API = `${BASE_URL}/appointment`;
 export const PUT_APPOINTMENT_API = `${BASE_URL}/appointment`;
-export const GET_APPOINTMENT_BY_CUSTOMER_API = `${BASE_URL}/appointment/{customerId}/appointments`;
+export const GET_APPOINTMENT_BY_CUSTOMER_API = `${BASE_URL}/appointment/customer/appointments`;
 export const GET_APPOINTMENT_BY_ID_API = `${BASE_URL}/appointment/{appointmentId}`;
 export const DELETE_APPOINTMENT_API = `${BASE_URL}/appointment`;
 
@@ -84,6 +84,7 @@ export const DELETE_SERVICE_TYPE_API = `${BASE_URL}/service-type/{id}`;
 // Thêm API cho SkinTherapist
 export const GET_THERAPIST_BY_ID_API = `${BASE_URL}/therapists/details/{therapistId}`;
 export const GET_ALL_THERAPISTS_API = `${BASE_URL}/therapists`;
+export const GET_THERAPIST_BY_SERVICE_TYPE_API = `${BASE_URL}/therapists/service-type/{serviceTypeId}`;
 export const GET_THERAPIST_BY_SERVICE_API = `${BASE_URL}/therapists/service/{serviceId}`;
 
 // Thêm API cho Slot
@@ -115,8 +116,8 @@ export const DELETE_THERAPIST_SERVICE_TYPES_API = `${BASE_URL}/therapist-service
 
 // Thêm API cho TypeItem
 export const GET_TYPE_ITEMS_API = `${BASE_URL}/type-item`;
-export const POST_TYPE_ITEM_API = `${BASE_URL}/type-item`;
-
+export const POST_TYPE_ITEM_API = `${BASE_URL}/type-item`;  
+  
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
 export const AUTH_HEADERS = (token) => ({
   "Content-Type": "application/json",

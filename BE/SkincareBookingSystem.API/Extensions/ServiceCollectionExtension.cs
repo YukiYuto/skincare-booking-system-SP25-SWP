@@ -63,10 +63,13 @@ public static class ServiceCollectionExtension
         services.AddScoped<IFeedbackService, FeedbackService>();
         services.AddScoped<IBlogService, BlogService>();
 
+        services.AddScoped<IStaffService, StaffService>();
 
         // add services related to Repository
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IAppointmentsRepository, AppointmentsRepository>();
+        services.AddScoped<ITherapistScheduleRepository, TherapistScheduleRepository>();
+
 
         return services;
     }

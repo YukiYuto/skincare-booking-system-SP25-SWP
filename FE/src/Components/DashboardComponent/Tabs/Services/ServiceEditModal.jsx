@@ -1,51 +1,47 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import {
-  PUT_SERVICE_API,
-  GET_ALL_SERVICE_TYPES_API,
-  POST_FILE_SERVICE_API,
-} from "../../../../config/apiConfig";
+import { PUT_SERVICE_API, GET_ALL_SERVICE_TYPES_API, POST_FILE_SERVICE_API } from "../../../../config/apiConfig";
 import styles from "./ServiceEditModal.module.css";
 
 const ServiceEditModal = ({ service, onClose, refresh }) => {
-  const [formState, setFormState] = useState({
-    serviceId: service.serviceId,
-    serviceName: service.serviceName,
-    description: service.description,
-    price: service.price,
-    imageUrl: service.imageUrl,
-    serviceTypeId: service.serviceTypeId,
-  });
-  const [serviceTypes, setServiceTypes] = useState([]);
+  const [formState, setFormState] = useState({ ...service });
+  const [allServiceTypes, setAllServiceTypes] = useState([]);
+  const [selectedServiceTypes, setSelectedServiceTypes] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(service.imageUrl);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
   const { user } = useSelector((state) => state.auth);
 
-  // For debugging - let's see what the endpoint URL is
+  // Fetch all service types and initialize selected types
   useEffect(() => {
-    console.log("File upload endpoint:", POST_FILE_SERVICE_API);
-  }, []);
+    axios.get(GET_ALL_SERVICE_TYPES_API, { headers: { Authorization: `Bearer ${user.accessToken}` } })
+      .then((res) => {
+        const serviceTypesData = res.data.result;
+        setAllServiceTypes(serviceTypesData);
+        
+        // Initialize selected service types
+        if (service.serviceTypeIds && service.serviceTypeIds.length > 0) {
+          const initialSelected = service.serviceTypeIds.map(id => 
+            serviceTypesData.find(st => st.serviceTypeId === id)
+          ).filter(Boolean);
+          setSelectedServiceTypes(initialSelected);
+          
+          // Remove selected types from available types
+          setAllServiceTypes(serviceTypesData.filter(
+            st => !service.serviceTypeIds.includes(st.serviceTypeId)
+          ));
+        }
+      })
+      .catch((err) => console.error("Error fetching service types:", err));
+  }, [user.accessToken, service.serviceTypeIds]);
 
-  useEffect(() => {
-    const fetchServiceTypes = async () => {
-      try {
-        const response = await axios.get(GET_ALL_SERVICE_TYPES_API, {
-          headers: { Authorization: `Bearer ${user.accessToken}` },
-        });
-        setServiceTypes(response.data.result);
-      } catch (error) {
-        console.error("Error fetching service types:", error);
-      }
-    };
-    fetchServiceTypes();
-  }, [user.accessToken]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: value }));
-  };
-
+  // Handle regular form input changes
+  const handleChange = (e) => setFormState({ ...formState, [e.target.name]: e.target.value });
+  
+  // Handle image file change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -54,77 +50,71 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
     }
   };
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      let imageUrl = formState.imageUrl;
+  // Handle service type selection
+  const handleSelect = (serviceType) => {
+    setSelectedServiceTypes([...selectedServiceTypes, serviceType]);
+    setAllServiceTypes(allServiceTypes.filter(st => st.serviceTypeId !== serviceType.serviceTypeId));
+    setShowDropdown(false);
+  };
 
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append("file", imageFile);
+  // Handle service type deselection
+  const handleDeselect = (serviceType) => {
+    setSelectedServiceTypes(selectedServiceTypes.filter(st => st.serviceTypeId !== serviceType.serviceTypeId));
+    setAllServiceTypes([...allServiceTypes, serviceType]);
+  };
 
-        try {
-          // Try with explicit URL instead of the imported constant
-          const fileUploadUrl = POST_FILE_SERVICE_API;
-          console.log("Attempting to upload with URL:", fileUploadUrl);
-
-          const imageResponse = await axios.post(fileUploadUrl, formData, {
-            headers: {
-              Authorization: `Bearer ${user.accessToken}`,
-              "Content-Type": "multipart/form-data",
-            },
-          });
-
-          console.log("Image upload response:", imageResponse.data);
-
-          // Check different possible response structures
-          if (imageResponse.data.result) {
-            imageUrl = imageResponse.data.result;
-          } else if (imageResponse.data.imageUrl) {
-            imageUrl = imageResponse.data.imageUrl;
-          } else if (typeof imageResponse.data === "string") {
-            imageUrl = imageResponse.data;
-          }
-
-          console.log("Using image URL:", imageUrl);
-        } catch (error) {
-          console.error("Error uploading image:", error);
-          // Continue with the existing image URL if upload fails
-          console.log("Continuing with existing image URL:", imageUrl);
-        }
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
       }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-      const serviceData = {
-        ...formState,
-        imageUrl,
-      };
-
-      console.log("Service data to be submitted:", serviceData);
+  // Handle form submission
+  const handleSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    let imageUrl = formState.imageUrl;
+    
+    // Upload new image if provided
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("file", imageFile);
       try {
-        await axios.put(`${PUT_SERVICE_API}`, serviceData, {
-          headers: { Authorization: `Bearer ${user.accessToken}` },
+        const imageResponse = await axios.post(POST_FILE_SERVICE_API, formData, {
+          headers: { Authorization: `Bearer ${user.accessToken}`, "Content-Type": "multipart/form-data" },
         });
-        refresh();
-        onClose();
+        imageUrl = imageResponse.data.result || imageResponse.data.imageUrl || imageResponse.data;
       } catch (error) {
-        console.error("Error updating service:", error);
+        console.error("Error uploading image:", error);
       }
-    },
-    [
-      formState,
-      service.serviceId,
-      refresh,
-      onClose,
-      imageFile,
-      user.accessToken,
-    ]
-  );
+    }
+    
+    // Extract service type IDs from selected service types
+    const serviceTypeIds = selectedServiceTypes.map(st => st.serviceTypeId);
+    
+    // Update service
+    await axios.put(
+      PUT_SERVICE_API, 
+      { 
+        ...formState, 
+        imageUrl, 
+        serviceTypeIds // Include service type IDs in the update
+      }, 
+      { headers: { Authorization: `Bearer ${user.accessToken}` } }
+    );
+    
+    refresh();
+    onClose();
+  }, [formState, imageFile, selectedServiceTypes, refresh, onClose, user.accessToken]);
 
+  // Handle service deletion
   const handleDelete = useCallback(async () => {
     try {
-      await axios.delete(`${PUT_SERVICE_API}/${service.serviceId}`, {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-      });
+      await axios.delete(`${PUT_SERVICE_API}/${service.serviceId}`, { headers: { Authorization: `Bearer ${user.accessToken}` } });
       refresh();
       onClose();
     } catch (error) {
@@ -136,108 +126,73 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
     <div className={styles.modal}>
       <div className={styles.modalContent}>
         <h2>Edit Service</h2>
-        <div className={styles.contentWrapper}>
-          <div className={styles.formSection}>
-            <form onSubmit={handleSubmit}>
-              {[
-                { label: "Service Name", name: "serviceName", type: "text" },
-                { label: "Description", name: "description", type: "textarea" },
-                { label: "Price", name: "price", type: "number" },
-              ].map(({ label, name, type }) => (
-                <label key={name}>
-                  {label}:
-                  {type === "textarea" ? (
-                    <textarea
-                      name={name}
-                      value={formState[name]}
-                      onChange={handleChange}
-                      required
-                    />
-                  ) : (
-                    <input
-                      name={name}
-                      type={type}
-                      value={formState[name]}
-                      onChange={handleChange}
-                      required
-                    />
-                  )}
-                </label>
-              ))}
-              <label>
-                Service Type:
-                <select
-                  name="serviceTypeId"
-                  value={formState.serviceTypeId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a type</option>
-                  {serviceTypes.map(({ serviceTypeId, serviceTypeName }) => (
-                    <option key={serviceTypeId} value={serviceTypeId}>
-                      {serviceTypeName}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Image:
-                <input type="file" name="image" onChange={handleFileChange} />
-              </label>
-              {preview && (
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className={styles.imagePreview}
-                />
+        <form onSubmit={handleSubmit} className={styles.formContainer}>
+          {/* Service name, description, price inputs */}
+          {["serviceName", "description", "price"].map((name) => (
+            <label key={name}>
+              {name.charAt(0).toUpperCase() + name.slice(1)}:
+              {name === "description" ? (
+                <textarea name={name} value={formState[name]} onChange={handleChange} required />
+              ) : (
+                <input name={name} type={name === "price" ? "number" : "text"} value={formState[name]} onChange={handleChange} required />
               )}
-              <div className={styles.buttonContainer}>
-                <button className={styles.submitButton} type="submit">
-                  Update
-                </button>
-                <button
-                  className={styles.cancelButton}
-                  type="button"
-                  onClick={onClose}
-                >
-                  Cancel
-                </button>
-                <button
-                  className={styles.deleteButton}
-                  type="button"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </button>
-              </div>
-            </form>
-          </div>
-          <div className={styles.imageSection}>
-            <img
-              src={service.imageUrl}
-              alt="Service"
-              className={styles.serviceImage}
+            </label>
+          ))}
+          
+          {/* Service Types Dropdown */}
+          <label>Service Types:</label>
+          <div ref={dropdownRef} className={styles.dropdownContainer}>
+            <input
+              type="text"
+              placeholder="Search service type..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setShowDropdown(true)}
             />
-            <p>
-              <strong>Service ID:</strong> {service.serviceId}
-            </p>
-            <p>
-              <strong>Created By:</strong> {service.createdBy || "N/A"}
-            </p>
-            <p>
-              <strong>Updated By:</strong> {service.updatedBy || "N/A"}
-            </p>
-            <p>
-              <strong>Created Time:</strong> {service.createdTime || "N/A"}
-            </p>
-            <p>
-              <strong>Updated Time:</strong> {service.updatedTime || "N/A"}
-            </p>
-            <p>
-              <strong>Status:</strong> {service.status || "N/A"}
-            </p>
+            {showDropdown && (
+              <ul className={styles.listGroup}>
+                {allServiceTypes
+                  .filter(st => st.serviceTypeName.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map(st => (
+                    <li
+                      key={st.serviceTypeId}
+                      onClick={() => handleSelect(st)}
+                      className={styles.listItem}
+                    >
+                      {st.serviceTypeName}
+                    </li>
+                  ))}
+              </ul>
+            )}
           </div>
-        </div>
+          
+          {/* Selected Service Types */}
+          <div className={styles.selectedContainer}>
+            <h5>Selected Service Types:</h5>
+          </div>
+          <div className={styles.selectedList}>
+            {selectedServiceTypes.map(st => (
+              <div key={st.serviceTypeId} className={styles.badge}>
+                {st.serviceTypeName}
+                <span className={styles.removeIcon} onClick={() => handleDeselect(st)}>✖</span>
+              </div>
+            ))}
+          </div>
+          
+          {/* Image upload */}
+          <label>
+            Image:
+            <input type="file" onChange={handleFileChange} />
+          </label>
+          {preview && <img src={preview} alt="Preview" className={styles.imagePreview} />}
+          
+          {/* Action buttons */}
+          <div className={styles.buttonGroup}>
+            <button type="submit" className={styles.submitButton}>Update</button>
+            <button type="button" className={styles.cancelButton} onClick={onClose}>Cancel</button>
+            <button type="button" className={styles.deleteButton} onClick={handleDelete}>Delete</button>
+          </div>
+        </form>
       </div>
     </div>
   );

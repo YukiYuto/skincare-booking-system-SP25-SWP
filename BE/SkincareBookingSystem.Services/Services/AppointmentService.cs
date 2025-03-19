@@ -8,6 +8,8 @@ using System.Security.Claims;
 using SkincareBookingSystem.Services.Helpers.Responses;
 using SkincareBookingSystem.DataAccess.Repositories;
 using SkincareBookingSystem.Models.Dto.GetInfo;
+using SkincareBookingSystem.Models.Dto.Appointment.Details;
+using SkincareBookingSystem.Services.Helpers.Users;
 
 namespace SkincareBookingSystem.Services.Services
 {
@@ -36,7 +38,7 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
-            
+
             var customerId = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId);
             if (customerId is null)
             {
@@ -44,7 +46,7 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
-            
+
             var order = await _unitOfWork.Order.GetLatestOrderByCustomerIdAsync(customerId.CustomerId);
             if (order is null)
             {
@@ -54,13 +56,13 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var payment = await _unitOfWork.Payment.GetAsync(p => p.OrderNumber == order.OrderNumber && p.Status == PaymentStatus.Paid);
-            if(payment == null)
+            if (payment == null)
             {
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.Payment.Pending,
                     statusCode: StaticOperationStatus.StatusCode.BadRequest);
             }
-            
+
             var appointmentToCreate = _autoMapperService.Map<CreateAppointmentDto, Appointments>(appointmentDto);
             appointmentToCreate.CustomerId = customerId.CustomerId;
             appointmentToCreate.CreatedBy = user.FindFirstValue("FullName");
@@ -133,35 +135,77 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> GetAppointmentById(ClaimsPrincipal user, Guid appointmentId)
         {
-            if (user.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            if (UserError.NotExists(user))
             {
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var appointmentFromDb = await _unitOfWork.Appointments.GetAsync(a => a.AppointmentId == appointmentId);
-            return (appointmentFromDb is null) ?
-                ErrorResponse.Build(
-                    message: StaticResponseMessage.Appointment.NotFound,
-                    statusCode: StaticOperationStatus.StatusCode.NotFound)
-                :
-                SuccessResponse.Build(
+            try
+            {
+                var appointmentFromDb = await _unitOfWork.Appointments.GetAsync(
+                    filter: a => a.AppointmentId == appointmentId,
+                    includeProperties:
+                       $"{nameof(Appointments.Customer)}," +
+                       $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)}," +
+                       $"{nameof(Appointments.TherapistSchedules)}," +
+                       $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}," +
+                       $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)}," +
+                       $"{nameof(Appointments.Order)}," +
+                       $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}," +
+                       $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}," +
+                       $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}.{nameof(Models.Domain.Services.DurationItems)}," +
+                       $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}.{nameof(Models.Domain.Services.DurationItems)}.{nameof(DurationItem.ServiceDuration)}"
+);
+
+                if (appointmentFromDb is null)
+                {
+                    return ErrorResponse.Build(
+                        message: StaticResponseMessage.Appointment.NotFound,
+                        statusCode: StaticOperationStatus.StatusCode.NotFound);
+                }
+
+                var therapistInfo = appointmentFromDb.TherapistSchedules.Select(ts => ts.SkinTherapist).First();
+                var serviceInfo = appointmentFromDb.Order.OrderDetails.Select(od => od.Services).First();
+
+                var customerInfoDto = _autoMapperService.Map<Customer, CustomerInfoDto>(appointmentFromDb.Customer);
+                var therapistInfoDto = _autoMapperService.Map<SkinTherapist, TherapistInfoDto>(therapistInfo);
+                var serviceInfoDto = _autoMapperService.Map<Models.Domain.Services, ServiceInfoDto>(serviceInfo);
+
+                var appointmentDetailsDto = _autoMapperService.Map<Appointments, AppointmentDetailsDto>(appointmentFromDb);
+                appointmentDetailsDto.CustomerInfo = customerInfoDto;
+                appointmentDetailsDto.TherapistInfo = therapistInfoDto;
+                appointmentDetailsDto.ServiceInfo = serviceInfoDto;
+
+                return SuccessResponse.Build(
                     message: StaticResponseMessage.Appointment.Retrieved,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: appointmentFromDb);
+                    result: appointmentDetailsDto);
+            }
+            catch (Exception e)
+            {
+                return ErrorResponse.Build(
+                    message: "An error occurred retrieving appointment details: " + e.Message,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
         }
 
-        public async Task<ResponseDto> GetAppointmentsByCustomerId(Guid customerId)
+        public async Task<ResponseDto> GetAppointmentsByCustomer(ClaimsPrincipal User)
         {
-            if (await _unitOfWork.Customer.GetAsync(c => c.CustomerId == customerId) is null)
-            {
+            if (UserError.NotExists(User))
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
-            }
+            var customerFromDb = await _unitOfWork.Customer.GetAsync(
+                filter: c => c.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync(a => a.CustomerId == customerId);
+            if (customerFromDb is null)
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Customer.Invalid,
+                    statusCode: StaticOperationStatus.StatusCode.BadRequest);
+
+            var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync(a => a.CustomerId == customerFromDb.CustomerId);
 
             return (appointmentsFromDb.Any()) ?
                 SuccessResponse.Build(

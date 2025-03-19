@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import {
@@ -26,26 +26,21 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
 
   // Fetch service types
   useEffect(() => {
-    console.log("Fetching service types from API...");
-    axios
-      .get(GET_ALL_SERVICE_TYPES_API, {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-      })
-      .then((res) => {
-        console.log("Fetched service types:", res.data.result);
+    const fetchServiceTypes = async () => {
+      try {
+        const res = await axios.get(GET_ALL_SERVICE_TYPES_API, {
+          headers: { Authorization: `Bearer ${user.accessToken}` },
+        });
         setServiceTypes(res.data.result);
-      })
-      .catch((err) =>
-        console.error(
-          "Error fetching service types:",
-          err.response?.data || err.message
-        )
-      );
+      } catch (err) {
+        console.error("Error fetching service types:", err.response?.data || err.message);
+      }
+    };
+    fetchServiceTypes();
   }, [user.accessToken]);
 
-  // Handle form input changes
-  const handleChange = (e) =>
-    setFormState({ ...formState, [e.target.name]: e.target.value });
+  // Handle input change
+  const handleChange = (e) => setFormState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   // Handle image upload
   const handleImageChange = (e) => {
@@ -53,53 +48,31 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
     if (file) {
       setImageFile(file);
       setPreview(URL.createObjectURL(file));
-      console.log("Selected image file:", file.name);
     }
   };
 
-  // Handle service type selection
-  const handleSelect = (serviceType) => {
-    console.log("Selected service type:", serviceType);
-    const updatedSelected = [...selectedServiceTypes, serviceType];
-    setSelectedServiceTypes(updatedSelected);
-    setServiceTypes(
-      serviceTypes.filter(
-        (item) => item.serviceTypeId !== serviceType.serviceTypeId
-      )
+  // Handle selecting/deselecting service types
+  const updateServiceTypes = useCallback((serviceType, add) => {
+    setSelectedServiceTypes((prevSelected) =>
+      add ? [...prevSelected, serviceType] : prevSelected.filter((st) => st.serviceTypeId !== serviceType.serviceTypeId)
     );
-    setShowDropdown(false);
-
-    console.log("Updated selected service types:", updatedSelected);
-  };
-
-  // Handle service type deselection
-  const handleDeselect = (serviceType) => {
-    console.log("Deselected service type:", serviceType);
-    const updatedSelected = selectedServiceTypes.filter(
-      (item) => item.serviceTypeId !== serviceType.serviceTypeId
+    setServiceTypes((prevTypes) =>
+      add ? prevTypes.filter((st) => st.serviceTypeId !== serviceType.serviceTypeId) : [...prevTypes, serviceType]
     );
-    setServiceTypes([...serviceTypes, serviceType]);
-    setSelectedServiceTypes(updatedSelected);
-
-    console.log("Updated selected service types:", updatedSelected);
-  };
+  }, []);
 
   // Close dropdown when clicking outside
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setShowDropdown(false);
-    }
-  };
-
   useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setShowDropdown(false);
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle Reset
+  // Reset service type selection
   const handleReset = () => {
-    console.log("Resetting selected service types.");
-    setServiceTypes([...serviceTypes, ...selectedServiceTypes]);
+    setServiceTypes((prev) => [...prev, ...selectedServiceTypes]);
     setSelectedServiceTypes([]);
   };
 
@@ -107,47 +80,34 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!imageFile) return alert("Please upload an image.");
-    if (selectedServiceTypes.length === 0)
-      return alert("Select at least one service type.");
+    if (!selectedServiceTypes.length) return alert("Select at least one service type.");
 
     try {
-      console.log("Uploading image...");
+      // Upload image
       const formData = new FormData();
       formData.append("file", imageFile);
-      const imageResponse = await axios.post(POST_FILE_SERVICE_API, formData, {
+      const { data: imageData } = await axios.post(POST_FILE_SERVICE_API, formData, {
         headers: { Authorization: `Bearer ${user.accessToken}` },
       });
-      console.log("Uploaded image URL:", imageResponse.data.result);
 
-      console.log("Creating new service...");
-      // In the handleSubmit function
-      const serviceResponse = await axios.post(
+      // Create service
+      const { data: serviceData } = await axios.post(
         POST_SERVICE_API,
-        { ...formState, imageUrl: imageResponse.data.result },
+        { ...formState, imageUrl: imageData.result },
         { headers: { Authorization: `Bearer ${user.accessToken}` } }
       );
-      console.log("Created service ID:", serviceResponse.data.result);
 
-      // Extract just the serviceId from the response
-      const serviceId = serviceResponse.data.result.serviceId;
-
-      console.log("Associating service with selected service types...");
+      // Associate service with types
       await axios.post(
         POST_TYPE_ITEM_API,
-        {
-          serviceId: serviceId,
-          serviceTypeIdList: selectedServiceTypes.map((st) => st.serviceTypeId),
-        },
+        { serviceId: serviceData.result.serviceId, serviceTypeIdList: selectedServiceTypes.map((st) => st.serviceTypeId) },
         { headers: { Authorization: `Bearer ${user.accessToken}` } }
       );
 
       onClose();
       refresh();
     } catch (err) {
-      console.error(
-        "Error creating service:",
-        err.response?.data || err.message
-      );
+      console.error("Error creating service:", err.response?.data || err.message);
     }
   };
 
@@ -157,8 +117,8 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
         <h2>Create New Service</h2>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
           {/* Service Name, Description, Price */}
-          {["serviceName", "description", "price"].map((name, index) => (
-            <label key={index}>
+          {["serviceName", "description", "price"].map((name) => (
+            <label key={name}>
               {name.charAt(0).toUpperCase() + name.slice(1)}:
               <input
                 type={name === "price" ? "number" : "text"}
@@ -184,18 +144,9 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
             {showDropdown && (
               <ul className={styles.listGroup}>
                 {serviceTypes
-                  .filter((st) =>
-                    st.serviceTypeName
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
-                  )
+                  .filter((st) => st.serviceTypeName.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((st) => (
-                    <li
-                      key={st.serviceTypeId}
-                      className="list-group-item list-group-item-action"
-                      onClick={() => handleSelect(st)}
-                      style={{ cursor: "pointer" }}
-                    >
+                    <li key={st.serviceTypeId} className="list-group-item" onClick={() => updateServiceTypes(st, true)}>
                       {st.serviceTypeName}
                     </li>
                   ))}
@@ -207,11 +158,7 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
           <div className={styles.selectedContainer}>
             <h5>Selected Service Types:</h5>
             {selectedServiceTypes.length > 0 && (
-              <button
-                type="button"
-                className="btn btn-danger btn-sm"
-                onClick={handleReset}
-              >
+              <button type="button" className="btn btn-danger btn-sm" onClick={handleReset}>
                 ✖ Reset
               </button>
             )}
@@ -220,10 +167,7 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
             {selectedServiceTypes.map((st) => (
               <div key={st.serviceTypeId} className={styles.badge}>
                 {st.serviceTypeName}
-                <span
-                  className={styles.removeIcon}
-                  onClick={() => handleDeselect(st)}
-                >
+                <span className={styles.removeIcon} onClick={() => updateServiceTypes(st, false)}>
                   ✖
                 </span>
               </div>
@@ -233,20 +177,14 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
           {/* Image Upload */}
           <label>Upload Image:</label>
           <input type="file" accept="image/*" onChange={handleImageChange} />
-          {preview && (
-            <img src={preview} alt="Preview" className={styles.imagePreview} />
-          )}
+          {preview && <img src={preview} alt="Preview" className={styles.imagePreview} />}
 
           {/* Submit & Cancel */}
           <div className={styles.buttonGroup}>
             <button type="submit" className={styles.submitButton}>
               Create
             </button>
-            <button
-              type="button"
-              className={styles.cancelButton}
-              onClick={onClose}
-            >
+            <button type="button" className={styles.cancelButton} onClick={onClose}>
               Cancel
             </button>
           </div>

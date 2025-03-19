@@ -30,6 +30,8 @@ public class UnitOfWork : IUnitOfWork
     public IOrderRepository Order { get; private set; }
 
     public IOrderDetailRepository OrderDetail { get; private set; }
+    
+    public IOrderServiceTrackingRepository OrderServiceTracking { get; private set; }
 
     public IServiceComboRepository ServiceCombo { get; private set; }
 
@@ -77,6 +79,7 @@ public class UnitOfWork : IUnitOfWork
         Feedbacks = new FeedbacksRepository(_context);
         Order = new OrderRepository(_context);
         OrderDetail = new OrderDetailRepository(_context);
+        OrderServiceTracking = new OrderServiceTrackingRepository(_context);
         ServiceCombo = new ServiceComboRepository(_context);
         ServiceDuration = new ServiceDurationRepository(_context);
         Services = new ServicesRepository(_context);

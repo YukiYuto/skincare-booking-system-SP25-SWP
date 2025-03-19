@@ -22,6 +22,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Feedbacks> Feedbacks { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<OrderDetail> OrderDetail { get; set; }
+
+    public DbSet<OrderServiceTracking> OrderServiceTracking { get; set; }
     public DbSet<ServiceDuration> ServiceDurations { get; set; }
     public DbSet<Services> Services { get; set; }
     public DbSet<ServiceCombo> ServiceCombo { get; set; }
@@ -124,7 +126,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Appointments>()
             .HasOne(a => a.Order)
-            .WithMany()
+            .WithMany(o => o.Appointments)
             .HasForeignKey(a => a.OrderId)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -134,7 +136,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Order>()
             .HasOne(o => o.Customer)
-            .WithMany()
+            .WithMany(c => c.Orders)
             .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Restrict);
 

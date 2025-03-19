@@ -62,6 +62,34 @@ const Services = () => {
     return serviceType ? serviceType.serviceTypeName : "Unknown";
   };
 
+  // Function to generate service type display text with additional counts
+  const getServiceTypeDisplay = (service) => {
+    if (!service.serviceTypeIds || service.serviceTypeIds.length === 0) {
+      return "None";
+    }
+    
+    const firstTypeId = service.serviceTypeIds[0];
+    const firstTypeName = getServiceTypeName(firstTypeId);
+    
+    if (service.serviceTypeIds.length === 1) {
+      return firstTypeName;
+    }
+    
+    // If there are additional service types, show +1, +2, etc.
+    return `${firstTypeName} +${service.serviceTypeIds.length - 1}`;
+  };
+
+  // Function to get all service type names for tooltip
+  const getAllServiceTypeNames = (service) => {
+    if (!service.serviceTypeIds || service.serviceTypeIds.length === 0) {
+      return "No service types";
+    }
+    
+    return service.serviceTypeIds
+      .map(id => getServiceTypeName(id))
+      .join(", ");
+  };
+
   // Reset page number when changing service type filter
   useEffect(() => {
     setPagination((prev) => ({
@@ -141,8 +169,10 @@ const Services = () => {
               services.map((service) => (
                 <tr key={service.serviceId}>
                   <td>{service.serviceName}</td>
-                  <td>${service.price}</td>
-                  <td>{getServiceTypeName(service.serviceTypeId)}</td>
+                  <td>${(service.price / 100).toFixed(2)}</td>
+                  <td title={getAllServiceTypeNames(service)} className={styles.serviceTypeCell}>
+                    {getServiceTypeDisplay(service)}
+                  </td>
                   <td>
                     <button
                       onClick={() => setModal({ type: "edit", data: service })}

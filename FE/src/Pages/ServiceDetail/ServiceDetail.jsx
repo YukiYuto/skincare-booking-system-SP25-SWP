@@ -7,9 +7,11 @@ import {
   GET_SERVICE_BY_ID_API,
   GET_ALL_SERVICES_API,
   GET_THERAPIST_BY_SERVICE_API,
+GET_TYPE_ITEMS_API,
   HTTP_METHODS,
 } from "../../config/apiConfig";
 import Header from "../../Components/Common/Header";
+import BookingModal from "../../Components/BookingModal/BookingModal";
 
 const ServiceDetail = () => {
   const { id } = useParams();
@@ -20,7 +22,38 @@ const ServiceDetail = () => {
     isLoading: true,
     error: null,
   });
-  const [bookSelected, setBookSelected] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const [visible, setVisible] = useState(false);
+
+  const handleBook = () => {
+    setVisible(true);
+  };
+
+  const fetchSimilarServices = async (serviceTypeName) => {
+    try {
+      const endpoint = `${GET_TYPE_ITEMS_API}?pageNumber=1&pageSize=10&filterOn=serviceTypeName&filterQuery=${serviceTypeName}`;
+      const response = await fetch(endpoint, {
+        method: HTTP_METHODS.GET,
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch similar services: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.isSuccess && data.result && Array.isArray(data.result.typeItems)) {
+        const typeItem = data.result.typeItems.find(
+          (item) => item.serviceTypeName === serviceTypeName
+        );
+        return typeItem ? typeItem.services : [];
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching similar services:", error);
+      return [];
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -31,7 +64,7 @@ const ServiceDetail = () => {
 
       const serviceRes = await fetch(serviceEndpoint, {
         method: HTTP_METHODS.GET,
-        headers: { "Content-Type": "application/json" }, 
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!serviceRes.ok) {
@@ -45,6 +78,9 @@ const ServiceDetail = () => {
       if (!serviceData || !serviceData.serviceId) {
         throw new Error("Invalid service data structure");
       }
+
+      // Fetch similar services
+      const similarServices = await fetchSimilarServices(serviceData.serviceTypeName);
 
       console.log("Fetching all services...");
       const allServicesRes = await fetch(GET_ALL_SERVICES_API, {
@@ -63,10 +99,6 @@ const ServiceDetail = () => {
 
       console.log("All Services Data:", allServicesData);
 
-      console.log(
-        "Fetching therapists for serviceTypeId:",
-        serviceData.serviceTypeId
-      );
       const therapistsEndpoint = GET_THERAPIST_BY_SERVICE_API.replace(
         "{serviceId}",
         serviceData.serviceId
@@ -95,15 +127,7 @@ const ServiceDetail = () => {
         console.warn("Therapist API error:", therapistError);
       }
 
-      const similarServices = allServicesData
-        .filter(
-          (s) =>
-            s.serviceTypeId === serviceData.serviceTypeId &&
-            s.serviceId !== serviceData.serviceId
-        )
-        .slice(0, 4);
-
-      console.log("Similar Services:", similarServices);
+            console.log("Similar Services:", similarServices);
 
       setState({
         service: serviceData,
@@ -147,7 +171,13 @@ const ServiceDetail = () => {
     <>
       <Header />
       <div className={styles.container}>
-        <ServiceLayout service={service} therapists={therapists || []} />
+        <ServiceLayout
+          service={service}
+          therapists={therapists || []}
+          onBookButtonClick={handleBook}
+        />
+
+        <BookingModal visible={visible} onClose={() => setVisible(false)} selectedService={service} />
         {similarServices.length > 0 && (
           <div className={styles.similarSection}>
             <h2 className={styles.similarTitle}>Similar Services</h2>
