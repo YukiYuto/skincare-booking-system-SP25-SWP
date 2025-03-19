@@ -38,6 +38,9 @@ namespace SkincareBookingSystem.Services.Services
 
             var blogCategory = _mapperService.Map<CreateBlogCategoryDto, BlogCategory>(blogCategoryDto);
             blogCategory.CreatedBy = User.FindFirstValue("Fullname");
+            blogCategory.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
+            blogCategory.Status = StaticOperationStatus.BlogCategory.Created;
+
 
             try
             {
@@ -130,11 +133,6 @@ namespace SkincareBookingSystem.Services.Services
                 message: StaticResponseMessage.BlogCategory.Updated,
                 statusCode: StaticOperationStatus.StatusCode.Ok,
                 result: blogCategoryToUpdate);
-        }
-
-        public Task<ResponseDto> DeleteBlogCategory(ClaimsPrincipal User, Guid blogCategoryId)
-        {
-            throw new NotImplementedException();
         }
 
         private async Task<bool> SaveChangesAsync()
