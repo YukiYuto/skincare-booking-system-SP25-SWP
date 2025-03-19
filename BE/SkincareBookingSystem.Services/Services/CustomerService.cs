@@ -138,9 +138,7 @@ namespace SkincareBookingSystem.Services.Services
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.Appointment.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
-            }
-
-            ;
+            };
 
             var appointmentsDto = appointmentsFromCustomer.Select(a => new
             {
@@ -153,10 +151,11 @@ namespace SkincareBookingSystem.Services.Services
 
             var services = appointmentsFromCustomer.SelectMany(
                     a => a.Order.OrderDetails.Select(od => od.Services))
+                .Where(s => s is not null)
                 .Distinct()
                 .ToList();
             var serviceTypeIds = services.SelectMany(
-                    s => s.TypeItems.Select(ti => ti.ServiceTypeId))
+                s => s.TypeItems.Select(ti => ti.ServiceTypeId))
                 .Distinct()
                 .ToList();
 
