@@ -14,6 +14,7 @@ public interface IUnitOfWork
     IFeedbacksRepository Feedbacks { get; }
     IOrderRepository Order { get; }
     IOrderDetailRepository OrderDetail { get; }
+    IOrderServiceTrackingRepository OrderServiceTracking { get; }
     IServiceComboRepository ServiceCombo { get; }
     IServiceDurationRepository ServiceDuration { get; }
     IServicesRepository Services { get; }
