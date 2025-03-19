@@ -36,6 +36,8 @@ namespace SkincareBookingSystem.Services.Services
 
             var createBlog = _autoMapperService.Map<CreateBlogDto, Blog>(createBlogDto);
             createBlog.CreatedBy = User.FindFirstValue("Fullname");
+            createBlog.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
+            createBlog.Status = StaticOperationStatus.Blog.Published;
 
             try
             {
@@ -146,6 +148,9 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var updatedData = _autoMapperService.Map<UpdateBlogDto, Blog>(updateBlogDto);
+            updatedData.UpdatedBy = User.FindFirstValue("Fullname");
+            updatedData.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
+            updatedData.Status = StaticOperationStatus.Blog.Modified;
             _unitOfWork.Blog.Update(updateBlog, updatedData);
 
             return (await SaveChangesAsync()) ?
