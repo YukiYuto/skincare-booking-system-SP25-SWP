@@ -84,9 +84,18 @@ public class BookingService : IBookingService
 
     public async Task<ResponseDto> BundleOrder(BundleOrderDto bundleOrderDto, ClaimsPrincipal User)
     {
-        if (UserError.NotExists(User))
+        /*if (UserError.NotExists(User))
+            return ErrorResponse.Build(StaticOperationStatus.User.UserNotFound,
+                StaticOperationStatus.StatusCode.NotFound);*/
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null)
             return ErrorResponse.Build(StaticOperationStatus.User.UserNotFound,
                 StaticOperationStatus.StatusCode.NotFound);
+        var customer = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId);
+        if (customer is null)
+            return ErrorResponse.Build(StaticOperationStatus.Customer.NotFound,
+                StaticOperationStatus.StatusCode.NotFound);
+        
 
         if (!bundleOrderDto.OrderDetails.Any())
             return ErrorResponse.Build(StaticOperationStatus.OrderDetail.EmptyList,
@@ -100,27 +109,48 @@ public class BookingService : IBookingService
             order.CreatedBy = User.Identity?.Name;
 
             var orderDetails = new List<OrderDetail>();
+            var orderServiceTrackings = new List<OrderServiceTracking>();
 
+            // Collect comboIDs from order details
             var comboIds = bundleOrderDto.OrderDetails
                 .Where(od => od.ServiceComboId.HasValue)
                 .Select(od => od.ServiceComboId!.Value)
                 .Distinct()
                 .ToList();
 
+            // Collect serviceIDs from order details that don't have combo IDs
             var serviceIds = bundleOrderDto.OrderDetails
-                .Where(od => !od.ServiceComboId.HasValue)
-                .Select(od => od.ServiceId)
+                .Where(od => !od.ServiceComboId.HasValue && od.ServiceId.HasValue)
+                .Select(od => od.ServiceId!.Value)
                 .Distinct()
                 .ToList();
 
+            // Get combo items for the combo IDs
             var comboItems = await _unitOfWork.ComboItem
                 .GetListAsync(ci => comboIds.Contains(ci.ServiceComboId),
                     nameof(ComboItem.ServiceCombo));
 
+            // Extract serviceIDs from combo items
+            var comboServiceIds = comboItems.Select(ci => ci.ServiceId).Distinct().ToList();
+
+            // Combine with direct service IDs
+            var allServiceIds = serviceIds.Concat(comboServiceIds).Distinct().ToList();
+
+            // Get all needed services
+            var services = await _unitOfWork.Services
+                .GetListAsync(s => allServiceIds.Contains(s.ServiceId));
+
+            // Create dictionary service prices
+            var serviceDict = services.ToDictionary(s => s.ServiceId, s => s.Price);
+
+            // Group combo items by comboID
             var comboItemDict = comboItems
                 .GroupBy(ci => ci.ServiceComboId)
                 .ToDictionary(g => g.Key, g => g.OrderBy(ci => ci.Priority).ToList());
 
+            bool hasPendingServiceInCombo = false;
+
+            // Process combo items first
             foreach (var detail in bundleOrderDto.OrderDetails)
             {
                 if (detail.ServiceComboId.HasValue)
@@ -130,45 +160,79 @@ public class BookingService : IBookingService
                         : new List<ComboItem>();
 
                     foreach (var item in comboServices)
-                        orderDetails.Add(new OrderDetail
+                    {
+                        var orderDetail = new OrderDetail
                         {
+                            OrderDetailId = Guid.NewGuid(),
                             OrderId = order.OrderId,
                             ServiceId = item.ServiceId,
                             ServiceComboId = detail.ServiceComboId,
-                            Price = detail.Price,
-                            Description = item.ServiceCombo.ComboName,
-                            ComboItem = item,
-                            ServiceTracking = new OrderServiceTracking
-                            {
-                                Status = item.Priority == 1
-                                    ? StaticOperationStatus.OrderServiceTracking.Pending
-                                    : StaticOperationStatus.OrderServiceTracking.Locked,
-                                CreatedTime = DateTime.UtcNow.AddHours(7),
-                                UpdatedTime = null
-                            }
-                        });
-                }
+                            Price = serviceDict.TryGetValue(item.Services.ServiceId, out double price) ? price : 0,
+                            Description = item.ServiceCombo?.ComboName ?? "Unknown Combo"
+                        };
 
-                if (!detail.ServiceComboId.HasValue)
-                    orderDetails.Add(new OrderDetail
-                    {
-                        OrderId = order.OrderId,
-                        ServiceId = detail.ServiceId,
-                        Price = detail.Price,
-                        Description = detail.Description,
-                        ServiceTracking = new OrderServiceTracking
+                        orderDetails.Add(orderDetail);
+
+                        var serviceTracking = new OrderServiceTracking
                         {
-                            Status = StaticOperationStatus.OrderServiceTracking.Pending,
+                            TrackingId = Guid.NewGuid(),
+                            OrderDetailId = orderDetail.OrderDetailId,
+                            Status = item.Priority == 1
+                                ? StaticOperationStatus.OrderServiceTracking.Pending
+                                : StaticOperationStatus.OrderServiceTracking.Locked,
                             CreatedTime = DateTime.UtcNow.AddHours(7),
+                            CreatedBy = User.Identity?.Name,
                             UpdatedTime = null
-                        }
-                    });
+                        };
+
+                        orderServiceTrackings.Add(serviceTracking);
+                        if (item.Priority == 1)
+                            hasPendingServiceInCombo = true;
+                    }
+                }
             }
 
-            order.TotalPrice = GetTotalPrice(orderDetails);
+            // Process individual services
+            foreach (var detail in bundleOrderDto.OrderDetails)
+            {
+                if (!detail.ServiceComboId.HasValue && detail.ServiceId.HasValue &&
+                    serviceDict.TryGetValue(detail.ServiceId.Value, out var price))
+                {
+                    var orderDetail = new OrderDetail
+                    {
+                        OrderDetailId = Guid.NewGuid(),
+                        OrderId = order.OrderId,
+                        ServiceId = detail.ServiceId,
+                        Price = price,
+                        Description = detail.Description
+                    };
+
+                    orderDetails.Add(orderDetail);
+
+                    var serviceTracking = new OrderServiceTracking
+                    {
+                        TrackingId = Guid.NewGuid(),
+                        OrderDetailId = orderDetail.OrderDetailId,
+                        Status = hasPendingServiceInCombo
+                            ? StaticOperationStatus.OrderServiceTracking.Locked
+                            : StaticOperationStatus.OrderServiceTracking.Pending,
+                        CreatedTime = DateTime.UtcNow.AddHours(7),
+                        CreatedBy = User.Identity?.Name,
+                        UpdatedTime = null
+                    };
+
+                    orderServiceTrackings.Add(serviceTracking);
+                }
+            }
+
+            order.TotalPrice = Convert.ToDouble(GetTotalPrice(orderDetails));
+            order.OrderDetails = orderDetails;
 
             await _unitOfWork.Order.AddAsync(order);
+            
+            await _unitOfWork.OrderServiceTracking.AddRangeAsync(orderServiceTrackings);
             await _unitOfWork.SaveAsync();
+
             await transaction.CommitAsync();
 
             var orderResponseDto = _autoMapperService.Map<Order, OrderDto>(order);
@@ -515,31 +579,140 @@ public class BookingService : IBookingService
         }
     }
 
-    public Task<ResponseDto> CompletedService(ClaimsPrincipal User, CompletedServiceDto completedServiceDto)
+    public async Task<ResponseDto> CompletedService(ClaimsPrincipal User, CompletedServiceDto completedServiceDto)
     {
         //user
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId is null)
-            return Task.FromResult(ErrorResponse.Build(StaticOperationStatus.User.UserNotFound,
-                StaticOperationStatus.StatusCode.NotFound));
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.NotFound,
+                Message = StaticOperationStatus.User.UserNotFound
+            };
+
         //Therapist
-        var therapist = _unitOfWork.SkinTherapist.GetAsync(t => t.UserId == userId).Result;
+        var therapist = await _unitOfWork.SkinTherapist.GetAsync(st => st.UserId == userId);
         if (therapist is null)
-            return Task.FromResult(ErrorResponse.Build(StaticOperationStatus.SkinTherapist.NotFound,
-                StaticOperationStatus.StatusCode.NotFound));
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.NotFound,
+                Message = StaticOperationStatus.SkinTherapist.NotFound
+            };
 
         //Appointment
-        /*var appointment = _unitOfWork.Appointments.GetAsync(a => a.AppointmentId == completedServiceDto.AppointmentId);
+        var appointment =
+            await _unitOfWork.Appointments.GetAsync(a => a.AppointmentId == completedServiceDto.AppointmentId);
         if (appointment is null)
-            return Task.FromResult(ErrorResponse.Build(StaticOperationStatus.Appointment.NotFound,
-                StaticOperationStatus.StatusCode.NotFound));*/
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.NotFound,
+                Message = StaticOperationStatus.Appointment.NotFound
+            };
 
-        return null;
+        //TherapistSchedule
+        var therapistAppoinment = await _unitOfWork.TherapistSchedule.GetAsync
+            (ts => ts.AppointmentId == appointment.AppointmentId && ts.TherapistId == therapist.SkinTherapistId);
+        if (therapistAppoinment is null)
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.NotFound,
+                Message = StaticOperationStatus.SkinTherapist.Do_not
+            };
+
+        //order
+        var order = await _unitOfWork.Order.GetAsync(o => o.OrderId == appointment.OrderId);
+        if (order is null)
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.NotFound,
+                Message = StaticOperationStatus.Order.Message.NotFound
+            };
+
+        //orderDetail
+        var orderDetail = await _unitOfWork.OrderDetail.GetAsync(od => od.OrderId == order.OrderId);
+        if (orderDetail is null)
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.NotFound,
+                Message = StaticOperationStatus.OrderDetail.NotFound
+            };
+        //OrderServiceTracking
+        var orderServiceTracking =
+            await _unitOfWork.OrderServiceTracking.GetAsync(ost => ost.OrderDetailId == orderDetail.OrderDetailId);
+        if (orderServiceTracking is null)
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.NotFound,
+                Message = StaticOperationStatus.OrderServiceTracking.NotFound
+            };
+
+        if (orderServiceTracking.Status != StaticOperationStatus.OrderServiceTracking.Pending)
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.BadRequest,
+                Message = "Service is not available to complete"
+            };
+
+        await using var transaction = await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            orderServiceTracking.Status = StaticOperationStatus.OrderServiceTracking.Completed;
+            orderServiceTracking.UpdatedTime = DateTime.UtcNow.AddHours(7);
+            orderServiceTracking.UpdatedBy = User.FindFirstValue("name");
+
+            if (orderDetail.ServiceComboId.HasValue)
+            {
+                var nextService = await _unitOfWork.OrderDetail.GetAsync(
+                    od => od.ServiceComboId == orderDetail.ServiceComboId &&
+                          od.ComboItem!.Priority == orderDetail.ComboItem!.Priority + 1,
+                    includeProperties: "OrderServiceTracking");
+
+                if (nextService != null)
+                {
+                    nextService.ServiceTracking!.Status = StaticOperationStatus.OrderServiceTracking.Pending;
+                }
+            }
+
+            _unitOfWork.OrderServiceTracking.Update(orderServiceTracking);
+
+            therapistAppoinment.ScheduleStatus = ScheduleStatus.Completed;
+            therapistAppoinment.UpdatedTime = DateTime.UtcNow.AddHours(7);
+            therapistAppoinment.UpdatedBy = User.FindFirstValue("name");
+            _unitOfWork.TherapistSchedule.UpdateStatus(therapistAppoinment);
+
+            await _unitOfWork.SaveAsync();
+
+
+            return new ResponseDto()
+            {
+                IsSuccess = true,
+                StatusCode = StaticOperationStatus.StatusCode.Ok,
+                Message = "Appointment and TherapistSchedule completed successfully",
+                Result = orderDetail
+            };
+        }
+        catch (Exception e)
+        {
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.InternalServerError,
+                Message = e.Message
+            };
+        }
     }
+
 
     private static int GetTotalPrice(IEnumerable<OrderDetail> orderDetails)
     {
         return Convert.ToInt32(orderDetails.Sum(detail => detail.Price));
     }
 }
-

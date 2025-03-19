@@ -19,5 +19,10 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             _context.Entry(target).State = EntityState.Modified;
             _context.Entry(target).CurrentValues.SetValues(source);
         }
+        
+        public void UpdateStatus(Appointments appointments)
+        {
+            _context.Appointments.Update(appointments);
+        }
     }
 }

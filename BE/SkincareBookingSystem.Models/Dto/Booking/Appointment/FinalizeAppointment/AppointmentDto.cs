@@ -14,5 +14,6 @@ namespace SkincareBookingSystem.Models.Dto.Booking.Appointment.FinalizeAppointme
         public DateOnly AppointmentDate { get; set; }
         public string AppointmentTime { get; set; } = string.Empty;
         public string? Note { get; set; }
+        public string? DurationMinutes { get; set; } = null!;
     }
 }
