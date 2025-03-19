@@ -1,69 +1,56 @@
 ﻿using SkincareBookingSystem.Utilities.Constants;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace SkincareBookingSystem.Utilities.Templates.Email
+namespace SkincareBookingSystem.Utilities.Templates.Email;
+
+/// <summary>
+///     GenericEmailTemplate: A class that represents a generic email
+///     This contains the default values for the fields that are required for an email
+/// </summary>
+public class GenericEmailTemplate
 {
+    public virtual string TemplateName { get; set; } = StaticEmailTemplates.Default;
+    public virtual string? SenderName { get; set; } = StaticEmailSettings.SenderName;
+    public virtual string? SenderEmail { get; set; } = StaticEmailSettings.SenderEmail;
+    public virtual string Category { get; set; } = "General";
+    public virtual string Subject { get; set; } = "No Subject";
+    public virtual string? PreHeaderText { get; set; } = "";
+    public virtual string? PersonalizationTags { get; set; } = "";
+    public virtual string BodyContent { get; set; } = "Default body content.";
+    public virtual string? FooterContent { get; set; } = "Default footer content.";
+    public virtual string? CallToAction { get; set; } = "#";
+    public virtual string? CallToActionText { get; set; } = "Click here";
+    public virtual string? Language { get; set; } = "en-US";
+    public virtual string? RecipientType { get; set; } = "General";
+
     /// <summary>
-    /// GenericEmailTemplate: A class that represents a generic email 
-    /// This contains the default values for the fields that are required for an email 
+    ///     Replace placeholders in the email template with the values from the placeholders dictionary.
     /// </summary>
-    public class GenericEmailTemplate
+    /// <param name="content"></param>
+    /// <param name="placeholders"></param>
+    /// <returns> The content with the placeholders set with actual values </returns>
+    protected string ReplacePlaceholders(string content, Dictionary<string, string> placeholders)
     {
-        public virtual string TemplateName { get; set; } = StaticEmailTemplates.Default;
-        public virtual string? SenderName { get; set; } = StaticEmailSettings.SenderName;
-        public virtual string? SenderEmail { get; set; } = StaticEmailSettings.SenderEmail;
-        public virtual string Category { get; set; } = "General";
-        public virtual string Subject { get; set; } = "No Subject";
-        public virtual string? PreHeaderText { get; set; } = "";
-        public virtual string? PersonalizationTags { get; set; } = "";
-        public virtual string BodyContent { get; set; } = "Default body content.";
-        public virtual string? FooterContent { get; set; } = "Default footer content.";
-        public virtual string? CallToAction { get; set; } = "#";
-        public virtual string? CallToActionText { get; set; } = "Click here";
-        public virtual string? Language { get; set; } = "en-US";
-        public virtual string? RecipientType { get; set; } = "General";
+        foreach (var placeholder in placeholders)
+            content = content.Replace($"{{{{{placeholder.Key}}}}}", placeholder.Value);
 
-        public GenericEmailTemplate() { }
+        return content;
+    }
 
-        /// <summary>
-        /// Replace placeholders in the email template with the values from the placeholders dictionary.
-        /// </summary>
-        /// <param name="content"></param>
-        /// <param name="placeholders"></param>
-        /// <returns> The content with the placeholders set with actual values </returns>
-        protected string ReplacePlaceholders(string content, Dictionary<string, string> placeholders)
-        {
-            foreach (var placeholder in placeholders)
-            {
-                content = content.Replace($"{{{{{placeholder.Key}}}}}", placeholder.Value);
-            }
+    /// <summary>
+    ///     Render: A method that renders the email template with the placeholders replaced with the actual values
+    /// </summary>
+    /// <param name="placeholders"></param>
+    /// <returns> An HTML-formatted string that contains the passed values </returns>
+    public virtual string Render(Dictionary<string, string> placeholders)
+    {
+        var subject = ReplacePlaceholders(Subject, placeholders);
+        var preHeaderText = ReplacePlaceholders(PreHeaderText ?? "", placeholders);
+        var bodyContent = ReplacePlaceholders(BodyContent, placeholders);
+        var callToActionUrl = ReplacePlaceholders(CallToAction ?? "#", placeholders);
+        var callToActionText = ReplacePlaceholders(CallToActionText, placeholders);
+        var footerContent = ReplacePlaceholders(FooterContent ?? "", placeholders);
 
-            return content;
-        }
-
-        /// <summary>
-        /// Render: A method that renders the email template with the placeholders replaced with the actual values
-        /// </summary>
-        /// <param name="placeholders"></param>
-        /// <returns> An HTML-formatted string that contains the passed values </returns>
-        public virtual string Render(Dictionary<string, string> placeholders)
-        {
-            var subject = ReplacePlaceholders(Subject, placeholders);
-            var preHeaderText = ReplacePlaceholders(PreHeaderText ?? "", placeholders);
-            var bodyContent = ReplacePlaceholders(BodyContent, placeholders);
-            var callToActionUrl = ReplacePlaceholders(CallToAction ?? "#", placeholders);
-            var callToActionText = ReplacePlaceholders(CallToActionText, placeholders);
-            var footerContent = ReplacePlaceholders(FooterContent ?? "", placeholders);
-
-            return (
-                $@"
+        return $@"
                 <html lang='en' style='margin: 0; padding: 0;'>
                     <head>
                         <meta charset='UTF-8'>
@@ -95,7 +82,7 @@ namespace SkincareBookingSystem.Utilities.Templates.Email
                             }}
                             
                             .header img {{
-                                width: 250px;
+                                width: 400px;
                                 display: block;
                                 margin: auto;
                             }}
@@ -106,17 +93,23 @@ namespace SkincareBookingSystem.Utilities.Templates.Email
                             
                             h1 {{
                                 font-size: 26px;
-                                color: rgb(247, 201, 0);
+                                color: #c17037;
                                 margin-bottom: 20px;
                             }}
                             
+                            h2 {{
+                                font-size: 22px;
+                                color: #8a4814;
+                                margin-bottom: 20px;
+                            }}                          
+
                             p {{
                                 font-size: 16px;
                                 color: #555555;
                                 margin-bottom: 20px;
                                 line-height: 1.5;
                             }}
-                            
+
                             .call-to-action {{
                                 margin-top: 20px;
                                 text-align: center;
@@ -126,7 +119,7 @@ namespace SkincareBookingSystem.Utilities.Templates.Email
                                 display: inline-block;
                                 padding: 12px 25px;
                                 color: #ffffff;
-                                background-color: rgb(247, 201, 0);
+                                background-color: #c17037;
                                 text-decoration: none;
                                 border-radius: 5px;
                                 font-weight: bold;
@@ -135,7 +128,7 @@ namespace SkincareBookingSystem.Utilities.Templates.Email
                             }}
                             
                             .button:hover {{
-                                background-color: rgb(221, 181, 0);
+                                background-color: #b17446;
                             }}
                             
                             .footer {{
@@ -151,14 +144,14 @@ namespace SkincareBookingSystem.Utilities.Templates.Email
                     <body>
                         <div class='container'>
                             <div class='header' style='background-color: white; padding: 40px 0; text-align: center;'>
-                                <img src='https://i.imgur.com/vwYGyU1.jpeg' alt='Company Logo'/>
+                                <img src='https://res.cloudinary.com/dsdj12ccq/image/upload/v1742104060/Untitled_design_nkwf6k.jpg' alt='Company Logo'/>
                             </div>
                              <div class='content'>
                                 <h1>{subject}</h1>
                                 <h2>{preHeaderText}</h2>
                                 <p>{bodyContent}</p>
                                 <div class='call-to-action'>
-                                    <a href='{callToActionUrl}' class='button'>{callToActionText}</a>
+                                    <a href='{callToActionUrl}' class='button' style='color: #ffffff; text-decoration: none;'>{callToActionText}</a>
                                 </div>
                             </div>
                             <div class='footer'>
@@ -167,10 +160,6 @@ namespace SkincareBookingSystem.Utilities.Templates.Email
                             </div>
                         </div>
                     </body>
-                </html>"
-                );
-        }
-
-
+                </html>";
     }
 }

@@ -13,5 +13,7 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> GetCustomerDetailsById(ClaimsPrincipal user, Guid customerId);
         Task<ResponseDto> GetAllCustomers();
         Task<ResponseDto> GetCustomerIdByUserId(ClaimsPrincipal User);
+        Task<ResponseDto> GetCustomerInfoByEmailAsync(string email);
+        Task<ResponseDto> GetCustomerInfoByPhoneNumberAsync(string phoneNumber);
     }
 }

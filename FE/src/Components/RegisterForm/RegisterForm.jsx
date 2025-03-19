@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { register, sendVerificationEmail } from "../../services/authService";
 import styles from "./RegisterForm.module.css";
 import { toast } from "react-toastify";
@@ -14,7 +13,6 @@ import {
 import { InputField } from "../InputField/InputField";
 
 function RegisterForm() {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const [registerData, setRegisterData] = useState({
@@ -142,7 +140,7 @@ function RegisterForm() {
       onSubmit={handleRegisterSubmit}
     >
       <h1 id="register-title" className={styles.registerTitle}>
-        Register
+        Register Account
       </h1>
       <div className={styles.flexContainer}>
         <InputField
@@ -248,6 +246,21 @@ function RegisterForm() {
         />
       </div>
 
+      <div>
+                <p>Do you have an account? <a 
+                className={styles.loginLink}
+                href="/login" 
+                onClick={() => {
+                    if (!isLoading) {
+                      window.location.href = "/login";
+                    }
+                  }}
+                  disabled={isLoading} 
+                >Login
+                </a>
+              </p>
+            </div>
+
       <div className={styles.termsContainer}>
         <span>By registering you agree to </span>
         <a 
@@ -264,19 +277,6 @@ function RegisterForm() {
         disabled={isLoading}
       >
         {isLoading ? "Registering..." : "Register"}
-      </button>
-
-      <button
-        type="button"
-        className={styles.loginButton}
-        onClick={() => {
-          if (!isLoading) {
-            navigate("/login")
-            }
-          }}
-          disabled={isLoading} 
-      >
-        Login
       </button>
     </form>
   );
