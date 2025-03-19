@@ -54,14 +54,6 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get/{customerId}/Blog")]
-        [SwaggerOperation(Summary = "API gets a Blog by CustomerId", Description = "Requires user role")]
-        public async Task<ActionResult<ResponseDto>> GetBlogByCustomerId(Guid customerId)
-        {
-            var result = await _blogService.GetBlogByCustomerId(customerId);
-            return StatusCode(result.StatusCode, result);
-        }
-
         [HttpPut("update")]
         [SwaggerOperation(Summary = "API updates a Blog by its id", Description = "Requires user role")]
         public async Task<ActionResult<ResponseDto>> UpdateBlog([FromBody] UpdateBlogDto updateBlogDto)

@@ -107,29 +107,6 @@ namespace SkincareBookingSystem.Services.Services
                     result: new List<Blog>());
         }
 
-        public async Task<ResponseDto> GetBlogByCustomerId(Guid customerId)
-        {
-            if (await _unitOfWork.Customer.GetAsync(c => c.CustomerId == customerId) is null)
-            {
-                return ErrorResponse.Build(
-                    message: StaticResponseMessage.Blog.NotFound,
-                    statusCode: StaticOperationStatus.StatusCode.NotFound);
-            }
-
-            var getBlogByCustId = await _unitOfWork.Customer.GetAllAsync(b => b.CustomerId == customerId);
-
-            return (getBlogByCustId.Any()) ?
-                SuccessResponse.Build(
-                    message: StaticResponseMessage.Blog.RetrievedAll,
-                    statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: getBlogByCustId)
-                :
-                SuccessResponse.Build(
-                    message: StaticResponseMessage.Blog.NotFound,
-                    statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: new List<Blog>());
-        }
-
         public async Task<ResponseDto> GetBlogById(ClaimsPrincipal User, Guid blogId)
         {
             if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
