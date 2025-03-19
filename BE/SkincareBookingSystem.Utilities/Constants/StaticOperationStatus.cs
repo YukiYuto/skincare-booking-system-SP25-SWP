@@ -193,8 +193,6 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string Completed = "COMPLETED";
             public const string Rescheduled = "RESCHEDULED";
             public const string Deleted = "DELETED";
-        }    
-
-        
+        }
     }
 }
