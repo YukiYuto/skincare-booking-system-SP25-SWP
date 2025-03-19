@@ -1,31 +1,30 @@
 .hero {
-    background-color: var(--primary-color);
-    background-size: 100% 100%;
-    background-position: center;
-    width: 100vw;
-    height: 16rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: white;
-    padding: 20px;
-    margin-top: 92spx;
-  }
+  background-color: var(--primary-color);
+  background-size: 100% 100%;
+  background-position: center;
+  width: 100vw;
+  height: 16rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding: 20px;
+  margin-top: 92px;
+}
 
-  .hero h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-    font-family: Playfair Display;
-    color: var(--text-color);
-  }
-  
-  .hero p {
-    font-size: 1.5rem;
-    margin-top: 24px;
-    font-family: Dancing Script;
-    color: var(--accent-color);
-  }
-  
+.hero h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-family: Playfair Display;
+  color: var(--text-color);
+}
+
+.hero p {
+  font-size: 1.5rem;
+  margin-top: 24px;
+  font-family: Dancing Script;
+  color: var(--accent-color);
+}

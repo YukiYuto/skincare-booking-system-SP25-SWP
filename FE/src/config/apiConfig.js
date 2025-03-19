@@ -73,6 +73,7 @@ export const GET_ALL_SERVICES_API = `${BASE_URL}/services`;
 export const PUT_SERVICE_API = `${BASE_URL}/services`;
 export const GET_SERVICE_BY_ID_API = `${BASE_URL}/services/{id}`;
 export const DELETE_SERVICE_API = `${BASE_URL}/services/{id}`;
+export const GET_SIMILAR_SERVICES_API = `${BASE_URL}/services/similar`;
 
 // Thêm API cho ServiceType
 export const POST_SERVICE_TYPE_API = `${BASE_URL}/service-type`;
@@ -116,8 +117,8 @@ export const DELETE_THERAPIST_SERVICE_TYPES_API = `${BASE_URL}/therapist-service
 
 // Thêm API cho TypeItem
 export const GET_TYPE_ITEMS_API = `${BASE_URL}/type-item`;
-export const POST_TYPE_ITEM_API = `${BASE_URL}/type-item`;  
-  
+export const POST_TYPE_ITEM_API = `${BASE_URL}/type-item`;
+
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
 export const AUTH_HEADERS = (token) => ({
   "Content-Type": "application/json",
