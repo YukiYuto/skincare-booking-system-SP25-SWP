@@ -20,6 +20,7 @@ export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`;
 export const FORGOT_PASSWORD_API = `${BASE_URL}/auth/password/forgot`;
 export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;
 export const REFRESH_TOKEN_API = `${BASE_URL}/auth/refresh-token`;
+export const CHANGE_PASSWORD_API = `${BASE_URL}/auth/password/change`;
 
 // Thêm API cho Customer
 export const GET_CUSTOMER_PROFILE_API = `${BASE_URL}/auth/profile`;
@@ -32,6 +33,7 @@ export const PUT_APPOINTMENT_API = `${BASE_URL}/appointment`;
 export const GET_APPOINTMENT_BY_CUSTOMER_API = `${BASE_URL}/appointment/customer/appointments`;
 export const GET_APPOINTMENT_BY_ID_API = `${BASE_URL}/appointment/{appointmentId}`;
 export const DELETE_APPOINTMENT_API = `${BASE_URL}/appointment`;
+export const GET_TODAY_APPOINTMENTS_API = `${BASE_URL}/staff/appointment-today`;
 
 // Thêm API cho Booking
 export const POST_BOOKING_API = `${BASE_URL}/bookings/orders-bundles`;

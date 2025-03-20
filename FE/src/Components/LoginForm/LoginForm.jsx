@@ -6,10 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { login as loginAction } from "../../redux/auth/thunks";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import PasswordInputField from "../InputField/Password/PasswordInputField";
-import {
-  validateEmail,
-  validatePasswordLength,
-} from "../../utils/validationUtils";
+import { validateEmail, validatePassword } from "../../utils/validationUtils";
 import styles from "./LoginForm.module.css";
 
 export function LoginForm() {
@@ -41,41 +38,41 @@ export function LoginForm() {
   };
 
   const validateLoginForm = () => {
-    const emailError = validateEmail(loginData.email);
-    const passwordLengthError = validatePasswordLength(loginData.password);
+    const emailError = validateEmail(loginData.email.trim());
+    const passwordFormatError = validatePassword(loginData.password);
 
     setErrors((prevErrors) => ({
       ...prevErrors,
       email: emailError,
-      password: passwordLengthError,
+      password: passwordFormatError,
     }));
 
-    return !emailError && !passwordLengthError;
+    return !emailError && !passwordFormatError;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const trimmedData = { ...loginData, email: loginData.email.trim(), password: loginData.password.trim() };
+    setLoginData(trimmedData);
     setErrors({ email: "", password: "" }); // Reset errors
 
     // If form is invalid, return early
     if (!validateLoginForm()) return;
-
     // If form is valid, call the auth service to login
     try {
-      const userData = await dispatch(loginAction(loginData)).unwrap();
+      const userData = await dispatch(loginAction(trimmedData)).unwrap();
       toast.success(`Login successful! Welcome, ${loginData.email}!`);
-      if(userData.roles.includes("CUSTOMER") ){
+      if (userData.roles.includes("CUSTOMER")) {
         navigate("/");
-      } else if (userData.roles.includes("ADMIN") ){
+      } else if (userData.roles.includes("ADMIN")) {
         navigate("/dashboard");
-      } else if (userData.roles.includes("STAFF") ){
+      } else if (userData.roles.includes("STAFF")) {
         navigate("/staff-management");
-      } else if (userData.roles.includes("SKINTHERAPIST") ){
+      } else if (userData.roles.includes("SKINTHERAPIST")) {
         navigate("/therapist-management");
-      } else if (userData.roles.includes("MANAGER") ){
+      } else if (userData.roles.includes("MANAGER")) {
         navigate("/dashboard");
-      }  
-      
+      }
     } catch (error) {
       console.error("Login error", error.message);
     }

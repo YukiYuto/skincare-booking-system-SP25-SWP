@@ -10,6 +10,7 @@ import {
   USER_PROFILE_API,
   REFRESH_TOKEN_API,
   AUTH_HEADERS,
+  CHANGE_PASSWORD_API,
 } from "../config/apiConfig";
 
 /**
@@ -27,7 +28,11 @@ export const login = async (credentials) => {
  * @returns {Promise} - Resolves with response data (user data) or rejects with an error
  */
 export const register = async (userData) => {
-  return await apiCall(HTTP_METHODS.POST, REGISTER_CUSTOMER_API, userData);
+  try {
+    return await apiCall(HTTP_METHODS.POST, REGISTER_CUSTOMER_API, userData);
+  } catch (error) {
+    throw new Error(error.message || "Failed to register user");
+  }
 };
 /**
  * Fetch user profile API from token
@@ -57,20 +62,30 @@ export const refreshTokens = async (refreshToken) => {
     });
     return response;
   } catch (error) {
-    throw new Error("Failed to refresh token", error.message);
+    throw new Error("Failed to refresh token" + error.message);
   }
 };
 
-export async function forgotPassword(email) {
-  const response = await fetch(FORGOT_PASSWORD_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  });
-  if (!response.ok) {
-    throw new Error("Unable to forogt password.");
+export const changePassword = async (changePasswordData) => {
+  try {
+    return await apiCall(HTTP_METHODS.POST, CHANGE_PASSWORD_API, changePasswordData);
+  } catch (error) {
+    throw new Error(error.message || "Failed to change password");
   }
-  return response.json();
+}
+
+export async function forgotPassword(email) {
+  const trimmedEmail = email.trim();
+  try {
+    const response = await apiCall(HTTP_METHODS.POST, FORGOT_PASSWORD_API, {
+      email: trimmedEmail,
+    });
+    return response;
+  } catch (error) {
+    throw new Error(
+      error.message || "Unexpected error occurred. Please try again."
+    );
+  }
 }
 
 export async function resetPassword(
@@ -135,4 +150,3 @@ export const confirmEmailVerification = async (userId, token) => {
  * Get customer ID by user ID
  * @returns {Promise} - Resolves with response data or rejects with an error
  */
-
