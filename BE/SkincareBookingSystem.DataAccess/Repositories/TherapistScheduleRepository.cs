@@ -20,6 +20,11 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             _context.Entry(target).CurrentValues.SetValues(source);
         }
 
+        public void UpdateStatus(TherapistSchedule therapistSchedule)
+        {
+            _context.TherapistSchedules.Update(therapistSchedule);
+        }
+
         public async Task<TherapistSchedule?> GetTherapistScheduleByTherapistIdAsync(Guid therapistId, string? includeProperties = null)
         {
             var query = _context.TherapistSchedules.AsQueryable();

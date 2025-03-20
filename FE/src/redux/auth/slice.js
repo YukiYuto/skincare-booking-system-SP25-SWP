@@ -31,6 +31,7 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.refreshToken = null;
       Cookies.remove("refreshToken");
+      localStorage.clear();
     },
     setTokens: (state, action) => {
       state.accessToken = action.payload.accessToken;

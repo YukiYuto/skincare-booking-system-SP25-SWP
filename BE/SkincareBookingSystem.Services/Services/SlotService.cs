@@ -225,12 +225,12 @@ public class SlotService : ISlotService
                 Result = null
             };
         }
-        if (dto.EndTime - dto.StartTime < TimeSpan.FromHours(1))
+        if (dto.EndTime - dto.StartTime < TimeSpan.FromMinutes(45))
         {
             return new ResponseDto
             {
                 IsSuccess = false,
-                Message = "The duration between StartTime and EndTime must be at least one hour.",
+                Message = "The duration between StartTime and EndTime must be at least 45 minutes.",
                 StatusCode = 400,
                 Result = null
             };

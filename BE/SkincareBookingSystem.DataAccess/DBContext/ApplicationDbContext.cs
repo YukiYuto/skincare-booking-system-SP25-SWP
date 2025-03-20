@@ -126,7 +126,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Appointments>()
             .HasOne(a => a.Order)
-            .WithMany()
+            .WithMany(o => o.Appointments)
             .HasForeignKey(a => a.OrderId)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -136,7 +136,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Order>()
             .HasOne(o => o.Customer)
-            .WithMany()
+            .WithMany(c => c.Orders)
             .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Restrict);
 

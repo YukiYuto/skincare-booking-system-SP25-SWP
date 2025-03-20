@@ -123,8 +123,7 @@ const BookingModal = ({ visible, onClose, selectedService }) => {
           {
             serviceId: selectedService?.serviceId,
             price: selectedService?.price || 0,
-            description: `Booking for ${selectedService?.serviceName} with ${selectedTherapist.fullName} 
-            on ${selectedDate} at ${selectedTime}`,
+            description: `Booking for service`
           },
         ],
       };
@@ -236,7 +235,14 @@ const BookingModal = ({ visible, onClose, selectedService }) => {
           <Button onClick={() => setCurrent(current - 1)}>Previous</Button>
         )}
         {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => setCurrent(current + 1)}>
+          <Button
+            type="primary"
+            onClick={() => setCurrent(current + 1)}
+            disabled={
+              (current === 0 && !selectedTherapist) ||
+              (current === 1 && (!selectedDate || !selectedTime))
+            }
+          >
             Next
           </Button>
         )}

@@ -6,6 +6,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  padding: 50px;
 }
 
 .container {
@@ -14,6 +15,7 @@
   width: 100%;
   height: 100%;
   padding: 80px 64px;
+  margin-top: 50px;
 }
 
 .brandColumn {
