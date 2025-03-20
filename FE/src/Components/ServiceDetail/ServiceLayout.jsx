@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "./ServiceLayout.module.css";
 import { GET_ALL_SERVICE_TYPES_API } from "../../config/apiConfig";
 

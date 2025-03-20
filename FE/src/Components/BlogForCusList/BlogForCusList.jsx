@@ -22,7 +22,7 @@ const BlogForCusList = () => {
       const allBlogs = response.data.result || [];
       const filteredBlogs = allBlogs
         .filter((blog) => blog.blogCategoryId === blogCategoryId)
-        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        .sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
 
       setBlogs(filteredBlogs);
     } catch (error) {
@@ -53,7 +53,7 @@ const BlogForCusList = () => {
                 {index + 1}. {blog.title}
               </h3>
               <p className="text-gray-600 text-2xl mb-6">
-                ✍ {blog.authorId} | 📅 {new Date(blog.createdTime).toLocaleDateString()}
+                ✍ {blog.createdBy} | 📅 {new Date(blog.createdTime).toLocaleDateString()}
               </p>
               <img src={blog.imageUrl} alt={blog.title} className="w-full h-[500px] object-cover rounded-lg shadow-lg mb-10" />
               <div className="text-2xl text-gray-800 leading-relaxed">{blog.content}</div>
