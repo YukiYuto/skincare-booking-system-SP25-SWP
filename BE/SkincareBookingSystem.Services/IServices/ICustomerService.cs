@@ -14,5 +14,7 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> GetAllCustomers();
         Task<ResponseDto> GetCustomerIdByUserId(ClaimsPrincipal User);
         Task<ResponseDto> GetCustomerTimeTable(ClaimsPrincipal User);
+        
+        Task<ResponseDto> GetOrderByCustomer(ClaimsPrincipal User);
     }
 }

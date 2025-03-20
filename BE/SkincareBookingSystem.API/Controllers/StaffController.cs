@@ -31,12 +31,35 @@ public class StaffController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
     
+    [HttpGet("today-appointments")]
+    [Authorize(Roles = StaticUserRoles.Staff)]
+    [SwaggerOperation(Summary = "API gets today's appointments", Description = "Requires roles")]
+    public async Task<IActionResult> GetTodayAppointments
+    (
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? filterQuery = null
+    )
+    {
+        var response = await _staffService.GetTodayAppointments(User, pageNumber, pageSize, filterQuery);
+        return StatusCode(response.StatusCode, response);
+    }
+    
     [HttpPut("check-in")]
     [Authorize(Roles = StaticUserRoles.Staff)]
     [SwaggerOperation(Summary = "API checks in a customer", Description = "Requires roles")]
     public async Task<IActionResult> CheckInCustomer(CheckInDto checkInDto)
     {
         var response = await _staffService.CheckInCustomer(User,checkInDto);
+        return StatusCode(response.StatusCode, response);
+    }
+    
+    [HttpPut("check-out")]
+    [Authorize(Roles = StaticUserRoles.Staff)]
+    [SwaggerOperation(Summary = "API checks out a customer", Description = "Requires roles")]
+    public async Task<IActionResult> CheckOutCustomer(CheckInDto checkOutDto)
+    {
+        var response = await _staffService.CheckOutCustomer(User, checkOutDto);
         return StatusCode(response.StatusCode, response);
     }
 }
