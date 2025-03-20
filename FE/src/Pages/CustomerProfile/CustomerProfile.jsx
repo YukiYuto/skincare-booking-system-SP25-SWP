@@ -25,9 +25,6 @@ const UserProfile = () => {
     confirmNewPassword: "",
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
-
-  console.log(user);
-  console.log(accessToken);
   // Khi chọn file, upload luôn avatar
   const handleFileChange = async (event) => {
     const file = event.target.files[0];

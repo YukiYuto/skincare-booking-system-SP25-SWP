@@ -5,12 +5,14 @@ import styles from './SideBarStaff.module.css';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { Spin } from 'antd';
+import { useSelector } from 'react-redux';
 
 const SideBarStaff = ({ onToggle }) => {
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(true);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth);
 
     const toggleSidebar = useCallback(() => {
         setIsOpen(prev => !prev);
@@ -45,7 +47,7 @@ const SideBarStaff = ({ onToggle }) => {
             <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`} aria-label="Sidebar">
                 <div className={styles.sidebarContent}>
                     <div className={styles.profileSection}>
-                        <img className={styles.profileImage} src="https://www.svgrepo.com/show/301043/employee-worker.svg" alt="Profile" />
+                        <img className={styles.profileImage} src={user?.imageUrl} alt="Profile" />
                         <h2 className={styles.title}>STAFF</h2>
                     </div>
                     <ul className={styles.menuList}>
@@ -62,6 +64,11 @@ const SideBarStaff = ({ onToggle }) => {
                         <li>
                             <Link to="/schedule-management" className={styles.menuItem}>
                                 <span className={styles.menuText}>Schedule</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/staff-blogs" className={styles.menuItem}>
+                                <span className={styles.menuText}>Blog</span>
                             </Link>
                         </li>
                     </ul>

@@ -1,0 +1,107 @@
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .loading {
+    font-size: 18px;
+    color: #777;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Đẩy nút xuống dưới */
+    height: 100%; /* Đảm bảo card có chiều cao đồng đều */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .cardTitle {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .cardDescription {
+    flex-grow: 1; /* Đẩy nội dung lên trên */
+  }
+  
+  .editButton {
+    align-self: flex-end; /* Giữ nút ở cuối */
+    margin-top: auto; /* Tự động đẩy xuống dưới */
+  }
+  
+
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  .noData {
+    font-size: 16px;
+    color: #999;
+  }
+  
+  /* Pagination */
+  .pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .pageButton {
+    padding: 8px 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .pageButton:hover {
+    background-color: #2980b9;
+  }
+  
+  .pageButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .pageInfo {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .searchInput {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  
+  
