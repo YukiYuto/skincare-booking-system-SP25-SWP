@@ -623,6 +623,14 @@ public class BookingService : IBookingService
                 Message = StaticOperationStatus.SkinTherapist.Do_not
             };
 
+        if (therapistAppoinment.ScheduleStatus == ScheduleStatus.Completed)
+            return new ResponseDto()
+            {
+                IsSuccess = false,
+                StatusCode = StaticOperationStatus.StatusCode.BadRequest,
+                Message = "Service already completed"
+            };
+
         //order
         var order = await _unitOfWork.Order.GetAsync(o => o.OrderId == appointment.OrderId);
         if (order is null)
@@ -664,10 +672,13 @@ public class BookingService : IBookingService
         await using var transaction = await _unitOfWork.BeginTransactionAsync();
         try
         {
+            // Update OrderServiceTracking
             orderServiceTracking.Status = StaticOperationStatus.OrderServiceTracking.Completed;
             orderServiceTracking.UpdatedTime = DateTime.UtcNow.AddHours(7);
             orderServiceTracking.UpdatedBy = User.FindFirstValue("name");
+            _unitOfWork.OrderServiceTracking.Update(orderServiceTracking);
 
+            // Update next service if it's a combo
             if (orderDetail.ServiceComboId.HasValue)
             {
                 var nextService = await _unitOfWork.OrderDetail.GetAsync(
@@ -681,26 +692,25 @@ public class BookingService : IBookingService
                 }
             }
 
-            _unitOfWork.OrderServiceTracking.Update(orderServiceTracking);
-
+            // Update TherapistSchedule
             therapistAppoinment.ScheduleStatus = ScheduleStatus.Completed;
             therapistAppoinment.UpdatedTime = DateTime.UtcNow.AddHours(7);
             therapistAppoinment.UpdatedBy = User.FindFirstValue("name");
             _unitOfWork.TherapistSchedule.UpdateStatus(therapistAppoinment);
 
             await _unitOfWork.SaveAsync();
-
+            await transaction.CommitAsync();
 
             return new ResponseDto()
             {
                 IsSuccess = true,
                 StatusCode = StaticOperationStatus.StatusCode.Ok,
-                Message = "Appointment and TherapistSchedule completed successfully",
-                Result = orderDetail
+                Message = "Service completed successfully"
             };
         }
         catch (Exception e)
         {
+            await transaction.RollbackAsync();
             return new ResponseDto()
             {
                 IsSuccess = false,
