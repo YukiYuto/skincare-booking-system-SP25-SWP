@@ -98,7 +98,7 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
           </span>
           <br />
           <span className={styles.price}>
-            ${service.price.toLocaleString()}
+            {service.price.toLocaleString()}₫
           </span>
         </div>
         <br />

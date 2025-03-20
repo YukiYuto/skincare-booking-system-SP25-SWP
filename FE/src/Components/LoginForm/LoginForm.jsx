@@ -104,29 +104,24 @@ export function LoginForm() {
         error={errors.password}
       />
 
-      <div>
+      <div className={styles.forgotContainer}>
         <a
-          style={{
-            fontSize: "20px",
-            pointerEvents: loading ? "none" : "auto", // Ngăn nhấn khi loading
-            opacity: loading ? 0.5 : 1, // Làm mờ khi loading
-          }}
           href="forgot-password"
-          className={styles.forgotLink}
+          className={`${styles.forgotLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
         >
-          Forgot Password
+          <span>Forgot Password</span>
         </a>
       </div>
 
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>
         <a
-          style={{
-            pointerEvents: loading ? "none" : "auto",
-            opacity: loading ? 0.5 : 1,
-          }}
           href="/terms"
-          className={styles.termsLink}
+          className={`${styles.termsLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
         >
           terms and conditions
         </a>
