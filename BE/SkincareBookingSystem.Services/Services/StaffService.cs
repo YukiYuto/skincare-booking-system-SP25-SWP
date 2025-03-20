@@ -108,88 +108,100 @@ public class StaffService : IStaffService
         string? filterQuery = null
     )
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
+        try
         {
-            return new ResponseDto()
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
             {
-                Message = "User not found",
-                IsSuccess = false,
-                StatusCode = 404
-            };
-        }
+                return new ResponseDto()
+                {
+                    Message = "User not found",
+                    IsSuccess = false,
+                    StatusCode = 404
+                };
+            }
 
-        var staff = await _unitOfWork.Staff.GetAsync(s => s.UserId == userId);
-        if (staff == null)
-        {
-            return new ResponseDto()
+            var staff = await _unitOfWork.Staff.GetAsync(s => s.UserId == userId);
+            if (staff == null)
             {
-                Message = "You are not a staff",
-                IsSuccess = false,
-                StatusCode = 403
-            };
-        }
+                return new ResponseDto()
+                {
+                    Message = "You are not a staff",
+                    IsSuccess = false,
+                    StatusCode = 403
+                };
+            }
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow.AddHours(7));
+            var today = DateOnly.FromDateTime(DateTime.UtcNow.AddHours(7));
 
-        var appointments = await _unitOfWork.Appointments.GetAllAsync(
-            filter: a => a.AppointmentDate == today,
-            includeProperties: $"{nameof(Appointments.TherapistSchedules)}," +
-                               $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}," +
-                               $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)}," +
-                               $"{nameof(Appointments.Customer)}," +
-                               $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)}"
-        );
-
-        if (!string.IsNullOrEmpty(filterQuery))
-        {
-            filterQuery = filterQuery.ToLower().Trim();
-            appointments = appointments.Where(a =>
-                a.Customer.ApplicationUser.FullName.ToLower().Contains(filterQuery) ||
-                a.TherapistSchedules.Any(ts =>
-                    ts.SkinTherapist.ApplicationUser.FullName.ToLower().Contains(filterQuery))
-            ).ToList();
-        }
-
-        var totalAppointments = appointments.Count();
-        var paginatedAppointments = appointments
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        var appointmentDtos = paginatedAppointments.Select(a =>
-        {
-            var activeSchedule = a.TherapistSchedules.FirstOrDefault
-            (
-                ts => ts.ScheduleStatus != ScheduleStatus.Cancelled &&
-                      ts.ScheduleStatus != ScheduleStatus.Rescheduled
+            var appointments = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => a.AppointmentDate == today,
+                includeProperties: $"{nameof(Appointments.TherapistSchedules)}," +
+                                   $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}," +
+                                   $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)}," +
+                                   $"{nameof(Appointments.Customer)}," +
+                                   $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)}"
             );
 
-            return new GetTodayAppointmentDto
+            if (!string.IsNullOrEmpty(filterQuery))
             {
-                Therapist = activeSchedule?.SkinTherapist.ApplicationUser.FullName ?? "Not Assigned",
-                Customer = a.Customer.ApplicationUser.FullName,
-                Time = activeSchedule?.Slot.StartTime.ToString("HH:mm") ?? "Not Scheduled",
-                Status = activeSchedule?.ScheduleStatus,
-                AppointmentId = a.AppointmentId,
-                CustomerId = a.CustomerId
-            };
-        }).ToList();
+                filterQuery = filterQuery.ToLower().Trim();
+                appointments = appointments.Where(a =>
+                    a.Customer.ApplicationUser.FullName.ToLower().Contains(filterQuery) ||
+                    a.TherapistSchedules.Any(ts =>
+                        ts.SkinTherapist.ApplicationUser.FullName.ToLower().Contains(filterQuery))
+                ).ToList();
+            }
 
-        return new ResponseDto()
-        {
-            Result = new
+            var totalAppointments = appointments.Count();
+            var paginatedAppointments = appointments
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var appointmentDtos = paginatedAppointments.Select(a =>
             {
-                TotalAppointments = totalAppointments,
-                TotalPages = (int)Math.Ceiling((double)totalAppointments / pageSize),
-                PageSize = pageSize,
-                CurrentPage = pageNumber,
-                Appointments = appointmentDtos
-            },
-            Message = "Today's appointments retrieved successfully",
-            IsSuccess = true,
-            StatusCode = 200
-        };
+                var activeSchedule = a.TherapistSchedules?.FirstOrDefault
+                (
+                    ts => ts.ScheduleStatus != ScheduleStatus.Cancelled &&
+                          ts.ScheduleStatus != ScheduleStatus.Rescheduled
+                );
+
+                return new GetTodayAppointmentDto
+                {
+                    Therapist = activeSchedule?.SkinTherapist?.ApplicationUser?.FullName ?? "Not Assigned",
+                    Customer = a.Customer?.ApplicationUser?.FullName ?? "Unknown Customer",
+                    Time = activeSchedule?.Slot?.StartTime.ToString("HH:mm") ?? "Not Scheduled",
+                    Status = activeSchedule?.ScheduleStatus,
+                    AppointmentId = a.AppointmentId,
+                    CustomerId = a.CustomerId
+                };
+            }).ToList();
+
+            return new ResponseDto()
+            {
+                Result = new
+                {
+                    TotalAppointments = totalAppointments,
+                    TotalPages = (int)Math.Ceiling((double)totalAppointments / pageSize),
+                    PageSize = pageSize,
+                    CurrentPage = pageNumber,
+                    Appointments = appointmentDtos
+                },
+                Message = "Today's appointments retrieved successfully",
+                IsSuccess = true,
+                StatusCode = 200
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ResponseDto()
+            {
+                Message = ex.Message,
+                IsSuccess = false,
+                StatusCode = 500
+            };
+        }
     }
 
     public async Task<ResponseDto> CheckInCustomer(ClaimsPrincipal User, CheckInDto checkInDto)
