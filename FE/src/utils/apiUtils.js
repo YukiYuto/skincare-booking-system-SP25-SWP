@@ -21,12 +21,12 @@ export const apiCall = async (method, url, data = null, query = null, headers = 
   } catch (error) {
     // Handle error response
     if (error.response) {
-      console.log("Response data:", error.response.data);
+      console.log("Error message:", error.response.data.message);
       const { status, data } = error.response;
       throw {
         status,
         message:
-          data?.message ||
+          error.response.data?.message ||
           `Error: ${status}: ${data?.error || "Unable to process request."}`,
       };
     } else if (error.request) {

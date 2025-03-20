@@ -27,7 +27,11 @@ export const login = async (credentials) => {
  * @returns {Promise} - Resolves with response data (user data) or rejects with an error
  */
 export const register = async (userData) => {
-  return await apiCall(HTTP_METHODS.POST, REGISTER_CUSTOMER_API, userData);
+  try {
+    return await apiCall(HTTP_METHODS.POST, REGISTER_CUSTOMER_API, userData);
+  } catch (error) {
+    throw new Error(error.message || "Failed to register user");
+  }
 };
 /**
  * Fetch user profile API from token
@@ -62,15 +66,17 @@ export const refreshTokens = async (refreshToken) => {
 };
 
 export async function forgotPassword(email) {
-  const response = await fetch(FORGOT_PASSWORD_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  });
-  if (!response.ok) {
-    throw new Error("Unable to forogt password.");
+  const trimmedEmail = email.trim();
+  try {
+    const response = await apiCall(HTTP_METHODS.POST, FORGOT_PASSWORD_API, {
+      email: trimmedEmail,
+    });
+    return response;
+  } catch (error) {
+    throw new Error(
+      error.message || "Unexpected error occurred. Please try again."
+    );
   }
-  return response.json();
 }
 
 export async function resetPassword(
@@ -135,4 +141,3 @@ export const confirmEmailVerification = async (userId, token) => {
  * Get customer ID by user ID
  * @returns {Promise} - Resolves with response data or rejects with an error
  */
-

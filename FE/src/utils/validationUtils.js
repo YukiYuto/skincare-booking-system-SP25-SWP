@@ -22,14 +22,14 @@ export const validatePhoneNumber = (phoneNumber) => {
   return "";
 };
 
-export const validatePasswordLength = (password) => {
+export const validatePassword = (password) => {
   if (!password) {
     return "Password cannot be empty";
   }
   if (!validator.isLength(password, { min: 8, max: 32 })) {
     return "Password must be between 8-32 characters long";
   }
-  return "";
+  return validatePasswordFormat(password);
 };
 
 export const validatePasswordFormat = (password) => {
@@ -70,8 +70,8 @@ export const validateConfirmNewPassword = (newPassword, confirmNewPassword) => {
 
 
 export const validateAge = (age) => {
-  if (!validator.isInt(age, { min: 16, max: 120 })) {
-    return "Your age must be at least 16 to do registration";
+  if (!validator.isInt(age, { min: 16, max: 100 })) {
+    return "Age must be between 16 and 100.";
   }
   return "";
 };
