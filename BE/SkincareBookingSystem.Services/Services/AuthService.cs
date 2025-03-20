@@ -51,7 +51,7 @@ public class AuthService : IAuthService
             return new ResponseDto
             {
                 Message = "Email is being used by another user",
-                Result = signUpCustomerDto,
+                Result = null,
                 IsSuccess = false,
                 StatusCode = 400
             };
@@ -63,7 +63,7 @@ public class AuthService : IAuthService
             return new ResponseDto
             {
                 Message = "Phone number is being used by another user",
-                Result = signUpCustomerDto,
+                Result = null,
                 IsSuccess = false,
                 StatusCode = 400
             };
@@ -84,7 +84,7 @@ public class AuthService : IAuthService
                     Message = "Create user failed",
                     IsSuccess = false,
                     StatusCode = 400,
-                    Result = signUpCustomerDto
+                    Result = null
                 };
 
             Customer customer = new();
@@ -105,7 +105,7 @@ public class AuthService : IAuthService
                     Message = "Error adding role",
                     IsSuccess = false,
                     StatusCode = 500,
-                    Result = signUpCustomerDto
+                    Result = null
                 };
 
             // Lưu thay đổi vào cơ sở dữ liệu
@@ -119,7 +119,11 @@ public class AuthService : IAuthService
                 Message = "User created successfully",
                 IsSuccess = true,
                 StatusCode = 201,
-                Result = signUpCustomerDto
+                Result = new
+                {
+                    Email = newUser.Email,
+                    FullName = newUser.FullName
+                }
             };
         }
     }
@@ -132,7 +136,7 @@ public class AuthService : IAuthService
             return new ResponseDto
             {
                 Message = "Email is being used by another user",
-                Result = signUpStaffDto,
+                Result = null,
                 IsSuccess = false,
                 StatusCode = 400
             };
@@ -144,7 +148,7 @@ public class AuthService : IAuthService
             return new ResponseDto
             {
                 Message = "Phone number is being used by another user",
-                Result = signUpStaffDto,
+                Result = null,
                 IsSuccess = false,
                 StatusCode = 400
             };
@@ -166,7 +170,7 @@ public class AuthService : IAuthService
                     Message = "Create user failed",
                     IsSuccess = false,
                     StatusCode = 400,
-                    Result = signUpStaffDto
+                    Result = null
                 };
 
             var staffCode = await _unitOfWork.Staff.GetNextStaffCodeAsync();
@@ -189,7 +193,7 @@ public class AuthService : IAuthService
                     Message = "Error adding role",
                     IsSuccess = false,
                     StatusCode = 500,
-                    Result = signUpStaffDto
+                    Result = null
                 };
 
             // Lưu thay đổi vào cơ sở dữ liệu
@@ -203,7 +207,11 @@ public class AuthService : IAuthService
                 Message = "User created successfully",
                 IsSuccess = true,
                 StatusCode = 201,
-                Result = signUpStaffDto
+                Result = new
+                {
+                    Email = newUser.Email,
+                    FullName = newUser.FullName
+                }
             };
         }
     }
@@ -217,7 +225,7 @@ public class AuthService : IAuthService
             return new ResponseDto
             {
                 Message = "Email is being used by another user",
-                Result = signUpSkinTherapistDto,
+                Result = null,
                 IsSuccess = false,
                 StatusCode = 400
             };
@@ -229,7 +237,7 @@ public class AuthService : IAuthService
             return new ResponseDto
             {
                 Message = "Phone number is being used by another user",
-                Result = signUpSkinTherapistDto,
+                Result = null,
                 IsSuccess = false,
                 StatusCode = 400
             };
@@ -250,7 +258,7 @@ public class AuthService : IAuthService
                     Message = "Create user failed",
                     IsSuccess = false,
                     StatusCode = 400,
-                    Result = signUpSkinTherapistDto
+                    Result = null
                 };
 
             var skinTherapist =
@@ -270,7 +278,7 @@ public class AuthService : IAuthService
                     Message = "Error adding role",
                     IsSuccess = false,
                     StatusCode = 500,
-                    Result = signUpSkinTherapistDto
+                    Result = null
                 };
 
             // Lưu thay đổi vào cơ sở dữ liệu
@@ -284,7 +292,11 @@ public class AuthService : IAuthService
                 Message = "User created successfully",
                 IsSuccess = true,
                 StatusCode = 201,
-                Result = signUpSkinTherapistDto
+                Result = new
+                {
+                    Email = newUser.Email,
+                    FullName = newUser.FullName
+                }
             };
         }
     }
@@ -496,7 +508,7 @@ public class AuthService : IAuthService
         // Xây dựng liên kết xác thực.
         // Lưu ý: thay đổi URL cho phù hợp với môi trường (local hay production)
         var verificationLink =
-            $"http://localhost:5173/verify-email?userId={user.Id}&token={Uri.EscapeDataString(token)}";
+            $"https://lumiconnect-beauty.vercel.app/verify-email?userId={user.Id}&token={Uri.EscapeDataString(token)}";
 
         // Gọi EmailService để gửi email xác thực sử dụng template VerificationEmailTemplate
         var emailSent = await _emailService.SendVerificationEmailAsync(user.Email!, verificationLink, user.FullName);
@@ -573,7 +585,7 @@ public class AuthService : IAuthService
 
         // build link reset password
         // string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={Uri.UnescapeDataString(token)}";
-        var resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={HttpUtility.UrlEncode(token)}";
+        var resetLink = $"https://lumiconnect-beauty.vercel.app/reset-password?email={user.Email}&token={HttpUtility.UrlEncode(token)}";
 
         var emailSent = await _emailService.SendPasswordResetEmailAsync(user.Email!, resetLink);
 
