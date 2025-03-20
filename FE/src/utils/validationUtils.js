@@ -16,7 +16,9 @@ export const validatePhoneNumber = (phoneNumber) => {
     return "Phone number is required";
   }
 
-  if (!validator.isMobilePhone(phoneNumber, ["en-US", "es-US", "fr-FR", "vi-VN"])) {
+  if (
+    !validator.isMobilePhone(phoneNumber, ["en-US", "es-US", "fr-FR", "vi-VN"])
+  ) {
     return "Please enter a valid phone number";
   }
   return "";
@@ -68,7 +70,6 @@ export const validateConfirmNewPassword = (newPassword, confirmNewPassword) => {
   return "";
 };
 
-
 export const validateAge = (age) => {
   if (!validator.isInt(age, { min: 16, max: 100 })) {
     return "Age must be between 16 and 100.";
@@ -86,7 +87,7 @@ export const validateGender = (gender) => {
   return "";
 };
 
-export const validateAddress  = (address) => {
+export const validateAddress = (address) => {
   if (!address) {
     return "Address is required";
   }
@@ -94,6 +95,8 @@ export const validateAddress  = (address) => {
     return "Address must be between 5-50 characters long";
   }
   return "";
-}
+};
 
-
+export const isAccountUnverified = (error) => {
+  return error.message == "You need to confirm email!";
+};

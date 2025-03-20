@@ -68,11 +68,15 @@ export const refreshTokens = async (refreshToken) => {
 
 export const changePassword = async (changePasswordData) => {
   try {
-    return await apiCall(HTTP_METHODS.POST, CHANGE_PASSWORD_API, changePasswordData);
+    return await apiCall(
+      HTTP_METHODS.POST,
+      CHANGE_PASSWORD_API,
+      changePasswordData
+    );
   } catch (error) {
     throw new Error(error.message || "Failed to change password");
   }
-}
+};
 
 export async function forgotPassword(email) {
   const trimmedEmail = email.trim();
@@ -117,18 +121,7 @@ export async function resetPassword(
 }
 
 export const sendVerificationEmail = async (email) => {
-  const response = await fetch(VERIFY_EMAIL_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to send verification email");
-  }
-
-  return response.json();
+  return await apiCall(HTTP_METHODS.POST, VERIFY_EMAIL_API, { email });
 };
 
 export const confirmEmailVerification = async (userId, token) => {
