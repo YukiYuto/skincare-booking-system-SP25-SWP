@@ -6,8 +6,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { updateUser } from "../../redux/auth/slice";
 import {
-  CHANGE_PASSWORD_API,
-  GET_CUSTOMER_PROFILE_API,
   POST_CUSTOMER_AVATAR_API,
 } from "../../config/apiConfig";
 import {

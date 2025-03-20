@@ -56,7 +56,7 @@ export function LoginForm() {
   const handleVerifyEmail = async () => {
     reduxError && toast.dismiss(); // Dismiss any previous error to show new error
     try {
-      const response = await sendVerificationEmail(loginData.email);
+      await sendVerificationEmail(loginData.email);
       toast.success(
         "Verification email sent successfully! Please check your email inbox."
       );
