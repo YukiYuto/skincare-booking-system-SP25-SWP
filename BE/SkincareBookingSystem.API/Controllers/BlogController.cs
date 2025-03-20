@@ -10,7 +10,7 @@ using System.Security.Claims;
 namespace SkincareBookingSystem.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/blogs")]
     public class BlogController : ControllerBase
     {
         private readonly IBlogService _blogService;
@@ -46,19 +46,11 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet("get/{blogId}")]
         [SwaggerOperation(Summary = "API gets a Blog by its Id", Description = "Requires user role")]
         public async Task<ActionResult<ResponseDto>> GetBlogById(Guid blogId)
         {
             var result = await _blogService.GetBlogById(User, blogId);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        [HttpGet("get/{customerId}/Blog")]
-        [SwaggerOperation(Summary = "API gets a Blog by CustomerId", Description = "Requires user role")]
-        public async Task<ActionResult<ResponseDto>> GetBlogByCustomerId(Guid customerId)
-        {
-            var result = await _blogService.GetBlogByCustomerId(customerId);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -80,7 +72,7 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete/{blogId}")]
         [Authorize(Roles = StaticUserRoles.ManagerStaff)]
         [SwaggerOperation(Summary = "API soft deletes an exist Blog", Description = "Requires staff, manager role")]
         public async Task<ActionResult<ResponseDto>> DeleteBlog(Guid blogId)

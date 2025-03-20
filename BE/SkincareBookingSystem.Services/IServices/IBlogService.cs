@@ -16,6 +16,5 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> DeleteBlog(ClaimsPrincipal User,  Guid blogId);
         Task<ResponseDto> GetBlogById(ClaimsPrincipal User, Guid blogId);
         Task<ResponseDto> GetAllBlog(); 
-        Task<ResponseDto> GetBlogByCustomerId(Guid customerId);
     }
 }
