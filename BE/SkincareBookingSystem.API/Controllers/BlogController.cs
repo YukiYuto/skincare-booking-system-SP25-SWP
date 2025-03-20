@@ -10,7 +10,7 @@ using System.Security.Claims;
 namespace SkincareBookingSystem.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/blogs")]
     public class BlogController : ControllerBase
     {
         private readonly IBlogService _blogService;
