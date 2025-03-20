@@ -23,6 +23,7 @@ export const apiCall = async (method, url, data = null, query = null, headers = 
     if (error.response) {
       console.log("Error message:", error.response.data.message);
       const { status, data } = error.response;
+      console.log ("Error status:", status);
       throw {
         status,
         message:

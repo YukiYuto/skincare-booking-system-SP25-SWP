@@ -6,8 +6,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { login as loginAction } from "../../redux/auth/thunks";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import PasswordInputField from "../InputField/Password/PasswordInputField";
-import { validateEmail, validatePassword } from "../../utils/validationUtils";
+import { isAccountUnverified, validateEmail, validatePassword } from "../../utils/validationUtils";
 import styles from "./LoginForm.module.css";
+import { sendVerificationEmail } from "../../services/authService";
 
 export function LoginForm() {
   const [loginData, setLoginData] = useState({
@@ -19,6 +20,8 @@ export function LoginForm() {
     email: "",
     password: "",
   });
+
+  const [isAccountVerified, setIsAccountVerified] = useState(true);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -50,9 +53,26 @@ export function LoginForm() {
     return !emailError && !passwordFormatError;
   };
 
+  const handleVerifyEmail = async () => {
+    reduxError && toast.dismiss(); // Dismiss any previous error to show new error
+    try {
+      const response = await sendVerificationEmail(loginData.email);
+      toast.success(
+        "Verification email sent successfully! Please check your email inbox."
+      );
+    } catch (error) {
+      console.error("Send verification email error", error.message);
+      toast.error("Failed to send verification email. Please try again.");
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const trimmedData = { ...loginData, email: loginData.email.trim(), password: loginData.password.trim() };
+    const trimmedData = {
+      ...loginData,
+      email: loginData.email.trim(),
+      password: loginData.password.trim(),
+    };
     setLoginData(trimmedData);
     setErrors({ email: "", password: "" }); // Reset errors
 
@@ -61,7 +81,8 @@ export function LoginForm() {
     // If form is valid, call the auth service to login
     try {
       const userData = await dispatch(loginAction(trimmedData)).unwrap();
-      toast.success(`Login successful! Welcome, ${loginData.email}!`);
+      setIsAccountVerified(true);
+      toast.success(`Welcome, ${userData.fullName}!`);
       if (userData.roles.includes("CUSTOMER")) {
         navigate("/");
       } else if (userData.roles.includes("ADMIN")) {
@@ -74,7 +95,9 @@ export function LoginForm() {
         navigate("/dashboard");
       }
     } catch (error) {
-      console.error("Login error", error.message);
+      if (isAccountUnverified(error)) {
+        setIsAccountVerified(false);
+      }
     }
   };
 
@@ -114,7 +137,21 @@ export function LoginForm() {
           <span>Forgot Password</span>
         </a>
       </div>
-
+      {!isAccountVerified && (
+        <div className={styles.unverifiedContainer}>
+          <span>
+            Your account is not verified.{" "}
+            <span
+              type="text"
+              className={styles.unverifiedText}
+              onClick={handleVerifyEmail}
+            >
+              Click here
+            </span>{" "}
+            to verify your email.
+          </span>
+        </div>
+      )}
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>
         <a
