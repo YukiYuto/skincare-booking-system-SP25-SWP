@@ -34,7 +34,7 @@ namespace SkincareBookingSystem.DataAccess.Repositories
                     query = query.Include(property);
                 }
             }
-                return await query.FirstOrDefaultAsync();
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<Customer?> GetCustomerByPhoneNumberAsync(string phoneNumber, string? includeProperties = null)

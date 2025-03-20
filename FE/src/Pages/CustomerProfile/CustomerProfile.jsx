@@ -6,9 +6,17 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { updateUser } from "../../redux/auth/slice";
 import {
+  CHANGE_PASSWORD_API,
   GET_CUSTOMER_PROFILE_API,
   POST_CUSTOMER_AVATAR_API,
 } from "../../config/apiConfig";
+import {
+  validateAddress,
+  validateAge,
+  validatePhoneNumber,
+} from "../../utils/validationUtils";
+import { updateUserProfile } from "../../services/userService";
+import { changePassword } from "../../services/authService";
 
 const UserProfile = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -25,6 +33,21 @@ const UserProfile = () => {
     confirmNewPassword: "",
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    fullName: "",
+    phoneNumber: "",
+    age: "",
+    address: "",
+  });
+
+  const formatFullname = (fullName) => {
+    return fullName
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ")
+      .trim();
+  };
+
   // Khi chọn file, upload luôn avatar
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -66,26 +89,55 @@ const UserProfile = () => {
 
   // Bắt đầu chỉnh sửa
   const handleInputChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
+
+  const validateProfileForm = () => {
+    const fullNameError = userData.fullName ? "" : "Full Name is required!";
+    const phoneError = validatePhoneNumber(userData.phoneNumber);
+    const ageError = validateAge(userData.age.toString());
+    const addressError = validateAddress(userData.address);
+
+    setErrors({
+      fullName: fullNameError,
+      phoneNumber: phoneError,
+      age: ageError,
+      address: addressError,
+    });
+
+    return !(fullNameError || phoneError || ageError || addressError);
   };
 
   // Gửi API cập nhật profile
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
     setUpdateLoading(true);
+    setErrors((errors) => {
+      for (const key in errors) {
+        errors[key] = "";
+      }
+      return errors;
+    });
     console.log("Final userData before sending:", userData);
+
+    if (!validateProfileForm()) {
+      setUpdateLoading(false);
+      return;
+    }
+
+    setUserData({ ...userData, fullName: formatFullname(userData.fullName) });
     try {
-      const response = await fetch(GET_CUSTOMER_PROFILE_API, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(userData),
-      });
+      const response = await updateUserProfile(userData);
 
-      const data = await response.json();
-
-      if (data.isSuccess) {
+      if (response.isSuccess) {
         dispatch(updateUser(userData)); // Cập nhật Redux store
         localStorage.setItem("user", JSON.stringify(userData));
         toast.success("Update Successfully!");
@@ -125,34 +177,22 @@ const UserProfile = () => {
     setPasswordLoading(true);
 
     try {
-      const response = await fetch(
-        "https://localhost:7037/api/Auth/password/change",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            userId: user.id, // Truyền userId từ state
-            oldPassword: passwords.oldPassword,
-            newPassword: passwords.newPassword,
-            confirmNewPassword: passwords.confirmNewPassword,
-          }),
-        }
-      );
-
-      // Kiểm tra nếu server trả về text thay vì JSON
-      const textResponse = await response.text();
-
-      if (response.ok) {
-        toast.success(textResponse); // Hiển thị thông báo thành công
-        handleCancel(); // Đóng modal nếu có
-      } else {
-        toast.error(`Error: ${textResponse}`); // Hiển thị lỗi nếu có
+      const response = await changePassword({
+        userId: user.id,
+        oldPassword: passwords.oldPassword,
+        newPassword: passwords.newPassword,
+        confirmNewPassword: passwords.confirmNewPassword,
+      });
+      
+      if (response.isSuccess) {
+        toast.success("Change password successfully!");
+        setIsModalVisible(false);
+      }
+      else {
+        toast.error(response.message || "Error changing password!");
       }
     } catch (error) {
-      toast.error("Error changing password!");
+      toast.error("Error changing password. " + error.message);
     } finally {
       setPasswordLoading(false);
     }
@@ -188,6 +228,9 @@ const UserProfile = () => {
                   value={userData.fullName}
                   onChange={handleInputChange}
                 />
+                {errors.fullName && (
+                  <p className={styles.error}>{errors.fullName}</p>
+                )}
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -205,6 +248,9 @@ const UserProfile = () => {
                   value={userData.phoneNumber}
                   onChange={handleInputChange}
                 />
+                {errors.phoneNumber && (
+                  <p className={styles.error}>{errors.phoneNumber}</p>
+                )}
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -214,6 +260,9 @@ const UserProfile = () => {
                   value={userData.address}
                   onChange={handleInputChange}
                 />
+                {errors.address && (
+                  <p className={styles.error}>{errors.address}</p>
+                )}
               </Form.Item>
             </Col>
           </Row>
@@ -226,6 +275,7 @@ const UserProfile = () => {
                   value={userData.age}
                   onChange={handleInputChange}
                 />
+                {errors.age && <p className={styles.error}>{errors.age}</p>}
               </Form.Item>
             </Col>
             <Col span={12}>

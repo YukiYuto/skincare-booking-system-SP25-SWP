@@ -169,7 +169,7 @@ const Services = () => {
               services.map((service) => (
                 <tr key={service.serviceId}>
                   <td>{service.serviceName}</td>
-                  <td>${(service.price / 100).toFixed(2)}</td>
+                  <td>{(service.price / 100).toFixed(2)}₫</td>
                   <td title={getAllServiceTypeNames(service)} className={styles.serviceTypeCell}>
                     {getServiceTypeDisplay(service)}
                   </td>

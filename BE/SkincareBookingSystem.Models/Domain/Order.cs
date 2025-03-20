@@ -21,5 +21,6 @@ namespace SkincareBookingSystem.Models.Domain
         public double TotalPrice { get; set; }
         
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+        public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
     }
 }

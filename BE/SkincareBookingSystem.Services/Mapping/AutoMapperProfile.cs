@@ -24,6 +24,7 @@ using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Slot;
+using SkincareBookingSystem.Models.Dto.Staff;
 using SkincareBookingSystem.Models.Dto.TestAnswer;
 using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistSchedules;
@@ -36,6 +37,19 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        //staff
+        CreateMap<Appointments, CheckInSuccessfulDto>()
+            .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.CheckInTime, opt => opt.MapFrom(src => src.CheckInTime))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+        
+        CreateMap<Customer, GetCustomerInfoByStaffDto>()
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber));
+    
+        
         CreateMap<Customer, CustomerInfoDto>()
             .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
             .ForMember(dest => dest.CustomerPhone, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
@@ -162,14 +176,16 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
             .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.BlogCategoryId))
-            .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.AuthorId))
+            .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
         CreateMap<UpdateBlogDto, Blog>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags))
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
+            .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.BlogCategoryId));
 
         // BookingService.BundleOrder - Order response to avoid cyclic references when returned
         CreateMap<Order, OrderDto>()
@@ -236,7 +252,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Order.CustomerId))
             .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Order.TotalPrice))
-            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Order.Created));
 
 

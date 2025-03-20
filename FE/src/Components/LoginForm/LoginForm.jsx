@@ -6,11 +6,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { login as loginAction } from "../../redux/auth/thunks";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import PasswordInputField from "../InputField/Password/PasswordInputField";
-import {
-  validateEmail,
-  validatePasswordLength,
-} from "../../utils/validationUtils";
+import { isAccountUnverified, validateEmail, validatePassword } from "../../utils/validationUtils";
 import styles from "./LoginForm.module.css";
+import { sendVerificationEmail } from "../../services/authService";
 
 export function LoginForm() {
   const [loginData, setLoginData] = useState({
@@ -23,10 +21,11 @@ export function LoginForm() {
     password: "",
   });
 
+  const [isAccountVerified, setIsAccountVerified] = useState(true);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error: reduxError } = useSelector((state) => state.auth);
-
 
   useEffect(() => {
     if (reduxError) {
@@ -42,43 +41,63 @@ export function LoginForm() {
   };
 
   const validateLoginForm = () => {
-    const emailError = validateEmail(loginData.email);
-    const passwordLengthError = validatePasswordLength(loginData.password);
+    const emailError = validateEmail(loginData.email.trim());
+    const passwordFormatError = validatePassword(loginData.password);
 
     setErrors((prevErrors) => ({
       ...prevErrors,
       email: emailError,
-      password: passwordLengthError,
+      password: passwordFormatError,
     }));
 
-    return !emailError && !passwordLengthError;
+    return !emailError && !passwordFormatError;
+  };
+
+  const handleVerifyEmail = async () => {
+    reduxError && toast.dismiss(); // Dismiss any previous error to show new error
+    try {
+      const response = await sendVerificationEmail(loginData.email);
+      toast.success(
+        "Verification email sent successfully! Please check your email inbox."
+      );
+    } catch (error) {
+      console.error("Send verification email error", error.message);
+      toast.error("Failed to send verification email. Please try again.");
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const trimmedData = {
+      ...loginData,
+      email: loginData.email.trim(),
+      password: loginData.password.trim(),
+    };
+    setLoginData(trimmedData);
     setErrors({ email: "", password: "" }); // Reset errors
 
     // If form is invalid, return early
     if (!validateLoginForm()) return;
-
     // If form is valid, call the auth service to login
     try {
-      const userData = await dispatch(loginAction(loginData)).unwrap();
-      toast.success(`Login successful! Welcome, ${loginData.email}!`);
-      if(userData.roles.includes("CUSTOMER") ){
+      const userData = await dispatch(loginAction(trimmedData)).unwrap();
+      setIsAccountVerified(true);
+      toast.success(`Welcome, ${userData.fullName}!`);
+      if (userData.roles.includes("CUSTOMER")) {
         navigate("/");
-      } else if (userData.roles.includes("ADMIN") ){
+      } else if (userData.roles.includes("ADMIN")) {
         navigate("/dashboard");
-      } else if (userData.roles.includes("STAFF") ){
+      } else if (userData.roles.includes("STAFF")) {
         navigate("/staff-management");
-      } else if (userData.roles.includes("SKINTHERAPIST") ){
+      } else if (userData.roles.includes("SKINTHERAPIST")) {
         navigate("/therapist-management");
-      } else if (userData.roles.includes("MANAGER") ){
+      } else if (userData.roles.includes("MANAGER")) {
         navigate("/dashboard");
-      }  
-      
+      }
     } catch (error) {
-      console.error("Login error", error.message);
+      if (isAccountUnverified(error)) {
+        setIsAccountVerified(false);
+      }
     }
   };
 
@@ -107,25 +126,40 @@ export function LoginForm() {
         onChange={handleLoginDataChange}
         error={errors.password}
       />
-      
-      <div>
-      <a 
-      style={{
-            fontSize: "20px",
-            pointerEvents: loading ? "none" : "auto", // Ngăn nhấn khi loading
-            opacity: loading ? 0.5 : 1, // Làm mờ khi loading
-          }}
-      href="forgot-password" 
-      className={styles.forgotLink}>
-          Forgot Password
+
+      <div className={styles.forgotContainer}>
+        <a
+          href="forgot-password"
+          className={`${styles.forgotLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
+        >
+          <span>Forgot Password</span>
         </a>
       </div>
-
+      {!isAccountVerified && (
+        <div className={styles.unverifiedContainer}>
+          <span>
+            Your account is not verified.{" "}
+            <span
+              type="text"
+              className={styles.unverifiedText}
+              onClick={handleVerifyEmail}
+            >
+              Click here
+            </span>{" "}
+            to verify your email.
+          </span>
+        </div>
+      )}
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>
-        <a 
-        style={{ pointerEvents: loading ? "none" : "auto", opacity: loading ? 0.5 : 1 }}
-        href="/terms" className={styles.termsLink}>
+        <a
+          href="/terms"
+          className={`${styles.termsLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
+        >
           terms and conditions
         </a>
         <span> of our center.</span>
@@ -143,7 +177,7 @@ export function LoginForm() {
             window.location.href = "/register";
           }
         }}
-        disabled={loading} 
+        disabled={loading}
       >
         Create Account
       </button>

@@ -1,138 +1,187 @@
 .loginForm {
-    display: flex;
-    flex-direction: column;
-    margin-top: 30px;
-    width: 100%;
-    font-family: Poppins, sans-serif;
-  }
-  
-  .loginTitle {
-    font-size: 48px;
-    font-weight: 500;
-    text-align: center;
-    margin-bottom: 16px;
-    color: #4A4A4A; 
-    font-family: "Cormorant Garamond", serif;
-    text-transform: capitalize;
-    letter-spacing: 1.5px;
-    position: relative;
-    padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  width: 100%;
+  font-family: Poppins, sans-serif;
 }
-  
-  .loginTitle::after {
-    content: "";
-    width: 60px;
-    height: 4px;
-    background-color: #d4a373; 
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 2px;
-    transition: width 0.3s ease-in-out;
-  }
-  
-  .loginTitle:hover::after {
-    width: 100px;
-  }
-  
-  .termsContainer {
-    font-size: 16px;
-    margin: 10px 26px 15px 0px;
-    color: rgb(0, 0, 0);
-  }
-  
-  .termsLink {
-    color: rgb(0, 61, 252);
-    text-decoration: none;
-    transition: opacity 0.3s ease-in-out;
+
+.loginTitle {
+  font-size: 48px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #4A4A4A;
+  font-family: "Cormorant Garamond", serif;
+  text-transform: capitalize;
+  letter-spacing: 1.5px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.loginTitle::after {
+  content: "";
+  width: 60px;
+  height: 4px;
+  background-color: #d4a373;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  transition: width 0.3s ease-in-out;
+}
+
+.loginTitle:hover::after {
+  width: 100px;
+}
+
+.termsContainer {
+  font-size: 16px;
+  margin: 10px 26px 15px 0px;
+  color: rgb(0, 0, 0);
+}
+
+.termsLink {
+  color: rgb(0, 61, 252);
+  text-decoration: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.termsLink:hover {
+  text-decoration: underline;
+}
+
+.forgotLink {
+  color: rgb(0, 61, 252);
+  text-decoration: none;
+  margin-left: 500px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.forgotLink:hover {
+  text-decoration: underline;
+}
+
+.verifyLink {
+  text-decoration: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.verifyLink:hover {
+  color: red;
+  text-decoration: underline;
+}
+
+.loginButton {
+  border-radius: 10px;
+  background-color: rgb(0, 61, 252);
+  padding: 18px 70px;
+  font-size: 30px;
+  color: rgb(250, 250, 250);
+  font-weight: 500;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.loginButton:hover {
+  background-color: darkblue;
+}
+
+.loginButton:disabled {
+  background-color: rgba(41, 92, 243, 0.527);
+  cursor: not-allowed;
+}
+
+.disabledForm {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.registerLink {
+  color: rgb(0, 61, 252);
+  text-decoration: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.registerLink:hover {
+  color: red;
+  text-decoration: underline;
+}
+
+.forgotContainer {
+  display: flex;
+  justify-content: end;
+  flex-direction: row;
+  white-space: nowrap;
+  margin: 0 0 18px 0;
+}
+
+.forgotLink {
+  color: rgb(0, 61, 252);
+  text-decoration: none;
+  transition: opacity 0.3s ease-in-out;
+  font-size: 20px;
+  display: inline-block;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.unverifiedContainer {
+  font-size: large;
+}
+
+.unverifiedText {
+  color: rosybrown;
+  text-decoration: underline;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.disabledLink {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.createAccountButton {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.createAccountButton:hover {
+  text-decoration: underline;
+  transition: text-decoration 0.3s ease-in-out;
+}
+
+@media (max-width: 991px) {
+  .loginForm {
+    margin-top: 40px;
   }
 
-  .forgotLink{
-    color: rgb(0, 61, 252);
-    text-decoration: none;
-    margin-left: 450px;
-    transition: opacity 0.3s ease-in-out;
+  .loginTitle {
+    margin-bottom: 40px;
   }
 
-  .forgotLink:hover{
-    color: red; 
-    text-decoration: underline;
-  }
-
-  .verifyLink{
-    text-decoration: none;
-    transition: opacity 0.3s ease-in-out;
-  }
-
-  .verifyLink:hover{
-    color: red; 
-    text-decoration: underline;
-  }
-  
   .loginButton {
-    border-radius: 10px;
-    background-color: rgb(0, 61, 252);
-    padding: 18px 70px;
-    font-size: 30px;
-    color: rgb(250, 250, 250);
-    font-weight: 500;
-    width: 100%;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 15px;
+    padding: 18px 20px;
   }
-  
-  .loginButton:hover{
-    background-color: darkblue;
+}
+
+@media (max-width: 640px) {
+  .loginTitle {
+    font-size: 32px;
   }
 
-  .loginButton:disabled {
-    background-color: rgba(41, 92, 243, 0.527);
-    cursor: not-allowed;
+  .termsContainer {
+    font-size: 14px;
+    margin: 40px 10px 15px 0;
   }
 
-  .disabledForm {
-    pointer-events: none; 
-    opacity: 0.7; 
+  .loginButton {
+    font-size: 24px;
   }
-
-  .registerLink{
-    color: rgb(0, 61, 252);
-    text-decoration: none;
-    transition: opacity 0.3s ease-in-out;
-  }
-
-  .registerLink:hover{
-    color: red; 
-    text-decoration: underline;
-  }
-
-  @media (max-width: 991px) {
-    .loginForm {
-      margin-top: 40px;
-    }
-  
-    .loginTitle {
-      margin-bottom: 40px;
-    }
-  
-    .loginButton {
-      padding: 18px 20px;
-    }
-  }
-  
-  @media (max-width: 640px) {
-    .loginTitle {
-      font-size: 32px;
-    }
-  
-    .termsContainer {
-      font-size: 14px;
-      margin: 40px 10px 15px 0;
-    }
-  
-    .loginButton {
-      font-size: 24px;
-    }
-  }
+}
