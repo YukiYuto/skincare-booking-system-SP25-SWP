@@ -46,6 +46,7 @@ export const POST_BOOKING_AUTO_ASSIGN_API = `${BASE_URL}/bookings/auto-assign`;
 export const GET_ALL_CUSTOMERS_API = `${BASE_URL}/customer`;
 export const GET_CUSTOMER_BY_ID_API = `${BASE_URL}/customer/{customerId}`;
 export const GET_CUSTOMER_USER_API = `${BASE_URL}/customer/user`;
+export const GET_CUSTOMER_TIMETABLE_API = `${BASE_URL}/customer/timetable`;
 
 // Thêm API cho FileStorage
 export const POST_FILE_SERVICE_API = `${BASE_URL}/files/service`;

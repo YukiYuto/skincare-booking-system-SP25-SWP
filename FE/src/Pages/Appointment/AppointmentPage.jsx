@@ -6,14 +6,69 @@ import moment from "moment";
 import styles from "./AppointmentPage.module.css";
 import Header from "../../Components/Common/Header";
 import {
-  GET_APPOINTMENT_BY_CUSTOMER_API,
+  GET_CUSTOMER_TIMETABLE_API,
   GET_APPOINTMENT_BY_ID_API,
   GET_ALL_SLOTS_API,
-  GET_THERAPIST_SCHEDULE_BY_THERAPIST_API,
 } from "../../config/apiConfig";
 import AppointmentDetail from "../../Components/Appointment/AppointmentDetail/AppointmentDetail";
 import SlotBasedWeekView from "../../Components/Appointment/SlotBasedWeekView/SlotBasedWeekView";
-import Sidebar from "../../Components/Appointment/Sidebar/Sidebar";
+
+// Helper function to format date to YYYY-MM-DD
+const formatDateToYYYYMMDD = (dateString) => {
+  if (!dateString) return null;
+  
+  try {
+    // If already in YYYY-MM-DD format, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString;
+    }
+    
+    // Try to parse the date using moment
+    const date = moment(dateString);
+    if (date.isValid()) {
+      return date.format('YYYY-MM-DD');
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return null;
+  }
+};
+
+// Helper function to parse appointment times
+const parseAppointmentTime = (timeString) => {
+  if (!timeString) return null;
+  
+  try {
+    // Format: "12:00:00 - 13:00:00"
+    const startTime = timeString.split(' - ')[0]; // Get "12:00:00"
+    return startTime; // Return just the start time
+  } catch (error) {
+    console.error("Error parsing appointment time:", error);
+    return null;
+  }
+};
+
+// Helper function to check if appointment matches a slot
+const doesAppointmentMatchSlot = (appointment, slot) => {
+  // First, check if the appointment has a slotId that matches the slot
+  if (appointment.slotId && slot.slotId && appointment.slotId === slot.slotId) {
+    console.log(`Direct slotId match found between appointment ${appointment.appointmentId} and slot ${slot.slotId}`);
+    return true;
+  }
+  
+  // If no direct slotId match, try to match by time
+  const appointmentStartTime = parseAppointmentTime(appointment.appointmentTime);
+  if (!appointmentStartTime || !slot.startTime) return false;
+  
+  // Compare just the hour and minute parts
+  const appointmentHourMinute = appointmentStartTime.substring(0, 5); // "12:00"
+  const slotHourMinute = slot.startTime.substring(0, 5); // Assuming slot.startTime is like "12:00:00"
+  
+  console.log(`Comparing appointment time ${appointmentHourMinute} with slot time ${slotHourMinute}`);
+  return appointmentHourMinute === slotHourMinute;
+};
 
 const AppointmentPage = () => {
   const [appointments, setAppointments] = useState([]);
@@ -28,145 +83,21 @@ const AppointmentPage = () => {
   const [currentWeekStart, setCurrentWeekStart] = useState(
     moment().startOf("week")
   );
-  const [selectedTherapistId, setSelectedTherapistId] = useState(null);
 
   // Get auth state from Redux
   const { accessToken } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    fetchAppointmentsData();
-    fetchSlots();
-  }, [accessToken, selectedTherapistId]);
-
-  const formatDateToYYYYMMDD = (dateString) => {
-    if (!dateString) return "";
+    // First fetch slots, then fetch appointments
+    const loadData = async () => {
+      await fetchSlots();
+      await fetchCustomerTimetable();
+    };
     
-    // Check if date is already in YYYY-MM-DD format
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      return dateString;
-    }
-    
-    // Handle M/D/YYYY format
-    if (dateString.includes('/')) {
-      const parts = dateString.split('/');
-      if (parts.length === 3) {
-        const month = parts[0].padStart(2, '0');
-        const day = parts[1].padStart(2, '0');
-        const year = parts[2];
-        return `${year}-${month}-${day}`;
-      }
-    }
-    
-    // Fallback - try to parse with moment
-    return moment(dateString).format("YYYY-MM-DD");
-  };
+    loadData();
+  }, [accessToken]);
 
-  const fetchAppointmentsData = async () => {
-    console.log("Fetching appointments...");
-    setLoading(true);
-    
-    if (!accessToken) {
-      message.error("No access token available");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      let response;
-      
-      if (selectedTherapistId) {
-        // Fetch therapist's appointments
-        console.log(`Fetching therapist schedule for ID: ${selectedTherapistId}`);
-        const therapistUrl = GET_THERAPIST_SCHEDULE_BY_THERAPIST_API.replace("{therapistId}", selectedTherapistId);
-        response = await axios.get(
-          therapistUrl, 
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-      } else {
-        // Fetch customer's appointments
-        response = await axios.get(GET_APPOINTMENT_BY_CUSTOMER_API, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-      }
-
-      if (response.data.isSuccess) {
-        let appointmentsData = [];
-        
-        if (selectedTherapistId) {
-          // Process therapist schedule data
-          console.log("Raw therapist data:", response.data.result);
-          
-          // Check the structure of the response
-          if (Array.isArray(response.data.result)) {
-            // Handle array of therapist appointments
-            appointmentsData = response.data.result.map(appointment => {
-              return {
-                ...appointment,
-                appointmentId: appointment.appointmentId || `temp-${Math.random()}`,
-                appointmentDate: formatDateToYYYYMMDD(appointment.appointmentDate),
-                status: appointment.status || "SCHEDULED",
-                // Ensure nested objects exist
-                serviceInfo: appointment.serviceInfo || {},
-                therapistInfo: appointment.therapistInfo || {},
-                customerInfo: appointment.customerInfo || {}
-              };
-            });
-          } else if (response.data.result && typeof response.data.result === 'object') {
-            // Handle single therapist appointment object
-            const appointment = response.data.result;
-            appointmentsData = [{
-              ...appointment,
-              appointmentId: appointment.appointmentId || `temp-${Math.random()}`,
-              appointmentDate: formatDateToYYYYMMDD(appointment.appointmentDate),
-              status: appointment.status || "SCHEDULED",
-              // Ensure nested objects exist
-              serviceInfo: appointment.serviceInfo || {},
-              therapistInfo: appointment.therapistInfo || {},
-              customerInfo: appointment.customerInfo || {}
-            }];
-          }
-        } else {
-          // Process customer appointments data
-          appointmentsData = Array.isArray(response.data.result) 
-            ? response.data.result 
-            : [response.data.result].filter(Boolean);
-          
-          // Ensure data consistency
-          appointmentsData = appointmentsData.map(appointment => ({
-            ...appointment,
-            appointmentDate: formatDateToYYYYMMDD(appointment.appointmentDate)
-          }));
-        }
-        
-        console.log("Appointments fetched:", appointmentsData.length);
-        console.log("Sample appointment data:", appointmentsData.length > 0 ? appointmentsData[0] : "No appointments");
-        setAppointments(appointmentsData);
-        
-        // Reset selected date and appointments when switching between therapist/customer view
-        setSelectedDate(null);
-        setSelectedAppointments([]);
-      } else {
-        message.error(response.data.message || "Failed to load appointments");
-      }
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-      message.error(
-        error.response?.data?.message ||
-          `Failed to load appointments: ${error.message}`
-      );
-      // Set appointments to empty array on error
-      setAppointments([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Fetch time slots
   const fetchSlots = async () => {
     console.log("Fetching slots...");
     setSlotsLoading(true);
@@ -174,7 +105,7 @@ const AppointmentPage = () => {
     if (!accessToken) {
       message.error("No access token available");
       setSlotsLoading(false);
-      return;
+      return Promise.resolve();
     }
 
     try {
@@ -187,6 +118,12 @@ const AppointmentPage = () => {
       if (response.data.isSuccess) {
         const slotsData = response.data.result || [];
         console.log("Slots fetched:", slotsData.length);
+        
+        // Log the first slot object to inspect its structure
+        if (slotsData.length > 0) {
+          console.log("Sample slot object:", slotsData[0]);
+        }
+        
         // Sort slots by startTime
         const sortedSlots = slotsData.sort((a, b) => {
           return a.startTime.localeCompare(b.startTime);
@@ -203,6 +140,64 @@ const AppointmentPage = () => {
       );
     } finally {
       setSlotsLoading(false);
+      return Promise.resolve();
+    }
+  };
+
+  // Fetch customer timetable
+  const fetchCustomerTimetable = async () => {
+    console.log("Fetching customer timetable...");
+    setLoading(true);
+    
+    if (!accessToken) {
+      message.error("No access token available");
+      setLoading(false);
+      return Promise.resolve();
+    }
+
+    try {
+      const response = await axios.get(GET_CUSTOMER_TIMETABLE_API, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.data.isSuccess) {
+        const timetableData = response.data.result || {};
+        const appointmentsData = timetableData.appointments || [];
+        
+        // Process appointments data
+        const processedAppointments = appointmentsData.map(appointment => ({
+          ...appointment,
+          appointmentDate: formatDateToYYYYMMDD(appointment.appointmentDate),
+          status: appointment.scheduleStatus === 0 ? "CREATED" : "SCHEDULED" // Map status based on scheduleStatus
+        }));
+        
+        console.log("Appointments fetched:", processedAppointments.length);
+        
+        // Log the first appointment object to inspect its structure
+        if (processedAppointments.length > 0) {
+          console.log("Sample appointment object:", processedAppointments[0]);
+        }
+        
+        setAppointments(processedAppointments);
+        
+        // Reset selected date and appointments
+        setSelectedDate(null);
+        setSelectedAppointments([]);
+      } else {
+        message.error(response.data.message || "Failed to load timetable");
+      }
+    } catch (error) {
+      console.error("Error fetching customer timetable:", error);
+      message.error(
+        error.response?.data?.message ||
+          `Failed to load timetable: ${error.message}`
+      );
+      // Set appointments to empty array on error
+      setAppointments([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -217,6 +212,31 @@ const AppointmentPage = () => {
     });
     
     console.log("Filtered appointments:", filteredAppointments.length);
+    
+    // Match appointments with slots
+    filteredAppointments.forEach(appointment => {
+      console.log("Checking appointment:", appointment);
+      const matchingSlot = slots.find(slot => 
+        doesAppointmentMatchSlot(appointment, slot)
+      );
+      
+      if (matchingSlot) {
+        console.log(`Appointment ${appointment.appointmentId} matches slot ${matchingSlot.slotId}`);
+        console.log("Appointment slotId:", appointment.slotId);
+        console.log("Slot slotId:", matchingSlot.slotId);
+        console.log("Appointment time:", appointment.appointmentTime);
+        console.log("Slot time:", matchingSlot.startTime, "-", matchingSlot.endTime);
+      } else {
+        console.log(`No matching slot found for appointment ${appointment.appointmentId}`);
+        console.log("Appointment slotId:", appointment.slotId);
+        console.log("Appointment time:", appointment.appointmentTime);
+
+        // Check if there's a slot ID issue - list all available slotIds
+        console.log("Available slot IDs:");
+        slots.forEach(s => console.log(s.slotId));
+      }
+    });
+    
     setSelectedAppointments(filteredAppointments);
   };
 
@@ -236,7 +256,27 @@ const AppointmentPage = () => {
       );
 
       if (response.data.isSuccess) {
-        setSelectedAppointment(response.data.result);
+        // Process the appointment data to ensure all fields are properly formatted
+        const appointmentData = response.data.result;
+        
+        // Format the date if it exists
+        if (appointmentData.appointmentDate) {
+          appointmentData.appointmentDate = formatDateToYYYYMMDD(appointmentData.appointmentDate);
+        }
+        
+        // Log the full appointment detail
+        console.log("Full appointment details:", appointmentData);
+        
+        // Find matching slot information
+        if (appointmentData.slotId) {
+          const matchingSlot = slots.find(s => s.slotId === appointmentData.slotId);
+          if (matchingSlot) {
+            console.log("Found matching slot for detail view:", matchingSlot);
+            appointmentData.matchingSlot = matchingSlot;
+          }
+        }
+        
+        setSelectedAppointment(appointmentData);
       } else {
         message.error(
           response.data.message || "Failed to load appointment details"
@@ -266,17 +306,15 @@ const AppointmentPage = () => {
     setCurrentWeekStart(moment(currentWeekStart).add(1, "week"));
   };
 
-  const handleTherapistChange = (therapistId) => {
-    console.log("Therapist changed:", therapistId);
-    setSelectedTherapistId(therapistId);
+  // Function to get slot info by ID
+  const getSlotById = (slotId) => {
+    return slots.find(slot => slot.slotId === slotId);
   };
 
   return (
     <div className={styles.container}>
       <Header />
-      <h2>
-        {selectedTherapistId ? "Therapist Schedule" : "Your Appointments"}
-      </h2>
+      <h2>Your Appointments</h2>
 
       {loading ? (
         <div className={styles.spinnerContainer || "spinner"}>
@@ -298,64 +336,55 @@ const AppointmentPage = () => {
                 appointments={appointments}
               />
             </div>
-
-            <div className={styles.sidebarSection}>
-              <Sidebar onTherapistChange={handleTherapistChange} />
-            </div>
           </div>
           <div className={styles.detailsSection}>
             {selectedDate ? (
               <>
                 <h3>
-                  {selectedTherapistId
-                    ? `Schedule on ${selectedDate.format("MMMM D, YYYY")}`
-                    : `Appointments on ${selectedDate.format("MMMM D, YYYY")}`}
+                  Appointments on {selectedDate.format("MMMM D, YYYY")}
                 </h3>
                 {selectedAppointments.length > 0 ? (
                   <List
                     dataSource={selectedAppointments}
-                    renderItem={(appointment) => (
-                      <List.Item key={appointment.appointmentId || Math.random()}>
-                        <Card
-                          title={`Time: ${appointment.appointmentTime}`}
-                          className={styles.appointmentCard}
-                          hoverable
-                          onClick={() =>
-                            handleAppointmentClick(appointment.appointmentId)
-                          }
-                        >
-                          <p>
-                            <strong>Status:</strong>{" "}
-                            <span className={styles.status}>
-                              {appointment.status}
-                            </span>
-                          </p>
-                          {appointment.serviceInfo && appointment.serviceInfo.serviceName && (
+                    renderItem={(appointment) => {
+                      // Find matching slot
+                      const matchingSlot = appointment.slotId ? 
+                        getSlotById(appointment.slotId) : 
+                        slots.find(slot => doesAppointmentMatchSlot(appointment, slot));
+                      
+                      return (
+                        <List.Item key={appointment.appointmentId || Math.random()}>
+                          <Card
+                            title={`Time: ${appointment.appointmentTime}`}
+                            className={styles.appointmentCard}
+                            hoverable
+                            onClick={() =>
+                              handleAppointmentClick(appointment.appointmentId)
+                            }
+                          >
                             <p>
-                              <strong>Service:</strong>{" "}
-                              {appointment.serviceInfo.serviceName}
+                              <strong>Status:</strong>{" "}
+                              <span className={styles.status}>
+                                {appointment.status}
+                              </span>
                             </p>
-                          )}
-                          {appointment.therapistInfo && appointment.therapistInfo.therapistName && (
-                            <p>
-                              <strong>Therapist:</strong>{" "}
-                              {appointment.therapistInfo.therapistName}
-                            </p>
-                          )}
-                          {selectedTherapistId && appointment.customerInfo && appointment.customerInfo.customerName && (
-                            <p>
-                              <strong>Customer:</strong>{" "}
-                              {appointment.customerInfo.customerName}
-                            </p>
-                          )}
-                          {appointment.note && (
-                            <p>
-                              <strong>Note:</strong> {appointment.note}
-                            </p>
-                          )}
-                        </Card>
-                      </List.Item>
-                    )}
+                            {appointment.slotId && (
+                              <p>
+                                <strong>Slot ID:</strong>{" "}
+                                {appointment.slotId}
+                              </p>
+                            )}
+                            {/* Show slot information if available */}
+                            {matchingSlot && (
+                              <p>
+                                <strong>Slot Time:</strong>{" "}
+                                {matchingSlot.startTime} - {matchingSlot.endTime}
+                              </p>
+                            )}
+                          </Card>
+                        </List.Item>
+                      );
+                    }}
                   />
                 ) : (
                   <p>No appointments on this day</p>
@@ -381,7 +410,26 @@ const AppointmentPage = () => {
             <p>Loading appointment details...</p>
           </div>
         ) : (
-          <AppointmentDetail appointment={selectedAppointment} />
+          <>
+            <AppointmentDetail appointment={selectedAppointment} />
+            {selectedAppointment && selectedAppointment.slotId && (
+              <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #eee', borderRadius: '4px' }}>
+                <h4>Associated Slot Information</h4>
+                {(() => {
+                  const slotInfo = getSlotById(selectedAppointment.slotId);
+                  return slotInfo ? (
+                    <div>
+                      <p><strong>Slot Time:</strong> {slotInfo.startTime} - {slotInfo.endTime}</p>
+                      <p><strong>Slot Status:</strong> {slotInfo.status}</p>
+                      <p><strong>Created By:</strong> {slotInfo.createdBy}</p>
+                    </div>
+                  ) : (
+                    <p>No matching slot information found.</p>
+                  );
+                })()}
+              </div>
+            )}
+          </>
         )}
       </Modal>
     </div>

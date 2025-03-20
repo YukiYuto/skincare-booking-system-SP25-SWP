@@ -54,14 +54,7 @@ const SlotBasedWeekView = ({
       // Format appointment date consistently
       const appointmentDate = formatDateToYYYYMMDD(appointment.appointmentDate);
       
-      // Debug log
-      console.log("Checking appointment:", {
-        slotDay: dayFormatted,
-        appointmentDate: appointmentDate,
-        match: appointmentDate === dayFormatted,
-      });
-      
-      // Check date match
+      // Check date match - removing debug logs
       if (appointmentDate !== dayFormatted) {
         return false;
       }
@@ -83,14 +76,6 @@ const SlotBasedWeekView = ({
       try {
         appointmentStart = moment(appointmentTimeParts[0], ["HH:mm:ss", "HH:mm"]);
         appointmentEnd = moment(appointmentTimeParts[1], ["HH:mm:ss", "HH:mm"]);
-        
-        // Debug log
-        console.log("Time check:", {
-          slotStart: slotStart.format("HH:mm"),
-          slotEnd: slotEnd.format("HH:mm"),
-          appointmentStart: appointmentStart.format("HH:mm"),
-          appointmentEnd: appointmentEnd.format("HH:mm")
-        });
         
         if (!appointmentStart.isValid() || !appointmentEnd.isValid()) {
           return false;
