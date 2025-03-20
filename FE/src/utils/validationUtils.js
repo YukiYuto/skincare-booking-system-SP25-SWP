@@ -86,4 +86,14 @@ export const validateGender = (gender) => {
   return "";
 };
 
+export const validateAddress  = (address) => {
+  if (!address) {
+    return "Address is required";
+  }
+  if (!validator.isLength(address, { min: 5, max: 50 })) {
+    return "Address must be between 5-50 characters long";
+  }
+  return "";
+}
+
 

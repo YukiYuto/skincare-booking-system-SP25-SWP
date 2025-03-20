@@ -10,6 +10,7 @@ import {
   USER_PROFILE_API,
   REFRESH_TOKEN_API,
   AUTH_HEADERS,
+  CHANGE_PASSWORD_API,
 } from "../config/apiConfig";
 
 /**
@@ -61,9 +62,17 @@ export const refreshTokens = async (refreshToken) => {
     });
     return response;
   } catch (error) {
-    throw new Error("Failed to refresh token", error.message);
+    throw new Error("Failed to refresh token" + error.message);
   }
 };
+
+export const changePassword = async (changePasswordData) => {
+  try {
+    return await apiCall(HTTP_METHODS.POST, CHANGE_PASSWORD_API, changePasswordData);
+  } catch (error) {
+    throw new Error(error.message || "Failed to change password");
+  }
+}
 
 export async function forgotPassword(email) {
   const trimmedEmail = email.trim();
