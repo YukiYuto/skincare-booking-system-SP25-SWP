@@ -49,5 +49,13 @@ namespace SkincareBookingSystem.API.Controllers
             var response = await _customerService.GetCustomerTimeTable(User);
             return StatusCode(response.StatusCode, response);
         }
+        
+        [HttpGet("orders")]
+        [SwaggerOperation(Summary = "API gets a customer's orders", Description = "Requires customer, admin roles")]
+        public async Task<IActionResult> GetOrderByCustomer()
+        {
+            var response = await _customerService.GetOrderByCustomer(User);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }
