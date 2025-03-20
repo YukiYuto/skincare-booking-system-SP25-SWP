@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SkincareBookingSystem.DataAccess.DBContext;
@@ -11,9 +12,11 @@ using SkincareBookingSystem.DataAccess.DBContext;
 namespace SkincareBookingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250318082619_MigrationDb_Appointment-DurationNullable")]
+    partial class MigrationDb_AppointmentDurationNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,7 +275,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Admin St",
                             Age = 30,
-                            ConcurrencyStamp = "d7ce6a15-4f1b-436e-a7d4-a9c57d0aff29",
+                            ConcurrencyStamp = "542cc928-825b-427f-8296-d3ae49ebdaa9",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Admin",
@@ -280,10 +283,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELMkmDGKOcbL35xDeUxNvlBAwYyoUd361FLgsYFBOijXDMvb8BapdH1dBqDxoceH8w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEN4KS3jg7hsDzZJOGUyknwiYd2AQpW6YubXNvFk8NvW3RESNT1XlbKIKwULadtYvyg==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "57dee1f4-7661-4726-97ad-d7d0909aa693",
+                            SecurityStamp = "eeb19498-6a15-42fc-99e5-362d409d2934",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         },
@@ -293,7 +296,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Manager St",
                             Age = 30,
-                            ConcurrencyStamp = "1a2037e1-be9f-4d59-b376-8da422cda65b",
+                            ConcurrencyStamp = "db1f7b38-bf2a-4ee1-952f-bf38e3090bba",
                             Email = "manager@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Manager",
@@ -301,10 +304,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "MANAGER@GMAIL.COM",
                             NormalizedUserName = "MANAGER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELoF84tDBQvjY1K6ghwBB8S2PwxHQW4oVdOyCvaKdSvRit56g/D1XudiIQzwRRSJjQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPJdqe7Upqa9B1j3sQNW6bgnNJuxlpUhnMuv0lBrs8JVDIFWLnOdrMi63TLeHnTlMw==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "56cf59e0-9133-4568-b6c1-12884f0a43dc",
+                            SecurityStamp = "db1293c6-dabd-4655-b4b1-d2e1555e880e",
                             TwoFactorEnabled = false,
                             UserName = "manager@gmail.com"
                         });
@@ -323,12 +326,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
-
-                    b.Property<DateTime?>("CheckInTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("CheckOutTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
@@ -1326,7 +1323,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasForeignKey("CustomerId1");
 
                     b.HasOne("SkincareBookingSystem.Models.Domain.Order", "Order")
-                        .WithMany("Appointments")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1435,7 +1432,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Order", b =>
                 {
                     b.HasOne("SkincareBookingSystem.Models.Domain.Customer", "Customer")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1677,8 +1674,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("CustomerSkinTests");
-
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.CustomerSkinTest", b =>
@@ -1688,8 +1683,6 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Order", b =>
                 {
-                    b.Navigation("Appointments");
-
                     b.Navigation("OrderDetails");
                 });
 

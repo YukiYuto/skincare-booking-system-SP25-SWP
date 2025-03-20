@@ -29,6 +29,7 @@ public class TypeItemRepository : Repository<TypeItem>, ITypeItemRepository
             .Include(ti => ti.ServiceType)
             .ThenInclude(st => st.TypeItems)
             .ThenInclude(ti => ti.Services)
+            .AsNoTracking()
             .AsQueryable();
 
         if (!string.IsNullOrEmpty(filterOn) && !string.IsNullOrEmpty(filterQuery))
@@ -59,11 +60,12 @@ public class TypeItemRepository : Repository<TypeItem>, ITypeItemRepository
         var typeItems = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .Select(ti => new GetTypeItemsDto
+            .GroupBy(ti => ti.ServiceTypeId)
+            .Select(g => new GetTypeItemsDto
             {
-                ServiceTypeId = ti.ServiceTypeId,
-                ServiceTypeName = ti.ServiceType.ServiceTypeName,
-                Services = ti.ServiceType.TypeItems
+                ServiceTypeId = g.Key,
+                ServiceTypeName = g.First().ServiceType.ServiceTypeName,
+                Services = g.First().ServiceType.TypeItems
                     .Select(s => new ServiceDto
                     {
                         ServiceId = s.Services.ServiceId,
@@ -71,6 +73,7 @@ public class TypeItemRepository : Repository<TypeItem>, ITypeItemRepository
                     }).Distinct().ToList()
             })
             .ToListAsync();
+
 
         return (typeItems, totalTypeItems);
     }

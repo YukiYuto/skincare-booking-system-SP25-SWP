@@ -62,9 +62,20 @@ export function LoginForm() {
 
     // If form is valid, call the auth service to login
     try {
-      await dispatch(loginAction(loginData)).unwrap();
+      const userData = await dispatch(loginAction(loginData)).unwrap();
       toast.success(`Login successful! Welcome, ${loginData.email}!`);
-      navigate("/");
+      if(userData.roles.includes("CUSTOMER") ){
+        navigate("/");
+      } else if (userData.roles.includes("ADMIN") ){
+        navigate("/dashboard");
+      } else if (userData.roles.includes("STAFF") ){
+        navigate("/staff-management");
+      } else if (userData.roles.includes("SKINTHERAPIST") ){
+        navigate("/therapist-management");
+      } else if (userData.roles.includes("MANAGER") ){
+        navigate("/dashboard");
+      }  
+      
     } catch (error) {
       console.error("Login error", error.message);
     }
