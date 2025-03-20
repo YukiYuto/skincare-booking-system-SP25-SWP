@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { PUT_SERVICE_API, GET_ALL_SERVICE_TYPES_API, POST_FILE_SERVICE_API } from "../../../../config/apiConfig";
+import {
+  PUT_SERVICE_API,
+  GET_ALL_SERVICE_TYPES_API,
+  POST_FILE_SERVICE_API,
+  POST_TYPE_ITEM_API,
+} from "../../../../config/apiConfig";
 import styles from "./ServiceEditModal.module.css";
 
 const ServiceEditModal = ({ service, onClose, refresh }) => {
@@ -17,30 +22,36 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
 
   // Fetch all service types and initialize selected types
   useEffect(() => {
-    axios.get(GET_ALL_SERVICE_TYPES_API, { headers: { Authorization: `Bearer ${user.accessToken}` } })
+    axios
+      .get(GET_ALL_SERVICE_TYPES_API, {
+        headers: { Authorization: `Bearer ${user.accessToken}` },
+      })
       .then((res) => {
         const serviceTypesData = res.data.result;
         setAllServiceTypes(serviceTypesData);
-        
+
         // Initialize selected service types
         if (service.serviceTypeIds && service.serviceTypeIds.length > 0) {
-          const initialSelected = service.serviceTypeIds.map(id => 
-            serviceTypesData.find(st => st.serviceTypeId === id)
-          ).filter(Boolean);
+          const initialSelected = service.serviceTypeIds
+            .map((id) => serviceTypesData.find((st) => st.serviceTypeId === id))
+            .filter(Boolean);
           setSelectedServiceTypes(initialSelected);
-          
+
           // Remove selected types from available types
-          setAllServiceTypes(serviceTypesData.filter(
-            st => !service.serviceTypeIds.includes(st.serviceTypeId)
-          ));
+          setAllServiceTypes(
+            serviceTypesData.filter(
+              (st) => !service.serviceTypeIds.includes(st.serviceTypeId)
+            )
+          );
         }
       })
       .catch((err) => console.error("Error fetching service types:", err));
   }, [user.accessToken, service.serviceTypeIds]);
 
   // Handle regular form input changes
-  const handleChange = (e) => setFormState({ ...formState, [e.target.name]: e.target.value });
-  
+  const handleChange = (e) =>
+    setFormState({ ...formState, [e.target.name]: e.target.value });
+
   // Handle image file change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -53,13 +64,21 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
   // Handle service type selection
   const handleSelect = (serviceType) => {
     setSelectedServiceTypes([...selectedServiceTypes, serviceType]);
-    setAllServiceTypes(allServiceTypes.filter(st => st.serviceTypeId !== serviceType.serviceTypeId));
+    setAllServiceTypes(
+      allServiceTypes.filter(
+        (st) => st.serviceTypeId !== serviceType.serviceTypeId
+      )
+    );
     setShowDropdown(false);
   };
 
   // Handle service type deselection
   const handleDeselect = (serviceType) => {
-    setSelectedServiceTypes(selectedServiceTypes.filter(st => st.serviceTypeId !== serviceType.serviceTypeId));
+    setSelectedServiceTypes(
+      selectedServiceTypes.filter(
+        (st) => st.serviceTypeId !== serviceType.serviceTypeId
+      )
+    );
     setAllServiceTypes([...allServiceTypes, serviceType]);
   };
 
@@ -75,46 +94,75 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
   }, []);
 
   // Handle form submission
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    let imageUrl = formState.imageUrl;
-    
-    // Upload new image if provided
-    if (imageFile) {
-      const formData = new FormData();
-      formData.append("file", imageFile);
-      try {
-        const imageResponse = await axios.post(POST_FILE_SERVICE_API, formData, {
-          headers: { Authorization: `Bearer ${user.accessToken}`, "Content-Type": "multipart/form-data" },
-        });
-        imageUrl = imageResponse.data.result || imageResponse.data.imageUrl || imageResponse.data;
-      } catch (error) {
-        console.error("Error uploading image:", error);
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      let imageUrl = formState.imageUrl;
+
+      // Upload new image if provided
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+        try {
+          const imageResponse = await axios.post(
+            POST_FILE_SERVICE_API,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${user.accessToken}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          imageUrl =
+            imageResponse.data.result ||
+            imageResponse.data.imageUrl ||
+            imageResponse.data;
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
       }
-    }
-    
-    // Extract service type IDs from selected service types
-    const serviceTypeIds = selectedServiceTypes.map(st => st.serviceTypeId);
-    
-    // Update service
-    await axios.put(
-      PUT_SERVICE_API, 
-      { 
-        ...formState, 
-        imageUrl, 
-        serviceTypeIds // Include service type IDs in the update
-      }, 
-      { headers: { Authorization: `Bearer ${user.accessToken}` } }
-    );
-    
-    refresh();
-    onClose();
-  }, [formState, imageFile, selectedServiceTypes, refresh, onClose, user.accessToken]);
+
+      // Extract service type IDs from selected service types
+      const serviceTypeIds = selectedServiceTypes.map((st) => st.serviceTypeId);
+
+      // Update service
+      await axios.put(
+        PUT_SERVICE_API,
+        {
+          ...formState,
+          imageUrl,
+          serviceTypeIds, // Include service type IDs in the update
+        },
+        { headers: { Authorization: `Bearer ${user.accessToken}` } }
+      );
+
+      // Associate service with types
+      await axios.post(
+        POST_TYPE_ITEM_API,
+        { serviceId: service.serviceId, serviceTypeIdList: serviceTypeIds },
+        { headers: { Authorization: `Bearer ${user.accessToken}` } }
+      );
+
+      refresh();
+      onClose();
+    },
+    [
+      formState,
+      imageFile,
+      selectedServiceTypes,
+      refresh,
+      onClose,
+      user.accessToken,
+    ]
+  );
 
   // Handle service deletion
   const handleDelete = useCallback(async () => {
     try {
-      await axios.delete(`${PUT_SERVICE_API}/${service.serviceId}`, { headers: { Authorization: `Bearer ${user.accessToken}` } });
+      await axios.delete(`${PUT_SERVICE_API}/${service.serviceId}`, {
+        headers: { Authorization: `Bearer ${user.accessToken}` },
+      });
       refresh();
       onClose();
     } catch (error) {
@@ -132,13 +180,24 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
             <label key={name}>
               {name.charAt(0).toUpperCase() + name.slice(1)}:
               {name === "description" ? (
-                <textarea name={name} value={formState[name]} onChange={handleChange} required />
+                <textarea
+                  name={name}
+                  value={formState[name]}
+                  onChange={handleChange}
+                  required
+                />
               ) : (
-                <input name={name} type={name === "price" ? "number" : "text"} value={formState[name]} onChange={handleChange} required />
+                <input
+                  name={name}
+                  type={name === "price" ? "number" : "text"}
+                  value={formState[name]}
+                  onChange={handleChange}
+                  required
+                />
               )}
             </label>
           ))}
-          
+
           {/* Service Types Dropdown */}
           <label>Service Types:</label>
           <div ref={dropdownRef} className={styles.dropdownContainer}>
@@ -152,8 +211,12 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
             {showDropdown && (
               <ul className={styles.listGroup}>
                 {allServiceTypes
-                  .filter(st => st.serviceTypeName.toLowerCase().includes(searchTerm.toLowerCase()))
-                  .map(st => (
+                  .filter((st) =>
+                    st.serviceTypeName
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  )
+                  .map((st) => (
                     <li
                       key={st.serviceTypeId}
                       onClick={() => handleSelect(st)}
@@ -165,32 +228,53 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
               </ul>
             )}
           </div>
-          
+
           {/* Selected Service Types */}
           <div className={styles.selectedContainer}>
             <h5>Selected Service Types:</h5>
           </div>
           <div className={styles.selectedList}>
-            {selectedServiceTypes.map(st => (
+            {selectedServiceTypes.map((st) => (
               <div key={st.serviceTypeId} className={styles.badge}>
                 {st.serviceTypeName}
-                <span className={styles.removeIcon} onClick={() => handleDeselect(st)}>✖</span>
+                <span
+                  className={styles.removeIcon}
+                  onClick={() => handleDeselect(st)}
+                >
+                  ✖
+                </span>
               </div>
             ))}
           </div>
-          
+
           {/* Image upload */}
           <label>
             Image:
             <input type="file" onChange={handleFileChange} />
           </label>
-          {preview && <img src={preview} alt="Preview" className={styles.imagePreview} />}
-          
+          {preview && (
+            <img src={preview} alt="Preview" className={styles.imagePreview} />
+          )}
+
           {/* Action buttons */}
           <div className={styles.buttonGroup}>
-            <button type="submit" className={styles.submitButton}>Update</button>
-            <button type="button" className={styles.cancelButton} onClick={onClose}>Cancel</button>
-            <button type="button" className={styles.deleteButton} onClick={handleDelete}>Delete</button>
+            <button type="submit" className={styles.submitButton}>
+              Update
+            </button>
+            <button
+              type="button"
+              className={styles.cancelButton}
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className={styles.deleteButton}
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
           </div>
         </form>
       </div>

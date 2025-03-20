@@ -27,7 +27,6 @@ export function LoginForm() {
   const navigate = useNavigate();
   const { loading, error: reduxError } = useSelector((state) => state.auth);
 
-
   useEffect(() => {
     if (reduxError) {
       toast.error(reduxError.message || "An unexpected error occurred.");
@@ -107,25 +106,26 @@ export function LoginForm() {
         onChange={handleLoginDataChange}
         error={errors.password}
       />
-      
-      <div>
-      <a 
-      style={{
-            fontSize: "20px",
-            pointerEvents: loading ? "none" : "auto", // Ngăn nhấn khi loading
-            opacity: loading ? 0.5 : 1, // Làm mờ khi loading
-          }}
-      href="forgot-password" 
-      className={styles.forgotLink}>
-          Forgot Password
+
+      <div className={styles.forgotContainer}>
+        <a
+          href="forgot-password"
+          className={`${styles.forgotLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
+        >
+          <span>Forgot Password</span>
         </a>
       </div>
 
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>
-        <a 
-        style={{ pointerEvents: loading ? "none" : "auto", opacity: loading ? 0.5 : 1 }}
-        href="/terms" className={styles.termsLink}>
+        <a
+          href="/terms"
+          className={`${styles.termsLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
+        >
           terms and conditions
         </a>
         <span> of our center.</span>
@@ -143,7 +143,7 @@ export function LoginForm() {
             window.location.href = "/register";
           }
         }}
-        disabled={loading} 
+        disabled={loading}
       >
         Create Account
       </button>
