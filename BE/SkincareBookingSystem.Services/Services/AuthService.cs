@@ -156,6 +156,7 @@ public class AuthService : IAuthService
         // Tạo đối tượng ApplicationUser mới
         ApplicationUser newUser;
         newUser = _mapperService.Map<SignUpStaffDto, ApplicationUser>(signUpStaffDto);
+        newUser.EmailConfirmed = true;
 
         // Bắt đầu transaction qua UnitOfWork
         using (var transaction = await _unitOfWork.BeginTransactionAsync())
@@ -245,6 +246,7 @@ public class AuthService : IAuthService
         // Tạo đối tượng ApplicationUser mới
         ApplicationUser newUser;
         newUser = _mapperService.Map<SignUpSkinTherapistDto, ApplicationUser>(signUpSkinTherapistDto);
+        newUser.EmailConfirmed = true;
 
         using (var transaction = await _unitOfWork.BeginTransactionAsync())
         {
