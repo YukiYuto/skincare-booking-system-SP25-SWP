@@ -55,7 +55,7 @@ const Sidebar = ({ onExpandChange }) => {
     { path: '/', label: 'Home', icon: <HomeOutlined size={20} /> },
     { path: '/dashboard/revenue', label: 'Revenue', icon: <BarChart3 size={20} /> },
     { path: '/dashboard/customers', label: 'Customers', icon: <Users size={20} /> },
-    { path: '/dashboard/therapists', label: 'Skin Therapists', icon: <UserCog size={20} /> },
+    { path: '/dashboard/therapists', label: 'Employee', icon: <UserCog size={20} /> },
     { path: '/dashboard/services', label: 'Services', icon: <Scissors size={20} /> },
     { path: '/dashboard/orders', label: 'Orders', icon: <ShoppingCart size={20} /> },
     { path: '/dashboard/schedule', label: 'Schedule', icon: <Calendar size={20} /> },
