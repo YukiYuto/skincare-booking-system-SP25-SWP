@@ -9,6 +9,7 @@ import infoIcon from "../../../../assets/icon/infoIcon.svg";
 import addIcon from "../../../../assets/icon/addIcon.svg";
 import SkinTherapistDetail from "./SkinTherapistDetail";
 import TherapistAddModal from "./TherapistAddModal";
+import StaffAddModal from "../Staff/StaffAddModal";
 
 const SkinTherapists = () => {
   const [therapists, setTherapists] = useState([]);
@@ -82,13 +83,24 @@ const SkinTherapists = () => {
     <div className={styles.tabContainer}>
       <div className={styles.tabHeader}>
         <div className={styles.tabTitleContainer}>
-          <h2 className={styles.tabTitle}>Skin Therapists</h2>
-          <button
-            onClick={() => setModal({ type: "create" })}
-            className={styles.iconButton}
-          >
-            <img src={addIcon} alt="Add" />
-          </button>
+          <div className={styles.tabTitleGroup}>
+            <h2 className={styles.tabTitle}>Skin Therapists</h2>
+            <button
+              onClick={() => setModal({ type: "createt" })}
+              className={styles.iconButton}
+            >
+              <img src={addIcon} alt="Add Therapist" />
+            </button>
+          </div>
+          <div className={styles.tabTitleGroup}>
+            <h2 className={styles.tabTitle}>Staff</h2>
+            <button
+              onClick={() => setModal({ type: "creates" })}
+              className={styles.iconButton}
+            >
+              <img src={addIcon} alt="Add Staff" />
+            </button>
+          </div>
         </div>
       </div>
       {loading ? (
@@ -165,8 +177,15 @@ const SkinTherapists = () => {
         />
       )}
 
-      {modal.type === "create" && (
+      {modal.type === "createt" && (
         <TherapistAddModal
+          onClose={() => setModal({ type: null })}
+          refresh={fetchData}
+        />
+      )}
+
+      {modal.type === "creates" && (
+        <StaffAddModal
           onClose={() => setModal({ type: null })}
           refresh={fetchData}
         />
