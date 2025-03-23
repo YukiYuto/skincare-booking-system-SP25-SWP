@@ -100,6 +100,8 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotDeleted = "Failed to delete Blog";
             public const string NotUpdated = "Failed to update Blog";
             public const string NotRetrieved = "Failed to retrieve Blog(s)";
+            public const string NotAuthorized = "You are't allowed to go here";
+
         }
         /// <summary>
         /// Error messages related to TestQuestion

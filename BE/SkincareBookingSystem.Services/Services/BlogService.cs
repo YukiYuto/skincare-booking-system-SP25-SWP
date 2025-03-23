@@ -33,7 +33,7 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
-                        
+
             var createBlog = _autoMapperService.Map<CreateBlogDto, Blog>(createBlogDto);
             createBlog.CreatedBy = User.FindFirstValue("Fullname");
             createBlog.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
@@ -43,8 +43,27 @@ namespace SkincareBookingSystem.Services.Services
             {
                 await _unitOfWork.Blog.AddAsync(createBlog);
                 await _unitOfWork.SaveAsync();
+
+                // After saving, retrieve the blog with related entities
+                var createdBlog = await _unitOfWork.Blog.GetAsync(
+                    b => b.BlogId == createBlog.BlogId,
+                    includeProperties: $"{nameof(Blog.BlogCategory)},{nameof(Blog.ApplicationUser)}");
+
+                if (createdBlog == null)
+                {
+                    return ErrorResponse.Build(
+                        message: StaticResponseMessage.Blog.NotFound,
+                        statusCode: StaticOperationStatus.StatusCode.NotFound);
+                }
+
+                // Map to BlogDetailDto to include related data
+                var blogDto = _autoMapperService.Map<Blog, BlogDetailDto>(createdBlog);
+                return SuccessResponse.Build(
+                    message: StaticResponseMessage.Blog.Created,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: blogDto);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.Blog.NotCreated,
@@ -65,7 +84,8 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var deleteBlog = await _unitOfWork.Blog.GetAsync(b => b.BlogId == blogId);
+            var deleteBlog = await _unitOfWork.Blog.GetAsync(b => b.BlogId == blogId,
+                includeProperties: $"{nameof(Blog.BlogCategory)},{nameof(Blog.ApplicationUser)}");
             if (deleteBlog == null)
             {
                 return ErrorResponse.Build(
@@ -79,29 +99,54 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.BadRequest);
             }
 
+            if (deleteBlog.AuthorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Blog.NotAuthorized,
+                    statusCode: StaticOperationStatus.StatusCode.Forbidden);
+            }
+
             deleteBlog.Status = StaticOperationStatus.Blog.Deleted;
             deleteBlog.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
             deleteBlog.UpdatedBy = User.FindFirstValue("Fullname");
 
-            return (await SaveChangesAsync()) ?
-                SuccessResponse.Build(
+            //return (await SaveChangesAsync()) ?
+            //    SuccessResponse.Build(
+            //        message: StaticResponseMessage.Blog.Deleted,
+            //        statusCode: StaticOperationStatus.StatusCode.Ok,
+            //        result: deleteBlog)
+            //    :
+            //    ErrorResponse.Build(
+            //        message: StaticResponseMessage.Blog.NotDeleted,
+            //        statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            if (await SaveChangesAsync())
+            {
+                // Map the deleted blog to BlogDetailDto
+                var deletedBlogDto = _autoMapperService.Map<Blog, BlogDetailDto>(deleteBlog);
+
+                return SuccessResponse.Build(
                     message: StaticResponseMessage.Blog.Deleted,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: deleteBlog)
-                :
-                ErrorResponse.Build(
+                    result: deletedBlogDto);
+            }
+            else
+            {
+                return ErrorResponse.Build(
                     message: StaticResponseMessage.Blog.NotDeleted,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
         }
 
         public async Task<ResponseDto> GetAllBlog()
         {
-            var getAllBlog = await _unitOfWork.Blog.GetAllAsync(b => b.Status != StaticOperationStatus.Blog.Deleted);
+            var getAllBlog = await _unitOfWork.Blog.GetAllAsync(b => b.Status != StaticOperationStatus.Blog.Deleted,
+                includeProperties: $"{nameof(Blog.BlogCategory)},{nameof(Blog.ApplicationUser)}");
+            var blogDtos = _autoMapperService.Map<IEnumerable<Blog>, IEnumerable<BlogDetailDto>>(getAllBlog);
             return (getAllBlog.Any()) ?
                 SuccessResponse.Build(
                     message: StaticResponseMessage.Blog.RetrievedAll,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: getAllBlog)
+                    result: blogDtos)
                 :
                 SuccessResponse.Build(
                     message: StaticResponseMessage.Blog.NotFound,
@@ -118,7 +163,11 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var getBlogById = await _unitOfWork.Blog.GetAsync(b => b.BlogId == blogId && b.Status != StaticOperationStatus.Blog.Deleted);
+            var getBlogById = await _unitOfWork.Blog.GetAsync(b => b.BlogId == blogId 
+                && b.Status != StaticOperationStatus.Blog.Deleted,
+                includeProperties: $"{nameof(Blog.BlogCategory)},{nameof(Blog.ApplicationUser)}");
+            var blogDto = _autoMapperService.Map<Blog, BlogDetailDto>(getBlogById);
+
             return (getBlogById is null) ?
                 ErrorResponse.Build(
                     message: StaticResponseMessage.Blog.NotFound,
@@ -127,11 +176,45 @@ namespace SkincareBookingSystem.Services.Services
                 SuccessResponse.Build(
                     message: StaticResponseMessage.Blog.Retrieved,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: getBlogById);
+                    result: blogDto);
         }
 
         public async Task<ResponseDto> UpdateBlog(ClaimsPrincipal User, UpdateBlogDto updateBlogDto)
         {
+            //if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+            //{
+            //    return ErrorResponse.Build(
+            //        message: StaticResponseMessage.Blog.NotFound,
+            //        statusCode: StaticOperationStatus.StatusCode.NotFound);
+            //}
+
+            //var updateBlog = await _unitOfWork.Blog.GetAsync(b => b.BlogId == updateBlogDto.BlogId,
+            //    nameof(Blog.BlogCategory), nameof(Blog.ApplicationUser));
+
+            //if (updateBlog is null)
+            //{
+            //    return ErrorResponse.Build(
+            //        message: StaticResponseMessage.Blog.NotFound,
+            //        statusCode: StaticOperationStatus.StatusCode.NotFound);
+            //}
+
+            //var updatedData = _autoMapperService.Map<UpdateBlogDto, Blog>(updateBlogDto);
+            //updatedData.UpdatedBy = User.FindFirstValue("Fullname");
+            //updatedData.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
+            //updatedData.Status = StaticOperationStatus.Blog.Modified;
+
+            //_unitOfWork.Blog.Update(updateBlog, updatedData);
+
+            //return (await SaveChangesAsync()) ?
+            //    SuccessResponse.Build(
+            //        message: StaticResponseMessage.Blog.Updated,
+            //        statusCode: StaticOperationStatus.StatusCode.Ok,
+            //        result: updatedData)
+            //    :
+            //    ErrorResponse.Build(
+            //        message: StaticResponseMessage.Blog.NotUpdated,
+            //        statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+
             if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
                 return ErrorResponse.Build(
@@ -139,14 +222,24 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var updateBlog = await _unitOfWork.Blog.GetAsync(b => b.BlogId == updateBlogDto.BlogId);
+            // Retrieve the existing blog with related entities
+            var updateBlog = await _unitOfWork.Blog.GetAsync(
+                b => b.BlogId == updateBlogDto.BlogId,
+                includeProperties: $"{nameof(Blog.BlogCategory)},{nameof(Blog.ApplicationUser)}"); // Ensure these names match the properties
             if (updateBlog is null)
             {
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.Blog.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
-                       
+
+            if (updateBlog.AuthorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Blog.NotAuthorized,
+                    statusCode: StaticOperationStatus.StatusCode.Forbidden);
+            }
+
             var updatedData = _autoMapperService.Map<UpdateBlogDto, Blog>(updateBlogDto);
             updatedData.UpdatedBy = User.FindFirstValue("Fullname");
             updatedData.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
@@ -154,15 +247,32 @@ namespace SkincareBookingSystem.Services.Services
 
             _unitOfWork.Blog.Update(updateBlog, updatedData);
 
-            return (await SaveChangesAsync()) ?
-                SuccessResponse.Build(
+
+            //return (await SaveChangesAsync()) ?
+            //    SuccessResponse.Build(
+            //        message: StaticResponseMessage.Blog.Updated,
+            //        statusCode: StaticOperationStatus.StatusCode.Ok,
+            //        result: updateBlog)
+            //    :
+            //    ErrorResponse.Build(
+            //        message: StaticResponseMessage.Blog.NotUpdated,
+            //        statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            if (await SaveChangesAsync())
+            {
+                // Map the updated blog to BlogDetailDto
+                var updatedBlogDto = _autoMapperService.Map<Blog, BlogDetailDto>(updateBlog);
+
+                return SuccessResponse.Build(
                     message: StaticResponseMessage.Blog.Updated,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
-                    result: updatedData)
-                :
-                ErrorResponse.Build(
+                    result: updatedBlogDto);
+            }
+            else
+            {
+                return ErrorResponse.Build(
                     message: StaticResponseMessage.Blog.NotUpdated,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
         }
 
         private async Task<bool> SaveChangesAsync()
