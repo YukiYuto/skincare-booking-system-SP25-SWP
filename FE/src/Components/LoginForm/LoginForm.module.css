@@ -129,6 +129,17 @@
   font-weight: 500;
 }
 
+.unverifiedContainer {
+  font-size: large;
+}
+
+.unverifiedText {
+  color: rosybrown;
+  text-decoration: underline;
+  font-weight: 400;
+  cursor: pointer;
+}
+
 .disabledLink {
   pointer-events: none;
   opacity: 0.5;

@@ -4,11 +4,11 @@ import styles from "./RegisterForm.module.css";
 import { toast } from "react-toastify";
 import {
   validateEmail,
-  validatePasswordLength,
   validatePhoneNumber,
   validateAge,
   validateConfirmPassword,
   validateGender,
+  validatePassword,
 } from "../../utils/validationUtils";
 import { InputField } from "../InputField/InputField";
 
@@ -59,7 +59,7 @@ function RegisterForm() {
 
   const validateRegisterForm = () => {
     const emailError = validateEmail(registerData.email);
-    const passwordError = validatePasswordLength(registerData.password);
+    const passwordError = validatePassword(registerData.password);
     const confirmPasswordError = validateConfirmPassword(
       registerData.password,
       registerData.confirmPassword
@@ -110,8 +110,8 @@ function RegisterForm() {
 
     try {
       await register({
-        email: registerData.email,
-        password: registerData.password,
+        email: registerData.email.trim(),
+        password: registerData.password.trim(),
         confirmPassword: registerData.confirmPassword,
         phoneNumber: registerData.phoneNumber,
         fullName: formattedFullname,
@@ -126,7 +126,7 @@ function RegisterForm() {
         "Registration successful! Please check your email to verify your account."
       );
     } catch (error) {
-      console.error("Registration error:", error.message);
+      console.error("Registration error: ", error.message);
       toast.error(error.message || "Registration failed. Please try again.");
     } finally {
       setIsLoading(false);

@@ -180,5 +180,80 @@ namespace SkincareBookingSystem.Services.Services
                     Therapists = therapists
                 });
         }
+
+        public async Task<ResponseDto> GetOrderByCustomer(ClaimsPrincipal User)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null)
+                {
+                    return new ResponseDto()
+                    {
+                        Message = "User not found",
+                        IsSuccess = false,
+                        StatusCode = 404
+                    };
+                }
+
+                var customer = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId);
+                if (customer == null)
+                {
+                    return new ResponseDto()
+                    {
+                        Message = "Customer not found",
+                        IsSuccess = false,
+                        StatusCode = 404
+                    };
+                }
+
+                var orders = await _unitOfWork.Order.GetAllAsync(
+                    filter: o => o.CustomerId == customer.CustomerId,
+                    includeProperties: $"{nameof(Order.Transactions)}"
+                );
+
+                if (!orders.Any())
+                {
+                    return new ResponseDto()
+                    {
+                        Message = "No orders found",
+                        IsSuccess = true,
+                        StatusCode = 200,
+                        Result = new List<GetOrderByCustomerDto>()
+                    };
+                }
+
+                var orderDtos = orders.Select(o => new GetOrderByCustomerDto
+                {
+                    OrderId = o.OrderId,
+                    CreatedTime = o.CreatedTime ?? DateTime.MinValue,
+                    TotalAmount = (decimal)o.TotalPrice,
+                    Status = o.Status ?? string.Empty,
+                    Transaction = o.Transactions.FirstOrDefault() != null ? new TransactionInfo
+                    {
+                        TransactionId = o.Transactions.FirstOrDefault().TransactionId,
+                        Amount = (decimal)o.Transactions.First().Amount,
+                        TransactionTime = o.Transactions.First().TransactionDateTime
+                    } : null
+                }).OrderByDescending(o => o.CreatedTime).ToList();
+
+                return new ResponseDto()
+                {
+                    Message = "Orders retrieved successfully",
+                    IsSuccess = true,
+                    StatusCode = 200,
+                    Result = orderDtos
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto()
+                {
+                    Message = ex.Message,
+                    IsSuccess = false,
+                    StatusCode = 500
+                };
+            }
+        }
     }
 }

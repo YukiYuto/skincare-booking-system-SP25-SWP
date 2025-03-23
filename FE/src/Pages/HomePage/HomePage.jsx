@@ -44,11 +44,11 @@ function HomePage() {
           {/* Left Side - Text & Button */}
           <div className={styles.textContainer}>
             <h1 className={styles.title}>
-              Glow naturally with <br /> skinn care
+              Glow naturally with <br /> skincare therapy
             </h1>
             <p className={styles.description}>
               Our skincare line is crafted with pure, high-quality <br />{" "}
-              ingredients for visible results.
+              ingredients, and professional techniques to deliver visible results.
             </p>
             <Button type="primary" size="large" className={styles.button} onClick={handleBookingClick}>
               <img src={phone} alt="phone icon" className={styles.phoneIcon} />

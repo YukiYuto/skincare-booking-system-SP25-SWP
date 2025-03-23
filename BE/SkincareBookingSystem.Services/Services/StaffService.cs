@@ -100,6 +100,110 @@ public class StaffService : IStaffService
         };
     }
 
+    public async Task<ResponseDto> GetTodayAppointments
+    (
+        ClaimsPrincipal User,
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? filterQuery = null
+    )
+    {
+        try
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return new ResponseDto()
+                {
+                    Message = "User not found",
+                    IsSuccess = false,
+                    StatusCode = 404
+                };
+            }
+
+            var staff = await _unitOfWork.Staff.GetAsync(s => s.UserId == userId);
+            if (staff == null)
+            {
+                return new ResponseDto()
+                {
+                    Message = "You are not a staff",
+                    IsSuccess = false,
+                    StatusCode = 403
+                };
+            }
+
+            var today = DateOnly.FromDateTime(DateTime.UtcNow.AddHours(7));
+
+            var appointments = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => a.AppointmentDate == today,
+                includeProperties: $"{nameof(Appointments.TherapistSchedules)}," +
+                                   $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}," +
+                                   $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)}," +
+                                   $"{nameof(Appointments.Customer)}," +
+                                   $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)}"
+            );
+
+            if (!string.IsNullOrEmpty(filterQuery))
+            {
+                filterQuery = filterQuery.ToLower().Trim();
+                appointments = appointments.Where(a =>
+                    a.Customer.ApplicationUser.FullName.ToLower().Contains(filterQuery) ||
+                    a.TherapistSchedules.Any(ts =>
+                        ts.SkinTherapist.ApplicationUser.FullName.ToLower().Contains(filterQuery))
+                ).ToList();
+            }
+
+            var totalAppointments = appointments.Count();
+            var paginatedAppointments = appointments
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var appointmentDtos = paginatedAppointments.Select(a =>
+            {
+                var activeSchedule = a.TherapistSchedules?.FirstOrDefault
+                (
+                    ts => ts.ScheduleStatus != ScheduleStatus.Cancelled &&
+                          ts.ScheduleStatus != ScheduleStatus.Rescheduled
+                );
+
+                return new GetTodayAppointmentDto
+                {
+                    Therapist = activeSchedule?.SkinTherapist?.ApplicationUser?.FullName ?? "Not Assigned",
+                    Customer = a.Customer?.ApplicationUser?.FullName ?? "Unknown Customer",
+                    Time = activeSchedule?.Slot?.StartTime.ToString("HH:mm") ?? "Not Scheduled",
+                    Status = activeSchedule?.ScheduleStatus,
+                    AppointmentId = a.AppointmentId,
+                    CustomerId = a.CustomerId
+                };
+            }).ToList();
+
+            return new ResponseDto()
+            {
+                Result = new
+                {
+                    TotalAppointments = totalAppointments,
+                    TotalPages = (int)Math.Ceiling((double)totalAppointments / pageSize),
+                    PageSize = pageSize,
+                    CurrentPage = pageNumber,
+                    Appointments = appointmentDtos
+                },
+                Message = "Today's appointments retrieved successfully",
+                IsSuccess = true,
+                StatusCode = 200
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ResponseDto()
+            {
+                Message = ex.Message,
+                IsSuccess = false,
+                StatusCode = 500
+            };
+        }
+    }
+
     public async Task<ResponseDto> CheckInCustomer(ClaimsPrincipal User, CheckInDto checkInDto)
     {
         var customer = await _unitOfWork.Customer.GetAsync
@@ -169,7 +273,7 @@ public class StaffService : IStaffService
             };
         }
 
-        var appointment = await _unitOfWork.Appointments.GetAsync(a => 
+        var appointment = await _unitOfWork.Appointments.GetAsync(a =>
             a.AppointmentId == checkOutDto.AppointmentId &&
             a.CustomerId == checkOutDto.CustomerId &&
             a.Status == StaticOperationStatus.Appointment.CheckedIn);
@@ -177,25 +281,49 @@ public class StaffService : IStaffService
         {
             return new ResponseDto()
             {
-                Message = "Customer has no appointment",
+                Message = "Customer has no active appointment or appointment not found",
                 IsSuccess = false,
-                StatusCode = 200
+                StatusCode = 404
             };
         }
 
-        if (appointment.CheckInTime != null)
+        var therapistSchedule = await _unitOfWork.TherapistSchedule.GetAsync
+            (tc => tc.AppointmentId == checkOutDto.AppointmentId && tc.ScheduleStatus == ScheduleStatus.Completed);
+        if (therapistSchedule == null)
         {
             return new ResponseDto()
             {
-                Message = "Customer already checked in",
-                IsSuccess = true,
-                StatusCode = 200
+                Message = "Therapist has not completed the service yet",
+                IsSuccess = false,
+                StatusCode = 400
             };
         }
-        
-        var therapistCompleted = _unitOfWork.TherapistSchedule.GetAsync
-            (tc => tc.AppointmentId == checkOutDto.AppointmentId && tc.ScheduleStatus == ScheduleStatus.Completed);
 
-        return null;
+        if (appointment.CheckOutTime != null)
+        {
+            return new ResponseDto()
+            {
+                Message = "Customer already checked out",
+                IsSuccess = false,
+                StatusCode = 400
+            };
+        }
+
+        appointment.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        appointment.CheckOutTime = DateTime.UtcNow.AddHours(7);
+        appointment.Status = StaticOperationStatus.Appointment.Completed;
+
+        _unitOfWork.Appointments.UpdateStatus(appointment);
+        await _unitOfWork.SaveAsync();
+
+        var checkOut = _autoMapperService.Map<Appointments, CheckInSuccessfulDto>(appointment);
+
+        return new ResponseDto()
+        {
+            Message = "Customer checked out successfully",
+            IsSuccess = true,
+            StatusCode = 200,
+            Result = checkOut
+        };
     }
 }

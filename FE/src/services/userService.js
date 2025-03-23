@@ -1,5 +1,5 @@
 import { apiCall } from '../utils/apiUtils';
-import { USER_API, HTTP_METHODS } from '../config/apiConfig';
+import { HTTP_METHODS, USER_PROFILE_API, GET_CUSTOMER_PROFILE_API } from '../config/apiConfig';
 
 
 /**
@@ -10,5 +10,13 @@ import { USER_API, HTTP_METHODS } from '../config/apiConfig';
 
 // TODO: In the components that need to use this function, use Redux to get the user ID from the store
 export const getUserDataById = async (userId) => {
-    return await apiCall(HTTP_METHODS.GET, `${USER_API}/${userId}`);
+    return await apiCall(HTTP_METHODS.GET, `${USER_PROFILE_API}/${userId}`);
+}
+
+export const updateUserProfile = async (updateProfileData) => {
+    try {
+        return await apiCall(HTTP_METHODS.PUT, GET_CUSTOMER_PROFILE_API, updateProfileData);
+    } catch (error) {
+        throw new Error(error.message || "Failed to update user");
+    }
 }
