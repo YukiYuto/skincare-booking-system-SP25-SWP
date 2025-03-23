@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { POST_THERAPIST_API } from "../../../../config/apiConfig";
 import styles from "./TherapistAddModal.module.css";
+import RPG from "../../RandomPasswordGenerator/RPG";
 
 const TherapistAddModal = ({ onClose, refresh }) => {
   const [formState, setFormState] = useState({
@@ -22,6 +23,15 @@ const TherapistAddModal = ({ onClose, refresh }) => {
   const handleChange = (e) =>
     setFormState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  // Handle password generation
+  const handlePasswordGenerate = (newPassword) => {
+    setFormState((prev) => ({
+      ...prev,
+      password: newPassword,
+      confirmPassword: newPassword, // Auto-fill confirm password
+    }));
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,16 +49,20 @@ const TherapistAddModal = ({ onClose, refresh }) => {
     }
   };
 
+  const handleClickOutside = (e) => {
+    if (e.target.className.includes(styles.modal)) {
+      onClose();
+    }
+  };
+
   return (
-    <div className={styles.modal}>
+    <div className={styles.modal} onClick={handleClickOutside}>
       <div className={styles.modalContent}>
         <h2>Add New Therapist</h2>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
           {/* Form Fields */}
           {[
             "email",
-            "password",
-            "confirmPassword",
             "phoneNumber",
             "fullName",
             "address",
@@ -68,8 +82,13 @@ const TherapistAddModal = ({ onClose, refresh }) => {
               />
             </label>
           ))}
-          <label>
-            Gender:
+
+          {/* Random Password Generator */}
+          <div className="flexContainer">
+            <label>
+              Password:
+              <RPG onChange={handlePasswordGenerate} />
+            </label>
             <div className={styles.radioGroup}>
               <label>
                 <input
@@ -79,7 +98,7 @@ const TherapistAddModal = ({ onClose, refresh }) => {
                   checked={formState.gender === "Female"}
                   onChange={handleChange}
                 />
-                Female
+                <p>Female</p>
               </label>
               <label>
                 <input
@@ -89,10 +108,10 @@ const TherapistAddModal = ({ onClose, refresh }) => {
                   checked={formState.gender === "Male"}
                   onChange={handleChange}
                 />
-                Male
+                <p>Male</p>
               </label>
             </div>
-          </label>
+          </div>
 
           {/* Submit & Cancel */}
           <div className={styles.buttonGroup}>

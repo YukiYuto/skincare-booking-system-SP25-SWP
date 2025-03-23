@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { POST_STAFF_API } from "../../../../config/apiConfig";
 import styles from "./StaffAddModal.module.css";
+import RPG from "../../RandomPasswordGenerator/RPG";
 
 const StaffAddModal = ({ onClose, refresh }) => {
   const [formState, setFormState] = useState({
@@ -21,6 +22,15 @@ const StaffAddModal = ({ onClose, refresh }) => {
   const handleChange = (e) =>
     setFormState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  // Handle password generation
+  const handlePasswordGenerate = (newPassword) => {
+    setFormState((prev) => ({
+      ...prev,
+      password: newPassword,
+      confirmPassword: newPassword, // Auto-fill confirm password
+    }));
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,34 +45,39 @@ const StaffAddModal = ({ onClose, refresh }) => {
     }
   };
 
+  const handleClickOutside = (e) => {
+    if (e.target.className.includes(styles.modal)) {
+      onClose();
+    }
+  };
+
   return (
-    <div className={styles.modal}>
+    <div className={styles.modal} onClick={handleClickOutside}>
       <div className={styles.modalContent}>
         <h2>Add New Staff</h2>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
           {/* Form Fields */}
-          {[
-            "email",
-            "password",
-            "confirmPassword",
-            "phoneNumber",
-            "fullName",
-            "address",
-            "age",
-          ].map((name) => (
-            <label key={name}>
-              {name.charAt(0).toUpperCase() + name.slice(1)}:
-              <input
-                type={name === "age" ? "number" : "text"}
-                name={name}
-                value={formState[name]}
-                onChange={handleChange}
-                required
-              />
+          {["email", "phoneNumber", "fullName", "address", "age"].map(
+            (name) => (
+              <label key={name}>
+                {name.charAt(0).toUpperCase() + name.slice(1)}:
+                <input
+                  type={name === "age" ? "number" : "text"}
+                  name={name}
+                  value={formState[name]}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            )
+          )}
+
+          {/* Random Password Generator */}
+          <div className="flexContainer">
+            <label>
+              Password:
+              <RPG onChange={handlePasswordGenerate} />
             </label>
-          ))}
-          <label>
-            Gender:
             <div className={styles.radioGroup}>
               <label>
                 <input
@@ -72,7 +87,7 @@ const StaffAddModal = ({ onClose, refresh }) => {
                   checked={formState.gender === "Female"}
                   onChange={handleChange}
                 />
-                Female
+                <p>Female</p>
               </label>
               <label>
                 <input
@@ -82,10 +97,10 @@ const StaffAddModal = ({ onClose, refresh }) => {
                   checked={formState.gender === "Male"}
                   onChange={handleChange}
                 />
-                Male
+                <p>Male</p>
               </label>
             </div>
-          </label>
+          </div>
 
           {/* Submit & Cancel */}
           <div className={styles.buttonGroup}>

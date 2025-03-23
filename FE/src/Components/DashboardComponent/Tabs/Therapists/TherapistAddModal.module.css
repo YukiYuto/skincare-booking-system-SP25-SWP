@@ -7,6 +7,8 @@
     background: rgba(0, 0, 0, 0.5);
     padding: 20px;
     z-index: 1000;
+    cursor: pointer;
+    /* Add this line */
 }
 
 .modalContent {
@@ -19,6 +21,8 @@
     max-height: 90vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
+    cursor: auto;
+    /* Add this line */
 }
 
 .formContainer {
@@ -29,8 +33,13 @@
 
 .radioGroup {
     display: flex;
-    gap: 10px;
-    margin-top: 5px;
+    margin-top: 40px;
+}
+
+.radioGroup label {
+    display: flex;
+    margin-right: 40px;
+    padding: 10px;
 }
 
 .buttonGroup {
@@ -56,5 +65,17 @@
 
 .submitButton:hover,
 .btn:hover {
+    background: var(--accent-color);
+}
+
+.cancelButton {
+    background: var(--text-color);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.cancelButton:hover {
     background: var(--accent-color);
 }
