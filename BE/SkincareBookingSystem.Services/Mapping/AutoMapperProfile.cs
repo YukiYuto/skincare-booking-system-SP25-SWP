@@ -221,8 +221,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
         CreateMap<TherapistSchedule, GetTherapistScheduleDto>()
             .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
-            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
-            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId))
+            .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Appointment.AppointmentDate));
 
         //Order
         CreateMap<CreateOrderDto, Order>()
