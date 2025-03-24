@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { GET_BLOG, POST_BLOG } from "../../../../config/apiConfig";
+import { GET_BLOG, POST_BLOG, POST_CUSTOMER_AVATAR_API } from "../../../../config/apiConfig";
 
 
 const BlogContentList = () => {
@@ -14,6 +14,8 @@ const BlogContentList = () => {
   const [loading, setLoading] = useState(true);
   const [newBlog, setNewBlog] = useState({ title: "", content: "", tags: "" });
   const [showModal, setShowModal] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   
   const { user, accessToken } = useSelector((state) => state.auth);
 
@@ -32,18 +34,63 @@ const BlogContentList = () => {
 
       setBlogs(filteredBlogs);
     } catch (error) {
-      toast.error("❌ Error: " + (error.response?.data?.message || error.message));
+      toast.error("Error: " + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
   };
 
+  const handleImageUpload = async () => {
+    if (!imageFile) {
+      toast.error("Please select an image!");
+      return null;
+    }
+  
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", imageFile); 
+  
+    try {
+      const response = await axios.post(
+        POST_CUSTOMER_AVATAR_API,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      
+      if (response.data && response.data.result) {
+        return response.data.result; 
+      } else {
+        toast.error("Upload failed: No image URL returned!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Image upload failed: " + (error.response?.data?.message || error.message));
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+  
+  
+
   const handleCreateBlog = async () => {
     if (!newBlog.title || !newBlog.content || !newBlog.tags) {
-      toast.error(" Please fill in all fields!");
+      toast.error("Please fill in all fields!");
       return;
     }
-
+  
+    const imageUrl = await handleImageUpload(); 
+    if (!imageUrl) {
+      toast.error("Image upload failed. Please try again!");
+      return;
+    }
+  
     try {
       await axios.post(
         POST_BLOG,
@@ -53,6 +100,7 @@ const BlogContentList = () => {
           blogCategoryId: blogCategoryId,
           userId: user.id,
           tags: newBlog.tags,
+          imageUrl, 
         },
         {
           headers: {
@@ -61,15 +109,19 @@ const BlogContentList = () => {
           },
         }
       );
-      
+  
       toast.success("Blog created successfully!");
       setNewBlog({ title: "", content: "", tags: "" });
+      setImageFile(null);
       setShowModal(false);
       fetchBlogs();
     } catch (error) {
-      toast.error(" Failed to create blog: " + (error.response?.data?.message || error.message));
+      console.error("Create blog error:", error);
+      toast.error("Failed to create blog: " + (error.response?.data?.message || error.message));
     }
   };
+  
+  
 
   return (
     <div className="min-h-screen bg-gray-100 py-16 px-10 md:px-32">
@@ -91,6 +143,16 @@ const BlogContentList = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl w-full">
             <h3 className="text-3xl font-bold text-gray-800 mb-4">📝 Create New Blog</h3>
+            <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImageFile(e.target.files[0])}
+                className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md text-lg"
+                />
+                {uploading && <p className="text-red-500 text-lg">Uploading image...</p>}
+
+
+
             <input
               type="text"
               placeholder="Enter blog title"

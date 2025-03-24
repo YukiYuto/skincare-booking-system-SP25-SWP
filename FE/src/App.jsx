@@ -34,9 +34,9 @@ import AppointmentPage from "./Pages/Appointment/AppointmentPage";
 import ViewBlogCategory from "./Components/DashboardComponent/Tabs/BlogCategory/ViewBlogCategory";
 import BlogContentList from "./Components/DashboardComponent/Tabs/BlogContent/BlogContentList";
 import BlogForCus from "./Components/BlogForCus/BlogForCus";
-import BlogForCusList from "./Components/BlogForCusList/BlogForCusList";
+import BlogForCusList from "./Components/BlogForCus/BlogForCusList/BlogForCusList";
 import StaffBlogManagement from "./Pages/Staff/StaffBlogManagement/StaffBlogManagement";
-import StaffBlogContent from "./Components/StaffBlog/StaffBlogContent";
+import StaffBlogDetail from "./Pages/Staff/StaffBlogDetail/StaffBlogDetail";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -52,7 +52,8 @@ const AppRoutes = () => {
       <Route path="therapist" element={<TherapistCard />} />
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="blogs" element={<BlogForCus />} />
-      <Route path="blogs/:blogCategoryId" element={<BlogForCusList />} />
+      <Route path="blogs/:categoryName?" element={<BlogForCus />} />
+      <Route path="blogs-detail/:title" element={<BlogForCusList />} /> 
       <Route path="error" element={<ErrorPage />} />
       {!accessToken && (
         <>
@@ -96,7 +97,8 @@ const AppRoutes = () => {
               <Route path="staff-management" element={<StaffManagement />} />
               <Route path="schedule-management" element={<ScheduleManagement />} />
               <Route path="staff-blogs" element={<StaffBlogManagement />} />
-              <Route path="staff-blogs/:blogCategoryId" element={<StaffBlogContent />} />
+              <Route path="staff-blogs/:categoryName?" element={<StaffBlogManagement />} />
+              <Route path="detail/:title" element={<StaffBlogDetail />} /> 
             </>
           )}
           {roles.includes("SKINTHERAPIST") && (

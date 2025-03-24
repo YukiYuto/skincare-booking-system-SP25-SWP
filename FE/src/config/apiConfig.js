@@ -131,6 +131,7 @@ export const UPDATE_BLOG_CATEGORY = `${BASE_URL}/BlogCategory/update`;
 export const GET_BLOG = `${BASE_URL}/blogs/all`;
 export const POST_BLOG = `${BASE_URL}/blogs/create`
 export const UPDATE_BLOG = `${BASE_URL}/blogs/update`;
+export const DELETE_BLOG = `${BASE_URL}/blogs/delete`;
   
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
 export const AUTH_HEADERS = (token) => ({
