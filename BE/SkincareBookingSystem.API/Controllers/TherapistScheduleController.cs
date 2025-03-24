@@ -45,7 +45,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("{scheduleId:guid}")]
-        [SwaggerOperation(Summary = "API gets a therapist schedule by id", Description = "Requires admin role")]
+        //[SwaggerOperation(Summary = "API gets a therapist schedule by id", Description = "Requires admin role")]
         public async Task<ActionResult<ResponseDto>> GetTherapistScheduleById(Guid scheduleId)
         {
             var result = await _bookingScheduleService.GetTherapistScheduleById(User, scheduleId);
@@ -53,10 +53,10 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("therapist/{therapistId:guid}")]
-        [SwaggerOperation(Summary = "API gets therapist schedules by therapist id", Description = "Requires staff role")]
-        public async Task<ActionResult<ResponseDto>> GetTherapistScheduleByTherapistIdAsync(Guid therapistId)
+        //[SwaggerOperation(Summary = "API gets therapist schedules by therapist id", Description = "Requires staff role")]
+        public async Task<ActionResult<ResponseDto>> GetTherapistScheduleByTherapistId(Guid therapistId)
         {
-            var result = await _bookingScheduleService.GetTherapistScheduleByTherapistIdAsync(therapistId);
+            var result = await _bookingScheduleService.GetTherapistScheduleByTherapistId(User, therapistId);
             return StatusCode(result.StatusCode, result);
         }
 
