@@ -10,5 +10,7 @@ namespace SkincareBookingSystem.DataAccess.IRepositories
     public interface IBlogRepository : IRepository<Blog>
     {
         void Update(Blog target, Blog source);
+        //Task<Blog> GetAsync(Func<Blog, bool> filter, params string[] includeProperties);
+        //Task<IEnumerable<Blog>> GetAllAsync(Func<Blog, bool> filter, params string[] includeProperties);
     }
 }

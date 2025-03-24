@@ -186,6 +186,14 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
             .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.BlogCategoryId));
+        CreateMap<Blog, BlogDetailDto>()
+                .ForMember(dest => dest.BlogCategoryName, opt => opt.MapFrom(src => src.BlogCategory.Name))
+                .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
+                .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => src.UpdatedBy))
+                .ForMember(dest => dest.UpdatedTime, opt => opt.MapFrom(src => src.UpdatedTime))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
 
         // BookingService.BundleOrder - Order response to avoid cyclic references when returned
         CreateMap<Order, OrderDto>()
