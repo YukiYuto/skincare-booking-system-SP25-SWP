@@ -67,8 +67,24 @@ const OrderTable = () => {
   const sortedOrders = useMemo(() => {
     return [...orders].sort((a, b) => {
       if (!sortConfig.key) return 0;
-      let valueA = a[sortConfig.key];
-      let valueB = b[sortConfig.key];
+
+      let valueA, valueB;
+      if (sortConfig.key === "customername") {
+        valueA = getCustomerName(a.customerId);
+        valueB = getCustomerName(b.customerId);
+      } else if (sortConfig.key === "totalprice") {
+        valueA = a.totalPrice;
+        valueB = b.totalPrice;
+      } else if (sortConfig.key === "ordernumber") {
+        valueA = a.orderNumber;
+        valueB = b.orderNumber;
+      } else if (sortConfig.key === "createdtime") {
+        valueA = a.createdTime;
+        valueB = b.createdTime;
+      } else {
+        valueA = a[sortConfig.key];
+        valueB = b[sortConfig.key];
+      }
 
       if (typeof valueA === "string") valueA = valueA.toLowerCase();
       if (typeof valueB === "string") valueB = valueB.toLowerCase();
@@ -113,11 +129,11 @@ const OrderTable = () => {
             <thead>
               <tr>
                 {[
-                  "Customer Name",
                   "Order Number",
+                  "Customer Name",
                   "Total Price",
                   "Created Time",
-                  "Actions",
+                  "Status",
                 ].map((key) => (
                   <th
                     key={key}
@@ -135,22 +151,15 @@ const OrderTable = () => {
             <tbody>
               {sortedOrders.map((order) => (
                 <tr key={order.orderId}>
-                  <td>{getCustomerName(order.customerId)}</td>
                   <td>{order.orderNumber}</td>
+                  <td>{getCustomerName(order.customerId)}</td>
                   <td className={styles.rightAlign}>
                     {order.totalPrice > 0
                       ? formatPrice(order.totalPrice)
                       : "0 đ"}
                   </td>
                   <td>{formatDate(order.createdTime)}</td>
-                  <td>
-                    <button
-                      onClick={() => setModal({ type: "edit", data: order })}
-                      className={styles.iconButton}
-                    >
-                      Edit
-                    </button>
-                  </td>
+                  <td>{order.status}</td>
                 </tr>
               ))}
             </tbody>
