@@ -160,8 +160,16 @@ public class PaymentService : IPaymentService
             var serviceDict = order.OrderDetails.Where(od => od.Services != null).Select(od => od.Services)
                 .ToDictionary(s => s.ServiceId);
 
-            var serviceComboDict = order.OrderDetails.Where(od => od.ServiceCombo != null).Select(od => od.ServiceCombo)
+            // var serviceComboDict = order.OrderDetails.Where(od => od.ServiceCombo != null).Select(od => od.ServiceCombo)
+            //     .ToDictionary(sc => sc.ServiceComboId);*/
+            //
+            
+            var serviceComboDict = order.OrderDetails
+                .Where(od => od.ServiceCombo != null)
+                .Select(od => od.ServiceCombo)
+                .DistinctBy(sc => sc.ServiceComboId)
                 .ToDictionary(sc => sc.ServiceComboId);
+
 
             var groupedItems = order.OrderDetails.SelectMany(od =>
             {
@@ -175,6 +183,7 @@ public class PaymentService : IPaymentService
                         Convert.ToInt32(service.Price)
                     ));
 
+                /*
                 // Xử lý ServiceCombo
                 if (od.ServiceComboId != null &&
                     serviceComboDict.TryGetValue(od.ServiceComboId.Value, out var serviceCombo))
@@ -183,6 +192,7 @@ public class PaymentService : IPaymentService
                         1,
                         Convert.ToInt32(serviceCombo.Price)
                     ));
+                    */
 
                 return items;
             }).ToList();

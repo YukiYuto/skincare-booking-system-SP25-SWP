@@ -100,6 +100,8 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotDeleted = "Failed to delete Blog";
             public const string NotUpdated = "Failed to update Blog";
             public const string NotRetrieved = "Failed to retrieve Blog(s)";
+            public const string NotAuthorized = "You are't allowed to go here";
+
         }
         /// <summary>
         /// Error messages related to TestQuestion
@@ -179,6 +181,8 @@ namespace SkincareBookingSystem.Utilities.Constants
         public static class Service
         {
             public const string NotFound = "Service not found";
+            public const string NoSimilarServices = "No similar service found";
+            public const string SimilarServicesRetrieved = "Similar services retrieved successfully";
         }
         public static class Slot
         {

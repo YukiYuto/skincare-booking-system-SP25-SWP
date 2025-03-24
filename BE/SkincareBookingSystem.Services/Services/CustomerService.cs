@@ -22,7 +22,8 @@ namespace SkincareBookingSystem.Services.Services
         private readonly IAutoMapperService _autoMapperService;
         private readonly ICustomerRepository _customerRepository;
 
-        public CustomerService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService, ICustomerRepository customerRepository)
+        public CustomerService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService,
+            ICustomerRepository customerRepository)
         {
             _unitOfWork = unitOfWork;
             _autoMapperService = autoMapperService;
@@ -36,14 +37,14 @@ namespace SkincareBookingSystem.Services.Services
 
             var customersDto = _autoMapperService.MapCollection<Customer, GetCustomerDto>(customersFromDb);
 
-            return (customersFromDb.Any()) ?
-                SuccessResponse.Build(
-                message: StaticOperationStatus.Customer.Found,
-                statusCode: StaticOperationStatus.StatusCode.Ok,
-                result: customersDto) :
-                ErrorResponse.Build(
-                message: StaticOperationStatus.Customer.NotFound,
-                statusCode: StaticOperationStatus.StatusCode.NotFound);
+            return (customersFromDb.Any())
+                ? SuccessResponse.Build(
+                    message: StaticOperationStatus.Customer.Found,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: customersDto)
+                : ErrorResponse.Build(
+                    message: StaticOperationStatus.Customer.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
         }
 
         public async Task<ResponseDto> GetCustomerDetailsById(ClaimsPrincipal user, Guid customerId)
@@ -100,38 +101,159 @@ namespace SkincareBookingSystem.Services.Services
                 result: customerFromDb.CustomerId);
         }
 
-        public async Task<ResponseDto> GetCustomerInfoByEmailAsync(string email)
+        public async Task<ResponseDto> GetCustomerTimeTable(ClaimsPrincipal User)
         {
-            var customer = await _customerRepository.GetCustomerByEmailAsync(email, "ApplicationUser");
-            if (customer == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.Customer.NotFound,
+                    message: StaticOperationStatus.User.UserNotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var customerDto = _autoMapperService.Map<Customer, GetCustomerInfoDto>(customer);
+            ;
+
+            var customerFromDb = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId);
+            if (customerFromDb is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Customer.Invalid,
+                    statusCode: StaticOperationStatus.StatusCode.BadRequest);
+            }
+
+            ;
+
+            var appointmentsFromCustomer = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => a.CustomerId == customerFromDb.CustomerId,
+                includeProperties: $"{nameof(Appointments.TherapistSchedules)}." +
+                                   $"{nameof(TherapistSchedule.SkinTherapist)}." +
+                                   $"{nameof(SkinTherapist.ApplicationUser)}," +
+                                   $"{nameof(Appointments.Order)}." +
+                                   $"{nameof(Order.OrderDetails)}." +
+                                   $"{nameof(OrderDetail.Services)}." +
+                                   $"{nameof(Models.Domain.Services.TypeItems)}"
+            );
+            if (appointmentsFromCustomer is null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Appointment.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            };
+
+            var appointmentsDto = appointmentsFromCustomer.Select(a => new
+            {
+                AppointmentId = a.AppointmentId,
+                AppointmentDate = a.AppointmentDate,
+                AppointmentTime = a.AppointmentTime,
+                ScheduleStatus = a.TherapistSchedules.FirstOrDefault()?.ScheduleStatus ?? ScheduleStatus.Pending,
+                SlotId = a.TherapistSchedules.FirstOrDefault()?.SlotId,
+            }).Distinct().ToList();
+
+            var services = appointmentsFromCustomer.SelectMany(
+                    a => a.Order.OrderDetails.Select(od => od.Services))
+                .Where(s => s is not null)
+                .Distinct()
+                .ToList();
+            var serviceTypeIds = services.SelectMany(
+                s => s.TypeItems.Select(ti => ti.ServiceTypeId))
+                .Distinct()
+                .ToList();
+
+            var therapistsFromDb = await _unitOfWork.SkinTherapist.GetAllAsync(
+                filter: s => s.TherapistServiceTypes.Any(
+                    tst => serviceTypeIds.Contains(tst.ServiceTypeId)),
+                includeProperties: $"{nameof(SkinTherapist.TherapistServiceTypes)},{nameof(ApplicationUser)}");
+
+            var therapists = therapistsFromDb.Select(t => new
+                {
+                    TherapistId = t.SkinTherapistId,
+                    TherapistName = t.ApplicationUser.FullName,
+                }).Distinct().ToList();
+
+
             return SuccessResponse.Build(
-                message: StaticResponseMessage.Customer.Retrieved, 
-                statusCode: StaticOperationStatus.StatusCode.Ok, 
-                result: customerDto);
+                message: "Customer's timetable found",
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: new
+                {
+                    Appointments = appointmentsDto,
+                    Therapists = therapists
+                });
         }
 
-        public async Task<ResponseDto> GetCustomerInfoByPhoneNumberAsync(string phoneNumber)
+        public async Task<ResponseDto> GetOrderByCustomer(ClaimsPrincipal User)
         {
-            var customer = await _customerRepository.GetCustomerByPhoneNumberAsync(phoneNumber, "ApplicationUser");
-            if (customer == null)
+            try
             {
-                return ErrorResponse.Build(
-                    message: StaticResponseMessage.Customer.NotFound,
-                    statusCode: StaticOperationStatus.StatusCode.NotFound);
-            }
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null)
+                {
+                    return new ResponseDto()
+                    {
+                        Message = "User not found",
+                        IsSuccess = false,
+                        StatusCode = 404
+                    };
+                }
 
-            var customerDto = _autoMapperService.Map<Customer, GetCustomerInfoDto>(customer);
-            return SuccessResponse.Build(
-                message: StaticResponseMessage.Customer.Retrieved,
-                statusCode: StaticOperationStatus.StatusCode.Ok,
-                result: customerDto);
+                var customer = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId);
+                if (customer == null)
+                {
+                    return new ResponseDto()
+                    {
+                        Message = "Customer not found",
+                        IsSuccess = false,
+                        StatusCode = 404
+                    };
+                }
+
+                var orders = await _unitOfWork.Order.GetAllAsync(
+                    filter: o => o.CustomerId == customer.CustomerId,
+                    includeProperties: $"{nameof(Order.Transactions)}"
+                );
+
+                if (!orders.Any())
+                {
+                    return new ResponseDto()
+                    {
+                        Message = "No orders found",
+                        IsSuccess = true,
+                        StatusCode = 200,
+                        Result = new List<GetOrderByCustomerDto>()
+                    };
+                }
+
+                var orderDtos = orders.Select(o => new GetOrderByCustomerDto
+                {
+                    OrderId = o.OrderId,
+                    CreatedTime = o.CreatedTime ?? DateTime.MinValue,
+                    TotalAmount = (decimal)o.TotalPrice,
+                    Status = o.Status ?? string.Empty,
+                    Transaction = o.Transactions.FirstOrDefault() != null ? new TransactionInfo
+                    {
+                        TransactionId = o.Transactions.FirstOrDefault().TransactionId,
+                        Amount = (decimal)o.Transactions.First().Amount,
+                        TransactionTime = o.Transactions.First().TransactionDateTime
+                    } : null
+                }).OrderByDescending(o => o.CreatedTime).ToList();
+
+                return new ResponseDto()
+                {
+                    Message = "Orders retrieved successfully",
+                    IsSuccess = true,
+                    StatusCode = 200,
+                    Result = orderDtos
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto()
+                {
+                    Message = ex.Message,
+                    IsSuccess = false,
+                    StatusCode = 500
+                };
+            }
         }
     }
 }

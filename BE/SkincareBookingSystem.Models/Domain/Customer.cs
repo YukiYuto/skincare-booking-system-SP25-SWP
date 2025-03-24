@@ -16,5 +16,6 @@ namespace SkincareBookingSystem.Models.Domain
         
         public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
         public virtual ICollection<CustomerSkinTest> CustomerSkinTests { get; set; } = new List<CustomerSkinTest>();
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

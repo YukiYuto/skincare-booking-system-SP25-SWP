@@ -2,12 +2,14 @@
 
 public static class StaticOperationStatus
 {
+    
     public static class OrderServiceTracking
     {
         public const string Pending = "PENDING";
         public const string Locked = "LOCKED";
         public const string InProgress = "INPROGRESS";
         public const string Completed = "COMPLETED";
+        public const string NotFound = "Order service tracking not found";
     }
 
     public static class Appointment
@@ -18,6 +20,8 @@ public static class StaticOperationStatus
         public const string Completed = "COMPLETED";
         public const string Rescheduled = "RESCHEDULED";
         public const string Deleted = "DELETED";
+        public const string NotFound = "Appointment not found";
+        public const string CheckedIn = "CHECKEDIN";
     }
 
     public static class BaseEntity
@@ -98,6 +102,7 @@ public static class StaticOperationStatus
     {
         public const string NotFound = "Skin therapist(s) not found";
         public const string Found = "Skin therapist(s) found";
+        public const string Do_not = "Skin therapist do not do this appoinment";
     }
 
     public static class Slot
@@ -163,11 +168,8 @@ public static class StaticOperationStatus
     // Constants related to Blog
     public static class Blog
     {
-        public const string Drafting = "DRAFTING..."; // Blog đang trong giai đoạn thai nghén, chưa công khai
-        public const string Pending_review = "PENDING..."; // Blog đang chờ kiểm duyệt
-        public const string Approved = "APPROVED"; // Blog đã được kiểm duyệt và sẵn sàng công khai
         public const string Published = "PUBLISHED"; // Blog đã được lưu lại và công khai
-        public const string Archieved = "ARCHIEVED"; // Blog đã được lưu lại nhưng không công khai
+        public const string Modified = "MODIFIED"; // Blog đã bị chỉnh sửa
         public const string Deleted = "DELETED"; // Xóa Blog
     }
 

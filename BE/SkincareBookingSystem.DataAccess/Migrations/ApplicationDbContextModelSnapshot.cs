@@ -272,7 +272,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Admin St",
                             Age = 30,
-                            ConcurrencyStamp = "df3a7ba3-91e9-46f4-b626-fe22fa715e2a",
+                            ConcurrencyStamp = "10f38a09-c6c0-430e-ba54-55057c10709f",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Admin",
@@ -280,10 +280,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENWXuKtc7eXD5yzHmqyOAqyo71pD7CUu1FeLjmWsbIRrD2nJmTrWe127OwMVB9HfMw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGbTa4HJ18fchgdzNg/Txp9oIWxsI7ww0MjeEsVIq2rmEr/YpkFkpLhGGbZ3qKkDFw==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "be98cb36-7526-4e29-b055-fc4a567ccf64",
+                            SecurityStamp = "b6bf7c40-93e9-467a-b887-518955b5f622",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         },
@@ -293,7 +293,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Manager St",
                             Age = 30,
-                            ConcurrencyStamp = "c347f041-a582-4f59-9fd3-2176daaa63ec",
+                            ConcurrencyStamp = "499f9d0a-b3b2-4d5f-9290-c684aec2e979",
                             Email = "manager@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Manager",
@@ -301,10 +301,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "MANAGER@GMAIL.COM",
                             NormalizedUserName = "MANAGER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFwJKTZTbQ79OxH8efsse6pL3qhYX6bVAvgbiFnCmQ32Sp4/WAOsJsRkKSveXiZXZQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENtsRlhtcqPJ24KoRN54QHlqXTeu9b7UM9Nvkw0/H8vZdatsLpTR1kk6MUTSfE3tqw==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "917e5a36-bdfb-4f1c-b4f3-d6e422ab450f",
+                            SecurityStamp = "7e0f0b5d-a0c3-48f1-8872-3466ee5c54dc",
                             TwoFactorEnabled = false,
                             UserName = "manager@gmail.com"
                         });
@@ -324,6 +324,12 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
+                    b.Property<DateTime?>("CheckInTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("CheckOutTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
@@ -335,6 +341,9 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.Property<Guid?>("CustomerId1")
                         .HasColumnType("uuid");
+
+                    b.Property<int?>("DurationMinutes")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Note")
                         .HasMaxLength(200)
@@ -1317,7 +1326,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .HasForeignKey("CustomerId1");
 
                     b.HasOne("SkincareBookingSystem.Models.Domain.Order", "Order")
-                        .WithMany()
+                        .WithMany("Appointments")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1426,7 +1435,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Order", b =>
                 {
                     b.HasOne("SkincareBookingSystem.Models.Domain.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1618,7 +1627,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("SkincareBookingSystem.Models.Domain.Order", "Orders")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("OrderId");
 
                     b.HasOne("SkincareBookingSystem.Models.Domain.Payment", "Payment")
@@ -1668,6 +1677,8 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("CustomerSkinTests");
+
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.CustomerSkinTest", b =>
@@ -1677,7 +1688,11 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Order", b =>
                 {
+                    b.Navigation("Appointments");
+
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.OrderDetail", b =>

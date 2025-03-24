@@ -41,22 +41,20 @@ namespace SkincareBookingSystem.API.Controllers
             var response = await _customerService.GetCustomerIdByUserId(User);
             return StatusCode(response.StatusCode, response);
         }
-
-        [HttpGet("email")]
-        [Authorize(Roles = StaticUserRoles.Staff)]
-        [SwaggerOperation(Summary = "API gets a customer's info by email", Description = "Requires staff, admin roles")]
-        public async Task<IActionResult> GetCustomerInfoByEmailAsync([FromQuery] string email)
+        
+        [HttpGet("timetable")]
+        [SwaggerOperation(Summary = "API gets a customer's timetable", Description = "Requires customer, admin roles")]
+        public async Task<IActionResult> GetCustomerTimeTable()
         {
-            var response = await _customerService.GetCustomerInfoByEmailAsync(email);
+            var response = await _customerService.GetCustomerTimeTable(User);
             return StatusCode(response.StatusCode, response);
         }
-
-        [HttpGet("phone")]
-        [Authorize(Roles = StaticUserRoles.Staff)]
-        [SwaggerOperation(Summary = "API gets a customer's info by phone number", Description = "Requires staff, admin roles")]
-        public async Task<IActionResult> GetCustomerInfoByPhoneNumberAsync([FromQuery] string phoneNumber)
+        
+        [HttpGet("orders")]
+        [SwaggerOperation(Summary = "API gets a customer's orders", Description = "Requires customer, admin roles")]
+        public async Task<IActionResult> GetOrderByCustomer()
         {
-            var response = await _customerService.GetCustomerInfoByPhoneNumberAsync(phoneNumber);
+            var response = await _customerService.GetOrderByCustomer(User);
             return StatusCode(response.StatusCode, response);
         }
     }

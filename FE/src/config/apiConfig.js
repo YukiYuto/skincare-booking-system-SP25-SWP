@@ -11,25 +11,28 @@ const BASE_URL = "https://lumiconnect.azurewebsites.net/api";
 export const BASE_API_URL = BASE_URL;
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes
 
-// Thêm API cho Forgot Password & Reset Password
-export const LOGIN_API = `${BASE_URL}/auth/signin`;
+//Create user
 export const REGISTER_CUSTOMER_API = `${BASE_URL}/auth/customers`;
+export const POST_THERAPIST_API = `${BASE_URL}/auth/skin-therapists`;
+export const POST_STAFF_API = `${BASE_URL}/auth/staff`;
+export const LOGIN_API = `${BASE_URL}/auth/signin`;
 export const USER_PROFILE_API = `${BASE_URL}/auth/user`;
-export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`;
-export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`;
+export const REFRESH_TOKEN_API = `${BASE_URL}/auth/refresh-token`;
+export const CHANGE_PASSWORD_API = `${BASE_URL}/auth/password/change`;
 export const FORGOT_PASSWORD_API = `${BASE_URL}/auth/password/forgot`;
 export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;
-export const REFRESH_TOKEN_API = `${BASE_URL}/auth/refresh-token`;
+export const GET_CUSTOMER_PROFILE_API = `${BASE_URL}/auth/profile`;
+export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`;
+export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`;
 
 // Thêm API cho Customer
-export const GET_CUSTOMER_PROFILE_API = `${BASE_URL}/auth/profile`;
 export const POST_CUSTOMER_AVATAR_API = `${BASE_URL}/UserManagement/avatar`;
 
 // Thêm API cho Appointment
 export const POST_APPOINTMENT_API = `${BASE_URL}/appointment`;
 export const GET_ALL_APPOINTMENTS_API = `${BASE_URL}/appointment`;
 export const PUT_APPOINTMENT_API = `${BASE_URL}/appointment`;
-export const GET_APPOINTMENT_BY_CUSTOMER_API = `${BASE_URL}/appointment/{customerId}/appointments`;
+export const GET_APPOINTMENT_BY_CUSTOMER_API = `${BASE_URL}/appointment/customer/appointments`;
 export const GET_APPOINTMENT_BY_ID_API = `${BASE_URL}/appointment/{appointmentId}`;
 export const DELETE_APPOINTMENT_API = `${BASE_URL}/appointment`;
 
@@ -46,6 +49,7 @@ export const POST_BOOKING_AUTO_ASSIGN_API = `${BASE_URL}/bookings/auto-assign`;
 export const GET_ALL_CUSTOMERS_API = `${BASE_URL}/customer`;
 export const GET_CUSTOMER_BY_ID_API = `${BASE_URL}/customer/{customerId}`;
 export const GET_CUSTOMER_USER_API = `${BASE_URL}/customer/user`;
+export const GET_CUSTOMER_TIMETABLE_API = `${BASE_URL}/customer/timetable`;
 
 // Thêm API cho FileStorage
 export const POST_FILE_SERVICE_API = `${BASE_URL}/files/service`;
@@ -73,6 +77,7 @@ export const GET_ALL_SERVICES_API = `${BASE_URL}/services`;
 export const PUT_SERVICE_API = `${BASE_URL}/services`;
 export const GET_SERVICE_BY_ID_API = `${BASE_URL}/services/{id}`;
 export const DELETE_SERVICE_API = `${BASE_URL}/services/{id}`;
+export const GET_SIMILAR_SERVICES_API = `${BASE_URL}/services/similar`;
 
 // Thêm API cho ServiceType
 export const POST_SERVICE_TYPE_API = `${BASE_URL}/service-type`;
@@ -84,6 +89,7 @@ export const DELETE_SERVICE_TYPE_API = `${BASE_URL}/service-type/{id}`;
 // Thêm API cho SkinTherapist
 export const GET_THERAPIST_BY_ID_API = `${BASE_URL}/therapists/details/{therapistId}`;
 export const GET_ALL_THERAPISTS_API = `${BASE_URL}/therapists`;
+export const GET_THERAPIST_BY_SERVICE_TYPE_API = `${BASE_URL}/therapists/service-type/{serviceTypeId}`;
 export const GET_THERAPIST_BY_SERVICE_API = `${BASE_URL}/therapists/service/{serviceId}`;
 
 // Thêm API cho Slot

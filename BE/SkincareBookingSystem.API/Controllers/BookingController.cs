@@ -69,5 +69,12 @@ namespace SkincareBookingSystem.API.Controllers
             var result = await _bookingService.HandleTherapistAutoAssignment(autoAssignmentDto);
             return StatusCode(result.StatusCode, result);
         }
+        
+        [HttpPut("complete-service")]
+        public async Task<IActionResult> CompleteService(CompletedServiceDto completedServiceDto)
+        {
+            var response = await _bookingService.CompletedService(User,completedServiceDto);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

@@ -1,8 +1,15 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { GET_ALL_THERAPISTS_API } from "../../../../config/apiConfig";
+import {
+  GET_ALL_THERAPISTS_API,
+  POST_THERAPIST_API,
+  POST_STAFF_API,
+} from "../../../../config/apiConfig";
 import styles from "./SkinTherapists.module.css";
 import infoIcon from "../../../../assets/icon/infoIcon.svg";
+import addIcon from "../../../../assets/icon/addIcon.svg";
 import SkinTherapistDetail from "./SkinTherapistDetail";
+import TherapistAddModal from "./TherapistAddModal";
+import StaffAddModal from "../Staff/StaffAddModal";
 
 const SkinTherapists = () => {
   const [therapists, setTherapists] = useState([]);
@@ -13,6 +20,7 @@ const SkinTherapists = () => {
     direction: "ascending",
   });
   const [error, setError] = useState(null);
+  const [modal, setModal] = useState({ type: null, data: null });
 
   const fetchData = useCallback(async () => {
     try {
@@ -75,7 +83,24 @@ const SkinTherapists = () => {
     <div className={styles.tabContainer}>
       <div className={styles.tabHeader}>
         <div className={styles.tabTitleContainer}>
-          <h2 className={styles.tabTitle}>Skin Therapists</h2>
+          <div className={styles.tabTitleGroup}>
+            <h2 className={styles.tabTitle}>Skin Therapists</h2>
+            <button
+              onClick={() => setModal({ type: "createt" })}
+              className={styles.iconButton}
+            >
+              <img src={addIcon} alt="Add Therapist" />
+            </button>
+          </div>
+          <div className={styles.tabTitleGroup}>
+            <h2 className={styles.tabTitle}>Staff</h2>
+            <button
+              onClick={() => setModal({ type: "creates" })}
+              className={styles.iconButton}
+            >
+              <img src={addIcon} alt="Add Staff" />
+            </button>
+          </div>
         </div>
       </div>
       {loading ? (
@@ -87,12 +112,36 @@ const SkinTherapists = () => {
           <table className={styles.therapistTable}>
             <thead>
               <tr>
-                <th onClick={() => handleSort("fullName")}>Name {sortConfig.key === "fullName" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
-                <th onClick={() => handleSort("email")}>Email {sortConfig.key === "email" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
-                <th onClick={() => handleSort("age")}>Age {sortConfig.key === "age" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
-                <th onClick={() => handleSort("gender")}>Gender {sortConfig.key === "gender" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
-                <th onClick={() => handleSort("phoneNumber")}>Phone Number {sortConfig.key === "phoneNumber" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
-                <th onClick={() => handleSort("experience")}>Experience {sortConfig.key === "experience" && (sortConfig.direction === "ascending" ? "↑" : "↓")}</th>
+                <th onClick={() => handleSort("fullName")}>
+                  Name{" "}
+                  {sortConfig.key === "fullName" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("email")}>
+                  Email{" "}
+                  {sortConfig.key === "email" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("age")}>
+                  Age{" "}
+                  {sortConfig.key === "age" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("gender")}>
+                  Gender{" "}
+                  {sortConfig.key === "gender" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("phoneNumber")}>
+                  Phone Number{" "}
+                  {sortConfig.key === "phoneNumber" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
+                <th onClick={() => handleSort("experience")}>
+                  Experience{" "}
+                  {sortConfig.key === "experience" &&
+                    (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                </th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -125,6 +174,20 @@ const SkinTherapists = () => {
         <SkinTherapistDetail
           therapist={selectedTherapist}
           onClose={handleCloseDetail}
+        />
+      )}
+
+      {modal.type === "createt" && (
+        <TherapistAddModal
+          onClose={() => setModal({ type: null })}
+          refresh={fetchData}
+        />
+      )}
+
+      {modal.type === "creates" && (
+        <StaffAddModal
+          onClose={() => setModal({ type: null })}
+          refresh={fetchData}
         />
       )}
     </div>

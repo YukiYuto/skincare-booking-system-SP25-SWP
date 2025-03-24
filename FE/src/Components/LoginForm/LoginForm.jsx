@@ -6,10 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { login as loginAction } from "../../redux/auth/thunks";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import PasswordInputField from "../InputField/Password/PasswordInputField";
-import {
-  validateEmail,
-  validatePasswordLength,
-} from "../../utils/validationUtils";
+import { isAccountUnverified, validateEmail, validatePassword } from "../../utils/validationUtils";
 import styles from "./LoginForm.module.css";
 import { sendVerificationEmail } from "../../services/authService";
 
@@ -24,10 +21,11 @@ export function LoginForm() {
     password: "",
   });
 
+  const [isAccountVerified, setIsAccountVerified] = useState(true);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error: reduxError } = useSelector((state) => state.auth);
-
 
   useEffect(() => {
     if (reduxError) {
@@ -43,52 +41,65 @@ export function LoginForm() {
   };
 
   const validateLoginForm = () => {
-    const emailError = validateEmail(loginData.email);
-    const passwordLengthError = validatePasswordLength(loginData.password);
+    const emailError = validateEmail(loginData.email.trim());
+    const passwordFormatError = validatePassword(loginData.password);
 
     setErrors((prevErrors) => ({
       ...prevErrors,
       email: emailError,
-      password: passwordLengthError,
+      password: passwordFormatError,
     }));
 
-    return !emailError && !passwordLengthError;
+    return !emailError && !passwordFormatError;
+  };
+
+  const handleVerifyEmail = async () => {
+    reduxError && toast.dismiss(); // Dismiss any previous error to show new error
+    try {
+      const response = await sendVerificationEmail(loginData.email);
+      toast.success(
+        "Verification email sent successfully! Please check your email inbox."
+      );
+    } catch (error) {
+      console.error("Send verification email error", error.message);
+      toast.error("Failed to send verification email. Please try again.");
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const trimmedData = {
+      ...loginData,
+      email: loginData.email.trim(),
+      password: loginData.password.trim(),
+    };
+    setLoginData(trimmedData);
     setErrors({ email: "", password: "" }); // Reset errors
-  
+
+    // If form is invalid, return early
     if (!validateLoginForm()) return;
-  
+    // If form is valid, call the auth service to login
     try {
-      await dispatch(loginAction(loginData)).unwrap();
-      toast.success(`Login successful! Welcome, ${loginData.email}!`);
-      navigate("/");
+      const userData = await dispatch(loginAction(trimmedData)).unwrap();
+      setIsAccountVerified(true);
+      toast.success(`Welcome, ${userData.fullName}!`);
+      if (userData.roles.includes("CUSTOMER")) {
+        navigate("/");
+      } else if (userData.roles.includes("ADMIN")) {
+        navigate("/dashboard");
+      } else if (userData.roles.includes("STAFF")) {
+        navigate("/staff-management");
+      } else if (userData.roles.includes("SKINTHERAPIST")) {
+        navigate("/therapist-management");
+      } else if (userData.roles.includes("MANAGER")) {
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.error("Login error", error.message);
-  
-      if (error.message === "You need to confirm email!") {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          email: "You need to confirm your email!",
-        }));
-      } else {
-        toast.error(error.message || "An unexpected error occurred.");
+      if (isAccountUnverified(error)) {
+        setIsAccountVerified(false);
       }
     }
   };
-  
-
-  const handleSendVerifyEmail = async () => {
-    try {
-      await sendVerificationEmail(loginData.email);
-      toast.success("Verification email sent. Please check your inbox.");
-    } catch (error) {
-      toast.error("Failed to send verification email.");
-    }
-  };
-  
 
   return (
     <form
@@ -116,54 +127,39 @@ export function LoginForm() {
         error={errors.password}
       />
 
-      {errors.email && (
-        <div>
-          <a 
-            style={{
-              fontSize: "20px",
-              color: "red",
-              pointerEvents: loading ? "none" : "auto",
-              opacity: loading ? 0.5 : 1,
-              cursor: "pointer",
-            }} 
-            onClick={handleSendVerifyEmail}
-            className={styles.verifyLink}
-          >
-            Click here to send verify!
-          </a>
-        </div>
-      )}
-
-      
-      <div>
-      <a 
-      style={{
-            fontSize: "20px",
-            pointerEvents: loading ? "none" : "auto", // Ngăn nhấn khi loading
-            opacity: loading ? 0.5 : 1, // Làm mờ khi loading
-          }}
-      href="forgot-password" 
-      className={styles.forgotLink}>
-          Forgot Password?
+      <div className={styles.forgotContainer}>
+        <a
+          href="forgot-password"
+          className={`${styles.forgotLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
+        >
+          <span>Forgot Password</span>
         </a>
       </div>
-      
-      <div>
-          <p>Do not have an account? <a 
-              className={styles.registerLink}
-              href="/register" 
-              disabled={loading} 
+      {!isAccountVerified && (
+        <div className={styles.unverifiedContainer}>
+          <span>
+            Your account is not verified.{" "}
+            <span
+              type="text"
+              className={styles.unverifiedText}
+              onClick={handleVerifyEmail}
             >
-            Sign up
-          </a>
-        </p>
-      </div>
-
+              Click here
+            </span>{" "}
+            to verify your email.
+          </span>
+        </div>
+      )}
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>
-        <a 
-        style={{ pointerEvents: loading ? "none" : "auto", opacity: loading ? 0.5 : 1 }}
-        href="/terms" className={styles.termsLink}>
+        <a
+          href="/terms"
+          className={`${styles.termsLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
+        >
           terms and conditions
         </a>
         <span> of our center.</span>
@@ -173,7 +169,18 @@ export function LoginForm() {
         {loading ? "Logging in..." : "Login"}
       </button>
 
-      
+      <button
+        type="button"
+        className={styles.createAccountButton}
+        onClick={() => {
+          if (!loading) {
+            window.location.href = "/register";
+          }
+        }}
+        disabled={loading}
+      >
+        Create Account
+      </button>
     </form>
   );
 }
