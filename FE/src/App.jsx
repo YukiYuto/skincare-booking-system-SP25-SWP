@@ -31,12 +31,12 @@ import ScheduleManagement from "./Pages/Staff/ScheduleManagement/ScheduleManagem
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import TherapistSchedule from "./Pages/Therapist/TherapistSchedule/TherapistSchedule";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
-import ViewBlogCategory from "./Components/DashboardComponent/Tabs/BlogCategory/ViewBlogCategory";
-import BlogContentList from "./Components/DashboardComponent/Tabs/BlogContent/BlogContentList";
 import BlogForCus from "./Components/BlogForCus/BlogForCus";
 import BlogForCusList from "./Components/BlogForCus/BlogForCusList/BlogForCusList";
 import StaffBlogManagement from "./Pages/Staff/StaffBlogManagement/StaffBlogManagement";
 import StaffBlogDetail from "./Pages/Staff/StaffBlogDetail/StaffBlogDetail";
+import ViewBlogCategory from "./Components/DashboardComponent/Tabs/BlogCategory/ViewBlogCategory/ViewBlogCategory";
+import ViewDetail from "./Components/DashboardComponent/Tabs/BlogCategory/ViewDetail/ViewDetail";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -86,9 +86,9 @@ const AppRoutes = () => {
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
                 <Route path="view-blogcategory" element={<ViewBlogCategory />} />
-                
+                <Route path="view-blogcategory/:categoryName?" element={<ViewBlogCategory />} />
+                <Route path="view-detail/:title" element={<ViewDetail />} /> 
               </Route>
-              <Route path="dashboard/view-blogcategory/:blogCategoryId" element={<BlogContentList />} />
             </>
           )}
           {roles.includes("STAFF") && (
@@ -120,9 +120,10 @@ const AppRoutes = () => {
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
                 <Route path="view-blogcategory" element={<ViewBlogCategory />} />
-                
+                <Route path="view-blogcategory/:categoryName?" element={<ViewBlogCategory />} />
+                <Route path="view-detail/:title" element={<ViewDetail />} /> 
               </Route>
-              <Route path="dashboard/view-blogcategory/:blogCategoryId" element={<BlogContentList />} />
+              
             </>
           )}
         </>

@@ -3,15 +3,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Pagination, Row, Col, Form, Button, Input, Select, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import styles from "./StaffBlog.module.css";
+import styles from "./ViewBlogCategory.module.css";
 import slugify from "slugify";
-import { GET_BLOG, GET_BLOG_CATEGORY, POST_BLOG, POST_CUSTOMER_AVATAR_API } from "../../config/apiConfig";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { GET_BLOG, GET_BLOG_CATEGORY, POST_BLOG, POST_CUSTOMER_AVATAR_API, UPDATE_BLOG_CATEGORY } from "../../../../../config/apiConfig";
+import BlogCategoryModal from "../BlogCategoryModal";
+import TextArea from "antd/es/input/TextArea";
 
 const { Meta } = Card;
 
-const StaffBlog = () => {
+const ViewBlogCategory = () => {
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showUpdateCategoryModal, setUpdateCategoryModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +123,6 @@ const StaffBlog = () => {
       fetchData();
     } catch (error) {
       console.error("Error adding blog:", error.response?.data || error.message);
-  
       const errorMessage = error.response?.data?.message || "Failed to add blog. Please try again.";
       toast.error(errorMessage);
     } finally {
@@ -132,7 +137,46 @@ const StaffBlog = () => {
     form.resetFields();
   };
 
+  const addCategory = (newCategory) => {
+    setCategories((prev) => [newCategory, ...prev]);
+  };
 
+  const handleUpdateCategory = async (values) => {
+    if (!editingCategory) return;
+  
+    setAdding(true);
+    try {
+      const response = await axios.put(
+        UPDATE_BLOG_CATEGORY,
+        {
+          blogCategoryId: editingCategory.blogCategoryId,
+          name: values.name,
+          description: values.description,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+  
+      const updatedCategory = response.data.result;
+      setCategories((prev) =>
+        prev.map((cat) => (cat.blogCategoryId === updatedCategory.blogCategoryId ? updatedCategory : cat))
+      );
+  
+      toast.success(`Updated Blog Category: ${updatedCategory.name} successfully!`);
+      setShowCategoryModal(false);
+      form.resetFields();
+      setEditingCategory(null);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update category.");
+    } finally {
+      setAdding(false);
+    }
+  };
+  
   const formattedCategoryName = categoryName ? categoryName.replace(/-/g, " ") : null;
   const selectedCategory = categories.find((cat) => cat.name === formattedCategoryName)?.blogCategoryId || null;
 
@@ -148,9 +192,9 @@ const StaffBlog = () => {
   const handleCategoryClick = (category) => {
     if (category) {
       const formattedName = category.name.replace(/\s+/g, "-"); 
-      navigate(`/staff-blogs/${formattedName}`);
+      navigate(`/dashboard/view-blogcategory/${formattedName}`);
     } else {
-      navigate("/staff-blogs");
+      navigate("/dashboard/view-blogcategory");
     }
   };
 
@@ -170,6 +214,27 @@ const StaffBlog = () => {
 
   return (
     <>
+    <div>
+        <button className={styles.buttonModal} onClick={() => {
+          setEditingCategory(null);
+          setShowCategoryModal(true);
+        }}>
+          Create Blog Category
+        </button>
+        <Button className={styles.editButton} 
+            onClick={() => {setUpdateCategoryModal(true);
+            }}
+    >
+        Edit Blog Category
+        </Button>
+        <BlogCategoryModal 
+          show={showCategoryModal} 
+          handleClose={() => setShowCategoryModal(false)} 
+          addCategory={addCategory} 
+          editingCategory={editingCategory} 
+        />
+      </div>
+
     <div className={styles.addBlogContainer}>
     <Button className={styles.addBlog} type="primary" icon={<PlusOutlined />} onClick={showModal}>
       Write Blog
@@ -197,6 +262,7 @@ const StaffBlog = () => {
             <button className={styles.menuItem}>More...</button>
             <div className={styles.dropdownMenu}>
               {moreCategories.map((category) => (
+                <>
                 <button
                   key={category.blogCategoryId}
                   className={styles.dropdownItem}
@@ -204,6 +270,7 @@ const StaffBlog = () => {
                 >
                   {category.name}
                 </button>
+                </>
               ))}
             </div>
           </div>
@@ -223,7 +290,7 @@ const StaffBlog = () => {
               <Card
                 hoverable
                 cover={<img alt={blog.title} src={blog.imageUrl} className={styles.blogImage} />}
-                onClick={() => navigate(`/detail/${slugify(blog.title, { lower: true, strict: true })}`)}
+                onClick={() => navigate(`/dashboard/view-detail/${slugify(blog.title, { lower: true, strict: true })}`)}
                 className={styles.blogCard}
               >
                 <Meta
@@ -314,6 +381,66 @@ const StaffBlog = () => {
 
         </Form>
       </Modal>
+      <Modal
+        title="Update Blog Category"
+        open={showUpdateCategoryModal}
+        onCancel={() => {
+            setUpdateCategoryModal(false);
+            form.resetFields();
+            setEditingCategory(null);
+        }}
+        footer={null}
+        >
+        <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleUpdateCategory}
+        >
+            <Form.Item
+            name="selectedCategory"
+            label="Select Category"
+            rules={[{ required: true, message: "Please select a category" }]}
+            >
+            <Select
+                placeholder="Select category to update"
+                onChange={(value) => {
+                const selectedCat = categories.find(cat => cat.blogCategoryId === value);
+                setEditingCategory(selectedCat);
+                form.setFieldsValue({
+                    name: selectedCat?.name,
+                    description: selectedCat?.description,
+                });
+                }}
+            >
+                {categories.map(cat => (
+                <Select.Option key={cat.blogCategoryId} value={cat.blogCategoryId}>
+                    {cat.name}
+                </Select.Option>
+                ))}
+            </Select>
+            </Form.Item>
+
+            <Form.Item
+            name="name"
+            label="Category Name"
+            rules={[{ required: true, message: "Please enter category name" }]}
+            >
+            <Input disabled={!editingCategory} />
+            </Form.Item>
+
+            <Form.Item name="description" label="Description">
+            <TextArea rows={3} disabled={!editingCategory} />
+            </Form.Item>
+
+            <Form.Item>
+            <Button type="primary" htmlType="submit" loading={adding} block disabled={!editingCategory}>
+                {adding ? "Updating..." : "Update Category"}
+            </Button>
+            </Form.Item>
+        </Form>
+        </Modal>
+
+
       <Pagination
         current={currentPage}
         pageSize={pageSize}
@@ -326,4 +453,4 @@ const StaffBlog = () => {
   );
 };
 
-export default StaffBlog;
+export default ViewBlogCategory;
