@@ -9,6 +9,9 @@ namespace SkincareBookingSystem.DataAccess.IRepositories
 {
     public interface IOrderRepository : IRepository<Order>
     {
-
+        Task<Order> GetOrderByOrderNumber(long orderNumber);
+        Task<long> GenerateUniqueNumberAsync();
+        Task<Order?> GetLatestOrderByCustomerIdAsync(Guid customerId);
+        void Update(Order target, Order source);
     }
 }

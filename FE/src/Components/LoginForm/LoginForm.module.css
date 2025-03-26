@@ -23,6 +23,18 @@
   .termsLink {
     color: rgb(0, 61, 252);
     text-decoration: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .forgotLink{
+    color: rgb(0, 61, 252);
+    text-decoration: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .forgotLink:hover{
+    color: red; 
+    text-decoration: underline;
   }
   
   .loginButton {
@@ -38,14 +50,31 @@
     margin-bottom: 15px;
   }
   
+  .loginButton:hover{
+    background-color: darkblue;
+  }
+
+  .loginButton:disabled {
+    background-color: rgba(41, 92, 243, 0.527);
+    cursor: not-allowed;
+  }
+
   .createAccountButton {
-    background: none;
-    border: none;
     font-size: 24px;
     color: rgb(0, 0, 0);
     cursor: pointer;
     align-self: center;
   }
+
+  .createAccountButton:hover{
+    background-color: lightgray;
+  }
+
+  .disabledForm {
+    pointer-events: none; 
+    opacity: 0.7; 
+  }
+  
   
   @media (max-width: 991px) {
     .loginForm {

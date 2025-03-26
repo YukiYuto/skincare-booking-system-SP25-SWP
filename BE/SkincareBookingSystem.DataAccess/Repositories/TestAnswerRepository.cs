@@ -11,5 +11,12 @@ namespace SkincareBookingSystem.DataAccess.Repositories
         {
             _context = context;
         }
+
+        public void Update(TestAnswer target, TestAnswer source)
+        {
+            target.TestQuestionId = source.TestQuestionId;
+            target.Content = source.Content;
+            target.Score = source.Score;
+        }
     }
 }
