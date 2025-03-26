@@ -8,5 +8,6 @@ namespace SkincareBookingSystem.Models.Dto.Authentication
 {
     public class SignInByGoogleDto
     {
+        public string Token { get; set; } = null;
     }
 }

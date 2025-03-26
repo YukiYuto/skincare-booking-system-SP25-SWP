@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Web;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.IRepositories;
@@ -362,9 +363,89 @@ public class AuthService : IAuthService
     }
 
 
-    public Task<ResponseDto> SignInByGoogle(SignInByGoogleDto signInByGoogleDto)
+    public async Task<ResponseDto> SignInByGoogle(SignInByGoogleDto signInByGoogleDto)
     {
-        throw new NotImplementedException();
+        FirebaseToken googleToken =
+            await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(signInByGoogleDto.Token);
+
+        string userId = googleToken.Uid;
+        string email = googleToken.Claims["email"].ToString()!;
+        string name = googleToken.Claims["name"].ToString()!;
+        string avatarUrl = googleToken.Claims["picture"].ToString()!;
+        string phoneNumber = googleToken.Claims.ContainsKey("phone_number")
+            ? googleToken.Claims["phone_number"].ToString()!
+            : string.Empty;
+        string birthDate = googleToken.Claims.ContainsKey("birthday")
+            ? googleToken.Claims["birthday"].ToString()!
+            : string.Empty;
+        string gender = googleToken.Claims.ContainsKey("gender")
+            ? googleToken.Claims["gender"].ToString()!
+            : string.Empty;
+        string address = googleToken.Claims.ContainsKey("address")
+            ? googleToken.Claims["address"].ToString()!
+            : string.Empty;
+        
+        var user = await _userManager.FindByEmailAsync(email);
+        
+        if (user is not null)
+        {
+            if (user.LockoutEnd is not null && user.LockoutEnd > DateTime.UtcNow)
+            {
+                return new ResponseDto()
+                {
+                    Message = "User has been locked",
+                    IsSuccess = false,
+                    StatusCode = 403,
+                    Result = null
+                };
+            }
+        }
+        else
+        {
+            user = new ApplicationUser
+            {
+                Email = email,
+                FullName = name,
+                UserName = email,
+                ImageUrl = avatarUrl,
+                Address = address,
+                Age = birthDate != string.Empty ? DateTime.UtcNow.Year - DateTime.Parse(birthDate).Year : 0,
+                Gender = gender,
+                PhoneNumber = phoneNumber,
+                EmailConfirmed = true
+            };
+
+            var createUserResult = await _userManager.CreateAsync(user);
+            if (!createUserResult.Succeeded)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Failed to create user",
+                    IsSuccess = false,
+                    StatusCode = 500,
+                    Result = createUserResult.Errors
+                };
+            }
+
+            await _userManager.AddLoginAsync(user, new UserLoginInfo(StaticLoginProvider.Google, userId, "GOOGLE"));
+        }
+        
+        var accessToken = await _tokenService.GenerateJwtAccessTokenAsync(user);
+        var refreshToken = await _tokenService.GenerateJwtRefreshTokenAsync(user);
+        await _tokenService.StoreRefreshToken(user.Id, refreshToken);
+        await _userManager.UpdateAsync(user);
+
+        return new ResponseDto()
+        {
+            Result = new SignInResponseDto
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            },
+            Message = "Sign in successfully",
+            IsSuccess = true,
+            StatusCode = 200
+        };
     }
 
     public async Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,
@@ -587,7 +668,8 @@ public class AuthService : IAuthService
 
         // build link reset password
         // string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={Uri.UnescapeDataString(token)}";
-        var resetLink = $"https://lumiconnect-beauty.vercel.app/reset-password?email={user.Email}&token={HttpUtility.UrlEncode(token)}";
+        var resetLink =
+            $"https://lumiconnect-beauty.vercel.app/reset-password?email={user.Email}&token={HttpUtility.UrlEncode(token)}";
 
         var emailSent = await _emailService.SendPasswordResetEmailAsync(user.Email!, resetLink);
 
