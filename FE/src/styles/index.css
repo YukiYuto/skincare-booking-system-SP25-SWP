@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+/* Reset default margins and paddings */
+* {
+  /*margin: 0;
+  padding: 0;*/
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  width: 100vw;
+  height: 100vh;
+  font-family: Montserrat;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+h1 {
+  font-family: Playfair Display;
+}
+
+h2 {
+  font-family: Raleway;
+}
+
+p {
+  font-family: Lora;
+}
+
+/* Style for Toast notifications */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+:root {
+  --primary-color: #ffe8d4;
+  --secondary-color: #f4cfa1;
+  --accent-color: #c49e85;
+  --background-color: #f5e9e2;
+  --text-color: #6f4e37;
+  --scrollbar-width: 8px;
+  --scrollbar-track: var(--background-color);
+  --scrollbar-thumb: var(--accent-color);
+}
+
+@layer components {
+  .sticky-header {
+    @apply sticky top-0 z-1000 shadow-xs;
+  }
+
+  .nav-header {
+    @apply pt-2.25 pb-2.25 w-full grid grid-cols-3 items-center;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-areas: "left-icon heading icons" "navigation-left navigation-center navigation-right";
+  }
+
+  .nav-header-wrapper {
+    @apply block relative;
+  }
+
+  .header-wrapper--border-bottom {
+    @apply border-gray-600 border-0;
+  }
+
+  .nav-page-width {
+    @apply mt-0 mb-0 ml-auto mr-auto;
+    padding: 0.4rem 1.25rem;
+    /* Increase specificity */
+  }
+
+  .nav-header__left-icon {
+    @apply text-center justify-center;
+    grid-area: left-icon;
+  }
+
+  .nav-header__heading,
+  .nav-header__heading-link,
+  .nav-header__inline-menu {
+    @apply text-center;
+    grid-area: left-icon;
+  }
+
+  .nav-header__heading {
+    @apply justify-self-center p-1.5;
+    max-width: 250px;
+    width: 100%;
+  }
+
+  .nav-header__heading-link {
+    @apply inline-block font-semibold;
+  }
+
+  .nav-header__heading-link,
+  .nav-header__inline-menu {
+    @apply ml-0;
+  }
+
+  .nav-header__icons {
+    @apply text-center justify-center;
+    grid-area: icons;
+  }
+
+  .nav-header__inline-menu>.list-menu--inline {
+    @apply justify-center;
+  }
+
+  .nav-header__inline-menu {
+    @apply mt-1 block justify-self-center;
+    grid-area: navigation-center;
+  }
+
+  .list-menu .list-menu--inline {
+    @apply justify-self-center;
+  }
+
+  .list-menu {
+    @apply list-none;
+  }
+
+  .list-menu--inline {
+    @apply inline-flex flex-wrap gap-8;
+  }
+
+  .header__menu-item {
+    @apply p-1;
+  }
+
+  .list-menu-item {
+    @apply flex items-center leading-normal;
+  }
+
+  .list-menu-link {
+    @apply text-left font-normal text-base;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+
+  .list-menu-link:hover {
+    @apply font-semibold;
+  }
+}
+
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-color);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) var(--background-color);
+}

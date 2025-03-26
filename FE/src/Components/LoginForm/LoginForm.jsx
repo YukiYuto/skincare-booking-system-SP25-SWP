@@ -1,14 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { login as loginAction } from "../../redux/auth/thunks";
+import EmailInputField from "../InputField/Email/EmailInputField";
+import PasswordInputField from "../InputField/Password/PasswordInputField";
+import {
+  validateEmail,
+  validatePasswordLength,
+} from "../../utils/validationUtils";
 import styles from "./LoginForm.module.css";
-import { InputField } from "../InputField/InputField";
 
 export function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error: reduxError } = useSelector((state) => state.auth);
+
+
+  useEffect(() => {
+    if (reduxError) {
+      toast.error(reduxError.message || "An unexpected error occurred.");
+    }
+  }, [reduxError]);
+
+  const handleLoginDataChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData((prevData) => ({ ...prevData, [name]: value }));
+    // Reset errors for the field being updated
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const handlePasswordChange = (event) => {
@@ -17,13 +46,24 @@ export function LoginForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Add your login logic here
-    console.log(username, password);
+    setErrors({ email: "", password: "" }); // Reset errors
+
+    // If form is invalid, return early
+    if (!validateLoginForm()) return;
+
+    // If form is valid, call the auth service to login
+    try {
+      await dispatch(loginAction(loginData)).unwrap();
+      toast.success(`Login successful! Welcome, ${loginData.email}!`);
+      navigate("/");
+    } catch (error) {
+      console.error("Login error", error.message);
+    }
   };
 
   return (
     <form
-      className={styles.loginForm}
+      className={`${styles.loginForm} ${loading ? styles.disabledForm : ""}`}
       aria-labelledby="login-title"
       onSubmit={handleSubmit}
     >
@@ -53,23 +93,43 @@ export function LoginForm() {
         minLength={6}
         maxLength={30}
       />
+      
+      <div>
+      <a 
+      style={{
+            fontSize: "20px",
+            pointerEvents: loading ? "none" : "auto", // Ngăn nhấn khi loading
+            opacity: loading ? 0.5 : 1, // Làm mờ khi loading
+          }}
+      href="forgot-password" 
+      className={styles.forgotLink}>
+          Forgot Password
+        </a>
+      </div>
 
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>
-        <a href="/terms" className={styles.termsLink}>
+        <a 
+        style={{ pointerEvents: loading ? "none" : "auto", opacity: loading ? 0.5 : 1 }}
+        href="/terms" className={styles.termsLink}>
           terms and conditions
         </a>
         <span> of our center.</span>
       </div>
 
-      <button type="submit" className={styles.loginButton}>
-        Login
+      <button type="submit" className={styles.loginButton} disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
       </button>
 
       <button
         type="button"
         className={styles.createAccountButton}
-        onClick={() => (window.location.href = "/register")}
+        onClick={() => {
+          if (!loading) {
+            window.location.href = "/register";
+          }
+        }}
+        disabled={loading} 
       >
         Create Account
       </button>

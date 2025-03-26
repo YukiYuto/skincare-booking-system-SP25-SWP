@@ -1,8 +1,14 @@
 .brand {
     display: flex;
-    font: 500 80px Poppins, sans-serif;
-    color: rgb(21, 44, 91);
+    font-family: Bodoni Moda, serif;
+    color: #ac632c;
     text-align: center;
+    text-decoration: none;
+}
+
+.brand span {
+    font-size: 32px;
+    font-weight: 700;
 }
 
 .brandHighlight {

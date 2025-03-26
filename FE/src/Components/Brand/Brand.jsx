@@ -1,11 +1,12 @@
 import styles from "./Brand.module.css";
+import { Link } from "react-router-dom";
 
 const Brand = () => {
   return (
-    <div className={styles.brand}>
-      <span className={styles.brandHighlight}>Skin</span>
-      <span className={styles.brandText}>Topper</span>
-    </div>
+    <Link to="/" className={(override?.value || "") + " " + styles.brand}>
+      <span className={styles.brandHighlight}>lumi</span>
+      <span className={styles.brandText}>connect</span>
+    </Link>
   );
 };
 

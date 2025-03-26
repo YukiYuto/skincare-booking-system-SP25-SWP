@@ -1,7 +1,7 @@
 .registerForm {
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
+  margin-top: 2rem;
   width: 100%;
   font-family: Poppins, sans-serif;
 }
@@ -17,8 +17,39 @@
 .flexContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
+}
+
+.genderContainer {
+  display: flex;
+  text-align: center;
+  gap: 12px;
+}
+
+.genderContainer label {
+  display: flex;
+  font-size: 32px;
+}
+
+.genderContainer input {
+  width: 30px;
+  height: 30px;
+}
+
+.flexContainer2 {
+  display: flex;
+  text-align: center;
+  gap: 12px;
+}
+
+.genderContainer label {
+  display: flex;
+  font-size: 32px;
+}
+
+.genderContainer input {
+  width: 30px;
+  height: 30px;
 }
 
 .termsContainer {
@@ -30,6 +61,7 @@
 .termsLink {
   color: rgb(0, 61, 252);
   text-decoration: none;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .registerButton {
@@ -45,6 +77,10 @@
   margin-bottom: 15px;
 }
 
+.registerButton:hover {
+  background-color: darkblue;
+}
+
 .loginButton {
   background: none;
   border: none;
@@ -52,6 +88,15 @@
   color: rgb(0, 0, 0);
   cursor: pointer;
   align-self: center;
+}
+
+.loginButton:hover {
+  background-color: lightgray;
+}
+
+.disabledForm {
+  pointer-events: none; 
+  opacity: 0.7;
 }
 
 @media (max-width: 991px) {
