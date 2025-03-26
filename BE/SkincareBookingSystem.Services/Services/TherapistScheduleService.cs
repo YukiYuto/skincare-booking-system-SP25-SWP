@@ -36,7 +36,7 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var bookingScheduleToCreate = _mapper.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
+            var bookingScheduleToCreate = _autoMapperService.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
             bookingScheduleToCreate.CreatedBy = User.FindFirstValue("Fullname");
             bookingScheduleToCreate.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
             bookingScheduleToCreate.ScheduleStatus = ScheduleStatus.Pending;

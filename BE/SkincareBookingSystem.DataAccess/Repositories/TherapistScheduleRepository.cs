@@ -20,6 +20,11 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             _context.Entry(target).CurrentValues.SetValues(source);
         }
 
+        public void UpdateStatus(TherapistSchedule therapistSchedule)
+        {
+            throw new NotImplementedException();
+        }
+
 
         //public async Task<TherapistSchedule?> GetTherapistScheduleByTherapistIdAsync(Guid therapistId, string? includeProperties = null)
         //{
