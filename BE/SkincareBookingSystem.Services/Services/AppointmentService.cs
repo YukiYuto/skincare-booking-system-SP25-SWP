@@ -167,12 +167,15 @@ namespace SkincareBookingSystem.Services.Services
 
                 var customerInfoDto = _autoMapperService.Map<Customer, CustomerInfoDto>(appointmentFromDb.Customer);
                 var therapistInfoDto = _autoMapperService.Map<SkinTherapist, TherapistInfoDto>(therapistInfo);
-                var serviceInfoDto = _autoMapperService.Map<Models.Domain.Services, ServiceInfoDto>(serviceInfo);
+                var serviceInfoDto = _autoMapperService.Map<Models.Domain.Services, ServiceInfoDto>(serviceInfo!);
+                serviceInfoDto.ServiceDuration = appointmentFromDb.DurationMinutes;
 
                 var appointmentDetailsDto = _autoMapperService.Map<Appointments, AppointmentDetailsDto>(appointmentFromDb);
                 appointmentDetailsDto.CustomerInfo = customerInfoDto;
                 appointmentDetailsDto.TherapistInfo = therapistInfoDto;
                 appointmentDetailsDto.ServiceInfo = serviceInfoDto;
+                appointmentDetailsDto.CheckInTime = appointmentFromDb.CheckInTime.ToString();
+                appointmentDetailsDto.CheckOutTime = appointmentFromDb.CheckOutTime.ToString();
 
                 return SuccessResponse.Build(
                     message: StaticResponseMessage.Appointment.Retrieved,
