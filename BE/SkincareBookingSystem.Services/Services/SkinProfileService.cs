@@ -48,7 +48,7 @@ namespace SkincareBookingSystem.Services.Services
             catch (Exception e)
             {
                 return ErrorResponse.Build(
-                    message: e.Message,
+                    message: StaticResponseMessage.SkinProfile.NotCreated,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
             }
             return SuccessResponse.Build(
@@ -98,7 +98,7 @@ namespace SkincareBookingSystem.Services.Services
 
         public async Task<ResponseDto> GetAllSkinProfiles()
         {
-            var getAllSkinProfile = await _unitOfWork.SkinTest.GetAllAsync(s => s.Status != StaticOperationStatus.SkinProfile.Deleted);
+            var getAllSkinProfile = await _unitOfWork.SkinProfile.GetAllAsync(s => s.Status != StaticOperationStatus.SkinProfile.Deleted);
             return (getAllSkinProfile.Any()) ?
                 SuccessResponse.Build(
                     message: StaticResponseMessage.SkinProfile.RetrievedAll,
@@ -143,6 +143,7 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var updateSkinProfile = await _unitOfWork.SkinProfile.GetAsync(s => s.SkinProfileId == updateSkinProfileDto.SkinProfileId);
+
             if (updateSkinProfile is null)
             {
                 return ErrorResponse.Build(
@@ -151,6 +152,12 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var updateData = _autoMapperService.Map<UpdateSkinProfileDto, SkinProfile>(updateSkinProfileDto);
+            updateData.UpdatedBy = User.FindFirstValue("Fullname");
+            updateData.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
+            updateData.Status = StaticOperationStatus.BaseEntity.Active;
+            updateData.CreatedBy = updateSkinProfile.CreatedBy;
+            updateData.CreatedTime = updateSkinProfile.CreatedTime;
+
             _unitOfWork.SkinProfile.Update(updateSkinProfile, updateData);
 
             return (await SaveChangesAsync()) ?

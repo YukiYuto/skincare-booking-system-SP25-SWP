@@ -44,13 +44,15 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
             .ForMember(dest => dest.ParentSkin, opt => opt.MapFrom(src => src.ParentSkin))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-            .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score));
+            .ForMember(dest => dest.ScoreMin, opt => opt.MapFrom(src => src.ScoreMin))
+            .ForMember(dest => dest.ScoreMax, opt => opt.MapFrom(src => src.ScoreMax));
         CreateMap<UpdateSkinProfileDto, SkinProfile>()
             .ForMember(dest => dest.SkinProfileId, opt => opt.MapFrom(src => src.SkinProfileId))
             .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
             .ForMember(dest => dest.ParentSkin, opt => opt.MapFrom(src => src.ParentSkin))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-            .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score));
+            .ForMember(dest => dest.ScoreMin, opt => opt.MapFrom(src => src.ScoreMin))
+            .ForMember(dest => dest.ScoreMax, opt => opt.MapFrom(src => src.ScoreMax));
 
         // Skin test
         CreateMap<CreateSkinTestDto, SkinTest>()

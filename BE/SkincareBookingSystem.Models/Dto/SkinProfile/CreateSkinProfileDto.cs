@@ -11,6 +11,7 @@ namespace SkincareBookingSystem.Models.Dto.SkinProfile
         public string SkinName { get; set; } = null!;
         public Guid? ParentSkin { get; set; }
         public string Description { get; set; } = null!;
-        public int Score { get; set; }
+        public int ScoreMin { get; set; }
+        public int ScoreMax { get; set; }
     }
 }

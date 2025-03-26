@@ -3,12 +3,13 @@ using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Models.Dto.SkinProfile;
 using SkincareBookingSystem.Services.IServices;
-using Swashbuckle.AspNetCore.Annotations;   
+using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
 
 namespace SkincareBookingSystem.API.Controllers
 {
     [ApiController]
-    [Route("api/skinprofile")]
+    [Route("api/skin-profile")]
     public class SkinProfileController : ControllerBase
     {
         private readonly ISkinProfileService _skinProfileService;
