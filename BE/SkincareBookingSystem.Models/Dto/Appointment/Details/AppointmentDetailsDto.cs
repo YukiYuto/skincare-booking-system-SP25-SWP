@@ -17,5 +17,7 @@ namespace SkincareBookingSystem.Models.Dto.Appointment.Details
         public string? CreatedTime { get; set; }
         public string? Note { get; set; }
         public string? Status { get; set; }
+        public string? CheckInTime { get; set; }
+        public string? CheckOutTime { get; set; }
     }
 }
