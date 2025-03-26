@@ -9,5 +9,5 @@ public interface ITherapistScheduleRepository : IRepository<TherapistSchedule>
     
     void UpdateStatus(TherapistSchedule therapistSchedule);
 
-    Task<TherapistSchedule?> GetTherapistScheduleByTherapistIdAsync(Guid therapistId, string? includeProperties = null);
+    //Task<TherapistSchedule?> GetTherapistScheduleByTherapistIdAsync(Guid therapistId, string? includeProperties = null);
 }

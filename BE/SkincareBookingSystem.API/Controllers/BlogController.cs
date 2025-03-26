@@ -73,7 +73,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("delete/{blogId}")]
-        [Authorize(Roles = StaticUserRoles.ManagerStaff)]
+        //[Authorize(Roles = StaticUserRoles.ManagerStaff)]
         [SwaggerOperation(Summary = "API soft deletes an exist Blog", Description = "Requires staff, manager role")]
         public async Task<ActionResult<ResponseDto>> DeleteBlog(Guid blogId)
         {

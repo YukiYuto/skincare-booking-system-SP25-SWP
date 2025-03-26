@@ -18,6 +18,26 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             _context.Attach(target);
             _context.Entry(target).State = EntityState.Modified;
             _context.Entry(target).CurrentValues.SetValues(source);
-        } 
+        }
+
+        //public async Task<Blog> GetAsync(Func<Blog, bool> filter, params string[] includeProperties)
+        //{
+        //    IQueryable<Blog> query = _context.Set<Blog>();
+        //    foreach (var includeProperty in includeProperties)
+        //    {
+        //        query = query.Include(includeProperty);
+        //    }
+        //    return await Task.Run(() => query.FirstOrDefault(filter));
+        //}
+
+        //public async Task<IEnumerable<Blog>> GetAllAsync(Func<Blog, bool> filter, params string[] includeProperties)
+        //{
+        //    IQueryable<Blog> query = _context.Set<Blog>();
+        //    foreach (var includeProperty in includeProperties)
+        //    {
+        //        query = query.Include(includeProperty);
+        //    }
+        //    return await Task.Run(() => query.Where(filter).ToList());
+        //}
     }
 }
