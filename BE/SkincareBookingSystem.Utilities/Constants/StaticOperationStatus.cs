@@ -22,6 +22,7 @@ public static class StaticOperationStatus
         public const string Deleted = "DELETED";
         public const string NotFound = "Appointment not found";
         public const string CheckedIn = "CHECKEDIN";
+        public const string CheckedOut = "CHECKEDOUT";
     }
 
     public static class BaseEntity

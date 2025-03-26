@@ -35,6 +35,9 @@ namespace SkincareBookingSystem.Services.Services
             }
             var feedbackToCreate = _autoMapperService.Map<CreateFeedbackDto, Feedbacks>(feedbackDto);
             feedbackToCreate.CreatedBy = User.FindFirstValue("FullName");
+            feedbackToCreate.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
+            feedbackToCreate.Status = StaticOperationStatus.Feedback.Created;
+
             try
             {
                 await _unitOfWork.Feedbacks.AddAsync(feedbackToCreate);
