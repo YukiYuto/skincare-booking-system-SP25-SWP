@@ -22,9 +22,8 @@ namespace SkincareBookingSystem.DataAccess.Repositories
 
         public void UpdateStatus(TherapistSchedule therapistSchedule)
         {
-            throw new NotImplementedException();
+            _context.TherapistSchedules.Update(therapistSchedule);
         }
-
 
         //public async Task<TherapistSchedule?> GetTherapistScheduleByTherapistIdAsync(Guid therapistId, string? includeProperties = null)
         //{

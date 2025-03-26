@@ -17,6 +17,6 @@ public interface IBookingService
     Task<ResponseDto> FinalizeAppointment(BookAppointmentDto bookAppointmentDto, ClaimsPrincipal User);
     Task<ResponseDto> HandleTherapistAutoAssignment(AutoAssignmentDto autoAssignmentDto);
     Task<ResponseDto> RescheduleAppointment(RescheduleAppointmentDto rescheduleRequest, ClaimsPrincipal User);
-    Task<ResponseDto> CancelAppointment(Guid appointmentId, ClaimsPrincipal User);
+    Task<ResponseDto> CancelAppointment(CancelAppointmentDto cancelAppointmentDto, ClaimsPrincipal User);
     Task<ResponseDto> CompletedService(ClaimsPrincipal User, CompletedServiceDto completedServiceDto);
 }

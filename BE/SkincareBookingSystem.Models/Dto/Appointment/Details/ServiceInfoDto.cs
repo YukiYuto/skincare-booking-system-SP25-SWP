@@ -10,7 +10,7 @@ namespace SkincareBookingSystem.Models.Dto.Appointment.Details
     {
         public Guid ServiceId { get; set; }
         public string? ServiceName { get; set; }
-        public string? ServiceDuration { get; set; }
+        public int? ServiceDuration { get; set; }
         public string? ServicePrice { get; set; }
     }
 }

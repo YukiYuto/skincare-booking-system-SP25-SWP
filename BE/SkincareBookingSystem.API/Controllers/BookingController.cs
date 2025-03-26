@@ -40,10 +40,10 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("cancellation/{appointmentId}")]
-        public async Task<ActionResult> CancelAppointment(Guid appointmentId)
+        [HttpDelete("cancellation")]
+        public async Task<ActionResult> CancelAppointment(CancelAppointmentDto cancelAppointmentDto)
         {
-            var result = await _bookingService.CancelAppointment(appointmentId, User);
+            var result = await _bookingService.CancelAppointment(cancelAppointmentDto, User);
             return StatusCode(result.StatusCode, result);
         }
 

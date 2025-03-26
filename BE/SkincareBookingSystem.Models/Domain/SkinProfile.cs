@@ -11,8 +11,8 @@ namespace SkincareBookingSystem.Models.Domain
         public Guid? ParentSkin { get; set; }
 
         [StringLength(30)] public string Description { get; set; } = null!;
-        public int Score { get; set; }
-        
+        public int ScoreMin { get; set; }
+        public int ScoreMax { get; set; }
         public virtual ICollection<SkinServiceType> SkinServiceTypes { get; set; } = new List<SkinServiceType>();
     }
 }
