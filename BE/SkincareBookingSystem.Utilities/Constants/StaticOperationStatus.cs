@@ -71,6 +71,14 @@ public static class StaticOperationStatus
             public const string EmptyList = "Order list is empty";
             public const string Invalid = "Invalid order";
         }
+
+        public static class SkinTest
+        {
+            public const string Created = "CREATED";
+            public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+
+        }
     }
 
     public static class OrderDetail

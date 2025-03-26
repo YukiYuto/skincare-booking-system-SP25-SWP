@@ -37,6 +37,17 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // Skin test
+        CreateMap<CreateSkinTestDto, SkinTest>()
+            .ForMember(dest => dest.SkinTestName, opt => opt.MapFrom(src => src.SkinTestName))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.CustomerSkinTestId, opt => opt.MapFrom(src => src.CustomerSkinTestId));
+        CreateMap<UpdateSkinTestDto, SkinTest>()
+            .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId))
+            .ForMember(dest => dest.SkinTestName, opt => opt.MapFrom(src => src.SkinTestName))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.CustomerSkinTestId, opt => opt.MapFrom(src => src.CustomerSkinTestId));
+
         //staff
         CreateMap<Appointments, CheckInSuccessfulDto>()
             .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
