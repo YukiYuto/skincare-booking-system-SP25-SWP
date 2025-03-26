@@ -558,7 +558,10 @@ public class BookingService : IBookingService
 
                 _unitOfWork.TherapistSchedule.Update(schedule, schedule);
             }
-
+            
+            // 3. Update the appointment status
+            appointmentFromDb.Status = StaticOperationStatus.Appointment.Cancelled;
+            
             await _unitOfWork.SaveAsync();
             await transaction.CommitAsync();
 
@@ -699,6 +702,9 @@ public class BookingService : IBookingService
             therapistAppoinment.UpdatedBy = User.FindFirstValue("name");
             _unitOfWork.TherapistSchedule.UpdateStatus(therapistAppoinment);
 
+            
+            // Update Appointment
+            appointment.Status = StaticOperationStatus.Appointment.Completed;
             await _unitOfWork.SaveAsync();
             await transaction.CommitAsync();
 
