@@ -53,18 +53,21 @@ public class AutoMapperProfile : Profile
         CreateMap<Customer, CustomerInfoDto>()
             .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
             .ForMember(dest => dest.CustomerPhone, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
-            .ForMember(dest => dest.CustomerEmail, opt => opt.MapFrom(src => src.ApplicationUser.Email));
+            .ForMember(dest => dest.CustomerEmail, opt => opt.MapFrom(src => src.ApplicationUser.Email))
+            .ForMember(dest => dest.CustomerAvatar, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl));
+            //.ForMember(dest => dest.SkinProfileName , opt => opt.MapFrom(src => src.SkinProfile.SkinProfileName))
 
-        CreateMap<Models.Domain.Services, ServiceInfoDto>()
-            .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
-            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
-            .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => src.Price));
-
+            CreateMap<Models.Domain.Services, ServiceInfoDto>()
+                .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
+                .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
+                .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => src.Price));
         CreateMap<SkinTherapist, TherapistInfoDto>()
             .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.SkinTherapistId))
             .ForMember(dest => dest.TherapistName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
             .ForMember(dest => dest.TherapistAge, opt => opt.MapFrom(src => src.ApplicationUser.Age))
-            .ForMember(dest => dest.TherapistAvatarUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl));
+            .ForMember(dest => dest.TherapistAvatarUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))
+            .ForMember(dest => dest.TherapistExperience, opt => opt.MapFrom(src => src.Experience))
+            .ForMember(dest => dest.TherapistGender, opt => opt.MapFrom(src => src.ApplicationUser.Gender));
 
         CreateMap<Appointments, AppointmentDetailsDto>()
             .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
