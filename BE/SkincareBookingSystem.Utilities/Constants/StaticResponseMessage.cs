@@ -221,5 +221,19 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update skin test";
             public const string NotFound = "Skin test(s) not found";
         }
+
+        public static class SkinProfile
+        {
+            public const string Created = "Skin profile created successfully";
+            public const string NotCreated = "Failed to create skin profile";
+            public const string Deleted = "Skin profile deleted successfully";
+            public const string NotDeleted = "Failed to delete skin profile";
+            public const string AlreadyDeleted = "Skin profile already deleted";
+            public const string RetrievedAll = "All skin profiles retrieved successfully";
+            public const string Retrieved = "Skin profile retrieved successfully";
+            public const string Updated = "Skin profile updated successfully";
+            public const string NotUpdated = "Failed to update skin profile";
+            public const string NotFound = "Skin profile(s) not found";
+        }
     }
 }

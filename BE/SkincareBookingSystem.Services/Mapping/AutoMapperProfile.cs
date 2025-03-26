@@ -22,6 +22,7 @@ using SkincareBookingSystem.Models.Dto.ServiceCombo;
 using SkincareBookingSystem.Models.Dto.ServiceDuration;
 using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
+using SkincareBookingSystem.Models.Dto.SkinProfile;
 using SkincareBookingSystem.Models.Dto.SkinTest;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Slot;
@@ -38,6 +39,19 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // SkinProfile
+        CreateMap<CreateSkinProfileDto, SkinProfile>()
+            .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
+            .ForMember(dest => dest.ParentSkin, opt => opt.MapFrom(src => src.ParentSkin))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score));
+        CreateMap<UpdateSkinProfileDto, SkinProfile>()
+            .ForMember(dest => dest.SkinProfileId, opt => opt.MapFrom(src => src.SkinProfileId))
+            .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
+            .ForMember(dest => dest.ParentSkin, opt => opt.MapFrom(src => src.ParentSkin))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score));
+
         // Skin test
         CreateMap<CreateSkinTestDto, SkinTest>()
             .ForMember(dest => dest.SkinTestName, opt => opt.MapFrom(src => src.SkinTestName))

@@ -18,7 +18,7 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             _context = context;
         }
 
-        public void Update(SkinTest target, SkinTest source)
+        public void Update(SkinProfile target, SkinProfile source)
         {
             _context.Attach(target);
             _context.Entry(target).State = EntityState.Modified;
