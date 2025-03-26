@@ -9,150 +9,10 @@ const SlotBasedWeekView = ({
   currentWeekStart,
   handlePreviousWeek,
   handleNextWeek,
-  handleDateSelect,
   handleAppointmentClick,
   appointments,
 }) => {
-  // Ensure appointments is always an array
   const appointmentsArray = Array.isArray(appointments) ? appointments : [];
-
-  // Helper function to normalize date format
-  const formatDateToYYYYMMDD = (dateString) => {
-    if (!dateString) return "";
-    
-    // Check if date is already in YYYY-MM-DD format
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      return dateString;
-    }
-    
-    // Handle M/D/YYYY format
-    if (dateString.includes('/')) {
-      const parts = dateString.split('/');
-      if (parts.length === 3) {
-        const month = parts[0].padStart(2, '0');
-        const day = parts[1].padStart(2, '0');
-        const year = parts[2];
-        return `${year}-${month}-${day}`;
-      }
-    }
-    
-    // Fallback - try to parse with moment
-    return moment(dateString).format("YYYY-MM-DD");
-  };
-
-  const isAppointmentInSlot = (day, slot) => {
-    const dayFormatted = day.format("YYYY-MM-DD");
-    const slotStart = moment(slot.startTime, "HH:mm:ss");
-    const slotEnd = moment(slot.endTime, "HH:mm:ss");
-
-    return appointmentsArray.some((appointment) => {
-      // Skip if appointment is invalid
-      if (!appointment) {
-        return false;
-      }
-
-      // Format appointment date consistently
-      const appointmentDate = formatDateToYYYYMMDD(appointment.appointmentDate);
-      
-      // Check date match - removing debug logs
-      if (appointmentDate !== dayFormatted) {
-        return false;
-      }
-
-      // Check if appointmentTime exists and is a string
-      if (!appointment.appointmentTime || typeof appointment.appointmentTime !== 'string') {
-        return false;
-      }
-
-      // Split time range - handle both formats: "HH:mm:ss - HH:mm:ss" and "HH:mm - HH:mm"
-      const appointmentTimeParts = appointment.appointmentTime.split(" - ");
-      if (appointmentTimeParts.length !== 2) {
-        return false;
-      }
-
-      // Parse appointment times - try multiple formats
-      let appointmentStart, appointmentEnd;
-      
-      try {
-        appointmentStart = moment(appointmentTimeParts[0], ["HH:mm:ss", "HH:mm"]);
-        appointmentEnd = moment(appointmentTimeParts[1], ["HH:mm:ss", "HH:mm"]);
-        
-        if (!appointmentStart.isValid() || !appointmentEnd.isValid()) {
-          return false;
-        }
-      } catch (error) {
-        console.error("Error parsing appointment time:", error);
-        return false;
-      }
-
-      // Check for overlap
-      return (
-        (appointmentStart.isSameOrAfter(slotStart) &&
-          appointmentStart.isBefore(slotEnd)) ||
-        (appointmentEnd.isAfter(slotStart) &&
-          appointmentEnd.isSameOrBefore(slotEnd)) ||
-        (appointmentStart.isSameOrBefore(slotStart) &&
-          appointmentEnd.isSameOrAfter(slotEnd))
-      );
-    });
-  };
-
-  const getAppointmentForSlot = (day, slot) => {
-    const dayFormatted = day.format("YYYY-MM-DD");
-    const slotStart = moment(slot.startTime, "HH:mm:ss");
-    const slotEnd = moment(slot.endTime, "HH:mm:ss");
-
-    return appointmentsArray.find((appointment) => {
-      // Skip if appointment is invalid
-      if (!appointment) {
-        return false;
-      }
-
-      // Format appointment date consistently
-      const appointmentDate = formatDateToYYYYMMDD(appointment.appointmentDate);
-      
-      // Check date match
-      if (appointmentDate !== dayFormatted) {
-        return false;
-      }
-
-      // Check if appointmentTime exists and is a string
-      if (!appointment.appointmentTime || typeof appointment.appointmentTime !== 'string') {
-        return false;
-      }
-
-      // Split time range
-      const appointmentTimeParts = appointment.appointmentTime.split(" - ");
-      if (appointmentTimeParts.length !== 2) {
-        return false;
-      }
-
-      // Parse appointment times - try multiple formats
-      let appointmentStart, appointmentEnd;
-      
-      try {
-        appointmentStart = moment(appointmentTimeParts[0], ["HH:mm:ss", "HH:mm"]);
-        appointmentEnd = moment(appointmentTimeParts[1], ["HH:mm:ss", "HH:mm"]);
-        
-        if (!appointmentStart.isValid() || !appointmentEnd.isValid()) {
-          return false;
-        }
-      } catch (error) {
-        console.error("Error parsing appointment time:", error);
-        return false;
-      }
-
-      // Check for overlap
-      return (
-        (appointmentStart.isSameOrAfter(slotStart) &&
-          appointmentStart.isBefore(slotEnd)) ||
-        (appointmentEnd.isAfter(slotStart) &&
-          appointmentEnd.isSameOrBefore(slotEnd)) ||
-        (appointmentStart.isSameOrBefore(slotStart) &&
-          appointmentEnd.isSameOrAfter(slotEnd))
-      );
-    });
-  };
 
   const formatSlotTime = (startTime, endTime) => {
     const formattedStart = moment(startTime, "HH:mm:ss").format("HH:mm");
@@ -160,81 +20,73 @@ const SlotBasedWeekView = ({
     return `${formattedStart} - ${formattedEnd}`;
   };
 
-  const renderSlotRow = (slot, dayIndex) => {
-    const days = [];
-
+  const renderTableHeader = () => {
+    const headers = [];
     for (let i = 0; i < 7; i++) {
       const day = moment(currentWeekStart).add(i, "days");
-      const hasAppointment = isAppointmentInSlot(day, slot);
-      const appointment = hasAppointment
-        ? getAppointmentForSlot(day, slot)
-        : null;
-
-      days.push(
-        <div
-          key={`${day.format("YYYY-MM-DD")}-${slot.slotId}`}
-          className={`${styles.timeSlotCell} ${
-            hasAppointment ? styles.hasAppointment : ""
+      headers.push(
+        <th
+          key={day.format("YYYY-MM-DD")}
+          className={`${styles.dayHeader} ${
+            moment().isSame(day, "day") ? styles.today : ""
           }`}
-          onClick={() => handleDateSelect(day)}
         >
-          {hasAppointment && appointment && (
-            <Tooltip title={`${appointment.status || 'Scheduled'} - Click for details`}>
-              <div
-                className={styles.appointmentIndicator}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (appointment.appointmentId) {
-                    handleAppointmentClick(appointment.appointmentId);
-                  }
-                }}
-              >
-                <Badge color="#1890ff" />
-                <span>
-                  {appointment.serviceInfo?.serviceName || "Appointment"}
-                </span>
-              </div>
-            </Tooltip>
-          )}
-        </div>
+          {day.format("ddd, MMM D")}
+        </th>
       );
     }
-
     return (
-      <div key={slot.slotId} className={styles.timeSlotRow}>
-        <div className={styles.timeSlotLabel}>
-          {formatSlotTime(slot.startTime, slot.endTime)}
-        </div>
-        <div className={styles.timeSlotCells}>{days}</div>
-      </div>
+      <tr>
+        <th className={styles.timeSlotLabel}>Time</th>
+        {headers}
+      </tr>
     );
   };
 
-  const renderDayHeader = () => {
-    const days = [];
-    for (let i = 0; i < 7; i++) {
-      const day = moment(currentWeekStart).add(i, "days");
-      const isToday =
-        moment().format("YYYY-MM-DD") === day.format("YYYY-MM-DD");
+  const renderTableRows = () => {
+    return slots.map((slot) => {
+      const cells = [];
+      for (let i = 0; i < 7; i++) {
+        const day = moment(currentWeekStart).add(i, "days");
+        const appointment = appointmentsArray.find(
+          (appointment) =>
+            moment(appointment.appointmentDate).isSame(day, "day") &&
+            appointment.slotId === slot.slotId
+        );
 
-      days.push(
-        <div
-          key={day.format("YYYY-MM-DD")}
-          className={`${styles.dayHeader} ${isToday ? styles.today : ""}`}
-          onClick={() => handleDateSelect(day)}
-        >
-          <div className={styles.dayName}>{day.format("ddd")}</div>
-          <div className={styles.dayDate}>{day.format("MMM D")}</div>
-        </div>
+        cells.push(
+          <td
+            key={`${day.format("YYYY-MM-DD")}-${slot.slotId}`}
+            className={`${styles.timeSlotCell} ${
+              appointment ? styles.hasAppointment : ""
+            }`}
+            onClick={() =>
+              appointment && handleAppointmentClick(appointment.appointmentId)
+            }
+          >
+            {appointment ? (
+              <Tooltip title={`${appointment.status || "Scheduled"}`}>
+                <div className={styles.appointmentIndicator}>
+                  <Badge color="#1890ff" />
+                  <span>
+                    {appointment.serviceInfo?.serviceName || "Appointment"}
+                  </span>
+                </div>
+              </Tooltip>
+            ) : null}
+          </td>
+        );
+      }
+
+      return (
+        <tr key={slot.slotId}>
+          <td className={styles.timeSlotLabel}>
+            {formatSlotTime(slot.startTime, slot.endTime)}
+          </td>
+          {cells}
+        </tr>
       );
-    }
-
-    return (
-      <div className={styles.dayHeaderRow}>
-        <div className={styles.timeSlotLabel}>Time</div>
-        <div className={styles.dayHeaders}>{days}</div>
-      </div>
-    );
+    });
   };
 
   if (slotsLoading) {
@@ -261,12 +113,10 @@ const SlotBasedWeekView = ({
         </button>
       </div>
 
-      <div className={styles.slotBasedCalendar}>
-        {renderDayHeader()}
-        <div className={styles.timeSlotRows}>
-          {slots.map((slot, index) => renderSlotRow(slot, index))}
-        </div>
-      </div>
+      <table className={styles.slotBasedCalendar}>
+        <thead>{renderTableHeader()}</thead>
+        <tbody>{renderTableRows()}</tbody>
+      </table>
     </div>
   );
 };

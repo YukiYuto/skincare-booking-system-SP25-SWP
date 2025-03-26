@@ -18,20 +18,17 @@ const StaffAddModal = ({ onClose, refresh }) => {
   });
   const { user } = useSelector((state) => state.auth);
 
-  // Handle input change
   const handleChange = (e) =>
     setFormState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  // Handle password generation
   const handlePasswordGenerate = (newPassword) => {
     setFormState((prev) => ({
       ...prev,
       password: newPassword,
-      confirmPassword: newPassword, // Auto-fill confirm password
+      confirmPassword: newPassword,
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -56,7 +53,6 @@ const StaffAddModal = ({ onClose, refresh }) => {
       <div className={styles.modalContent}>
         <h2>Add New Staff</h2>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
-          {/* Form Fields */}
           {["email", "phoneNumber", "fullName", "address", "age"].map(
             (name) => (
               <label key={name}>
@@ -72,7 +68,6 @@ const StaffAddModal = ({ onClose, refresh }) => {
             )
           )}
 
-          {/* Random Password Generator */}
           <div className="flexContainer">
             <label>
               Password:
@@ -102,7 +97,6 @@ const StaffAddModal = ({ onClose, refresh }) => {
             </div>
           </div>
 
-          {/* Submit & Cancel */}
           <div className={styles.buttonGroup}>
             <button type="submit" className={styles.submitButton}>
               Add
