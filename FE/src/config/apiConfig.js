@@ -71,6 +71,14 @@ export const GET_ORDER_DETAILS_API_BY_ID = `${BASE_URL}/order-detail/{id}`;
 export const POST_PAYMENT_API = `${BASE_URL}/payment/create-link`;
 export const POST_CONFIRM_PAYMENT_API = `${BASE_URL}/payment/confirm-transaction`;
 
+// Thêm API cho Service Combo
+export const GET_SERVICE_COMBO_API = `${BASE_URL}/servicecombo`;
+export const POST_SERVICE_COMBO_API = `${BASE_URL}/servicecombo`;
+
+// Thêm API cho Service Duration
+export const GET_SERVICE_DURATION_API = `${BASE_URL}/serviceDuration`;
+export const POST_SERVICE_DURATION_API = `${BASE_URL}/serviceDuration`;
+
 // Thêm API cho Service
 export const POST_SERVICE_API = `${BASE_URL}/services`;
 export const GET_ALL_SERVICES_API = `${BASE_URL}/services`;
