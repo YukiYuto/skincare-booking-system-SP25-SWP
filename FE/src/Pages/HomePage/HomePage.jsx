@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import BookingModal from "../../Components/BookingModal/BookingModal";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Footer from "../../Components/Footer/Footer";
 
 function HomePage() {
   const [visible, setVisible] = useState(false);
@@ -89,6 +90,7 @@ function HomePage() {
         <AppointmentSection />
         <br />
       </div>
+      <Footer />
     </div>
   );
 }

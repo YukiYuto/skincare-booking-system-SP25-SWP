@@ -52,12 +52,10 @@
     color: #777;
     margin-bottom: 20px;
   }
-  
+
   .imageContainer {
     width: 100%;
-    max-width: 2000px;
     height: auto; 
-    max-height: 1000px; 
     display: flex; 
     justify-content: center;
     align-items: center;
@@ -66,13 +64,10 @@
   
   .image {
     width: 100%; 
-    height: auto; 
-    max-width: 2000px; 
-    max-height: 1000px; 
+    height: 500px; 
     object-fit: contain; 
     object-position: center; 
   }
-  
   
   .tag {
     background: #f0f0f0;

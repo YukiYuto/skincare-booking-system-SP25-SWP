@@ -3,6 +3,7 @@ import teamImage from "../../assets/images/team.png"; // Đảm bảo đường 
 import AboutSection from "../../Components/AboutSection/AboutSection";
 import SkincareExperts from "../../Components/SkincareExperts/SkincareExperts";
 import Header from "../../Components/Common/Header";
+import Footer from "../../Components/Footer/Footer";
 
 const AboutPage = () => {
   return (
@@ -35,6 +36,7 @@ const AboutPage = () => {
       </div>
 
     </section>
+    <Footer />
     </div>
   );
 };

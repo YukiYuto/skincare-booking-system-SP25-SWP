@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Header from "../../Components/Common/Header.jsx";
 import Hero from "../../Components/Hero/Hero";
 import ServiceList from "../../Components/ServiceList/ServiceList.jsx";
@@ -8,6 +8,7 @@ import {
   GET_ALL_SERVICES_API,
   GET_ALL_SERVICE_TYPES_API,
 } from "../../config/apiConfig";
+import Footer from "../../Components/Footer/Footer.jsx";
 
 const AllService = () => {
   const [services, setServices] = useState([]);
@@ -368,7 +369,7 @@ const AllService = () => {
 
                 {filterQuery && (
                   <span className={styles.filterTag}>
-                    Search: "{filterQuery}"
+                    Search: {filterQuery}
                     <button
                       onClick={() => {
                         setFilterQuery("");
@@ -448,6 +449,7 @@ const AllService = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

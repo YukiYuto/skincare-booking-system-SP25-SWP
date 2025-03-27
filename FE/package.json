@@ -49,6 +49,7 @@
     "moment-timezone": "^0.5.45",
     "net": "^1.0.2",
     "npm": "^11.2.0",
+    "primereact": "^10.9.3",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-countup": "^6.5.3",

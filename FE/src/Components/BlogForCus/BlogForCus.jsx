@@ -6,6 +6,7 @@ import styles from "./BlogForCus.module.css";
 import slugify from "slugify";
 import { GET_BLOG, GET_BLOG_CATEGORY } from "../../config/apiConfig";
 import Header from "../Common/Header";
+import Footer from "../Footer/Footer";
 
 const { Meta } = Card;
 
@@ -184,6 +185,7 @@ const BlogForCus = () => {
         className={styles.pagination}
       />
     </div>
+    <Footer />
     </>
   );
 };
