@@ -1,53 +1,67 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { List, Modal } from "antd";
 import style from "./Sidebar.module.css";
-import { GET_ALL_THERAPISTS_API } from "../../../config/apiConfig";
+import AppointmentDetail from "../AppointmentDetail/AppointmentDetail";
 
-const Sidebar = ({ onTherapistChange }) => {
-  const [therapists, setTherapists] = useState([]);
+const Sidebar = ({
+  selectedDate,
+  selectedAppointments,
+  getSlotById,
+  onAppointmentClick, 
+}) => {
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    const fetchTherapists = async () => {
-      try {
-        const response = await axios.get(GET_ALL_THERAPISTS_API);
-        if (response.data.isSuccess) {
-          setTherapists(response.data.result);
-        }
-      } catch (error) {
-        console.error("Error fetching therapists:", error);
-      }
-    };
+  const handleAppointmentClick = (appointment) => {
+    onAppointmentClick(appointment.appointmentId);
+    setSelectedAppointment(appointment);
+    setModalVisible(true);
+  };
 
-    fetchTherapists();
-  }, []);
-
-  const handleTherapistChange = (e) => {
-    const therapistId = e.target.value;
-    onTherapistChange(therapistId === "none" ? null : therapistId);
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedAppointment(null);
   };
 
   return (
     <div className={style.container}>
-      <div className={style.ServiceOption}>
-        <label className={style.checkboxLabel}>
-          <p>Service</p>
-          <input type="checkbox" value="service" />
-        </label>
-        <label className={style.checkboxLabel}>
-          <p>Combo</p>
-          <input type="checkbox" value="combo" />
-        </label>
-      </div>
-      <div className={style.TherapistOption}>
-        <label>Appointment</label>
-        <select className={style.dropdown} onChange={handleTherapistChange}>
-          <option value="none">None</option>
-          {therapists.map((therapist) => (
-            <option key={therapist.skinTherapistId} value={therapist.skinTherapistId}>
-              {therapist.fullName}
-            </option>
-          ))}
-        </select>
+      <div className={style.detailsSection}>
+        {selectedDate ? (
+          <>
+            <h3>Appointments on {selectedDate.format("MMMM D, YYYY")}</h3>
+            {selectedAppointments.length > 0 ? (
+              <List
+                dataSource={selectedAppointments}
+                renderItem={(appointment) => {
+                  const matchingSlot = appointment.slotId
+                    ? getSlotById(appointment.slotId)
+                    : null;
+
+                  return (
+                    <List.Item
+                      key={appointment.appointmentId}
+                      onClick={() => handleAppointmentClick(appointment)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <List.Item.Meta
+                        title={
+                          appointment.serviceInfo?.serviceName || "Appointment"
+                        }
+                        description={`Time: ${
+                          matchingSlot?.startTime || "N/A"
+                        } - ${matchingSlot?.endTime || "N/A"}`}
+                      />
+                    </List.Item>
+                  );
+                }}
+              />
+            ) : (
+              <p>No appointments for this date.</p>
+            )}
+          </>
+        ) : (
+          <p>Select a date to see appointments</p>
+        )}
       </div>
     </div>
   );

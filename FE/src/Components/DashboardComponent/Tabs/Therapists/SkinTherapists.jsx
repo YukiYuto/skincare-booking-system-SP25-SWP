@@ -86,7 +86,7 @@ const SkinTherapists = () => {
           <div className={styles.tabTitleGroup}>
             <h2 className={styles.tabTitle}>Skin Therapists</h2>
             <button
-              onClick={() => setModal({ type: "createt" })}
+              onClick={() => setModal({ type: "createTherapist" })}
               className={styles.iconButton}
             >
               <img src={addIcon} alt="Add Therapist" />
@@ -95,7 +95,7 @@ const SkinTherapists = () => {
           <div className={styles.tabTitleGroup}>
             <h2 className={styles.tabTitle}>Staff</h2>
             <button
-              onClick={() => setModal({ type: "creates" })}
+              onClick={() => setModal({ type: "createStaff" })}
               className={styles.iconButton}
             >
               <img src={addIcon} alt="Add Staff" />
@@ -177,14 +177,14 @@ const SkinTherapists = () => {
         />
       )}
 
-      {modal.type === "createt" && (
+      {modal.type === "createTherapist" && (
         <TherapistAddModal
           onClose={() => setModal({ type: null })}
           refresh={fetchData}
         />
       )}
 
-      {modal.type === "creates" && (
+      {modal.type === "createStaff" && (
         <StaffAddModal
           onClose={() => setModal({ type: null })}
           refresh={fetchData}

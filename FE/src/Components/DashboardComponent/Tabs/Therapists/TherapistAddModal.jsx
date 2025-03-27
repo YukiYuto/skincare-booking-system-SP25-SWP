@@ -19,20 +19,17 @@ const TherapistAddModal = ({ onClose, refresh }) => {
   });
   const { user } = useSelector((state) => state.auth);
 
-  // Handle input change
   const handleChange = (e) =>
     setFormState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  // Handle password generation
   const handlePasswordGenerate = (newPassword) => {
     setFormState((prev) => ({
       ...prev,
       password: newPassword,
-      confirmPassword: newPassword, // Auto-fill confirm password
+      confirmPassword: newPassword,
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -60,7 +57,6 @@ const TherapistAddModal = ({ onClose, refresh }) => {
       <div className={styles.modalContent}>
         <h2>Add New Therapist</h2>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
-          {/* Form Fields */}
           {[
             "email",
             "phoneNumber",
@@ -83,7 +79,6 @@ const TherapistAddModal = ({ onClose, refresh }) => {
             </label>
           ))}
 
-          {/* Random Password Generator */}
           <div className="flexContainer">
             <label>
               Password:
@@ -113,7 +108,6 @@ const TherapistAddModal = ({ onClose, refresh }) => {
             </div>
           </div>
 
-          {/* Submit & Cancel */}
           <div className={styles.buttonGroup}>
             <button type="submit" className={styles.submitButton}>
               Add
