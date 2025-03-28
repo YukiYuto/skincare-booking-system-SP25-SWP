@@ -200,7 +200,7 @@ const UserProfile = () => {
     <div className={styles.bodyPage}>
       <Header />
       <div className={styles.profileContainer}>
-        <h2>Customer Profile</h2>
+        <h2>{user.roles} Profile</h2>
         <div>
           <p>Choose file here:</p>
           <input

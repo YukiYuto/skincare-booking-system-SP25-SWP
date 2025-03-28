@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
 import styles from "./ServiceLayout.module.css";
 import { GET_ALL_SERVICE_TYPES_API } from "../../config/apiConfig";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
   const [serviceTypes, setServiceTypes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { accessToken } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchServiceTypes = async () => {
@@ -78,6 +83,15 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
     return typeNames.join(", ");
   };
 
+  const handleBookNow = () => {
+    if (!accessToken) {
+      navigate("/login");
+      toast.warn("Please Login!");
+      return;
+    }
+    onBookButtonClick(); // Gọi hàm đặt lịch khi đã đăng nhập
+  };
+
   return (
     <div className={styles.layout}>
       <div className={styles.imageContainer}>
@@ -103,7 +117,7 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
         </div>
         <br />
         <div className={styles.purchaseSection}>
-          <button className={styles.order} onClick={onBookButtonClick}>
+          <button className={styles.order} onClick={handleBookNow}>
             BOOK NOW
           </button>
         </div>

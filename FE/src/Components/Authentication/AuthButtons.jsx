@@ -32,7 +32,7 @@ const AuthButtons = () => {
       return { path: "/appointments", label: "Appointment", icon: <ShoppingCartOutlined /> };
     }
 
-    if (user.roles.includes("THERAPIST")) {
+    if (user.roles.includes("SKINTHERAPIST")) {
       return { path: "/therapist-management", label: "Therapist Management", icon: <BarChartOutlined /> };
     }
 

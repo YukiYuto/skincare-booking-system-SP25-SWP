@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logout as logoutAction } from "../../../redux/auth/thunks";
 import styles from './SideBarTherapist.module.css';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Spin } from 'antd';
 
 const SideBarTherapist = ({ onToggle }) => {
@@ -11,6 +11,7 @@ const SideBarTherapist = ({ onToggle }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth);
 
     const toggleSidebar = useCallback(() => {
         setIsOpen(prev => !prev);
@@ -45,7 +46,7 @@ const SideBarTherapist = ({ onToggle }) => {
             <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`} aria-label="Sidebar">
                 <div className={styles.sidebarContent}>
                     <div className={styles.profileSection}>
-                        <img className={styles.profileImage} src="https://www.svgrepo.com/show/301043/employee-worker.svg" alt="Profile" />
+                        <img className={styles.profileImage} src={user.imageUrl} alt="Profile" />
                         <h2 className={styles.title}>Therapist</h2>
                     </div>
                     <ul className={styles.menuList}>
