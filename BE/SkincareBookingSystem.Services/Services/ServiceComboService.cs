@@ -96,9 +96,30 @@ public class ServiceComboService : IServiceComboService
     }
 
 
-    public Task<ResponseDto> GetServiceComboById(ClaimsPrincipal user, Guid serviceComboId)
+    public async Task<ResponseDto> GetServiceComboById(ClaimsPrincipal user, Guid serviceComboId)
     {
-        throw new NotImplementedException();
+        var serviceCombo = await _unitOfWork.ServiceCombo.GetAsync(s => s.ServiceComboId == serviceComboId,
+            includeProperties: $"{nameof(ServiceCombo.ComboItems)}.{nameof(ComboItem.Services)}");
+        if (serviceCombo == null)
+            return new ResponseDto
+            {
+                Result = serviceCombo,
+                Message = "No ServiceCombo found",
+                IsSuccess = false,
+                StatusCode = 200
+            };
+        var servicesFromCombo = serviceCombo.ComboItems.Select(c => c.Services).ToList();
+        var serviceDtos = _mapper.MapCollection<Models.Domain.Services, ServiceDto>(servicesFromCombo);
+        var serviceComboDto = _mapper.Map<ServiceCombo, ServiceComboDto>(serviceCombo);
+        serviceComboDto.Services = serviceDtos.ToList();
+
+        return new ResponseDto
+        {
+            Result = serviceComboDto,
+            Message = "ServiceCombo retrieved successfully",
+            IsSuccess = true,
+            StatusCode = 200
+        };
     }
 
     public Task<ResponseDto> DeleteServiceCombo(ClaimsPrincipal user, Guid serviceComboId)
