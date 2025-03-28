@@ -61,7 +61,7 @@ const ErrorPage = () => {
           variant="contained"
           color="primary"
           className={styles.styledButton}
-          onClick={() => navigate(getRedirectPath())} 
+          onClick={() => navigate("/")} 
         >
           Return to Home
         </Button>

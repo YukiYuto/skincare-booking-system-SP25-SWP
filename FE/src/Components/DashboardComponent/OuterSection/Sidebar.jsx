@@ -36,7 +36,7 @@ const Sidebar = ({ onExpandChange }) => {
     try {
       dispatch(logoutAction());
       toast.success("Logout Successfully!");
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       toast.error("Logout failed. Please try again.");
     } finally {
