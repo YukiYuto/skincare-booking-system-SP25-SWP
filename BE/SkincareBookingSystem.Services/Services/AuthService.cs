@@ -368,25 +368,10 @@ public class AuthService : IAuthService
         FirebaseToken googleToken =
             await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(signInByGoogleDto.Token);
 
-        string userId = googleToken.Uid;
-        string email = googleToken.Claims["email"].ToString()!;
-        string name = googleToken.Claims["name"].ToString()!;
-        string avatarUrl = googleToken.Claims["picture"].ToString()!;
-        string phoneNumber = googleToken.Claims.ContainsKey("phone_number")
-            ? googleToken.Claims["phone_number"].ToString()!
-            : string.Empty;
-        string birthDate = googleToken.Claims.ContainsKey("birthday")
-            ? googleToken.Claims["birthday"].ToString()!
-            : string.Empty;
-        string gender = googleToken.Claims.ContainsKey("gender")
-            ? googleToken.Claims["gender"].ToString()!
-            : string.Empty;
-        string address = googleToken.Claims.ContainsKey("address")
-            ? googleToken.Claims["address"].ToString()!
-            : string.Empty;
-        
-        var user = await _userManager.FindByEmailAsync(email);
-        
+        var userInfo = ExtractUserInfo(googleToken);
+
+        var user = await _userManager.FindByEmailAsync(userInfo.Email);
+
         if (user is not null)
         {
             if (user.LockoutEnd is not null && user.LockoutEnd > DateTime.UtcNow)
@@ -404,14 +389,16 @@ public class AuthService : IAuthService
         {
             user = new ApplicationUser
             {
-                Email = email,
-                FullName = name,
-                UserName = email,
-                ImageUrl = avatarUrl,
-                Address = address,
-                Age = birthDate != string.Empty ? DateTime.UtcNow.Year - DateTime.Parse(birthDate).Year : 0,
-                Gender = gender,
-                PhoneNumber = phoneNumber,
+                Email = userInfo.Email,
+                FullName = userInfo.Name,
+                UserName = userInfo.Email,
+                ImageUrl = userInfo.AvatarUrl,
+                Address = userInfo.Address,
+                Age = userInfo.BirthDate != string.Empty
+                    ? DateTime.UtcNow.Year - DateTime.Parse(userInfo.BirthDate).Year
+                    : 0,
+                Gender = userInfo.Gender,
+                PhoneNumber = userInfo.PhoneNumber,
                 EmailConfirmed = true
             };
 
@@ -427,9 +414,22 @@ public class AuthService : IAuthService
                 };
             }
 
-            await _userManager.AddLoginAsync(user, new UserLoginInfo(StaticLoginProvider.Google, userId, "GOOGLE"));
+            var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Customer);
+            if (!isRoleExist) await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Customer));
+
+            var isRoleAdded = await _userManager.AddToRoleAsync(user, StaticUserRoles.Customer);
+            if (!isRoleAdded.Succeeded)
+                return new ResponseDto
+                {
+                    Message = "Error adding role",
+                    IsSuccess = false,
+                    StatusCode = 500,
+                    Result = isRoleAdded.Errors
+                };
+            await _userManager.AddLoginAsync(user,
+                new UserLoginInfo(StaticLoginProvider.Google, userInfo.UserId, "GOOGLE"));
         }
-        
+
         var accessToken = await _tokenService.GenerateJwtAccessTokenAsync(user);
         var refreshToken = await _tokenService.GenerateJwtRefreshTokenAsync(user);
         await _tokenService.StoreRefreshToken(user.Id, refreshToken);
@@ -446,6 +446,28 @@ public class AuthService : IAuthService
             IsSuccess = true,
             StatusCode = 200
         };
+    }
+
+    // Extract user info from Firebase token
+    private (string UserId, string Email, string Name, string AvatarUrl,
+        string PhoneNumber, string BirthDate, string Gender, string Address)
+        ExtractUserInfo(FirebaseToken token)
+    {
+        token.Claims.TryGetValue("phone_number", out var phoneNumber);
+        token.Claims.TryGetValue("birthday", out var birthDate);
+        token.Claims.TryGetValue("gender", out var gender);
+        token.Claims.TryGetValue("address", out var address);
+
+        return (
+            token.Uid,
+            token.Claims["email"].ToString()!,
+            token.Claims["name"].ToString()!,
+            token.Claims["picture"].ToString()!,
+            phoneNumber?.ToString() ?? string.Empty,
+            birthDate?.ToString() ?? string.Empty,
+            gender?.ToString() ?? string.Empty,
+            address?.ToString() ?? string.Empty
+        );
     }
 
     public async Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,
