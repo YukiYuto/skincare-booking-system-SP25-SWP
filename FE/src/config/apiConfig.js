@@ -55,6 +55,11 @@ export const GET_CUSTOMER_TIMETABLE_API = `${BASE_URL}/customer/timetable`;
 export const POST_FILE_SERVICE_API = `${BASE_URL}/files/service`;
 export const POST_FILE_SERVICE_COMBO_API = `${BASE_URL}/files/service-combo`;
 
+// Thêm API cho Revenue
+export const GET_REVENUE_BY_ORDERS_API = `${BASE_URL}/revenue/orders`;
+export const GET_REVENUE_BY_PROFIT_API = `${BASE_URL}/revenue/profit`;
+export const GET_REVENUE_BY_TRANSACTIONS_API = `${BASE_URL}/revenue/transactions`;
+
 // Thêm API cho Order
 export const GET_ALL_ORDERS_API = `${BASE_URL}/order`;
 export const PUT_ORDER_API = `${BASE_URL}/order`;

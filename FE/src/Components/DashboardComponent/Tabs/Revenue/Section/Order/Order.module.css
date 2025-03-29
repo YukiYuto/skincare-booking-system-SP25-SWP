@@ -1,0 +1,170 @@
+.container {
+    padding: 2px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+
+.form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.dateGroup {
+    flex: 2;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.numberGroup {
+    flex: 1;
+    width: 120px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.buttonGroup {
+    flex: 1;
+    width: 60px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.button {
+    padding: 8px 16px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.buttonDisabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.errorMessage {
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background-color: var(--background-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: start;
+    align-items: end;
+    gap: 10px;
+}
+
+.statValue {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.tableContainer {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.tableHeader {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    background-color: #f5f5f5;
+}
+
+.tableCell {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+}
+
+.orderIdCell {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.tableRowEven {
+    background-color: var(--background-color);
+}
+
+.tableRowOdd {
+    background-color: var(--secondary-color);
+}
+
+.pagination {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.paginationButton {
+    padding: 6px 12px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.paginationButton:hover {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+.pageInfo {
+    color: var(--text-color);
+    font-family: Raleway, sans-serif;
+}
+
+@media (max-width: 600px) {
+    .formRow {
+        flex-direction: column;
+    }
+
+    .formGroup {
+        width: 100%;
+    }
+
+    .pagination {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+}
