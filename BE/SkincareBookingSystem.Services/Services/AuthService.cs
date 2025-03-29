@@ -396,7 +396,7 @@ public class AuthService : IAuthService
                 Address = userInfo.Address,
                 Age = userInfo.BirthDate != string.Empty
                     ? DateTime.UtcNow.Year - DateTime.Parse(userInfo.BirthDate).Year
-                    : 0,
+                    : 18,
                 Gender = userInfo.Gender,
                 PhoneNumber = userInfo.PhoneNumber,
                 EmailConfirmed = true
@@ -414,6 +414,12 @@ public class AuthService : IAuthService
                 };
             }
 
+            var newCustomer = new Customer()
+            {
+                UserId = user.Id,
+            };
+            
+            await _unitOfWork.Customer.AddAsync(newCustomer);
             var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Customer);
             if (!isRoleExist) await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Customer));
 
