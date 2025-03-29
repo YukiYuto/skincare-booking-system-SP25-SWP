@@ -7,6 +7,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers;
 
+[Route("api/revenue")]
+[ApiController]
 public class ManagerController : ControllerBase
 {
     private readonly IManagerSerivce _managerService;
@@ -16,7 +18,7 @@ public class ManagerController : ControllerBase
         _managerService = managerService;
     }
 
-    [HttpGet("revenue-orders")]
+    [HttpGet("orders")]
     [Authorize(Roles = StaticUserRoles.Manager)]
     [SwaggerOperation(Summary = "API gets revenue from orders", Description = "Requires roles")]
     public async Task<IActionResult> GetRevenueOrders(DateTime startDate, DateTime endDate, int pageNumber = 1, int pageSize = 10)
@@ -25,7 +27,7 @@ public class ManagerController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("revenue-profit")]
+    [HttpGet("profit")]
     //[Authorize(Roles = StaticUserRoles.Manager)]
     [SwaggerOperation(Summary = "API gets revenue profit", Description = "Requires roles")]
     public async Task<IActionResult> GetRevenueProfit(DateTime startDate, DateTime endDate, int pageNumber = 1, int pageSize = 10)
@@ -34,7 +36,7 @@ public class ManagerController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
     
-    [HttpGet("revenue-transactions")]
+    [HttpGet("transactions")]
     [Authorize(Roles = StaticUserRoles.Manager)]
     [SwaggerOperation(Summary = "API gets revenue transactions", Description = "Requires roles")]
     public async Task<IActionResult> GetRevenueTransactions(DateTime startDate, DateTime endDate, int pageNumber = 1, int pageSize = 10)
