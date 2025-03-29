@@ -3,12 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { login as loginAction } from "../../redux/auth/thunks";
+import { login as loginAction, loginByGoogle } from "../../redux/auth/thunks";
 import EmailInputField from "../InputField/Email/EmailInputField";
 import PasswordInputField from "../InputField/Password/PasswordInputField";
-import { isAccountUnverified, validateEmail, validatePassword } from "../../utils/validationUtils";
+import {
+  isAccountUnverified,
+  validateEmail,
+  validatePassword,
+} from "../../utils/validationUtils";
 import styles from "./LoginForm.module.css";
 import { sendVerificationEmail } from "../../services/authService";
+import SignInWithGoogle from "../Authentication/Google/SignInWithGoogle";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 export function LoginForm() {
   const [loginData, setLoginData] = useState({
@@ -66,6 +73,22 @@ export function LoginForm() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const idTokenResult = await result.user?.getIdTokenResult();
+      const idToken = idTokenResult?.token;
+      const user = await dispatch(loginByGoogle(idToken)).unwrap();
+      setIsAccountVerified(true);
+      toast.success(`Welcome, ${user.fullName}!`);
+      navigate("/");
+    } catch (error) {
+      console.error("Google sign-in error", error.message);
+      toast.error("Google sign-in failed. Please try again.");
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const trimmedData = {
@@ -88,7 +111,7 @@ export function LoginForm() {
       } else if (userData.roles.includes("ADMIN")) {
         navigate("/dashboard");
       } else if (userData.roles.includes("STAFF")) {
-        navigate("/staff-management");
+        navigate("/staff/dashboard");
       } else if (userData.roles.includes("SKINTHERAPIST")) {
         navigate("/therapist-management");
       } else if (userData.roles.includes("MANAGER")) {
@@ -164,7 +187,7 @@ export function LoginForm() {
         </a>
         <span> of our center.</span>
       </div>
-
+      <SignInWithGoogle handleGoogleSignIn={handleGoogleSignIn} />
       <button type="submit" className={styles.loginButton} disabled={loading}>
         {loading ? "Logging in..." : "Login"}
       </button>

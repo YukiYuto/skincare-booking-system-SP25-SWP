@@ -1,23 +1,20 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
-
-// just change config below to start
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBWj4xlnMiRengkwp3GGBUe3SFyfHurSAM",
-  authDomain: "swp391-791a4.firebaseapp.com",
-  projectId: "swp391-791a4",
-  storageBucket: "swp391-791a4.appspot.com",
-  messagingSenderId: "276263249414",
-  appId: "1:276263249414:web:ec7ed1567705739610c587",
-  measurementId: "G-SJEMJTYD1D"
+  apiKey: "AIzaSyDxhCTDd9VPi0XvraWCKkNc8H16GG5vuoU",
+  authDomain: "lumiconnect-swp391.firebaseapp.com",
+  projectId: "lumiconnect-swp391",
+  storageBucket: "lumiconnect-swp391.firebasestorage.app",
+  messagingSenderId: "733632497320",
+  appId: "1:733632497320:web:6e28902eb65fad50c6249d",
 };
+
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth();
-export const storage = getStorage();
-export const db = getFirestore();
-export const ggProvider = new GoogleAuthProvider();
+export const db = getFirestore(app);
+export default app;
