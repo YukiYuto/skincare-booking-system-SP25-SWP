@@ -4,8 +4,8 @@ import { Calendar, Badge, Card, Spin, Alert } from "antd";
 import dayjs from "dayjs";
 import axios from "axios";
 import styles from "./TableTherapist.module.css";
+import { GET_ALL_THERAPISTS_API } from "../../config/apiConfig";
 
-const API_THERAPISTS = "https://lumiconnect.azurewebsites.net/api/therapists";
 const API_SCHEDULES = "https://lumiconnect.azurewebsites.net/api/therapist-schedules/therapist";
 const API_APPOINTMENT = "https://lumiconnect.azurewebsites.net/api/appointment";
 
@@ -23,7 +23,7 @@ const TableTherapist = () => {
       try {
         if (!token) throw new Error("Please login!");
 
-        const { data: therapistsData } = await axios.get(API_THERAPISTS, {
+        const { data: therapistsData } = await axios.get(GET_ALL_THERAPISTS_API, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -160,7 +160,7 @@ const TableTherapist = () => {
                 <button
                   onClick={() => toggleCompletion(booking.id)}
                   style={{
-                    backgroundColor: booking.isCompleted ? "green" : "red",
+                    backgroundColor: booking.isCompleted ? "red" : "green",
                     color: "white",
                     padding: "5px 10px",
                     border: "none",
@@ -168,7 +168,7 @@ const TableTherapist = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {booking.isCompleted ? "Done" : "Not yet"}
+                  {booking.isCompleted ? "Not yet" : "Done"}
                 </button>
                 <hr />
               </div>
