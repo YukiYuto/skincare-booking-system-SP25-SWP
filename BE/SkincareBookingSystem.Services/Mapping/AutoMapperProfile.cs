@@ -252,12 +252,15 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
-        CreateMap<UpdateOrderDto, Order>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-
         //OrderDetail
-        CreateMap<UpdateOrderDto, Order>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<Order, GetOrderDetailByOrderIdDto>() 
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId));
+        CreateMap<OrderDetail, GetOrderDetailDto>()
+            .ForMember(dest => dest.OrderDetailId, opt => opt.MapFrom(src => src.OrderDetailId))
+            .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
+            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Services.ServiceName))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
 
         CreateMap<BundleOrderDto, Order>()
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
