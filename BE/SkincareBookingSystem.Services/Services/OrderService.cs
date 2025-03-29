@@ -1,7 +1,10 @@
 ﻿using SkincareBookingSystem.DataAccess.IRepositories;
+using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Orders;
 using SkincareBookingSystem.Models.Dto.Response;
+using SkincareBookingSystem.Services.Helpers.Responses;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,91 +25,47 @@ namespace SkincareBookingSystem.Services.Services
             _autoMapperService = autoMapperService;
         }
 
-        public async Task<ResponseDto> DeleteOrder(Guid id)
-        {
-            var order = await _unitOfWork.Order.GetAsync(o => o.OrderId == id);
-            if (order == null)
-            {
-                return new ResponseDto
-                {
-                    Message = "Order not found",
-                    IsSuccess = false,
-                    StatusCode = 404
-                };
-            }
-
-            order.Status = "1"; // Soft delete
-            order.UpdatedTime = DateTime.UtcNow;
-
-            await _unitOfWork.SaveAsync();
-
-            return new ResponseDto
-            {
-                Message = "Order deleted successfully",
-                IsSuccess = true,
-                StatusCode = 200
-            };
-        }
-
         public async Task<ResponseDto> GetAllOrders()
         {
-            var orders = await _unitOfWork.Order.GetAllAsync(o => o.Status != "1");
-            return new ResponseDto
-            {
-                Result = orders,
-                Message = "Orders retrieved successfully",
-                IsSuccess = true,
-                StatusCode = 200
-            };
+            var orders = await _unitOfWork.Order.GetAllAsync();
+            var sortedOrders = orders.OrderBy(o => o.OrderNumber).ToList();
+            return (sortedOrders.Any())
+                ? SuccessResponse.Build(
+                    message: StaticResponseMessage.Order.RetrievedAll,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: sortedOrders)
+                : SuccessResponse.Build(
+                    message: StaticResponseMessage.Order.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound,
+                    result: new List<Order>()
+                );
         }
 
-        public async Task<ResponseDto> GetOrderById(Guid id)
+        public async Task<ResponseDto> GetOrderById(ClaimsPrincipal User, Guid orderId)
         {
-            var order = await _unitOfWork.Order.GetAsync(o => o.OrderId == id);
-            if (order == null)
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
-                return new ResponseDto
-                {
-                    Message = "Order not found",
-                    IsSuccess = false,
-                    StatusCode = 404
-                };
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound
+                );
             }
 
-            return new ResponseDto
-            {
-                Result = order,
-                Message = "Order retrieved successfully",
-                IsSuccess = true,
-                StatusCode = 200
-            };
+            var getOrder = await _unitOfWork.Order.GetAsync(o => o.OrderId == orderId);
+            return (getOrder != null)
+                ? SuccessResponse.Build(
+                    message: StaticResponseMessage.Order.Retrieved,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: getOrder)
+                : ErrorResponse.Build(
+                    message: StaticResponseMessage.Order.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound
+                );
         }
 
-        public async Task<ResponseDto> UpdateOrder(ClaimsPrincipal User, UpdateOrderDto updateOrderDto)
+        private async Task<bool> SaveChangesAsync()
         {
-            var order = await _unitOfWork.Order.GetAsync(o => o.OrderId == updateOrderDto.OrderId);
-            if (order == null)
-            {
-                return new ResponseDto
-                {
-                    Message = "Order not found",
-                    IsSuccess = false,
-                    StatusCode = 404
-                };
-            }
-
-            var updateDate = _autoMapperService.Map<UpdateOrderDto, Models.Domain.Order>(updateOrderDto);
-            order.UpdatedBy = User.Identity?.Name;
-
-            _unitOfWork.Order.Update(order, updateDate);
-            await _unitOfWork.SaveAsync();
-
-            return new ResponseDto
-            {
-                Message = "Order updated successfully",
-                IsSuccess = true,
-                StatusCode = 200
-            };
+            return await _unitOfWork.SaveAsync() == StaticOperationStatus.Database.Success;
         }
     }
 }

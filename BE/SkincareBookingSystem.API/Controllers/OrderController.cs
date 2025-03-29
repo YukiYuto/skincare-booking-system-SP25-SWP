@@ -23,27 +23,11 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{orderId}")]
         [SwaggerOperation(Summary = "API gets an order by id", Description = "Requires admin role")]
-        public async Task<IActionResult> GetOrderById(Guid id)
+        public async Task<IActionResult> GetOrderById(Guid orderId)
         {
-            var result = await _orderService.GetOrderById(id);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        [HttpPut]
-        [SwaggerOperation(Summary = "API updates an order", Description = "Requires admin role")]
-        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderDto updateOrderDto)
-        {
-            var result = await _orderService.UpdateOrder(User, updateOrderDto);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        [HttpDelete("{id}")]
-        [SwaggerOperation(Summary = "API soft deletes an order", Description = "Requires admin role")]
-        public async Task<IActionResult> DeleteOrder(Guid id)
-        {
-            var result = await _orderService.DeleteOrder(id);
+            var result = await _orderService.GetOrderById(User, orderId);
             return StatusCode(result.StatusCode, result);
         }
     }

@@ -150,6 +150,7 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public const string Created = "Order created successfully";
             public const string Deleted = "Order deleted successfully";
+            public const string AlreadyDeleted = "Order already deleted ";
             public const string RetrievedAll = "All orders retrieved successfully";
             public const string Retrieved = "Order retrieved successfully";
             public const string Updated = "Order updated successfully";

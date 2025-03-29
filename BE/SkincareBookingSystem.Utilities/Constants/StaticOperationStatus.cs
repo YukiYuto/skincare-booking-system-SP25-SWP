@@ -62,6 +62,7 @@ public static class StaticOperationStatus
         public const string Created = "CREATED";
         public const string Paid = "PAID";
         public const string Cancelled = "CANCELLED";
+        public const string Deleted = "DELETED";
 
         public static class Message
         {
