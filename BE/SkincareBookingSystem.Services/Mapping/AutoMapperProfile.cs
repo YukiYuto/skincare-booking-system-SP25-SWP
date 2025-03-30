@@ -30,6 +30,7 @@ using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistSchedules;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
+using ServiceDto = SkincareBookingSystem.Models.Dto.ServiceCombo.ServiceDto;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -167,7 +168,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CreatedTime,
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Service.Active));
-
+        CreateMap<ServiceCombo, ServiceComboDto>();
+        
         // TherapistSchedule to ScheduleDto
         CreateMap<TherapistSchedule, ScheduleDto>()
             .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
@@ -313,6 +315,7 @@ public class AutoMapperProfile : Profile
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
+        CreateMap<Models.Domain.Services, ServiceDto>();
         //SignUpCustomerDto to ApplicationUser
         CreateMap<SignUpCustomerDto, ApplicationUser>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
