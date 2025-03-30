@@ -95,7 +95,7 @@ public class BookingService : IBookingService
         if (customer is null)
             return ErrorResponse.Build(StaticOperationStatus.Customer.NotFound,
                 StaticOperationStatus.StatusCode.NotFound);
-        
+
 
         if (!bundleOrderDto.OrderDetails.Any())
             return ErrorResponse.Build(StaticOperationStatus.OrderDetail.EmptyList,
@@ -229,7 +229,7 @@ public class BookingService : IBookingService
             order.OrderDetails = orderDetails;
 
             await _unitOfWork.Order.AddAsync(order);
-            
+
             await _unitOfWork.OrderServiceTracking.AddRangeAsync(orderServiceTrackings);
             await _unitOfWork.SaveAsync();
 
@@ -511,7 +511,7 @@ public class BookingService : IBookingService
         }
     }
 
-    public async Task<ResponseDto> CancelAppointment(CancelAppointmentDto cancelAppointmentDto , ClaimsPrincipal User)
+    public async Task<ResponseDto> CancelAppointment(CancelAppointmentDto cancelAppointmentDto, ClaimsPrincipal User)
     {
         if (UserError.NotExists(User))
             return ErrorResponse.Build(StaticResponseMessage.User.NotFound,
@@ -526,7 +526,8 @@ public class BookingService : IBookingService
             return ErrorResponse.Build(StaticResponseMessage.Appointment.NotFound,
                 StaticOperationStatus.StatusCode.NotFound);
 
-        if (appointmentFromDb.Customer.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+        if (await IsRequestFromCustomer(User) is true &&
+            appointmentFromDb.Customer.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
             return ErrorResponse.Build(StaticResponseMessage.Appointment.NotMatchedToCustomer,
                 StaticOperationStatus.StatusCode.BadRequest);
 
@@ -535,7 +536,7 @@ public class BookingService : IBookingService
                 StaticOperationStatus.StatusCode.BadRequest);
 
         // 1. Ensure the appointment is not within the grace period
-        if (IsWithinGracePeriod(appointmentFromDb))
+        if (await IsRequestFromCustomer(User) is true && IsWithinGracePeriod(appointmentFromDb))
             return ErrorResponse.Build(StaticResponseMessage.Appointment.CancelWithinGracePeriod,
                 StaticOperationStatus.StatusCode.BadRequest);
 
@@ -558,10 +559,10 @@ public class BookingService : IBookingService
 
                 _unitOfWork.TherapistSchedule.Update(schedule, schedule);
             }
-            
+
             // 3. Update the appointment status
             appointmentFromDb.Status = StaticOperationStatus.Appointment.Cancelled;
-            
+
             await _unitOfWork.SaveAsync();
             await transaction.CommitAsync();
 
@@ -702,7 +703,7 @@ public class BookingService : IBookingService
             therapistAppoinment.UpdatedBy = User.FindFirstValue("name");
             _unitOfWork.TherapistSchedule.UpdateStatus(therapistAppoinment);
 
-            
+
             // Update Appointment
             appointment.Status = StaticOperationStatus.Appointment.Completed;
             await _unitOfWork.SaveAsync();
@@ -725,6 +726,11 @@ public class BookingService : IBookingService
                 Message = e.Message
             };
         }
+    }
+
+    private async Task<bool> IsRequestFromCustomer(ClaimsPrincipal User)
+    {
+        return await _unitOfWork.Customer.GetAsync(c => c.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) is not null;
     }
 
 

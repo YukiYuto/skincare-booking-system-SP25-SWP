@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { Provider, useSelector } from "react-redux";
 import { store } from "./redux/store";
 
@@ -39,7 +44,7 @@ import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTh
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
   const roles = user?.roles || [];
-  
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />

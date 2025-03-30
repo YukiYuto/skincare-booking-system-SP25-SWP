@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { logout as logoutAction } from "../../../redux/auth/thunks";
 import styles from './SideBarStaff.module.css';
 import { toast } from 'react-toastify';
@@ -14,28 +14,28 @@ const SideBarStaff = ({ onToggle }) => {
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.auth);
 
-    const toggleSidebar = useCallback(() => {
-        setIsOpen(prev => !prev);
-    }, []);
+  const toggleSidebar = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
 
-    const handleLogout = () => {
-        setLoading(true);
-        try {
-            dispatch(logoutAction()); // Chờ logout hoàn thành
-            toast.success("Logout Successfully!");
-            navigate("/");
-        } catch (error) {
-            toast.error("Logout failed. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleLogout = () => {
+    setLoading(true);
+    try {
+      dispatch(logoutAction()); // Chờ logout hoàn thành
+      toast.success("Logout Successfully!");
+      navigate("/");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => {
-        if (onToggle) {
-            onToggle(isOpen);
-        }
-    }, [isOpen, onToggle]);
+  useEffect(() => {
+    if (onToggle) {
+      onToggle(isOpen);
+    }
+  }, [isOpen, onToggle]);
 
     return (
         <>
