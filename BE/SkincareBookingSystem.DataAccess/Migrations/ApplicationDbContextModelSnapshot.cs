@@ -272,7 +272,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Admin St",
                             Age = 30,
-                            ConcurrencyStamp = "10f38a09-c6c0-430e-ba54-55057c10709f",
+                            ConcurrencyStamp = "e026a5c5-5fe8-4983-93f0-2d1845a62cf0",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Admin",
@@ -280,10 +280,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGbTa4HJ18fchgdzNg/Txp9oIWxsI7ww0MjeEsVIq2rmEr/YpkFkpLhGGbZ3qKkDFw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI7BjcxW9wAEav6LG9AMiOwwD6q7HlPyNtCPdPSe3CCQsrHk4WTqKOgcp7wFnDyQag==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "b6bf7c40-93e9-467a-b887-518955b5f622",
+                            SecurityStamp = "f870ab78-360a-4e13-a547-b64d5d32dccb",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         },
@@ -293,7 +293,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Manager St",
                             Age = 30,
-                            ConcurrencyStamp = "499f9d0a-b3b2-4d5f-9290-c684aec2e979",
+                            ConcurrencyStamp = "5b9a3588-d3f3-47be-85b3-55a71d961c27",
                             Email = "manager@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Manager",
@@ -301,10 +301,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "MANAGER@GMAIL.COM",
                             NormalizedUserName = "MANAGER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENtsRlhtcqPJ24KoRN54QHlqXTeu9b7UM9Nvkw0/H8vZdatsLpTR1kk6MUTSfE3tqw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIPcmXnu60sRhHOHItNpXts7A7unCSNgpIRy6CxxE3SC0yYL3ODvez7g+4RS+3ftGg==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "7e0f0b5d-a0c3-48f1-8872-3466ee5c54dc",
+                            SecurityStamp = "2bd08bc2-7987-4435-a60f-6ef19a1bb97c",
                             TwoFactorEnabled = false,
                             UserName = "manager@gmail.com"
                         });
@@ -893,7 +893,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.Property<Guid?>("ParentSkin")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Score")
+                    b.Property<int>("ScoreMax")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScoreMin")
                         .HasColumnType("integer");
 
                     b.Property<string>("SkinName")

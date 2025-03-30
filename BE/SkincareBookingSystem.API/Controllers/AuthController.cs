@@ -95,6 +95,13 @@ public class AuthController : ControllerBase
         var responseDto = await _authService.SignIn(signInDto);
         return StatusCode(responseDto.StatusCode, responseDto);
     }
+    
+    [HttpPost("signin-by-google")]
+    public async Task<ActionResult<ResponseDto>> SignInByGoogle([FromBody] SignInByGoogleDto googleSignInDto)
+    {
+        var responseDto = await _authService.SignInByGoogle(googleSignInDto);
+        return StatusCode(responseDto.StatusCode, responseDto);
+    }
 
     [HttpGet("user")]
     [SwaggerOperation(Summary = "API gets user token", Description = "Requires customer's, therapist's, staff's token")]

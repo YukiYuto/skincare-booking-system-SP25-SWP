@@ -11,19 +11,21 @@ const BASE_URL = "https://lumiconnect.azurewebsites.net/api";
 export const BASE_API_URL = BASE_URL;
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes
 
-// Thêm API cho Forgot Password & Reset Password
-export const LOGIN_API = `${BASE_URL}/auth/signin`;
+//Create user
 export const REGISTER_CUSTOMER_API = `${BASE_URL}/auth/customers`;
+export const POST_THERAPIST_API = `${BASE_URL}/auth/skin-therapists`;
+export const POST_STAFF_API = `${BASE_URL}/auth/staff`;
+export const LOGIN_API = `${BASE_URL}/auth/signin`;
 export const USER_PROFILE_API = `${BASE_URL}/auth/user`;
-export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`;
-export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`;
-export const FORGOT_PASSWORD_API = `${BASE_URL}/auth/password/forgot`;
-export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;
 export const REFRESH_TOKEN_API = `${BASE_URL}/auth/refresh-token`;
 export const CHANGE_PASSWORD_API = `${BASE_URL}/auth/password/change`;
+export const FORGOT_PASSWORD_API = `${BASE_URL}/auth/password/forgot`;
+export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;
+export const GET_CUSTOMER_PROFILE_API = `${BASE_URL}/auth/profile`;
+export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`;
+export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`;
 
 // Thêm API cho Customer
-export const GET_CUSTOMER_PROFILE_API = `${BASE_URL}/auth/profile`;
 export const POST_CUSTOMER_AVATAR_API = `${BASE_URL}/UserManagement/avatar`;
 
 // Thêm API cho Appointment
@@ -33,7 +35,6 @@ export const PUT_APPOINTMENT_API = `${BASE_URL}/appointment`;
 export const GET_APPOINTMENT_BY_CUSTOMER_API = `${BASE_URL}/appointment/customer/appointments`;
 export const GET_APPOINTMENT_BY_ID_API = `${BASE_URL}/appointment/{appointmentId}`;
 export const DELETE_APPOINTMENT_API = `${BASE_URL}/appointment`;
-export const GET_TODAY_APPOINTMENTS_API = `${BASE_URL}/staff/appointment-today`;
 
 // Thêm API cho Booking
 export const POST_BOOKING_API = `${BASE_URL}/bookings/orders-bundles`;
@@ -69,6 +70,14 @@ export const GET_ORDER_DETAILS_API_BY_ID = `${BASE_URL}/order-detail/{id}`;
 // Thêm API cho Payment
 export const POST_PAYMENT_API = `${BASE_URL}/payment/create-link`;
 export const POST_CONFIRM_PAYMENT_API = `${BASE_URL}/payment/confirm-transaction`;
+
+// Thêm API cho Service Combo
+export const GET_SERVICE_COMBO_API = `${BASE_URL}/servicecombo`;
+export const POST_SERVICE_COMBO_API = `${BASE_URL}/servicecombo`;
+
+// Thêm API cho Service Duration
+export const GET_SERVICE_DURATION_API = `${BASE_URL}/serviceDuration`;
+export const POST_SERVICE_DURATION_API = `${BASE_URL}/serviceDuration`;
 
 // Thêm API cho Service
 export const POST_SERVICE_API = `${BASE_URL}/services`;

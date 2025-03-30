@@ -25,7 +25,7 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             var maxOrderNumber = await _context.Order.MaxAsync(o => (long?)o.OrderNumber) ?? 0;
             return maxOrderNumber + 1;
         }
-        
+
         public async Task<Order?> GetLatestOrderByCustomerIdAsync(Guid customerId)
         {
             return await _context.Order
@@ -39,6 +39,16 @@ namespace SkincareBookingSystem.DataAccess.Repositories
             _context.Set<Order>().Attach(target);
             _context.Entry(target).State = EntityState.Modified;
             _context.Entry(target).CurrentValues.SetValues(source);
+        }
+
+        public async Task<List<Order>> GetOrdersAsync(DateTime startDate, DateTime endDate)
+        {
+            var orders = _context.Order
+                .Where(o => o.CreatedTime >= startDate.ToUniversalTime() 
+                            && o.CreatedTime <= endDate.ToUniversalTime())
+                .ToListAsync();
+            
+            return await orders;
         }
     }
 }

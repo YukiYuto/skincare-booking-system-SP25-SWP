@@ -22,6 +22,8 @@ using SkincareBookingSystem.Models.Dto.ServiceCombo;
 using SkincareBookingSystem.Models.Dto.ServiceDuration;
 using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
+using SkincareBookingSystem.Models.Dto.SkinProfile;
+using SkincareBookingSystem.Models.Dto.SkinTest;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Slot;
 using SkincareBookingSystem.Models.Dto.Staff;
@@ -37,6 +39,32 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // SkinProfile
+        CreateMap<CreateSkinProfileDto, SkinProfile>()
+            .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
+            .ForMember(dest => dest.ParentSkin, opt => opt.MapFrom(src => src.ParentSkin))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.ScoreMin, opt => opt.MapFrom(src => src.ScoreMin))
+            .ForMember(dest => dest.ScoreMax, opt => opt.MapFrom(src => src.ScoreMax));
+        CreateMap<UpdateSkinProfileDto, SkinProfile>()
+            .ForMember(dest => dest.SkinProfileId, opt => opt.MapFrom(src => src.SkinProfileId))
+            .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
+            .ForMember(dest => dest.ParentSkin, opt => opt.MapFrom(src => src.ParentSkin))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.ScoreMin, opt => opt.MapFrom(src => src.ScoreMin))
+            .ForMember(dest => dest.ScoreMax, opt => opt.MapFrom(src => src.ScoreMax));
+
+        // Skin test
+        CreateMap<CreateSkinTestDto, SkinTest>()
+            .ForMember(dest => dest.SkinTestName, opt => opt.MapFrom(src => src.SkinTestName))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.CustomerSkinTestId, opt => opt.MapFrom(src => src.CustomerSkinTestId));
+        CreateMap<UpdateSkinTestDto, SkinTest>()
+            .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => src.SkinTestId))
+            .ForMember(dest => dest.SkinTestName, opt => opt.MapFrom(src => src.SkinTestName))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.CustomerSkinTestId, opt => opt.MapFrom(src => src.CustomerSkinTestId));
+
         //staff
         CreateMap<Appointments, CheckInSuccessfulDto>()
             .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
@@ -53,18 +81,21 @@ public class AutoMapperProfile : Profile
         CreateMap<Customer, CustomerInfoDto>()
             .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
             .ForMember(dest => dest.CustomerPhone, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
-            .ForMember(dest => dest.CustomerEmail, opt => opt.MapFrom(src => src.ApplicationUser.Email));
+            .ForMember(dest => dest.CustomerEmail, opt => opt.MapFrom(src => src.ApplicationUser.Email))
+            .ForMember(dest => dest.CustomerAvatar, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl));
+            //.ForMember(dest => dest.SkinProfileName , opt => opt.MapFrom(src => src.SkinProfile.SkinProfileName))
 
-        CreateMap<Models.Domain.Services, ServiceInfoDto>()
-            .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
-            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
-            .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => src.Price));
-
+            CreateMap<Models.Domain.Services, ServiceInfoDto>()
+                .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
+                .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
+                .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => src.Price));
         CreateMap<SkinTherapist, TherapistInfoDto>()
             .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.SkinTherapistId))
             .ForMember(dest => dest.TherapistName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
             .ForMember(dest => dest.TherapistAge, opt => opt.MapFrom(src => src.ApplicationUser.Age))
-            .ForMember(dest => dest.TherapistAvatarUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl));
+            .ForMember(dest => dest.TherapistAvatarUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))
+            .ForMember(dest => dest.TherapistExperience, opt => opt.MapFrom(src => src.Experience))
+            .ForMember(dest => dest.TherapistGender, opt => opt.MapFrom(src => src.ApplicationUser.Gender));
 
         CreateMap<Appointments, AppointmentDetailsDto>()
             .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
@@ -186,6 +217,10 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
             .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.BlogCategoryId));
+        CreateMap<Blog, BlogDetailDto>()
+                .ForMember(dest => dest.BlogCategoryName, opt => opt.MapFrom(src => src.BlogCategory.Name))
+                .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.ApplicationUser.FullName));
+                
 
         // BookingService.BundleOrder - Order response to avoid cyclic references when returned
         CreateMap<Order, OrderDto>()
@@ -233,20 +268,23 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
         CreateMap<TherapistSchedule, GetTherapistScheduleDto>()
             .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
-            .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.TherapistId))
-            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId));
+            .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId))
+            .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Appointment.AppointmentDate));
 
         //Order
         CreateMap<CreateOrderDto, Order>()
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
-        CreateMap<UpdateOrderDto, Order>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-
         //OrderDetail
-        CreateMap<UpdateOrderDto, Order>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<Order, GetOrderDetailByOrderIdDto>() 
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId));
+        CreateMap<OrderDetail, GetOrderDetailDto>()
+            .ForMember(dest => dest.OrderDetailId, opt => opt.MapFrom(src => src.OrderDetailId))
+            .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
+            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Services.ServiceName))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
 
         CreateMap<BundleOrderDto, Order>()
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))

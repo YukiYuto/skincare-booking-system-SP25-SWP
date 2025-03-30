@@ -511,15 +511,15 @@ public class BookingService : IBookingService
         }
     }
 
-    public async Task<ResponseDto> CancelAppointment(Guid appointmentId, ClaimsPrincipal User)
+    public async Task<ResponseDto> CancelAppointment(CancelAppointmentDto cancelAppointmentDto , ClaimsPrincipal User)
     {
         if (UserError.NotExists(User))
             return ErrorResponse.Build(StaticResponseMessage.User.NotFound,
                 StaticOperationStatus.StatusCode.NotFound);
 
         var appointmentFromDb = await _unitOfWork.Appointments
-            .GetAsync(a => a.AppointmentId == appointmentId,
-                $"{nameof(Appointments.TherapistSchedules)},{nameof(Appointments.Customer)}")
+            .GetAsync(a => a.AppointmentId == cancelAppointmentDto.AppointmentId,
+                $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.Slot)},{nameof(Appointments.Customer)}")
             .ConfigureAwait(false);
 
         if (appointmentFromDb is null)
@@ -554,10 +554,14 @@ public class BookingService : IBookingService
                 schedule.Reason = "Cancelled by customer.";
                 schedule.UpdatedBy = User.Identity?.Name;
                 schedule.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
+                schedule.Reason = cancelAppointmentDto.Reason;
 
                 _unitOfWork.TherapistSchedule.Update(schedule, schedule);
             }
-
+            
+            // 3. Update the appointment status
+            appointmentFromDb.Status = StaticOperationStatus.Appointment.Cancelled;
+            
             await _unitOfWork.SaveAsync();
             await transaction.CommitAsync();
 
@@ -698,6 +702,9 @@ public class BookingService : IBookingService
             therapistAppoinment.UpdatedBy = User.FindFirstValue("name");
             _unitOfWork.TherapistSchedule.UpdateStatus(therapistAppoinment);
 
+            
+            // Update Appointment
+            appointment.Status = StaticOperationStatus.Appointment.Completed;
             await _unitOfWork.SaveAsync();
             await transaction.CommitAsync();
 
