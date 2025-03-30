@@ -89,14 +89,14 @@ useEffect(() => {
           const status = appointmentData.result?.status || "N/A";
           const servicePrice = Number(appointmentData.result?.serviceInfo.servicePrice) || 0; // Chuyển về số để cộng đúng
 
-          // 👉 Chỉ tính tổng số lượng và tổng doanh thu của các appointments có status "CREATED"
-          if (status === "CREATED") {
+          // 👉 Chỉ tính tổng số lượng và tổng doanh thu của các appointments có status "COMPLETED"
+          if (status === "COMPLETED") {
             if (appointmentYear === currentYear) {
-              yearlyCount++; // Chỉ đếm appointment "CREATED" của năm
+              yearlyCount++; // Chỉ đếm appointment "COMPLETED" của năm
               yearlySum += servicePrice;
 
               if (appointmentMonth === currentMonth) {
-                monthlyCount++; // Chỉ đếm appointment "CREATED" của tháng
+                monthlyCount++; // Chỉ đếm appointment "COMPLETED" của tháng
                 monthlySum += servicePrice;
               }
             }
