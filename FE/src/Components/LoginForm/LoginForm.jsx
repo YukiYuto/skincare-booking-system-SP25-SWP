@@ -90,7 +90,7 @@ export function LoginForm() {
       } else if (userData.roles.includes("STAFF")) {
         navigate("/staff-management");
       } else if (userData.roles.includes("SKINTHERAPIST")) {
-        navigate("/therapist-management");
+        navigate("/therapist-dashboard");
       } else if (userData.roles.includes("MANAGER")) {
         navigate("/dashboard");
       }

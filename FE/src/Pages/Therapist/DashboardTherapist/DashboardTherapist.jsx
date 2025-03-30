@@ -1,9 +1,9 @@
 import { useState } from "react";
-import styles from "./TherapistSchedule.module.css";
+import styles from "./DashboardTherapist.module.css";
 import SideBarTherapist from "../../../Components/SideBar/SideBarTherapist/SideBarTherapist";
-import ScheduleTherapistRegister from "../../../Components/ScheduleTherapistRegister/ScheduleTherapistRegister";
+import TherapistDashboard from "../../../Components/TherapistDashboard/TherapistDashboard";
 
-const TherapistSchedule = () => {
+const DashboardTherapist = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const handleSidebarToggle = (isOpen) => {
@@ -16,10 +16,10 @@ const TherapistSchedule = () => {
                 <SideBarTherapist onToggle={handleSidebarToggle} />
             </div>
             <div className={`${styles.content} ${isSidebarOpen ? styles.contentOpen : styles.contentClosed}`}>
-                <ScheduleTherapistRegister />
+                <TherapistDashboard />
             </div>
         </div>
     );
 };
 
-export default TherapistSchedule;
+export default DashboardTherapist;

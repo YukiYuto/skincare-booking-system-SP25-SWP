@@ -49,6 +49,7 @@ const SideBarStaff = ({ onToggle }) => {
                     <div className={styles.profileSection}>
                         <img className={styles.profileImage} src={user?.imageUrl} alt="Profile" />
                         <h2 className={styles.title}>STAFF</h2>
+                        <p>{user.fullName}</p>
                     </div>
                     <ul className={styles.menuList}>
                         <li>
@@ -59,11 +60,6 @@ const SideBarStaff = ({ onToggle }) => {
                         <li>
                             <Link to="/staff-management" className={styles.menuItem}>
                                 <span className={styles.menuText}>Booking</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/schedule-management" className={styles.menuItem}>
-                                <span className={styles.menuText}>Schedule</span>
                             </Link>
                         </li>
                         <li>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Calendar, Badge, Card, Spin, Alert } from "antd";
+import { Calendar, Badge, Card, Spin, Alert, Tag } from "antd";
 import dayjs from "dayjs";
 import axios from "axios";
 import styles from "./TableTherapist.module.css";
@@ -30,7 +30,7 @@ const TableTherapist = () => {
         const therapistsList = Array.isArray(therapistsData.result) ? therapistsData.result : [];
         if (!therapistsList.length) throw new Error("Therapist is not available!");
 
-        const matchedTherapist = therapistsList.find((t) => t.fullName === user.fullName);
+        const matchedTherapist = therapistsList.find((t) => t.phoneNumber === user.phoneNumber);
         if (!matchedTherapist) throw new Error("No found therpist!");
 
         const therapistId = matchedTherapist.skinTherapistId;
@@ -55,6 +55,7 @@ const TableTherapist = () => {
               const customerInfo = appointmentData.result?.customerInfo || {};
               const serviceInfo = appointmentData.result?.serviceInfo || {};
               const time = appointmentData.result?.appointmentTime || {};
+              const status = appointmentData.result?.status || {};
 
               return {
                 id: booking.appointmentId, 
@@ -69,7 +70,7 @@ const TableTherapist = () => {
                   email: customerInfo.customerEmail || "N/A",
                 },
                 time,
-                isCompleted: false,
+                status,
               };
             } catch (err) {
               console.error("Failed to load appointment:", err);
@@ -93,15 +94,41 @@ const TableTherapist = () => {
     }
   }, [user, token]);
 
-  const toggleCompletion = (id) => {
-    setBookings((prevBookings) =>
-      prevBookings.map((booking) =>
-        booking.id === id ? { ...booking, isCompleted: !booking.isCompleted } : booking
-      )
-    );
+  const getStatusTag = (status) => {
+    switch (status) {
+      case "CREATED":
+        return <Tag color="gold">CREATED</Tag>;
+      case "CHECKEDIN":
+        return <Tag color="blue">CHECKEDIN</Tag>;
+      case "CHECKEDOUT":
+        return <Tag color="orange">CHECKEDOUT</Tag>;
+      case "COMPLETED":
+        return <Tag color="green">COMPLETED</Tag>;
+      case "CANCELLED":
+        return <Tag color="red">CANCELLED</Tag>;
+      default:
+        return <Tag color="default">N/A</Tag>;
+    }
   };
 
   const selectedBookings = bookings.filter((b) => b.date === selectedDate);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "CREATED":
+        return "gold";
+      case "CHECKEDIN":
+        return "blue"; 
+      case "CHECKEDOUT":
+        return "orange"; 
+      case "COMPLETED":
+        return "green"; 
+      case "CANCELLED":
+        return "red"; 
+      default:
+        return "default"; 
+    }
+  };
 
   const cellRender = (value) => {
     const dateStr = value.format("YYYY-MM-DD");
@@ -110,12 +137,7 @@ const TableTherapist = () => {
     return bookingsOnDate.length > 0 ? (
       <div>
         {bookingsOnDate.map((booking, index) => (
-          <Badge
-            key={index}
-            color={booking.isCompleted ? "green" : "red"}
-            text={`Appointment: ${booking.customer.fullName}`}
-            className={styles.badge}
-          />
+          <Badge key={index} color={getStatusColor(booking.status)} text={`Appointment: ${booking.customer.fullName}`} className={styles.badge} />
         ))}
       </div>
     ) : null;
@@ -149,32 +171,12 @@ const TableTherapist = () => {
                 <p><strong>Email:</strong> {booking.customer.email}</p>
                 <p><strong>Phone:</strong> {booking.customer.phone}</p>
                 <p><strong>Time:</strong> {booking.time}</p>
-
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span style={{ color: booking.isCompleted ? "green" : "red", fontWeight: "bold" }}>
-                    {booking.isCompleted ? "Done" : "Not yet"}
-                  </span>
-                </p>
-
-                <button
-                  onClick={() => toggleCompletion(booking.id)}
-                  style={{
-                    backgroundColor: booking.isCompleted ? "red" : "green",
-                    color: "white",
-                    padding: "5px 10px",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {booking.isCompleted ? "Not yet" : "Done"}
-                </button>
+                <p><strong>Status:</strong> {getStatusTag(booking.status)}</p>
                 <hr />
               </div>
             ))
           ) : (
-            <p className={styles.noBooking}>Chọn một ngày để xem chi tiết</p>
+            <p className={styles.noBooking}>Choose date to view appointment!</p>
           )}
         </Card>
       </div>

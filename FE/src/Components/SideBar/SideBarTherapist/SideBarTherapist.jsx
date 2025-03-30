@@ -48,6 +48,7 @@ const SideBarTherapist = ({ onToggle }) => {
                     <div className={styles.profileSection}>
                         <img className={styles.profileImage} src={user.imageUrl} alt="Profile" />
                         <h2 className={styles.title}>Therapist</h2>
+                        <p>{user.fullName}</p>
                     </div>
                     <ul className={styles.menuList}>
                         <li>
@@ -56,13 +57,13 @@ const SideBarTherapist = ({ onToggle }) => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/therapist-management" className={styles.menuItem}>
-                                <span className={styles.menuText}>Booking</span>
+                            <Link to="/therapist-dashboard" className={styles.menuItem}>
+                                <span className={styles.menuText}>Dashboard</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/therapist-schedule" className={styles.menuItem}>
-                                <span className={styles.menuText}>Schedule</span>
+                            <Link to="/therapist-management" className={styles.menuItem}>
+                                <span className={styles.menuText}>Booking</span>
                             </Link>
                         </li>
                     </ul>
