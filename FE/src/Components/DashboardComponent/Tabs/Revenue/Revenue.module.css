@@ -1,52 +1,86 @@
-.tabContainer {
-    background-color: var(--background-color);
-    color: var(--text-color);
+.revenueContainer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-    border-radius: 8px;
-    height: 100%;
+}
+
+.title {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+.topSection {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-}
-
-.tabHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.tabTitle {
-    font-family: Raleway, sans-serif;
-    color: var(--accent-color);
-}
-
-.revenueSections {
-    justify-content: center;
-    display: flex;
-    gap: 32px;
-}
-
-.revenueSection {
-    color: var(--text-color);
-    padding: 8px;
-    transition: transform 0.2s;
-    flex: 1;
-    text-align: center;
-}
-
-.revenueSection:hover {
-    transform: translateY(-4px);
-}
-
-.revenueSection h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0;
-}
-
-.contentSection {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: var(--background-color);
+    gap: 20px;
+    margin-bottom: 30px;
+    background-color: #f8f9fa;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filterForm {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.inputGroup label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.inputGroup input,
+.inputGroup select {
+    height: 38px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.submitButton {
+    background-color: var(--primary-color) !important;
+    border: none !important;
+    font-size: 1rem;
+    padding: 12px 20px;
+    color: var(--text-color);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.submitButton:hover {
+    background-color: var(--accent-color) !important;
+    color: white;
+}
+
+@media (min-width: 768px) {
+    .topSection {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .filterForm {
+        width: 40%;
+        padding-right: 20px;
+        padding-bottom: 0;
+        border-bottom: none;
+        border-right: 1px solid #e5e7eb;
+    }
 }

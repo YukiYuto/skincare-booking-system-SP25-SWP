@@ -1,0 +1,166 @@
+.container {
+    padding: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.title {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: var(--text-color);
+}
+
+.filterForm {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--background-color);
+    border-radius: 5px;
+    align-items: flex-end;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+}
+
+.inputGroup label {
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.inputGroup input,
+.inputGroup select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.submitButton {
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    height: 38px;
+}
+
+.submitButton:hover {
+    background-color: var(--accent-color);
+}
+
+.tableWrapper {
+    overflow-x: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: var(--secondary-color);
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.idCell {
+    font-family: monospace;
+    font-size: 12px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.amountCell {
+    font-weight: 600;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.paginationButton {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.paginationButton:hover {
+    background-color: #f5f5f5;
+}
+
+.paginationButton:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.activePage {
+    background-color: #4a90e2;
+    color: white;
+    border-color: #4a90e2;
+}
+
+.activePage:hover {
+    background-color: #357ab8;
+}
+
+.loading,
+.error {
+    padding: 20px;
+    text-align: center;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.error {
+    color: var(--accent-color);
+    background-color: var(--background-color);
+}
+
+.tableInfo {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .filterForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .inputGroup {
+        width: 100%;
+    }
+}
