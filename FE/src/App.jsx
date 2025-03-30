@@ -30,7 +30,6 @@ import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import PaymentConfirmationPage from "./Pages/Payment/PaymentConfirmationPage";
 import TherapistCard from "./Components/TherapistCard/TherapistCard";
 import TherapistDetail from "./Components/TherapistDetail/TherapistDetail";
-import StaffManagement from "./Pages/Staff/StaffManagement/StaffManagement";
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
 import BlogForCus from "./Components/BlogForCus/BlogForCus";
@@ -96,7 +95,6 @@ const AppRoutes = () => {
           {roles.includes("STAFF") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="staff-management" element={<StaffManagement />} />
               <Route path="staff-blogs" element={<StaffBlogManagement />} />
               <Route path="staff-blogs/:categoryName?" element={<StaffBlogManagement />} />
               <Route path="detail/:title" element={<StaffBlogDetail />} /> 
