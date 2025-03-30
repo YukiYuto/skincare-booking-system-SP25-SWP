@@ -1,0 +1,68 @@
+.layout {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.headingSection {
+  display: flex;
+  justify-content: space-between;
+  justify-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.headingText {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.checkInButton {
+  gap: 0.25rem;
+}
+
+.appointmentCard {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 0.1fr);
+  gap: 8px;
+  border: 1px solid #e6decd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.titleSection {
+  grid-column: span 5 / span 5;
+}
+
+.title {
+  font-weight: 600;
+  padding: 1rem;
+}
+
+.tableSection {
+  grid-column: span 5 / span 5;
+  grid-row-start: 2;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.table {
+  width: 100%;
+}
+
+.table tr {
+  border-bottom: 1px solid #bea486;
+}
+
+.table th,
+.table td {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: left;
+}
