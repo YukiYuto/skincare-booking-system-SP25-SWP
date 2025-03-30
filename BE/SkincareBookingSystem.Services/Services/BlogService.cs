@@ -37,7 +37,7 @@ namespace SkincareBookingSystem.Services.Services
             var createBlog = _autoMapperService.Map<CreateBlogDto, Blog>(createBlogDto);
             createBlog.CreatedBy = User.FindFirstValue("Fullname");
             createBlog.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
-            createBlog.Status = StaticOperationStatus.Blog.Published;
+            createBlog.Status = StaticOperationStatus.BaseEntity.Active;
 
             try
             {
