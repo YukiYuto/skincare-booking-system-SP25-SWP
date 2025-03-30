@@ -526,7 +526,8 @@ public class BookingService : IBookingService
             return ErrorResponse.Build(StaticResponseMessage.Appointment.NotFound,
                 StaticOperationStatus.StatusCode.NotFound);
 
-        if (appointmentFromDb.Customer.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+        if (await IsRequestFromCustomer(User) is true && 
+            appointmentFromDb.Customer.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
             return ErrorResponse.Build(StaticResponseMessage.Appointment.NotMatchedToCustomer,
                 StaticOperationStatus.StatusCode.BadRequest);
 
@@ -725,6 +726,11 @@ public class BookingService : IBookingService
                 Message = e.Message
             };
         }
+    }
+
+    private async Task<bool> IsRequestFromCustomer(ClaimsPrincipal User)
+    {
+        return await _unitOfWork.Customer.GetAsync(c => c.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) is not null;
     }
 
 
