@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { Provider, useSelector } from "react-redux";
 import { store } from "./redux/store";
 
@@ -25,9 +30,10 @@ import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import PaymentConfirmationPage from "./Pages/Payment/PaymentConfirmationPage";
 import TherapistCard from "./Components/TherapistCard/TherapistCard";
 import TherapistDetail from "./Components/TherapistDetail/TherapistDetail";
-import StaffManagement from "./Pages/Staff/StaffManagement/StaffManagement";
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
+import StaffDashboard from "./Pages/Staff/Dashboard/StaffDashboard";
+import AppointmentDetailsPage from "./Pages/Staff/Appointment/AppointmentDetailsPage";
 import BlogForCus from "./Components/BlogForCus/BlogForCus";
 import BlogForCusList from "./Components/BlogForCus/BlogForCusList/BlogForCusList";
 import StaffBlogManagement from "./Pages/Staff/StaffBlogManagement/StaffBlogManagement";
@@ -39,7 +45,7 @@ import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTh
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
   const roles = user?.roles || [];
-  
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -53,6 +59,10 @@ const AppRoutes = () => {
       <Route path="blogs/:categoryName?" element={<BlogForCus />} />
       <Route path="blogs-detail/:title" element={<BlogForCusList />} /> 
       <Route path="error" element={<ErrorPage />} />
+      <Route
+        path="payment-confirmation"
+        element={<PaymentConfirmationPage />}
+      />
       {!accessToken && (
         <>
           <Route path="login" element={<LoginPage />} />
@@ -95,6 +105,15 @@ const AppRoutes = () => {
               <Route path="staff-blogs" element={<StaffBlogManagement />} />
               <Route path="staff-blogs/:categoryName?" element={<StaffBlogManagement />} />
               <Route path="detail/:title" element={<StaffBlogDetail />} /> 
+              <Route
+                path="schedule-management"
+                element={<ScheduleManagement />}
+              />
+              <Route path="staff/dashboard" element={<StaffDashboard />} />
+              <Route
+                path="staff/appointments/:appointmentId"
+                element={<AppointmentDetailsPage />}
+              />
             </>
           )}
           {roles.includes("SKINTHERAPIST") && (

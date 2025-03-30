@@ -20,14 +20,11 @@ namespace SkincareBookingSystem.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAutoMapperService _autoMapperService;
-        private readonly ICustomerRepository _customerRepository;
 
-        public CustomerService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService,
-            ICustomerRepository customerRepository)
+        public CustomerService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService)
         {
             _unitOfWork = unitOfWork;
             _autoMapperService = autoMapperService;
-            _customerRepository = customerRepository;
         }
 
         public async Task<ResponseDto> GetAllCustomers()

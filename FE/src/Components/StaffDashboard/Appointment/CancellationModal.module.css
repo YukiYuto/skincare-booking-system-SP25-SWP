@@ -1,0 +1,11 @@
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.inputField {
+  margin-top: 10px;
+  width: 100%;
+}
