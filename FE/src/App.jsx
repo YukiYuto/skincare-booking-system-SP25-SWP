@@ -52,6 +52,10 @@ const AppRoutes = () => {
       <Route path="therapist" element={<TherapistCard />} />
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="error" element={<ErrorPage />} />
+      <Route
+        path="payment-confirmation"
+        element={<PaymentConfirmationPage />}
+      />
       {!accessToken && (
         <>
           <Route path="login" element={<LoginPage />} />
@@ -67,10 +71,6 @@ const AppRoutes = () => {
             <>
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="table-customer" element={<TableCustomer />} />
-              <Route
-                path="payment-confirmation"
-                element={<PaymentConfirmationPage />}
-              />
               <Route path="appointments" element={<AppointmentPage />} />
             </>
           )}
@@ -96,7 +96,10 @@ const AppRoutes = () => {
                 element={<ScheduleManagement />}
               />
               <Route path="staff/dashboard" element={<StaffDashboard />} />
-              <Route path="staff/appointments/:appointmentId" element={<AppointmentDetailsPage />} />
+              <Route
+                path="staff/appointments/:appointmentId"
+                element={<AppointmentDetailsPage />}
+              />
             </>
           )}
           {roles.includes("SKINTHERAPIST") && (
