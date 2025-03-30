@@ -1,4 +1,4 @@
-.overlay {
+.modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -6,76 +6,68 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
   }
   
-  .modal {
+  .modalContent {
     background: white;
     padding: 20px;
     border-radius: 8px;
     width: 400px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
   }
   
-  h2 {
-    margin-bottom: 10px;
+  .modalContent h2 {
+    margin-bottom: 15px;
   }
   
-  .select, .input, .textarea {
+  .modalContent label {
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+  }
+  
+  .modalContent input,
+  .modalContent textarea,
+  .modalContent select {
     width: 100%;
     padding: 8px;
-    margin: 10px 0;
+    margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
   
-  .textarea {
+  .modalContent textarea {
     height: 80px;
-    resize: none;
   }
   
-  .rating {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .star {
-    font-size: 24px;
-    cursor: pointer;
-    color: #ccc;
-  }
-  
-  .activeStar {
-    font-size: 24px;
-    cursor: pointer;
-    color: gold;
-  }
-  
-  .buttons {
-    display: flex;
-    justify-content: space-between;
+  .error {
+    color: red;
+    font-size: 14px;
     margin-top: 10px;
   }
   
-  .submitButton {
-    background: #28a745;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  .buttonGroup {
+    margin-top: 20px;
   }
   
-  .cancelButton {
+  .buttonGroup button {
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .buttonGroup button:first-child {
+    background: #28a745;
+    color: white;
+  }
+  
+  .buttonGroup button:last-child {
     background: #dc3545;
     color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
   }
   

@@ -137,10 +137,13 @@ export const GET_BLOG_CATEGORY = `${BASE_URL}/BlogCategory/all`;
 export const UPDATE_BLOG_CATEGORY = `${BASE_URL}/BlogCategory/update`;
 
 //Thêm API cho Blog
-export const GET_BLOG = `${BASE_URL}/blogs/all`;
-export const POST_BLOG = `${BASE_URL}/blogs/create`
-export const UPDATE_BLOG = `${BASE_URL}/blogs/update`;
-export const DELETE_BLOG = `${BASE_URL}/blogs/delete`;
+export const GET_BLOG = `${BASE_URL}/blog/all`;
+export const POST_BLOG = `${BASE_URL}/blog/create`
+export const UPDATE_BLOG = `${BASE_URL}/blog/update`;
+export const DELETE_BLOG = `${BASE_URL}/blog/delete`;
+
+//Thêm API cho Feedback
+export const POST_FEEDBACK = `${BASE_URL}/Feedback/create`;
   
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
 export const AUTH_HEADERS = (token) => ({
