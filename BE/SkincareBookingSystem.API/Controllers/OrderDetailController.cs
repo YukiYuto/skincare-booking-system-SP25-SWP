@@ -47,6 +47,14 @@ namespace SkincareBookingSystem.API.Controllers
         {
             var result = await _orderDetailService.DeleteOrderDetail(id);
             return StatusCode(result.StatusCode, result);
-        }  
+        }
+
+        [HttpGet("orderId")]
+        [SwaggerOperation(Summary = "API gets an order detail by order id", Description = "Requires id")]
+        public async Task<IActionResult> GetOrderDetailByOrderId([FromQuery] Guid orderId)
+        {
+            var result = await _orderDetailService.GetOrderDetailByOrderId(User, orderId);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

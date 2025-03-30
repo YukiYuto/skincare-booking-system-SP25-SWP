@@ -3,6 +3,7 @@
     "@reduxjs/toolkit": "^2.6.0",
     "js-cookie": "^3.0.5",
     "react-redux": "^9.2.0",
+    "recharts": "^2.15.1",
     "validator": "^13.12.0"
   }
 }

@@ -62,6 +62,7 @@ public static class StaticOperationStatus
         public const string Created = "CREATED";
         public const string Paid = "PAID";
         public const string Cancelled = "CANCELLED";
+        public const string Deleted = "DELETED";
 
         public static class Message
         {
@@ -207,5 +208,21 @@ public static class StaticOperationStatus
         public const string Completed = "COMPLETED";
         public const string Rescheduled = "RESCHEDULED";
         public const string Deleted = "DELETED";
+    }
+
+    public static class SkinTest
+    {
+        public const string Created = "CREATED";
+        public const string Updated = "UPDATED";
+        public const string Deleted = "DELETED";
+
+    }
+
+    public static class SkinProfile
+    {
+        public const string Created = "CREATED";
+        public const string Updated = "UPDATED";
+        public const string Deleted = "DELETED";
+
     }
 }

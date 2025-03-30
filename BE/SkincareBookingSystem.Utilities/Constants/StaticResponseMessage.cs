@@ -150,6 +150,7 @@ namespace SkincareBookingSystem.Utilities.Constants
         {
             public const string Created = "Order created successfully";
             public const string Deleted = "Order deleted successfully";
+            public const string AlreadyDeleted = "Order already deleted ";
             public const string RetrievedAll = "All orders retrieved successfully";
             public const string Retrieved = "Order retrieved successfully";
             public const string Updated = "Order updated successfully";
@@ -207,11 +208,33 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update blog category.";
         }
 
-        public static class GetCustInfo
-        {
-            public const string Retrieved = "Customer information retrieved successfully";
-            public const string NotFound = "Customer information not found";
 
+        public static class SkinTest
+        {
+            public const string Created = "Skin test created successfully";
+            public const string NotCreated = "Failed to create skin test";
+            public const string Deleted = "Skin test deleted successfully";
+            public const string NotDeleted = "Failed to delete skin test";
+            public const string AlreadyDeleted = "Skin test already deleted";
+            public const string RetrievedAll = "All skin tests retrieved successfully";
+            public const string Retrieved = "Skin test retrieved successfully";
+            public const string Updated = "Skin test updated successfully";
+            public const string NotUpdated = "Failed to update skin test";
+            public const string NotFound = "Skin test(s) not found";
+        }
+
+        public static class SkinProfile
+        {
+            public const string Created = "Skin profile created successfully";
+            public const string NotCreated = "Failed to create skin profile";
+            public const string Deleted = "Skin profile deleted successfully";
+            public const string NotDeleted = "Failed to delete skin profile";
+            public const string AlreadyDeleted = "Skin profile already deleted";
+            public const string RetrievedAll = "All skin profiles retrieved successfully";
+            public const string Retrieved = "Skin profile retrieved successfully";
+            public const string Updated = "Skin profile updated successfully";
+            public const string NotUpdated = "Failed to update skin profile";
+            public const string NotFound = "Skin profile(s) not found";
         }
     }
 }

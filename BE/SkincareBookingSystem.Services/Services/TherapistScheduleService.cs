@@ -37,7 +37,10 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var bookingScheduleToCreate = _autoMapperService.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
-            bookingScheduleToCreate.CreatedBy = User.Identity?.Name;
+            bookingScheduleToCreate.CreatedBy = User.FindFirstValue("Fullname");
+            bookingScheduleToCreate.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
+            bookingScheduleToCreate.ScheduleStatus = ScheduleStatus.Pending;
+            bookingScheduleToCreate.Status = StaticOperationStatus.BaseEntity.Active;
 
             try
             {
