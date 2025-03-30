@@ -10,7 +10,7 @@ const RPG = ({ onChange }) => {
       lower: "abcdefghijklmnopqrstuvwxyz",
       upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
       number: "0123456789",
-      special: "!@#$%^&*()-_=+[]{}|;:,.<>?/",
+      special: "!@#$%^&*()-_+[]{}|;:,.?/",
     };
 
     let newPassword = "";

@@ -219,12 +219,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.BlogCategoryId, opt => opt.MapFrom(src => src.BlogCategoryId));
         CreateMap<Blog, BlogDetailDto>()
                 .ForMember(dest => dest.BlogCategoryName, opt => opt.MapFrom(src => src.BlogCategory.Name))
-                .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
-                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
-                .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => StaticOperationStatus.Timezone.Vietnam))
-                .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => src.UpdatedBy))
-                .ForMember(dest => dest.UpdatedTime, opt => opt.MapFrom(src => src.UpdatedTime))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+                .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.ApplicationUser.FullName));
+                
 
         // BookingService.BundleOrder - Order response to avoid cyclic references when returned
         CreateMap<Order, OrderDto>()
@@ -280,12 +276,15 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
-        CreateMap<UpdateOrderDto, Order>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-
         //OrderDetail
-        CreateMap<UpdateOrderDto, Order>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<Order, GetOrderDetailByOrderIdDto>() 
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId));
+        CreateMap<OrderDetail, GetOrderDetailDto>()
+            .ForMember(dest => dest.OrderDetailId, opt => opt.MapFrom(src => src.OrderDetailId))
+            .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
+            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Services.ServiceName))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
 
         CreateMap<BundleOrderDto, Order>()
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))

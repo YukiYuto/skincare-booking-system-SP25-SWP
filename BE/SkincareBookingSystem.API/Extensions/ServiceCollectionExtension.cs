@@ -65,9 +65,8 @@ public static class ServiceCollectionExtension
 
         services.AddScoped<IStaffService, StaffService>();
         services.AddScoped<ISkinProfileService, SkinProfileService>();
+        services.AddScoped<IManagerSerivce, ManagerSerivce>();
 
-        // add services related to Repository
-        services.AddScoped<ICustomerRepository, CustomerRepository>();
 
         return services;
     }
