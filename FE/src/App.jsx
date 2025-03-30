@@ -101,14 +101,9 @@ const AppRoutes = () => {
           {roles.includes("STAFF") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="staff-management" element={<StaffManagement />} />
               <Route path="staff-blogs" element={<StaffBlogManagement />} />
               <Route path="staff-blogs/:categoryName?" element={<StaffBlogManagement />} />
               <Route path="detail/:title" element={<StaffBlogDetail />} /> 
-              <Route
-                path="schedule-management"
-                element={<ScheduleManagement />}
-              />
               <Route path="staff/dashboard" element={<StaffDashboard />} />
               <Route
                 path="staff/appointments/:appointmentId"
