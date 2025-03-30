@@ -5,9 +5,9 @@ import { Card, Pagination, Row, Col, Form, Button, Input, Select, Modal } from "
 import { PlusOutlined } from "@ant-design/icons";
 import styles from "./StaffBlog.module.css";
 import slugify from "slugify";
-import { GET_BLOG, GET_BLOG_CATEGORY, POST_BLOG, POST_CUSTOMER_AVATAR_API } from "../../config/apiConfig";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { GET_BLOG, GET_BLOG_CATEGORY, POST_BLOG, POST_CUSTOMER_AVATAR_API } from "../../config/apiConfig";
 
 const { Meta } = Card;
 

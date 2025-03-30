@@ -1,4 +1,4 @@
-/* 🌟 Tổng container của dashboard */
+
 .container {
     margin: 0 auto;
     padding: 20px;
@@ -18,8 +18,6 @@
     font-weight: bold;
   }
   
-  
-  /* 📌 Thiết kế thẻ card */
   .card {
     background-color: #ffffff;
     border-radius: 10px;
@@ -33,7 +31,6 @@
     transform: translateY(-2px);
   }
   
-  /* 🏷 Tiêu đề của card */
   .cardTitle {
     font-size: 20px;
     font-weight: bold;
@@ -41,13 +38,11 @@
     text-align: center;
   }
   
-  /* 📅 Bảng lịch hẹn */
   .table {
     width: 100%;
     margin-top: 20px;
   }
   
-  /* 🟢🔴 Trạng thái lịch hẹn */
   .statusTag {
     font-weight: bold;
     padding: 5px 12px;
@@ -57,37 +52,31 @@
     font-size: 12px;
   }
   
-  /* 🔴 CANCELLED (Đã hủy) */
   .statusCancelled {
     background-color: #ff4d4f;
     color: white;
   }
   
-  /* 🟡 CREATED (Chờ xác nhận) */
   .statusCreated {
     background-color: #faad14;
     color: black;
   }
   
-  /* 🔵 CHECKEDIN (Đã check-in) */
   .statusCheckedIn {
     background-color: #1890ff;
     color: white;
   }
   
-  /* 🟠 CHECKEDOUT (Đã check-out) */
   .statusCheckedOut {
     background-color: #fa8c16;
     color: white;
   }
   
-  /* 🟢 COMPLETED (Hoàn thành) */
   .statusCompleted {
     background-color: #52c41a;
     color: white;
   }
   
-  /* 🎯 Nút thao tác */
   .actionButton {
     background-color: #1890ff;
     color: white;
@@ -109,7 +98,6 @@
     transform: scale(0.95);
   }
   
-  /* 🚀 Thiết kế dòng chữ "Không có lịch hẹn" */
   .noAppointments {
     text-align: center;
     font-size: 16px;
@@ -117,7 +105,6 @@
     font-style: italic;
   }
   
-  /* 📌 Responsive cho màn hình nhỏ */
   @media screen and (max-width: 768px) {
     .container {
       padding: 10px;

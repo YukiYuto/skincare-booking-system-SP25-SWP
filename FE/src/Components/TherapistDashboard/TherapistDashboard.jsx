@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Table, Spin, Alert, Card } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
-import styles from "./TherapistDashboard.module.css"; // Import file CSS
+import styles from "./TherapistDashboard.module.css"; 
 import { GET_ALL_THERAPISTS_API } from "../../config/apiConfig";
 
 const API_SCHEDULES = "https://lumiconnect.azurewebsites.net/api/therapist-schedules/therapist";
@@ -29,7 +29,6 @@ useEffect(() => {
     try {
       if (!token) throw new Error("Vui lòng đăng nhập!");
 
-      // Lấy danh sách therapists
       const { data: therapistsData } = await axios.get(GET_ALL_THERAPISTS_API, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -37,7 +36,6 @@ useEffect(() => {
       const therapistsList = Array.isArray(therapistsData.result) ? therapistsData.result : [];
       if (!therapistsList.length) throw new Error("Không tìm thấy therapist!");
 
-      // Tìm therapist đang đăng nhập
       const matchedTherapist = therapistsList.find((t) => t.phoneNumber === user.phoneNumber);
       if (!matchedTherapist) throw new Error("Không tìm thấy therapist!");
 
@@ -48,7 +46,6 @@ useEffect(() => {
       const currentMonth = dayjs().format("MM");
       const currentYear = dayjs().format("YYYY");
 
-      // Lấy lịch hẹn của therapist
       const { data: scheduleData } = await axios.get(`${API_SCHEDULES}/${therapistId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -77,7 +74,6 @@ useEffect(() => {
         const appointmentMonth = dayjs(booking.appointmentDate).format("MM");
         const appointmentYear = dayjs(booking.appointmentDate).format("YYYY");
 
-        // Lấy chi tiết cuộc hẹn
         try {
           const { data: appointmentData } = await axios.get(`${API_APPOINTMENT}/${booking.appointmentId}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -87,16 +83,15 @@ useEffect(() => {
           const serviceInfo = appointmentData.result?.serviceInfo || {};
           const time = appointmentData.result?.appointmentTime || "N/A";
           const status = appointmentData.result?.status || "N/A";
-          const servicePrice = Number(appointmentData.result?.serviceInfo.servicePrice) || 0; // Chuyển về số để cộng đúng
+          const servicePrice = Number(appointmentData.result?.serviceInfo.servicePrice) || 0; 
 
-          // 👉 Chỉ tính tổng số lượng và tổng doanh thu của các appointments có status "COMPLETED"
           if (status === "COMPLETED") {
             if (appointmentYear === currentYear) {
-              yearlyCount++; // Chỉ đếm appointment "COMPLETED" của năm
+              yearlyCount++; 
               yearlySum += servicePrice;
 
               if (appointmentMonth === currentMonth) {
-                monthlyCount++; // Chỉ đếm appointment "COMPLETED" của tháng
+                monthlyCount++; 
                 monthlySum += servicePrice;
               }
             }
@@ -113,7 +108,6 @@ useEffect(() => {
             time,
           };
 
-          // 👉 Chỉ lấy lịch hẹn HÔM NAY, NGÀY MAI, và NGÀY KIA
           if (appointmentDate === today) {
             todayAppointments.push(formattedAppointment);
           } else if (appointmentDate === tomorrow || appointmentDate === twoDaysLater) {
@@ -144,10 +138,6 @@ useEffect(() => {
   }
 }, [user, token]);
 
-
-
-
-
   const getStatusTag = (status) => {
     switch (status) {
       case "CREATED":
@@ -165,7 +155,6 @@ useEffect(() => {
     }
   };
   
-  // Cột bảng hiển thị thông tin lịch hẹn
   const columns = [
     {
       title: "Customer",

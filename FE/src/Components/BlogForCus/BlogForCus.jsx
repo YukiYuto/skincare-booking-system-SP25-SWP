@@ -4,9 +4,9 @@ import axios from "axios";
 import { Card, Pagination, Row, Col } from "antd";
 import styles from "./BlogForCus.module.css";
 import slugify from "slugify";
-import { GET_BLOG, GET_BLOG_CATEGORY } from "../../config/apiConfig";
 import Header from "../Common/Header";
 import Footer from "../Footer/Footer";
+import { GET_BLOG, GET_BLOG_CATEGORY } from "../../config/apiConfig";
 
 const { Meta } = Card;
 
