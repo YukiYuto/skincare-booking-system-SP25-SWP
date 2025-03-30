@@ -11,6 +11,7 @@ import {
   REFRESH_TOKEN_API,
   AUTH_HEADERS,
   CHANGE_PASSWORD_API,
+  SIGNIN_BY_GOOGLE_API,
 } from "../config/apiConfig";
 
 /**
@@ -63,6 +64,15 @@ export const refreshTokens = async (refreshToken) => {
     return response;
   } catch (error) {
     throw new Error("Failed to refresh token" + error.message);
+  }
+};
+
+export const signInByGoogle = async (idToken) => {
+  try {
+    const response = await apiCall(HTTP_METHODS.POST, SIGNIN_BY_GOOGLE_API, { token: idToken });
+    return response;
+  } catch (error) {
+    throw new Error(error.message || "Failed to sign in with Google");
   }
 };
 
