@@ -52,11 +52,7 @@ const AuthButtons = () => {
     }
 
     if (user.roles.includes("STAFF")) {
-      return {
-        path: "/staff-management",
-        label: "Staff Management",
-        icon: <LineChartOutlined />,
-      };
+      return { path: "/staff/dashboard", label: "Staff Management", icon: <LineChartOutlined /> };
     }
 
     if (user.roles.includes("ADMIN") || user.roles.includes("MANAGER")) {
