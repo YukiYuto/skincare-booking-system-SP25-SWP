@@ -12,5 +12,7 @@ namespace SkincareBookingSystem.Models.Dto.Appointment.Details
         public string? TherapistName { get; set; }
         public string? TherapistAge { get; set; }
         public string? TherapistAvatarUrl { get; set; }
+        public string? TherapistExperience { get; set; }
+        public string? TherapistGender { get; set; }
     }
 }

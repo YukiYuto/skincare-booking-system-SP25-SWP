@@ -276,7 +276,7 @@ public class StaffService : IStaffService
         var appointment = await _unitOfWork.Appointments.GetAsync(a =>
             a.AppointmentId == checkOutDto.AppointmentId &&
             a.CustomerId == checkOutDto.CustomerId &&
-            a.Status == StaticOperationStatus.Appointment.CheckedIn);
+            a.Status == StaticOperationStatus.Appointment.Completed);
         if (appointment == null)
         {
             return new ResponseDto()
@@ -311,7 +311,7 @@ public class StaffService : IStaffService
 
         appointment.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
         appointment.CheckOutTime = DateTime.UtcNow.AddHours(7);
-        appointment.Status = StaticOperationStatus.Appointment.Completed;
+        appointment.Status = StaticOperationStatus.Appointment.CheckedOut;
 
         _unitOfWork.Appointments.UpdateStatus(appointment);
         await _unitOfWork.SaveAsync();

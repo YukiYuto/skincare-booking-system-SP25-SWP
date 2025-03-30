@@ -29,6 +29,13 @@ public class ServiceComboController : Controller
             await _serviceComboService.GetAllServiceCombos(User, pageNumber, pageSize, filterOn, filterQuery, sortBy);
         return StatusCode(result.StatusCode, result);
     }
+    
+    [HttpGet("{serviceComboId}")]
+    public async Task<IActionResult> GetServiceComboById(Guid serviceComboId)
+    {
+        var result = await _serviceComboService.GetServiceComboById(User, serviceComboId);
+        return StatusCode(result.StatusCode, result);
+    }
 
     [HttpPost]
     public async Task<IActionResult> CreateService([FromBody] CreateServiceComboDto createServiceComboDtoDto)

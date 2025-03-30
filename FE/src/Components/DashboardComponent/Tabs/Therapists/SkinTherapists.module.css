@@ -16,6 +16,9 @@
 .tabTitleContainer {
     display: flex;
     gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .tabHeader {
@@ -23,6 +26,17 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.tabTitleGroup {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.tabTitle {
+    display: flex;
+    align-items: center;
 }
 
 .filterContainer {

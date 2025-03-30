@@ -20,13 +20,11 @@ namespace SkincareBookingSystem.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAutoMapperService _autoMapperService;
-        private readonly ITherapistScheduleRepository _therapistScheduleRepository;
 
-        public TherapistScheduleService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService, ITherapistScheduleRepository therapistScheduleRepository)
+        public TherapistScheduleService(IUnitOfWork unitOfWork, IAutoMapperService autoMapperService)
         {
             _unitOfWork = unitOfWork;
             _autoMapperService = autoMapperService;
-            _therapistScheduleRepository = therapistScheduleRepository;
         }
 
         public async Task<ResponseDto> CreateTherapistSchedule(ClaimsPrincipal User, CreateTherapistScheduleDto createBookingScheduleDto)
@@ -39,7 +37,10 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var bookingScheduleToCreate = _autoMapperService.Map<CreateTherapistScheduleDto, TherapistSchedule>(createBookingScheduleDto);
-            bookingScheduleToCreate.CreatedBy = User.Identity?.Name;
+            bookingScheduleToCreate.CreatedBy = User.FindFirstValue("Fullname");
+            bookingScheduleToCreate.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
+            bookingScheduleToCreate.ScheduleStatus = ScheduleStatus.Pending;
+            bookingScheduleToCreate.Status = StaticOperationStatus.BaseEntity.Active;
 
             try
             {
@@ -94,20 +95,46 @@ namespace SkincareBookingSystem.Services.Services
                     result: bookingSchedule);
         }
 
-        public async Task<ResponseDto> GetTherapistScheduleByTherapistIdAsync(Guid therapistId)
+        public async Task<ResponseDto> GetTherapistScheduleByTherapistId(ClaimsPrincipal User, Guid therapistId)
         {
-            var bookingSchedule = await _therapistScheduleRepository.GetTherapistScheduleByTherapistIdAsync(therapistId);
-            if (bookingSchedule == null)
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
             {
                 return ErrorResponse.Build(
-                    message: StaticResponseMessage.BookingSchedule.NotFound,
+                    message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
-            var bookingScheduleDto = _autoMapperService.Map<TherapistSchedule, GetTherapistScheduleDto>(bookingSchedule);
-            return SuccessResponse.Build(
-                message: StaticResponseMessage.BookingSchedule.Retrieved,
-                statusCode: StaticOperationStatus.StatusCode.Ok,
-                result: bookingScheduleDto);
+
+            var therapistExists = await _unitOfWork.SkinTherapist.GetAsync(t => t.SkinTherapistId == therapistId);
+            if (therapistExists == null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            var schedules = await _unitOfWork.TherapistSchedule.GetAllAsync(
+                filter: b => b.TherapistId == therapistId && b.Status != StaticOperationStatus.BookingSchedule.Deleted,
+                includeProperties: $"{nameof(TherapistSchedule.Appointment)},{nameof(TherapistSchedule.Slot)}");
+
+            var scheduleDtos = schedules.Select(s => new GetTherapistScheduleDto
+            {
+                TherapistScheduleId = s.TherapistScheduleId,
+                AppointmentId = s.Appointment?.AppointmentId ?? Guid.Empty, // Handle null Appointment
+                SlotId = s.Slot?.SlotId ?? Guid.Empty, // Handle null Slot
+                AppointmentDate = s.Appointment?.AppointmentDate.ToDateTime(TimeOnly.MinValue) // Convert DateOnly to DateTime
+            }).ToList();
+
+            return scheduleDtos.Any() ?
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.RetrievedAll,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: scheduleDtos)
+                :
+                SuccessResponse.Build(
+                    message: StaticResponseMessage.BookingSchedule.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: new List<GetTherapistScheduleDto>());
+
         }
 
         public async Task<ResponseDto> UpdateTherapistSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto updateBookingScheduleDto)

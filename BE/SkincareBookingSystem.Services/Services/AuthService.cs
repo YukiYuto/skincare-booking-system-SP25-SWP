@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Web;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SkincareBookingSystem.DataAccess.IRepositories;
@@ -156,6 +157,7 @@ public class AuthService : IAuthService
         // Tạo đối tượng ApplicationUser mới
         ApplicationUser newUser;
         newUser = _mapperService.Map<SignUpStaffDto, ApplicationUser>(signUpStaffDto);
+        newUser.EmailConfirmed = true;
 
         // Bắt đầu transaction qua UnitOfWork
         using (var transaction = await _unitOfWork.BeginTransactionAsync())
@@ -245,6 +247,7 @@ public class AuthService : IAuthService
         // Tạo đối tượng ApplicationUser mới
         ApplicationUser newUser;
         newUser = _mapperService.Map<SignUpSkinTherapistDto, ApplicationUser>(signUpSkinTherapistDto);
+        newUser.EmailConfirmed = true;
 
         using (var transaction = await _unitOfWork.BeginTransactionAsync())
         {
@@ -360,9 +363,117 @@ public class AuthService : IAuthService
     }
 
 
-    public Task<ResponseDto> SignInByGoogle(SignInByGoogleDto signInByGoogleDto)
+    public async Task<ResponseDto> SignInByGoogle(SignInByGoogleDto signInByGoogleDto)
     {
-        throw new NotImplementedException();
+        FirebaseToken googleToken =
+            await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(signInByGoogleDto.Token);
+
+        var userInfo = ExtractUserInfo(googleToken);
+
+        var user = await _userManager.FindByEmailAsync(userInfo.Email);
+
+        if (user is not null)
+        {
+            if (user.LockoutEnd is not null && user.LockoutEnd > DateTime.UtcNow)
+            {
+                return new ResponseDto()
+                {
+                    Message = "User has been locked",
+                    IsSuccess = false,
+                    StatusCode = 403,
+                    Result = null
+                };
+            }
+        }
+        else
+        {
+            user = new ApplicationUser
+            {
+                Email = userInfo.Email,
+                FullName = userInfo.Name,
+                UserName = userInfo.Email,
+                ImageUrl = userInfo.AvatarUrl,
+                Address = userInfo.Address,
+                Age = userInfo.BirthDate != string.Empty
+                    ? DateTime.UtcNow.Year - DateTime.Parse(userInfo.BirthDate).Year
+                    : 18,
+                Gender = userInfo.Gender,
+                PhoneNumber = userInfo.PhoneNumber,
+                EmailConfirmed = true
+            };
+
+            var createUserResult = await _userManager.CreateAsync(user);
+            if (!createUserResult.Succeeded)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Failed to create user",
+                    IsSuccess = false,
+                    StatusCode = 500,
+                    Result = createUserResult.Errors
+                };
+            }
+
+            var newCustomer = new Customer()
+            {
+                UserId = user.Id,
+            };
+            
+            await _unitOfWork.Customer.AddAsync(newCustomer);
+            var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Customer);
+            if (!isRoleExist) await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Customer));
+
+            var isRoleAdded = await _userManager.AddToRoleAsync(user, StaticUserRoles.Customer);
+            if (!isRoleAdded.Succeeded)
+                return new ResponseDto
+                {
+                    Message = "Error adding role",
+                    IsSuccess = false,
+                    StatusCode = 500,
+                    Result = isRoleAdded.Errors
+                };
+            await _userManager.AddLoginAsync(user,
+                new UserLoginInfo(StaticLoginProvider.Google, userInfo.UserId, "GOOGLE"));
+        }
+
+        var accessToken = await _tokenService.GenerateJwtAccessTokenAsync(user);
+        var refreshToken = await _tokenService.GenerateJwtRefreshTokenAsync(user);
+        await _tokenService.StoreRefreshToken(user.Id, refreshToken);
+        await _userManager.UpdateAsync(user);
+
+        return new ResponseDto()
+        {
+            Result = new SignInResponseDto
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            },
+            Message = "Sign in successfully",
+            IsSuccess = true,
+            StatusCode = 200
+        };
+    }
+
+    // Extract user info from Firebase token
+    private (string UserId, string Email, string Name, string AvatarUrl,
+        string PhoneNumber, string BirthDate, string Gender, string Address)
+        ExtractUserInfo(FirebaseToken token)
+    {
+        token.Claims.TryGetValue("phone_number", out var phoneNumber);
+        token.Claims.TryGetValue("birthday", out var birthDate);
+        token.Claims.TryGetValue("gender", out var gender);
+        token.Claims.TryGetValue("address", out var address);
+
+        return (
+            token.Uid,
+            token.Claims["email"].ToString()!,
+            token.Claims["name"].ToString()!,
+            token.Claims["picture"].ToString()!,
+            phoneNumber?.ToString() ?? string.Empty,
+            birthDate?.ToString() ?? string.Empty,
+            gender?.ToString() ?? string.Empty,
+            address?.ToString() ?? string.Empty
+        );
     }
 
     public async Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,
@@ -585,7 +696,8 @@ public class AuthService : IAuthService
 
         // build link reset password
         // string resetLink = $"http://localhost:5173/reset-password?email={user.Email}&token={Uri.UnescapeDataString(token)}";
-        var resetLink = $"https://lumiconnect-beauty.vercel.app/reset-password?email={user.Email}&token={HttpUtility.UrlEncode(token)}";
+        var resetLink =
+            $"https://lumiconnect-beauty.vercel.app/reset-password?email={user.Email}&token={HttpUtility.UrlEncode(token)}";
 
         var emailSent = await _emailService.SendPasswordResetEmailAsync(user.Email!, resetLink);
 

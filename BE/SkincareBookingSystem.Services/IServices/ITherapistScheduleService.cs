@@ -16,6 +16,6 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> GetAllTherapistSchedules();
         Task<ResponseDto> UpdateTherapistSchedule(ClaimsPrincipal User, UpdateTherapistScheduleDto bookingScheduleDto);
         Task<ResponseDto> DeleteTherapistSchedule(ClaimsPrincipal User, Guid scheduleId);
-        Task<ResponseDto> GetTherapistScheduleByTherapistIdAsync(Guid therapistId);
+        Task<ResponseDto> GetTherapistScheduleByTherapistId(ClaimsPrincipal User, Guid therapistId);
     }
 }

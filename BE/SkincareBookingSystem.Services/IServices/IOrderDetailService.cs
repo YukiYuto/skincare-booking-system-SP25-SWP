@@ -15,5 +15,6 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> GetAllOrderDetails();
         Task<ResponseDto> UpdateOrderDetail(ClaimsPrincipal User, UpdateOrderDetailDto orderDetail);
         Task<ResponseDto> DeleteOrderDetail(Guid orderDetailId);
+        Task<ResponseDto> GetOrderDetailByOrderId(ClaimsPrincipal User, Guid orderId);
     }
 }
