@@ -2,13 +2,16 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dropdown, Button, Menu } from "antd";
 import { logout } from "../../actions/authActions";
+import { useNavigate } from "react-router-dom";
 
 const AuthButtons = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
     dispatch(logout());
+    navigate("/login");
   };
 
   const menu = (

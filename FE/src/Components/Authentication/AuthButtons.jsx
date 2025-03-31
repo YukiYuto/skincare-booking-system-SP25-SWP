@@ -30,13 +30,12 @@ const AuthButtons = () => {
     try {
       dispatch(logoutAction());
       toast.success("Logout Successfully!");
-      navigate("/");
+      navigate("/login");
     } finally {
       setLoading(false);
     }
   };
 
-  // Xác định đường dẫn dựa trên quyền user
   const getRoleBasedPath = () => {
     if (!user?.roles || !Array.isArray(user.roles)) return null;
 
@@ -142,7 +141,6 @@ const AuthButtons = () => {
         </div>
       )}
 
-      {/* Hiển thị Modal Feedback nếu mở */}
       <FeedbackModal isOpen={isFeedbackModalOpen} onClose={() => setFeedbackModalOpen(false)} />
     </>
   );

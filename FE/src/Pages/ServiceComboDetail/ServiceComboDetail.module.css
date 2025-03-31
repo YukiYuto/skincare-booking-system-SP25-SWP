@@ -1,0 +1,59 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 48px 92px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: "Poppins", sans-serif;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.image {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 16px;
+    margin: 0 auto 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.description,
+.price,
+.numberOfService,
+.status {
+    font-size: 1.2rem;
+    margin: 8px 0;
+}
+
+.price {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.order {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.order:hover {
+    background-color: var(--accent-color);
+}
+
+.loading,
+.error {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-top: 100px;
+}

@@ -27,9 +27,7 @@ const SlotBasedWeekView = ({
       headers.push(
         <th
           key={day.format("YYYY-MM-DD")}
-          className={`${styles.dayHeader} ${
-            moment().isSame(day, "day") ? styles.today : ""
-          }`}
+          className={`${styles.dayHeader} ${moment().isSame(day, "day") ? styles.today : ""}`}
         >
           {day.format("ddd, MMM D")}
         </th>
@@ -57,32 +55,23 @@ const SlotBasedWeekView = ({
         cells.push(
           <td
             key={`${day.format("YYYY-MM-DD")}-${slot.slotId}`}
-            className={`${styles.timeSlotCell} ${
-              appointment ? styles.hasAppointment : ""
-            }`}
-            onClick={() =>
-              appointment && handleAppointmentClick(appointment.appointmentId)
-            }
+            className={`${styles.timeSlotCell} ${appointment ? styles.hasAppointment : ""}`}
+            onClick={() => appointment && handleAppointmentClick(appointment.appointmentId)}
           >
             {appointment ? (
               <Tooltip title={`${appointment.status || "Scheduled"}`}>
                 <div className={styles.appointmentIndicator}>
                   <Badge color="#1890ff" />
-                  <span>
-                    {appointment.serviceInfo?.serviceName || "Appointment"}
-                  </span>
+                  <span>{appointment.serviceInfo?.serviceName || "Appointment"}</span>
                 </div>
               </Tooltip>
             ) : null}
           </td>
         );
       }
-
       return (
         <tr key={slot.slotId}>
-          <td className={styles.timeSlotLabel}>
-            {formatSlotTime(slot.startTime, slot.endTime)}
-          </td>
+          <td className={styles.timeSlotLabel}>{formatSlotTime(slot.startTime, slot.endTime)}</td>
           {cells}
         </tr>
       );
@@ -101,16 +90,11 @@ const SlotBasedWeekView = ({
   return (
     <div className={styles.slotBasedWeekContainer}>
       <div className={styles.weekNavigation}>
-        <button className={styles.navButton} onClick={handlePreviousWeek}>
-          ← Previous Week
-        </button>
+        <button className={styles.navButton} onClick={handlePreviousWeek}>← Previous Week</button>
         <span className={styles.weekLabel}>
-          {currentWeekStart.format("MMM D")} -{" "}
-          {moment(currentWeekStart).add(6, "days").format("MMM D, YYYY")}
+          {currentWeekStart.format("MMM D")} - {moment(currentWeekStart).add(6, "days").format("MMM D, YYYY")}
         </span>
-        <button className={styles.navButton} onClick={handleNextWeek}>
-          Next Week →
-        </button>
+        <button className={styles.navButton} onClick={handleNextWeek}>Next Week →</button>
       </div>
 
       <table className={styles.slotBasedCalendar}>
