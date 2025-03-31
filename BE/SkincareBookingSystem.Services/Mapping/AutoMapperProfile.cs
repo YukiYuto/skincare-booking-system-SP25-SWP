@@ -105,12 +105,25 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
 
-        // GetCustomerInfo
+        // Customer
         CreateMap<Customer, GetCustomerInfoDto>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName));
-
+        
+        CreateMap<Models.Domain.Services, ServiceRecommenedDto>()
+            .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
+            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
+            .ForMember(dest => dest.ServiceImage, opt => opt.MapFrom(src => src.ImageUrl ?? string.Empty))
+            .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => src.Price));
+        
+        CreateMap<ServiceCombo, ServiceComboRecommenedDto>()
+            .ForMember(dest => dest.ServiceComboId, opt => opt.MapFrom(src => src.ServiceComboId))
+            .ForMember(dest => dest.ServiceComboName, opt => opt.MapFrom(src => src.ComboName))
+            .ForMember(dest => dest.ServiceComboImage, opt => opt.MapFrom(src => src.ImageUrl ?? string.Empty)) 
+            .ForMember(dest => dest.ServiceComboPrice, opt => opt.MapFrom(src => src.Price));
+        
+        
         //ServiceDuration 
         CreateMap<CreateServiceDurationDto, ServiceDuration>();
 
