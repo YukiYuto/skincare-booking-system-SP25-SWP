@@ -52,7 +52,6 @@ const Header = () => {
               <Brand />
             </Link>
           </div>
-
           {isMobile ? (
             <>
               <button className={styles.hamburgerButton} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">

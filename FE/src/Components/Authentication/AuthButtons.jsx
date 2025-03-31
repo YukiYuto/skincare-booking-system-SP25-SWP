@@ -7,6 +7,7 @@ import {
   UserOutlined,
   DownOutlined,
   ShoppingCartOutlined,
+  CalendarOutlined,
   DashboardOutlined,
   LineChartOutlined,
   BarChartOutlined,
@@ -15,14 +16,12 @@ import {
 import { logout as logoutAction } from "../../redux/auth/thunks";
 import styles from "./AuthButtons.module.css";
 import { useState } from "react";
-import FeedbackModal from "../Feedback/FeedbackContainer";
 
 const AuthButtons = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false); // State để mở modal
 
   const handleLogout = () => {
     setLoading(true);
@@ -39,11 +38,18 @@ const AuthButtons = () => {
     if (!user?.roles || !Array.isArray(user.roles)) return null;
 
     if (user.roles.includes("CUSTOMER")) {
-      return {
-        path: "/appointments",
-        label: "Appointment",
-        icon: <ShoppingCartOutlined />,
-      };
+      return [
+        {
+          path: "/appointments",
+          label: "Appointment",
+          icon: <CalendarOutlined />,
+        },
+        {
+          path: "/orders",
+          label: "Orders",
+          icon: <ShoppingCartOutlined />,
+        },
+      ];
     }
 
     if (user.roles.includes("SKINTHERAPIST")) {
@@ -55,19 +61,19 @@ const AuthButtons = () => {
     }
 
     if (user.roles.includes("STAFF")) {
-      return {
+      return [{
         path: "/staff/dashboard",
         label: "Staff Management",
         icon: <LineChartOutlined />,
-      };
+      }];
     }
 
     if (user.roles.includes("ADMIN") || user.roles.includes("MANAGER")) {
-      return {
+      return [{
         path: "/dashboard",
         label: "Dashboard",
         icon: <DashboardOutlined />,
-      };
+      }];
     }
 
     return null;
