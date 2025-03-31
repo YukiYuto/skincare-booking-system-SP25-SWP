@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Table, Spin, Alert, Card } from "antd";
+import { Table, Spin, Alert, Card, Button } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import styles from "./TherapistDashboard.module.css"; 
 import { GET_ALL_THERAPISTS_API } from "../../config/apiConfig";
+import { useNavigate } from "react-router-dom";
 
 const API_SCHEDULES = "https://lumiconnect.azurewebsites.net/api/therapist-schedules/therapist";
 const API_APPOINTMENT = "https://lumiconnect.azurewebsites.net/api/appointment";
@@ -12,6 +13,7 @@ const API_APPOINTMENT = "https://lumiconnect.azurewebsites.net/api/appointment";
 const TherapistDashboard = () => {
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.accessToken);
+  const navigate = useNavigate();
 
   const [appointments, setAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -23,6 +25,9 @@ const [yearlyAppointments, setYearlyAppointments] = useState(0);
 const [monthlyRevenue, setMonthlyRevenue] = useState(0);
 const [yearlyRevenue, setYearlyRevenue] = useState(0);
 
+const handleViewDetails = async (appointmentId) => {
+  navigate(`/therapist/appointments/${appointmentId}`);
+};
 
 useEffect(() => {
   const fetchAppointments = async () => {
@@ -85,7 +90,7 @@ useEffect(() => {
           const status = appointmentData.result?.status || "N/A";
           const servicePrice = Number(appointmentData.result?.serviceInfo.servicePrice) || 0; 
 
-          if (status === "COMPLETED") {
+          if (status === "CHECKEDOUT") {
             if (appointmentYear === currentYear) {
               yearlyCount++; 
               yearlySum += servicePrice;
@@ -181,6 +186,15 @@ useEffect(() => {
       key: "status",
       render: (_, record) => getStatusTag(record.status),
     },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button type="link" onClick={() => handleViewDetails(record.id)}>
+          View Details
+        </Button>
+      ),
+    }
   ];
   
 
