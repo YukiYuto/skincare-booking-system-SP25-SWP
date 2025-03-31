@@ -4,6 +4,7 @@ import { Card, Button, Spin, Alert, Pagination, Input, Select } from 'antd';
 import styles from './TherapistCard.module.css';
 import Header from '../Common/Header';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../Footer/Footer';
 
 const { Meta } = Card;
 const { Search } = Input;
@@ -121,6 +122,7 @@ const TherapistCard = () => {
         <Alert message="Không có dữ liệu therapists" type="info" showIcon />
       )}
     </div>
+    <Footer />
     </div>
   );
 };

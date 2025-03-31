@@ -31,6 +31,27 @@ export const login = createAsyncThunk(
   }
 );
 
+export const loginByGoogle = createAsyncThunk(
+  "auth/login-by-google",
+  async (token, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
+      const tokens = await authService.signInByGoogle(token);
+      console.log(tokens);
+      const response = await authService.fetchUserProfile(
+        tokens.result.accessToken
+      );
+      const user = { ...response.result, ...tokens.result };
+      dispatch(setUser(user));
+      dispatch(setTokens(tokens.result));
+      return user;
+    } catch (error) {
+      dispatch(setError(error || "Login failed. Please try again."));
+      throw error;
+    }
+  }
+);
+
 /**
  * Register Thunk for registering user
  * @param {Object} userData - User registration data
@@ -58,7 +79,8 @@ export const refreshAccessToken = createAsyncThunk(
   async (_, { dispatch, getState }) => {
     try {
       const state = getState();
-      const refreshToken = Cookie.get("refreshToken") || state.auth.refreshToken;
+      const refreshToken =
+        Cookie.get("refreshToken") || state.auth.refreshToken;
       if (!refreshToken) {
         throw new Error("No refresh token found");
       }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkincareBookingSystem.Models.Dto.Customer;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Utilities.Constants;
 using Swashbuckle.AspNetCore.Annotations;
@@ -55,6 +56,14 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<IActionResult> GetOrderByCustomer()
         {
             var response = await _customerService.GetOrderByCustomer(User);
+            return StatusCode(response.StatusCode, response);
+        }
+        
+        [HttpPost("recommendation")]
+        [SwaggerOperation(Summary = "API gets a customer's recommendation by skin profile", Description = "Requires customer roles")]
+        public async Task<IActionResult> GetRecommendationBySkinProfile([FromBody] RecommendationDto recommendationDto)
+        {
+            var response = await _customerService.GetRecommendationBySkinProfile(recommendationDto);
             return StatusCode(response.StatusCode, response);
         }
     }

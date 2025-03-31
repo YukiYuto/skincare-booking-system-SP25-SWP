@@ -6,34 +6,18 @@ import Header from "../../Components/Common/Header";
 import FeaturesSection from "../../Components/FeaturesSection/FeaturesSection";
 import CTASection from "../../Components/CTASection/CTASection";
 import StatsSection from "../../Components/StatsSection/StatsSection";
-import AppointmentSection from "../../Components/AppointmentSection/AppointmentSection";
 import SkincareTips from "../../Components/SkincareTips/SkincareTips";
 import TrustSection from "../../Components/TrustSection/TrustSection";
 import SkincareExperts from "../../Components/SkincareExperts/SkincareExperts";
-import { useEffect, useState } from "react";
-import BookingModal from "../../Components/BookingModal/BookingModal";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import Footer from "../../Components/Footer/Footer";
 
 function HomePage() {
-  const [visible, setVisible] = useState(false);
   const navigate = useNavigate(); // Hook để điều hướng
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Lấy trạng thái đăng nhập
 
   const handleBookingClick = () => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    } else {
-      setVisible(true);
-    }
+      navigate("/services");
   };
-
-  // Theo dõi thay đổi trạng thái đăng nhập, nếu logout thì đóng modal
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setVisible(false);
-    }
-  }, [isAuthenticated]);
   
   return (
     <div>
@@ -54,9 +38,6 @@ function HomePage() {
               <img src={phone} alt="phone icon" className={styles.phoneIcon} />
               Book an appointment
             </Button>
-            {isAuthenticated && (
-              <BookingModal visible={visible} onClose={() => setVisible(false)} />
-            )}
           </div>
 
           {/* Right Side - Image */}
@@ -85,10 +66,8 @@ function HomePage() {
 
         <SkincareTips />
         <br />
-
-        <AppointmentSection />
-        <br />
       </div>
+      <Footer />
     </div>
   );
 }

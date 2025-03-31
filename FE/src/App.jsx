@@ -24,21 +24,29 @@ import Revenue from "./Components/DashboardComponent/Tabs/Revenue/Revenue";
 import Customers from "./Components/DashboardComponent/Tabs/Customers/Customers";
 import SkinTherapists from "./Components/DashboardComponent/Tabs/Therapists/SkinTherapists";
 import Services from "./Components/DashboardComponent/Tabs/Services/Services";
+import ServiceComboDB from "./Components/DashboardComponent/Tabs/Combo/ServiceComboDB";
 import ServiceCombo from "./Pages/ServiceComboAll/AllServiceCombo";
 import ServiceComboDetail from "./Pages/ServiceComboDetail/ServiceComboDetail";
 import Orders from "./Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "./Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage";
-import TableCustomer from "./Components/TableCustomer/TableCustomer";
 import PaymentConfirmationPage from "./Pages/Payment/PaymentConfirmationPage";
 import TherapistCard from "./Components/TherapistCard/TherapistCard";
 import TherapistDetail from "./Components/TherapistDetail/TherapistDetail";
-import StaffManagement from "./Pages/Staff/StaffManagement/StaffManagement";
-import ScheduleManagement from "./Pages/Staff/ScheduleManagement/ScheduleManagement";
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
-import TherapistSchedule from "./Pages/Therapist/TherapistSchedule/TherapistSchedule";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
-import ServiceComboDB from "./Components/DashboardComponent/Tabs/Combo/ServiceComboDB";
+import StaffDashboard from "./Pages/Staff/Dashboard/StaffDashboard";
+import AppointmentDetailsPage from "./Pages/Staff/Appointment/AppointmentDetailsPage";
+import BlogForCus from "./Components/BlogForCus/BlogForCus";
+import BlogForCusList from "./Components/BlogForCus/BlogForCusList/BlogForCusList";
+import StaffBlogManagement from "./Pages/Staff/StaffBlogManagement/StaffBlogManagement";
+import StaffBlogDetail from "./Pages/Staff/StaffBlogDetail/StaffBlogDetail";
+import ViewBlogCategory from "./Components/DashboardComponent/Tabs/BlogCategory/ViewBlogCategory/ViewBlogCategory";
+import ViewDetail from "./Components/DashboardComponent/Tabs/BlogCategory/ViewDetail/ViewDetail";
+import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTherapist";
+import FeedbackPage from "./Pages/FeedbackPage/FeedbackPage";
+import SkinTest from "./Components/SkinTest/SkinTest";
+import SkinTestResult from "./Components/SkinTest/SkinTestResult";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -46,6 +54,8 @@ const AppRoutes = () => {
 
   return (
     <Routes>
+      <Route path="skin-test" element={<SkinTest />} />
+      <Route path="result" element={<SkinTestResult />} />
       <Route path="/" element={<Home />} />
       <Route path="contact" element={<Contact />} />
       <Route path="about" element={<AboutPage />} />
@@ -55,7 +65,15 @@ const AppRoutes = () => {
       <Route path="service-combo/:id" element={<ServiceComboDetail />} />
       <Route path="therapist" element={<TherapistCard />} />
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
+      <Route path="blogs" element={<BlogForCus />} />
+      <Route path="blogs/:categoryName?" element={<BlogForCus />} />
+      <Route path="blogs-detail/:title" element={<BlogForCusList />} />
+      <Route path="feedback-page" element={<FeedbackPage />} />
       <Route path="error" element={<ErrorPage />} />
+      <Route
+        path="payment-confirmation"
+        element={<PaymentConfirmationPage />}
+      />
       {!accessToken && (
         <>
           <Route path="login" element={<LoginPage />} />
@@ -70,11 +88,7 @@ const AppRoutes = () => {
           {roles.includes("CUSTOMER") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="table-customer" element={<TableCustomer />} />
-              <Route
-                path="payment-confirmation"
-                element={<PaymentConfirmationPage />}
-              />
+              <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
               <Route path="appointments" element={<AppointmentPage />} />
             </>
           )}
@@ -90,30 +104,30 @@ const AppRoutes = () => {
                 <Route path="combo" element={<ServiceComboDB />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
+                <Route path="view-blogcategory" element={<ViewBlogCategory />} />
+                <Route path="view-blogcategory/:categoryName?" element={<ViewBlogCategory />} />
+                <Route path="view-detail/:title" element={<ViewDetail />} /> 
               </Route>
             </>
           )}
           {roles.includes("STAFF") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="staff-management" element={<StaffManagement />} />
+              <Route path="staff-blogs" element={<StaffBlogManagement />} />
+              <Route path="staff-blogs/:categoryName?" element={<StaffBlogManagement />} />
+              <Route path="detail/:title" element={<StaffBlogDetail />} /> 
+              <Route path="staff/dashboard" element={<StaffDashboard />} />
               <Route
-                path="schedule-management"
-                element={<ScheduleManagement />}
+                path="staff/appointments/:appointmentId"
+                element={<AppointmentDetailsPage />}
               />
             </>
           )}
           {roles.includes("SKINTHERAPIST") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
-              <Route
-                path="therapist-management"
-                element={<TherapistManagement />}
-              />
-              <Route
-                path="therapist-schedule"
-                element={<TherapistSchedule />}
-              />
+              <Route path="therapist-management" element={<TherapistManagement />} />
+              <Route path="therapist-dashboard" element={<DashboardTherapist />} />
             </>
           )}
           {roles.includes("MANAGER") && (
@@ -128,7 +142,11 @@ const AppRoutes = () => {
                 <Route path="combo" element={<ServiceComboDB />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
+                <Route path="view-blogcategory" element={<ViewBlogCategory />} />
+                <Route path="view-blogcategory/:categoryName?" element={<ViewBlogCategory />} />
+                <Route path="view-detail/:title" element={<ViewDetail />} /> 
               </Route>
+              
             </>
           )}
         </>

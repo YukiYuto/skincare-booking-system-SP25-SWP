@@ -84,6 +84,7 @@
   border: none;
   cursor: pointer;
   margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .loginButton:hover {

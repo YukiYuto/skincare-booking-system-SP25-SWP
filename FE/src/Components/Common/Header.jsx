@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import styles from "./Header.module.css";
+import { Link, useNavigate } from "react-router-dom";
+import styles from "./Header.module.css"; // Import custom CSS file
 import Brand from "../Brand/Brand";
 import AuthButton from "../Authentication/AuthButtons";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -26,6 +27,16 @@ const Header = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const isAuthenticated = user?.accessToken; // Kiểm tra accessToken
+
+  const handleFeedbackClick = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      navigate("/login"); 
+    }
+  };
   return (
     <header className={styles.stickyHeaderContainer}>
       <div className={styles.navHeaderWrapper}>
@@ -48,6 +59,27 @@ const Header = () => {
                 <span className={styles.hamburgerIcon}></span>
                 <span className={styles.hamburgerIcon}></span>
               </button>
+          {/* Navigation Menu - Căn giữa */}
+          <nav className={styles.navModern}>
+            <ul className={styles.navList}>
+              <li><Link to="/services" className={styles.navLink}>Services</Link></li>
+              <li><Link to="/therapist" className={styles.navLink}>Therapists</Link></li>
+              <li><Link to="/about" className={styles.navLink}>About</Link></li>
+              <li><Link to="/skin-test" className={styles.navLink}>Skin Test</Link></li>
+              <li><Link to="/promotion" className={styles.navLink}>Promotions</Link></li>
+              <li><Link to="/contact" className={styles.navLink}>Contact</Link></li>
+              <li><Link to="/blogs" className={styles.navLink}>Blog</Link></li>
+              <li>
+                <Link 
+                  to={isAuthenticated ? "/feedback-page" : "#"} 
+                  className={styles.navLink}
+                  onClick={handleFeedbackClick}
+                >
+                  Feedback
+                </Link>
+              </li>
+            </ul>
+          </nav>
 
               {menuOpen && (
                 <nav className={styles.mobileNav}>

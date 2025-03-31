@@ -11,9 +11,7 @@ namespace SkincareBookingSystem.Services.IServices
 {
     public interface IOrderService
     {
-        Task<ResponseDto> UpdateOrder(ClaimsPrincipal User, UpdateOrderDto updateOrderDto);
-        Task<ResponseDto> DeleteOrder(Guid id);
-        Task<ResponseDto> GetOrderById(Guid id);
+        Task<ResponseDto> GetOrderById(ClaimsPrincipal User, Guid orderId);
         Task<ResponseDto> GetAllOrders();
 
     }

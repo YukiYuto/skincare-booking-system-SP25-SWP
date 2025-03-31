@@ -6,8 +6,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { updateUser } from "../../redux/auth/slice";
 import {
-  CHANGE_PASSWORD_API,
-  GET_CUSTOMER_PROFILE_API,
   POST_CUSTOMER_AVATAR_API,
 } from "../../config/apiConfig";
 import {
@@ -202,7 +200,7 @@ const UserProfile = () => {
     <div className={styles.bodyPage}>
       <Header />
       <div className={styles.profileContainer}>
-        <h2>Customer Profile</h2>
+        <h2>{user.roles} Profile</h2>
         <div>
           <p>Choose file here:</p>
           <input

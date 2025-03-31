@@ -37,7 +37,7 @@ namespace SkincareBookingSystem.Services.Services
             var createBlog = _autoMapperService.Map<CreateBlogDto, Blog>(createBlogDto);
             createBlog.CreatedBy = User.FindFirstValue("Fullname");
             createBlog.CreatedTime = StaticOperationStatus.Timezone.Vietnam;
-            createBlog.Status = StaticOperationStatus.Blog.Published;
+            createBlog.Status = StaticOperationStatus.BaseEntity.Active;
 
             try
             {
@@ -99,12 +99,12 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.BadRequest);
             }
 
-            if (deleteBlog.AuthorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                return ErrorResponse.Build(
-                    message: StaticResponseMessage.Blog.NotAuthorized,
-                    statusCode: StaticOperationStatus.StatusCode.Forbidden);
-            }
+            //if (deleteBlog.AuthorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            //{
+            //    return ErrorResponse.Build(
+            //        message: StaticResponseMessage.Blog.NotAuthorized,
+            //        statusCode: StaticOperationStatus.StatusCode.Forbidden);
+            //}
 
             deleteBlog.Status = StaticOperationStatus.Blog.Deleted;
             deleteBlog.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
@@ -233,17 +233,12 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            if (updateBlog.AuthorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                return ErrorResponse.Build(
-                    message: StaticResponseMessage.Blog.NotAuthorized,
-                    statusCode: StaticOperationStatus.StatusCode.Forbidden);
-            }
-
             var updatedData = _autoMapperService.Map<UpdateBlogDto, Blog>(updateBlogDto);
             updatedData.UpdatedBy = User.FindFirstValue("Fullname");
             updatedData.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
             updatedData.Status = StaticOperationStatus.Blog.Modified;
+            updatedData.CreatedBy = updateBlog.CreatedBy;
+            updatedData.CreatedTime = updateBlog.CreatedTime;
 
             _unitOfWork.Blog.Update(updateBlog, updatedData);
 

@@ -15,7 +15,7 @@ import {
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { Spin } from "antd";
-import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
+import { BookOutlined, HomeOutlined, LogoutOutlined } from "@ant-design/icons";
 
 const Sidebar = ({ onExpandChange }) => {
   const [expanded, setExpanded] = useState(false);
@@ -88,6 +88,11 @@ const Sidebar = ({ onExpandChange }) => {
       path: "/dashboard/schedule",
       label: "Schedule",
       icon: <Calendar size={20} />,
+    },
+    {
+      path: "/dashboard/view-blogcategory",
+      label: "View Blog",
+      icon: <BookOutlined size={20} />,
     },
   ];
 

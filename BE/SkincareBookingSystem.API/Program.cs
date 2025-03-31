@@ -118,6 +118,7 @@ public class Program
 
         // Register services from Extensions
         builder.Services.RegisterServices(builder.Configuration);
+        builder.Services.AddFirebaseServices();
 
         var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
         builder.Services.AddCors(options =>
@@ -131,7 +132,7 @@ public class Program
                         .AllowCredentials();
                 });
         });
-      
+
         // Apply database migrations  
         //ApplyMigration(app);
 
