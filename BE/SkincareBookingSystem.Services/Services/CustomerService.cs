@@ -135,7 +135,9 @@ namespace SkincareBookingSystem.Services.Services
                 return ErrorResponse.Build(
                     message: StaticResponseMessage.Appointment.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
-            };
+            }
+
+            ;
 
             var appointmentsDto = appointmentsFromCustomer.Select(a => new
             {
@@ -152,7 +154,7 @@ namespace SkincareBookingSystem.Services.Services
                 .Distinct()
                 .ToList();
             var serviceTypeIds = services.SelectMany(
-                s => s.TypeItems.Select(ti => ti.ServiceTypeId))
+                    s => s.TypeItems.Select(ti => ti.ServiceTypeId))
                 .Distinct()
                 .ToList();
 
@@ -162,10 +164,10 @@ namespace SkincareBookingSystem.Services.Services
                 includeProperties: $"{nameof(SkinTherapist.TherapistServiceTypes)},{nameof(ApplicationUser)}");
 
             var therapists = therapistsFromDb.Select(t => new
-                {
-                    TherapistId = t.SkinTherapistId,
-                    TherapistName = t.ApplicationUser.FullName,
-                }).Distinct().ToList();
+            {
+                TherapistId = t.SkinTherapistId,
+                TherapistName = t.ApplicationUser.FullName,
+            }).Distinct().ToList();
 
 
             return SuccessResponse.Build(
@@ -226,12 +228,14 @@ namespace SkincareBookingSystem.Services.Services
                     CreatedTime = o.CreatedTime ?? DateTime.MinValue,
                     TotalAmount = (decimal)o.TotalPrice,
                     Status = o.Status ?? string.Empty,
-                    Transaction = o.Transactions.FirstOrDefault() != null ? new TransactionInfo
-                    {
-                        TransactionId = o.Transactions.FirstOrDefault().TransactionId,
-                        Amount = (decimal)o.Transactions.First().Amount,
-                        TransactionTime = o.Transactions.First().TransactionDateTime
-                    } : null
+                    Transaction = o.Transactions.FirstOrDefault() != null
+                        ? new TransactionInfo
+                        {
+                            TransactionId = o.Transactions.FirstOrDefault().TransactionId,
+                            Amount = (decimal)o.Transactions.First().Amount,
+                            TransactionTime = o.Transactions.First().TransactionDateTime
+                        }
+                        : null
                 }).OrderByDescending(o => o.CreatedTime).ToList();
 
                 return new ResponseDto()
@@ -251,6 +255,62 @@ namespace SkincareBookingSystem.Services.Services
                     StatusCode = 500
                 };
             }
+        }
+
+        public async Task<ResponseDto> GetRecommendationBySkinProfile(RecommendationDto recommendationDto)
+        {
+            var skinProfile = await _unitOfWork.SkinProfile.GetAsync
+            (sp => sp.SkinProfileId == recommendationDto.SkinProfileId,
+                includeProperties: $"{nameof(SkinProfile.SkinServiceTypes)}." +
+                                   $"{nameof(SkinServiceType.ServiceType)}." +
+                                   $"{nameof(ServiceType.TypeItems)}." +
+                                   $"{nameof(TypeItem.Services)}." +
+                                   $"{nameof(Models.Domain.Services.ComboItems)}." +
+                                   $"{nameof(ComboItem.ServiceCombo)}");
+
+            if (skinProfile is null)
+            {
+                return new ResponseDto()
+                {
+                    Message = "Skin profile not found",
+                    IsSuccess = false,
+                    StatusCode = 404,
+                    Result = null
+                };
+            }
+            
+            var services = skinProfile.SkinServiceTypes
+                .SelectMany(sst => sst.ServiceType.TypeItems ?? new List<TypeItem>()) 
+                .Select(ti => ti.Services ) 
+                .Distinct()
+                .ToList();
+            
+            var serviceCombos = skinProfile.SkinServiceTypes
+                .SelectMany(sst => sst.ServiceType.TypeItems ?? new List<TypeItem>())
+                .Select(ti => ti.Services)                                           
+                .Where(s => s != null)                                               
+                .SelectMany(s => s.ComboItems ?? new List<ComboItem>())            
+                .Select(ci => ci.ServiceCombo)                                       
+                .Where(sc => sc != null)                                             
+                .Distinct()
+                .ToList();
+            
+            var servicesDto = _autoMapperService.MapCollection<Models.Domain.Services, ServiceRecommenedDto>(services).ToList();
+            var serviceCombosDto = _autoMapperService.MapCollection<ServiceCombo, ServiceComboRecommenedDto>(serviceCombos).ToList();
+
+            var recommendationResponse = new RecommendationResponseDto
+            {
+                Services = servicesDto,
+                ServiceCombos = serviceCombosDto
+            };
+            
+            return new ResponseDto()
+            {
+                Message = "Recommendations retrieved successfully",
+                IsSuccess = true,
+                StatusCode = 200,
+                Result = recommendationResponse
+            };
         }
     }
 }

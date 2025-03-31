@@ -7,8 +7,8 @@ namespace SkincareBookingSystem.Models.Domain
     {
         [Key] 
         public Guid BlogId { get; set; }
-        [StringLength(30)] public string Title { get; set; } = null!;
-        [StringLength(100)] public string Content { get; set; } = null!;
+        [StringLength(50)] public string Title { get; set; } = null!;
+        [StringLength(500)] public string Content { get; set; } = null!;
 
         public Guid BlogCategoryId { get; set; }
         [ForeignKey("BlogCategoryId")]
