@@ -94,6 +94,14 @@ export const GET_SERVICE_COMBO_DETAIL_BY_ID_API = `${BASE_URL}/servicecombo/{ser
 export const GET_SERVICE_DURATION_API = `${BASE_URL}/serviceDuration`;
 export const POST_SERVICE_DURATION_API = `${BASE_URL}/serviceDuration`;
 
+//Thêm API cho Feedback
+export const POST_FEEDBACK = `${BASE_URL}/Feedback/create`;
+export const GET_ALL_FEEDBACK = `${BASE_URL}/Feedback/all`;
+export const GET_FEEDBACK_BY_APPOINTMENT = `${BASE_URL}/Feedback/appointment/{appointmentId}`;
+export const GET_FEEDBACK_BY_FEEDBACK_ID = `${BASE_URL}/Feedback/{feedbackId}`;
+export const PUT_FEEDBACK = `${BASE_URL}/Feedback/update`;
+export const DELETE_FEEDBACK = `${BASE_URL}/Feedback/delete/{feedbackId}`;
+
 // Thêm API cho Service
 export const POST_SERVICE_API = `${BASE_URL}/services`;
 export const GET_ALL_SERVICES_API = `${BASE_URL}/services`;
@@ -156,9 +164,6 @@ export const GET_BLOG = `${BASE_URL}/blog/all`;
 export const POST_BLOG = `${BASE_URL}/blog/create`
 export const UPDATE_BLOG = `${BASE_URL}/blog/update`;
 export const DELETE_BLOG = `${BASE_URL}/blog/delete`;
-
-//Thêm API cho Feedback
-export const POST_FEEDBACK = `${BASE_URL}/Feedback/create`;
   
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
 export const AUTH_HEADERS = (token) => ({

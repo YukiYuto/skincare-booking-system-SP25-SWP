@@ -37,7 +37,7 @@ const TherapistSelection = ({
           <div className={styles.info}>
             <h3>{selectedTherapist.fullName}</h3>
             <p>
-              <strong>Experience:</strong> {selectedTherapist.experience}
+              <strong>Experience:</strong> {selectedTherapist.experience} years
             </p>
           </div>
         </div>

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ServiceLayout from "../../Components/ServiceDetail/ServiceLayout";
 import styles from "./ServiceDetail.module.css";
 import { GET_SERVICE_BY_ID_API, HTTP_METHODS } from "../../config/apiConfig";
 import Header from "../../Components/Common/Header";
 import BookingModal from "../../Components/BookingModal/BookingModal";
 import SimilarService from "../../Components/ServiceSimilar/SimilarService";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { clearUser } from "../../redux/auth/slice";
 
 const ServiceDetail = () => {
   const { id } = useParams();
@@ -14,19 +17,23 @@ const ServiceDetail = () => {
     isLoading: true,
     error: null,
   });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
-
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const handleBook = () => {
+    if (!isAuthenticated || !user) {
+      toast.warning("You need to login to book this service.");
+      dispatch(clearUser());
+      navigate("/login");
+      return;
+    }
     setVisible(true);
   };
 
   const fetchData = async () => {
     try {
-      console.log("Fetching service details for ID:", id);
-
       const serviceEndpoint = GET_SERVICE_BY_ID_API.replace("{id}", id);
-      console.log("Service API URL:", serviceEndpoint);
-
       const serviceRes = await fetch(serviceEndpoint, {
         method: HTTP_METHODS.GET,
         headers: { "Content-Type": "application/json" },
@@ -37,7 +44,6 @@ const ServiceDetail = () => {
       }
 
       const serviceResponse = await serviceRes.json();
-      console.log("Service Response:", serviceResponse);
 
       const serviceData = serviceResponse.result;
       if (!serviceData || !serviceData.serviceId) {
@@ -66,17 +72,14 @@ const ServiceDetail = () => {
   const { service, isLoading, error } = state;
 
   if (isLoading) {
-    console.log("Loading state active...");
     return <div className={styles.loading}>Loading...</div>;
   }
 
   if (error) {
-    console.error("Error state:", error);
     return <div className={styles.error}>Error: {error}</div>;
   }
 
   if (!service) {
-    console.warn("Service data not available!");
     return <div className={styles.error}>Service data not available</div>;
   }
 
