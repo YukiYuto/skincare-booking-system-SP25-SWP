@@ -35,7 +35,6 @@ const AuthButtons = () => {
     }
   };
 
-  // Xác định đường dẫn dựa trên quyền user
   const getRoleBasedPath = () => {
     if (!user?.roles || !Array.isArray(user.roles)) return null;
 
@@ -93,7 +92,6 @@ const AuthButtons = () => {
         </Menu.Item>
       )}
 
-      {/* Nút mở modal feedback cho CUSTOMER */}
       {user?.roles?.includes("CUSTOMER") && (
         <Menu.Item
           key="feedback"
@@ -136,7 +134,6 @@ const AuthButtons = () => {
         </div>
       )}
 
-      {/* Hiển thị Modal Feedback nếu mở */}
       <FeedbackModal isOpen={isFeedbackModalOpen} onClose={() => setFeedbackModalOpen(false)} />
     </>
   );

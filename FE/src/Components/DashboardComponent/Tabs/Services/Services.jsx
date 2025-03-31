@@ -29,16 +29,19 @@ const Services = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
+      // Set up params for API call
+      const params = new URLSearchParams();
+      params.append("pageNumber", pagination.pageNumber);
+      params.append("pageSize", pagination.pageSize);
+      
+      // Add service type filter if not "all"
+      if (selectedServiceType !== "all") {
+        params.append("filterOn", "service_type_id");
+        params.append("filterQuery", selectedServiceType);
+      }
+      
       // Fetch services
-      const response = await fetch(
-        `${GET_ALL_SERVICES_API}?pageNumber=${pagination.pageNumber}&pageSize=${
-          pagination.pageSize
-        }${
-          selectedServiceType !== "all"
-            ? `&serviceTypeId=${selectedServiceType}`
-            : ""
-        }`
-      );
+      const response = await fetch(`${GET_ALL_SERVICES_API}?${params}`);
       const data = await response.json();
       setServices(data.result.services);
       setTotalPages(data.result.totalPages);
@@ -66,15 +69,18 @@ const Services = () => {
     return serviceType ? serviceType.serviceTypeName : "Unknown";
   };
 
-  // Function to generate service type display text with additional counts
+  // Function to get the primary service type display
   const getServiceTypeDisplay = (service) => {
+    // Handle case where service might not have any service type
     if (!service.serviceTypeIds || service.serviceTypeIds.length === 0) {
       return "None";
     }
 
+    // Get the first service type as primary
     const firstTypeId = service.serviceTypeIds[0];
     const firstTypeName = getServiceTypeName(firstTypeId);
 
+    // Show first type name with count if there are multiple
     if (service.serviceTypeIds.length === 1) {
       return firstTypeName;
     }
@@ -82,6 +88,7 @@ const Services = () => {
     return `${firstTypeName} +${service.serviceTypeIds.length - 1}`;
   };
 
+  // Function to get all service types for tooltip
   const getAllServiceTypeNames = (service) => {
     if (!service.serviceTypeIds || service.serviceTypeIds.length === 0) {
       return "No service types";
@@ -92,6 +99,7 @@ const Services = () => {
       .join(", ");
   };
 
+  // Reset to first page when changing service type filter
   useEffect(() => {
     setPagination((prev) => ({
       ...prev,

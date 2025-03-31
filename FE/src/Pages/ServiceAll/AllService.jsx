@@ -8,14 +8,13 @@ import {
   GET_ALL_SERVICES_API,
   GET_ALL_SERVICE_TYPES_API,
 } from "../../config/apiConfig";
-import heroBanner from "../../assets/images/heroBanner.png";
 import Footer from "../../Components/Footer/Footer.jsx";
 
 const AllService = () => {
   const [services, setServices] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
-  const [sortBy, setSortBy] = useState(""); // Backend sorting parameter
-  const [selectedTypes, setSelectedTypes] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [selectedType, setSelectedType] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,7 +27,6 @@ const AllService = () => {
   const [filterQuery, setFilterQuery] = useState("");
   const [filterOn, setFilterOn] = useState("");
 
-  // Sort options for the dropdown
   const sortOptions = [
     { value: "", label: "Default" },
     { value: "price", label: "Price: Low to High" },
@@ -60,9 +58,10 @@ const AllService = () => {
         params.append("filterQuery", filterQuery);
       }
 
-      if (selectedTypes) {
-        params.set("filterOn", "serviceTypeIds");
-        params.set("filterQuery", selectedTypes);
+      // Use the selected service type if available
+      if (selectedType) {
+        params.set("filterOn", "service_type_id");
+        params.set("filterQuery", selectedType);
       }
 
       const [servicesResponse, serviceTypesResponse] = await Promise.all([
@@ -98,91 +97,91 @@ const AllService = () => {
     sortBy,
     filterOn,
     filterQuery,
-    selectedTypes,
+    selectedType,
   ]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Handle search submission
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setFilterOn("serviceName");
     setFilterQuery(searchQuery);
-    // Reset to first page when searching
     setPagination((prev) => ({
       ...prev,
       pageNumber: 1,
     }));
+    // Clear service type filter when searching
+    setSelectedType("");
   };
 
-  // Handle search input changes
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  // Handle sort change
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
-    // Reset to first page when sort changes
     setPagination((prev) => ({
       ...prev,
       pageNumber: 1,
     }));
   };
 
-  // Handle page size change
   const handlePageSizeChange = (e) => {
     setPagination((prev) => ({
       ...prev,
       pageSize: Number(e.target.value),
-      pageNumber: 1, // Reset to first page when page size changes
+      pageNumber: 1,
     }));
   };
 
-  // Handle page change
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
       setPagination((prev) => ({
         ...prev,
         pageNumber: newPage,
       }));
-      // Scroll to top when changing pages
       window.scrollTo(0, 0);
     }
   };
 
-  const toggleType = (typeID) => {
-    setSelectedTypes((prevSelected) => {
-      const typesArray = prevSelected.split(",").filter(Boolean);
-      return typesArray.includes(typeID)
-        ? typesArray.filter((id) => id !== typeID).join(",")
-        : [...typesArray, typeID].join(",");
-    });
-    // Reset to first page when filters change
+  const handleTypeSelect = (typeID) => {
+    if (selectedType === typeID) {
+      // If the same type is clicked again, clear the filter
+      setSelectedType("");
+    } else {
+      // Otherwise, set the new type
+      setSelectedType(typeID);
+    }
+    
+    // Clear other filters when selecting a type
+    setFilterOn("");
+    setFilterQuery("");
+    setSearchQuery("");
+    
+    // Reset to first page
     setPagination((prev) => ({
       ...prev,
       pageNumber: 1,
     }));
   };
 
-  const isTypeSelected = (typeID) => {
-    return selectedTypes.split(",").includes(typeID);
-  };
-
-  // Find the current sort option label
   const getCurrentSortLabel = () => {
     const option = sortOptions.find((opt) => opt.value === sortBy);
     return option ? option.label : "Default";
   };
 
-  // Generate pagination buttons
+  const getSelectedTypeName = () => {
+    if (!selectedType) return null;
+    const type = serviceTypes.find(type => type.serviceTypeId === selectedType);
+    return type ? type.serviceTypeName : null;
+  };
+
   const renderPaginationButtons = () => {
     const buttons = [];
     const { pageNumber, totalPages } = pagination;
 
-    // Calculate range of buttons to show
     const maxButtons = 5;
     let startPage = Math.max(1, pageNumber - Math.floor(maxButtons / 2));
     let endPage = Math.min(totalPages, startPage + maxButtons - 1);
@@ -191,7 +190,6 @@ const AllService = () => {
       startPage = Math.max(1, endPage - maxButtons + 1);
     }
 
-    // Previous button
     buttons.push(
       <button
         key="prev"
@@ -203,7 +201,6 @@ const AllService = () => {
       </button>
     );
 
-    // First page
     if (startPage > 1) {
       buttons.push(
         <button
@@ -226,7 +223,6 @@ const AllService = () => {
       }
     }
 
-    // Page numbers
     for (let i = startPage; i <= endPage; i++) {
       buttons.push(
         <button
@@ -241,7 +237,6 @@ const AllService = () => {
       );
     }
 
-    // Last page
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         buttons.push(
@@ -266,7 +261,6 @@ const AllService = () => {
       );
     }
 
-    // Next button
     buttons.push(
       <button
         key="next"
@@ -297,7 +291,6 @@ const AllService = () => {
             <h1>Discover Our Services</h1>
 
             <div className={styles.controlsRow}>
-              {/* Search Bar */}
               <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
                 <input
                   type="text"
@@ -309,7 +302,6 @@ const AllService = () => {
                 <button type="submit" className={styles.searchButton}></button>
               </form>
 
-              {/* Sort Dropdown */}
               <div className={styles.sortContainer}>
                 <select
                   id="sort-select"
@@ -325,7 +317,6 @@ const AllService = () => {
                 </select>
               </div>
 
-              {/* Page Size Selector */}
               <div className={styles.pageSizeContainer}>
                 <select
                   id="page-size-select"
@@ -342,8 +333,7 @@ const AllService = () => {
               </div>
             </div>
 
-            {/* Active Filters Display */}
-            {(sortBy || filterQuery) && (
+            {(sortBy || filterQuery || selectedType) && (
               <div className={styles.activeFilters}>
                 <h3>Active Filters:</h3>
                 <div className={styles.filterTags}>
@@ -364,12 +354,27 @@ const AllService = () => {
 
                   {filterQuery && (
                     <span className={styles.filterTag}>
-                      Search: "{filterQuery}"
+                      Search: {filterQuery}
                       <button
                         onClick={() => {
                           setFilterQuery("");
                           setFilterOn("");
                           setSearchQuery("");
+                          setPagination((prev) => ({ ...prev, pageNumber: 1 }));
+                        }}
+                        className={styles.removeFilter}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+
+                  {selectedType && (
+                    <span className={styles.filterTag}>
+                      Type: {getSelectedTypeName()}
+                      <button
+                        onClick={() => {
+                          setSelectedType("");
                           setPagination((prev) => ({ ...prev, pageNumber: 1 }));
                         }}
                         className={styles.removeFilter}
@@ -392,11 +397,11 @@ const AllService = () => {
                     <li
                       key={type.serviceTypeId}
                       className={
-                        isTypeSelected(type.serviceTypeId)
+                        selectedType === type.serviceTypeId
                           ? styles.selected
                           : ""
                       }
-                      onClick={() => toggleType(type.serviceTypeId)}
+                      onClick={() => handleTypeSelect(type.serviceTypeId)}
                     >
                       {type.serviceTypeName}
                     </li>
@@ -423,7 +428,6 @@ const AllService = () => {
                     serviceTypes={serviceTypes}
                   />
 
-                  {/* Pagination Controls */}
                   {pagination.totalPages > 1 && (
                     <div className={styles.paginationContainer}>
                       <div className={styles.paginationButtons}>
