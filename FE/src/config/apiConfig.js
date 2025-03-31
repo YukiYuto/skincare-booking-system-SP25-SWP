@@ -139,8 +139,22 @@ export const DELETE_THERAPIST_SERVICE_TYPES_API = `${BASE_URL}/therapist-service
 
 // Thêm API cho TypeItem
 export const GET_TYPE_ITEMS_API = `${BASE_URL}/type-item`;
-export const POST_TYPE_ITEM_API = `${BASE_URL}/type-item`;
+export const POST_TYPE_ITEM_API = `${BASE_URL}/type-item`; 
 
+//Thêm API cho Blog Category
+export const POST_BLOG_CATEGORY = `${BASE_URL}/BlogCategory/create`;
+export const GET_BLOG_CATEGORY = `${BASE_URL}/BlogCategory/all`;
+export const UPDATE_BLOG_CATEGORY = `${BASE_URL}/BlogCategory/update`;
+
+//Thêm API cho Blog
+export const GET_BLOG = `${BASE_URL}/blog/all`;
+export const POST_BLOG = `${BASE_URL}/blog/create`
+export const UPDATE_BLOG = `${BASE_URL}/blog/update`;
+export const DELETE_BLOG = `${BASE_URL}/blog/delete`;
+
+//Thêm API cho Feedback
+export const POST_FEEDBACK = `${BASE_URL}/Feedback/create`;
+  
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
 export const AUTH_HEADERS = (token) => ({
   "Content-Type": "application/json",

@@ -3,18 +3,18 @@ import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 import Brand from "../../Brand/Brand";
 import { logout as logoutAction } from "../../../redux/auth/thunks";
-import {
-  BarChart3,
-  Users,
-  UserCog,
-  Scissors,
-  ShoppingCart,
-  Calendar,
-} from "lucide-react";
-import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import { Spin } from "antd";
-import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
+import { 
+  BarChart3, 
+  Users, 
+  UserCog, 
+  Scissors, 
+  ShoppingCart, 
+  Calendar
+} from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Spin } from 'antd';
+import { BookOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons';
 
 const Sidebar = ({ onExpandChange }) => {
   const [expanded, setExpanded] = useState(false);
@@ -52,37 +52,14 @@ const Sidebar = ({ onExpandChange }) => {
   }, [expanded, onExpandChange]);
 
   const menuItems = [
-    { path: "/", label: "Home", icon: <HomeOutlined size={20} /> },
-    {
-      path: "/dashboard/revenue",
-      label: "Revenue",
-      icon: <BarChart3 size={20} />,
-    },
-    {
-      path: "/dashboard/customers",
-      label: "Customers",
-      icon: <Users size={20} />,
-    },
-    {
-      path: "/dashboard/therapists",
-      label: "Employee",
-      icon: <UserCog size={20} />,
-    },
-    {
-      path: "/dashboard/services",
-      label: "Services",
-      icon: <Scissors size={20} />,
-    },
-    {
-      path: "/dashboard/orders",
-      label: "Orders",
-      icon: <ShoppingCart size={20} />,
-    },
-    {
-      path: "/dashboard/schedule",
-      label: "Schedule",
-      icon: <Calendar size={20} />,
-    },
+    { path: '/', label: 'Home', icon: <HomeOutlined size={20} /> },
+    { path: '/dashboard/revenue', label: 'Revenue', icon: <BarChart3 size={20} /> },
+    { path: '/dashboard/customers', label: 'Customers', icon: <Users size={20} /> },
+    { path: '/dashboard/therapists', label: 'Skin Therapists', icon: <UserCog size={20} /> },
+    { path: '/dashboard/services', label: 'Services', icon: <Scissors size={20} /> },
+    { path: '/dashboard/orders', label: 'Orders', icon: <ShoppingCart size={20} /> },
+    { path: '/dashboard/schedule', label: 'Schedule', icon: <Calendar size={20} /> },
+    { path: '/dashboard/view-blogcategory', label: 'View Blog', icon: <BookOutlined size={20} /> },
   ];
 
   return (

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import styles from "./ScheduleManagement.module.css";
+import styles from "./StaffBlogManagement.module.css";
 import SideBarStaff from "../../../Components/SideBar/SideBarStaff/SideBarStaff";
-import TableSchedule from "../../../Components/TableSchedule/TableSchedule";
+import StaffBlog from "../../../Components/StaffBlog/StaffBlog";
 
-const ScheduleManagement = () => {
+const StaffBlogManagement = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const handleSidebarToggle = (isOpen) => {
@@ -16,10 +16,10 @@ const ScheduleManagement = () => {
                 <SideBarStaff onToggle={handleSidebarToggle} />
             </div>
             <div className={`${styles.content} ${isSidebarOpen ? styles.contentOpen : styles.contentClosed}`}>
-                <TableSchedule />
+                <StaffBlog />
             </div>
         </div>
     );
 };
 
-export default ScheduleManagement;
+export default StaffBlogManagement;

@@ -63,7 +63,7 @@ export function LoginForm() {
   const handleVerifyEmail = async () => {
     reduxError && toast.dismiss(); // Dismiss any previous error to show new error
     try {
-      const response = await sendVerificationEmail(loginData.email);
+      await sendVerificationEmail(loginData.email);
       toast.success(
         "Verification email sent successfully! Please check your email inbox."
       );
@@ -113,7 +113,7 @@ export function LoginForm() {
       } else if (userData.roles.includes("STAFF")) {
         navigate("/staff/dashboard");
       } else if (userData.roles.includes("SKINTHERAPIST")) {
-        navigate("/therapist-management");
+        navigate("/therapist-dashboard");
       } else if (userData.roles.includes("MANAGER")) {
         navigate("/dashboard");
       }
@@ -204,6 +204,7 @@ export function LoginForm() {
       >
         Create Account
       </button>
+      
     </form>
   );
 }

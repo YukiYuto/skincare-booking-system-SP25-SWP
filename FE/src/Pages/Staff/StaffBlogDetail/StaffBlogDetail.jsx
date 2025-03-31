@@ -1,9 +1,9 @@
 import { useState } from "react";
-import styles from "./TherapistSchedule.module.css";
-import SideBarTherapist from "../../../Components/SideBar/SideBarTherapist/SideBarTherapist";
-import ScheduleTherapistRegister from "../../../Components/ScheduleTherapistRegister/ScheduleTherapistRegister";
+import styles from "./StaffBlogDetail.module.css";
+import SideBarStaff from "../../../Components/SideBar/SideBarStaff/SideBarStaff";
+import BlogDetail from "../../../Components/StaffBlog/BlogDetail/BlogDetail";
 
-const TherapistSchedule = () => {
+const StaffBlogDetail = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const handleSidebarToggle = (isOpen) => {
@@ -13,13 +13,13 @@ const TherapistSchedule = () => {
     return (
         <div className={styles.container}>
             <div className={styles.sidebarFixed}>
-                <SideBarTherapist onToggle={handleSidebarToggle} />
+                <SideBarStaff onToggle={handleSidebarToggle} />
             </div>
             <div className={`${styles.content} ${isSidebarOpen ? styles.contentOpen : styles.contentClosed}`}>
-                <ScheduleTherapistRegister />
+                <BlogDetail />
             </div>
         </div>
     );
 };
 
-export default TherapistSchedule;
+export default StaffBlogDetail;
