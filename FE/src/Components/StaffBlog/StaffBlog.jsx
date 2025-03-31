@@ -142,8 +142,8 @@ const StaffBlog = () => {
       : blogs;
   }, [selectedCategory, blogs]);
 
-  const mainCategories = categories.slice(0, 8);
-  const moreCategories = categories.slice(8);
+  const mainCategories = categories.slice(0, 6);
+  const moreCategories = categories.slice(6);
 
   const handleCategoryClick = (category) => {
     if (category) {
