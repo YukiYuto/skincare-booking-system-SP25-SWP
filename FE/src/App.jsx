@@ -44,6 +44,7 @@ import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTh
 import FeedbackPage from "./Pages/FeedbackPage/FeedbackPage";
 import SkinTest from "./Components/SkinTest/SkinTest";
 import SkinTestResult from "./Components/SkinTest/Result";
+import OrderListPage from "./Pages/OrderPage/OrderListPage";
 import QuizPage from "./Pages/QuizPage/QuizPage";
 
 const AppRoutes = () => {
@@ -87,6 +88,7 @@ const AppRoutes = () => {
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
               <Route path="appointments" element={<AppointmentPage />} />
+              <Route path="orders" element={<OrderListPage />} />
             </>
           )}
           {roles.includes("ADMIN") && (
