@@ -81,6 +81,11 @@ const SideBarStaff = ({ onToggle }) => {
                 <span className={styles.menuText}>Schedule</span>
               </Link>
             </li>
+            <li>
+              <Link to="/staff-blogs" className={styles.menuItem}>
+                <span className={styles.menuText}>Blog</span>
+              </Link>
+            </li>
           </ul>
           <button
             onClick={handleLogout}

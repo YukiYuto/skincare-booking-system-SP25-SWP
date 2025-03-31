@@ -31,27 +31,25 @@ const FeedbackModal = ({ isOpen, onClose }) => {
         }
       );
       const data = await response.json();
-      if (data?.result) {
-        const completedAppointments = data.result.filter((appt) => {
-          const appointmentDate = new Date(appt.appointmentDate);
-          const now = new Date();
-          const diffInDays = (now - appointmentDate) / (1000 * 60 * 60 * 24);
-          return appt.status === "COMPLETED" && diffInDays <= 1;
-        });
 
-        // Kiểm tra feedback trước khi hiển thị lịch hẹn
-        const filteredAppointments = await Promise.all(
-          completedAppointments.map(async (appt) => {
-            const hasFeedback = await checkFeedback(appt.appointmentId);
-            return hasFeedback ? null : appt;
+      if (data?.result) {
+        const createdAppointments = data.result.filter((appt) => appt.status === "COMPLETED");
+
+        const validAppointments = await Promise.all(
+          createdAppointments.map(async (appt) => {
+            const appointmentDetails = await fetchAppointmentDetails(appt.appointmentId);
+            if (appointmentDetails?.customerInfo?.customerPhone === user.phoneNumber) {
+              const hasFeedback = await checkFeedback(appt.appointmentId);
+              return hasFeedback ? null : { ...appt, serviceInfo: appointmentDetails?.serviceInfo };
+            }
+            return null;
           })
         );
 
-        // Lọc bỏ những appointment đã có feedback
-        const availableAppointments = filteredAppointments.filter(Boolean);
+        const filteredAppointments = validAppointments.filter(Boolean);
 
-        setAppointments(availableAppointments);
-        setSelectedAppointment(availableAppointments[0] || null);
+        setAppointments(filteredAppointments);
+        setSelectedAppointment(filteredAppointments[0] || null);
       }
     } catch (error) {
       console.error("Error fetching appointments:", error);
@@ -60,7 +58,22 @@ const FeedbackModal = ({ isOpen, onClose }) => {
     }
   };
 
-  // Hàm kiểm tra xem lịch hẹn đã có feedback hay chưa
+  const fetchAppointmentDetails = async (appointmentId) => {
+    try {
+      const response = await fetch(
+        `https://lumiconnect.azurewebsites.net/api/appointment/${appointmentId}`,
+        {
+          headers: { Authorization: `Bearer ${user.accessToken}` },
+        }
+      );
+      const data = await response.json();
+      return data?.result || null;
+    } catch (error) {
+      console.error(`Error fetching appointment details for ID ${appointmentId}:`, error);
+      return null;
+    }
+  };
+
   const checkFeedback = async (appointmentId) => {
     try {
       const response = await fetch(
@@ -70,7 +83,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
         }
       );
       const data = await response.json();
-      return data?.result?.length > 0; // Nếu có feedback thì trả về true
+      return data?.result?.length > 0;
     } catch (error) {
       console.error("Error checking feedback:", error);
       return false;
@@ -113,7 +126,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
 
       if (response.ok) {
         toast.success("Thanks for your feedback!");
-        fetchAppointments(); // Gọi lại API để cập nhật danh sách lịch hẹn chưa có feedback
+        fetchAppointments(); 
       } else {
         toast.error(responseData.message || "Cannot send feedback!");
       }
@@ -134,7 +147,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
       {loading ? (
         <Spin />
       ) : appointments.length === 0 ? (
-        <p style={{textAlign:"center"}}>No appointment to get feedback.</p>
+        <p style={{textAlign:"center"}}>No appointment to give feedback.</p>
       ) : (
         <>
           <div className={styles.appointmentSelect}>
@@ -149,7 +162,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
             >
               {appointments.map((appt) => (
                 <option key={appt.appointmentId} value={appt.appointmentId}>
-                  {appt.serviceName} - {new Date(appt.appointmentDate).toLocaleDateString()}
+                  {appt?.serviceInfo?.serviceName} - {new Date(appt.appointmentDate).toLocaleDateString()}
                 </option>
               ))}
             </select>

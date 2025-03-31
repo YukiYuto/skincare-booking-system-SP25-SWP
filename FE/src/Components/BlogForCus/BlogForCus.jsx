@@ -4,9 +4,9 @@ import axios from "axios";
 import { Card, Pagination, Row, Col } from "antd";
 import styles from "./BlogForCus.module.css";
 import slugify from "slugify";
+import { GET_BLOG, GET_BLOG_CATEGORY } from "../../config/apiConfig";
 import Header from "../Common/Header";
 import Footer from "../Footer/Footer";
-import { GET_BLOG, GET_BLOG_CATEGORY } from "../../config/apiConfig";
 
 const { Meta } = Card;
 
@@ -51,8 +51,8 @@ const BlogForCus = () => {
       : blogs;
   }, [selectedCategory, blogs]);
 
-  const mainCategories = categories.slice(0, 8);
-  const moreCategories = categories.slice(8);
+  const mainCategories = categories.slice(0, 6);
+  const moreCategories = categories.slice(6);
 
   const handleCategoryClick = (category) => {
     if (category) {
@@ -143,7 +143,7 @@ const BlogForCus = () => {
                 description={
                   <>
                     <p className={styles.date}>
-                      {blog.status.includes("PUBLISHED") ? (
+                      {blog.status.includes("1") ? (
                         <>✍ {blog.createdBy} | 🕒 {new Date(blog.createdTime).toLocaleString("vi-VN", {
                           year: "numeric",
                           month: "2-digit",
