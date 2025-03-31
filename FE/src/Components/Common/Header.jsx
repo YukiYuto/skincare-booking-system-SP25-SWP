@@ -8,14 +8,14 @@ import { useSelector } from "react-redux";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1350);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1208);
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const isAuthenticated = Boolean(user?.accessToken);
 
   useEffect(() => {
     const checkScreenSize = () => {
-      const mobile = window.innerWidth < 1350;
+      const mobile = window.innerWidth < 1208;
       setIsMobile(mobile);
       if (!mobile) setMenuOpen(false);
     };
@@ -39,11 +39,6 @@ const Header = () => {
       <li><Link className={styles.navLink} to="/about" onClick={() => isMobile && setMenuOpen(false)}>About</Link></li>
       <li><Link className={styles.navLink} to="/skin-test" onClick={() => isMobile && setMenuOpen(false)}>Skin Test</Link></li>
       <li><Link className={styles.navLink} to="/contact" onClick={() => isMobile && setMenuOpen(false)}>Contact</Link></li>
-      <li>
-        <Link to={isAuthenticated ? "/feedback-page" : "#"} onClick={handleFeedbackClick}>
-          Feedback
-        </Link>
-      </li>
       {isMobile && <li className={styles.mobileAuthButton}><AuthButton /></li>}
     </ul>
   );

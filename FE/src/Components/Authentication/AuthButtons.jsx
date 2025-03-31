@@ -29,7 +29,7 @@ const AuthButtons = () => {
     try {
       dispatch(logoutAction());
       toast.success("Logout Successfully!");
-      navigate("/");
+      navigate("/login");
     } finally {
       setLoading(false);
     }

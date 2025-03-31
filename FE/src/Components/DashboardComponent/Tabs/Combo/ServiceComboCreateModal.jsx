@@ -10,6 +10,7 @@ import {
 import styles from "./ServiceComboCreateModal.module.css";
 
 const ServiceComboCreateModal = ({ onClose, refresh }) => {
+  const { accessToken } = useSelector((state) => state.auth.user);
   const [formState, setFormState] = useState({
     comboName: "",
     description: "",
@@ -23,58 +24,70 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
   const dropdownRef = useRef(null);
   const modalRef = useRef(null);
-  const { user } = useSelector((state) => state.auth);
 
   const fetchServices = useCallback(async () => {
     setLoading(true);
-    setError(null);
     try {
       const params = new URLSearchParams();
-
       if (searchQuery) {
         params.append("filterOn", "serviceName");
         params.append("filterQuery", searchQuery);
       }
 
       const response = await axios.get(`${GET_ALL_SERVICES_API}?${params}`, {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      const selectedIds = selectedServices.map((s) => s.serviceId);
+      const selectedIds = selectedServices.map(s => s.serviceId);
       const availableServices = Array.isArray(response.data.result.services)
-        ? response.data.result.services.filter(
-            (service) => !selectedIds.includes(service.serviceId)
-          )
+        ? response.data.result.services.filter(s => !selectedIds.includes(s.serviceId))
         : [];
 
       setServices(availableServices);
     } catch (err) {
-      console.error(
-        "Error fetching services:",
-        err.response?.data || err.message
-      );
+      console.error("Error fetching services:", err.response?.data || err.message);
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, user.accessToken, selectedServices]);
+  }, [searchQuery, accessToken, selectedServices]);
 
   useEffect(() => {
     fetchServices();
   }, [fetchServices]);
 
   useEffect(() => {
-    setFormState((prev) => ({
-      ...prev,
-      numberOfService: selectedServices.length,
-    }));
+    setFormState(prev => ({ ...prev, numberOfService: selectedServices.length }));
   }, [selectedServices]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    
+    const handleModalClick = (e) => {
+      if (modalRef.current && modalRef.current.contains(e.target)) {
+        e.stopPropagation();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleModalClick);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", handleModalClick);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: value }));
+    setFormState(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
@@ -85,49 +98,23 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setShowDropdown(true);
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    fetchServices();
-  };
-
-  const updateSelectedServices = useCallback(
-    (service, add) => {
-      if (add) {
-        const serviceWithPriority = {
-          ...service,
-          priority: selectedServices.length,
-        };
-        setSelectedServices((prev) => [...prev, serviceWithPriority]);
-        setServices((prev) =>
-          prev.filter((s) => s.serviceId !== service.serviceId)
-        );
-
-        setSearchQuery("");
-        setShowDropdown(false);
-      } else {
-        setSelectedServices((prev) =>
-          prev.filter((s) => s.serviceId !== service.serviceId)
-        );
-        fetchServices();
-      }
-    },
-    [selectedServices.length, fetchServices]
-  );
+  const updateSelectedServices = useCallback((service, add) => {
+    if (add) {
+      setSelectedServices(prev => [...prev, { ...service, priority: prev.length }]);
+      setServices(prev => prev.filter(s => s.serviceId !== service.serviceId));
+      setSearchQuery("");
+      setShowDropdown(false);
+    } else {
+      setSelectedServices(prev => prev.filter(s => s.serviceId !== service.serviceId));
+      fetchServices();
+    }
+  }, [fetchServices]);
 
   const updatePriority = (serviceId, newPriority) => {
-    const validPriority = Math.max(
-      0,
-      Math.min(selectedServices.length - 1, newPriority)
-    );
-
-    setSelectedServices((prev) => {
-      const serviceToUpdate = prev.find((s) => s.serviceId === serviceId);
-      const withoutService = prev.filter((s) => s.serviceId !== serviceId);
+    setSelectedServices(prev => {
+      const validPriority = Math.max(0, Math.min(prev.length - 1, newPriority));
+      const serviceToUpdate = prev.find(s => s.serviceId === serviceId);
+      const withoutService = prev.filter(s => s.serviceId !== serviceId);
 
       const reordered = [
         ...withoutService.slice(0, validPriority),
@@ -137,34 +124,6 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
 
       return reordered.map((s, idx) => ({ ...s, priority: idx }));
     });
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    const handleModalClick = (e) => {
-      if (modalRef.current && modalRef.current.contains(e.target)) {
-        e.stopPropagation();
-      }
-    };
-
-    document.addEventListener("mousedown", handleModalClick);
-    return () => document.removeEventListener("mousedown", handleModalClick);
-  }, []);
-
-  const handleReset = () => {
-    setSelectedServices([]);
-    setSearchQuery("");
-    fetchServices();
   };
 
   const handleSubmit = async (e) => {
@@ -178,9 +137,7 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
       const { data: imageData } = await axios.post(
         POST_FILE_SERVICE_COMBO_API,
         formData,
-        {
-          headers: { Authorization: `Bearer ${user.accessToken}` },
-        }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
       const { data: comboData } = await axios.post(
@@ -192,39 +149,32 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
           numberOfService: selectedServices.length,
           imageUrl: imageData.result,
         },
-        { headers: { Authorization: `Bearer ${user.accessToken}` } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
       await axios.post(
         POST_COMBO_ITEM_API,
         {
           serviceComboId: comboData.result.serviceComboId,
-          servicePriorityDtos: selectedServices.map((service) => ({
+          servicePriorityDtos: selectedServices.map(service => ({
             serviceId: service.serviceId,
             priority: service.priority,
           })),
         },
-        { headers: { Authorization: `Bearer ${user.accessToken}` } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
       onClose();
       refresh();
     } catch (err) {
-      console.error(
-        "Error creating service combo:",
-        err.response?.data || err.message
-      );
+      console.error("Error creating service combo:", err.response?.data || err.message);
       setError(err.message);
     }
   };
 
   return (
     <div className={styles.modal} onClick={onClose}>
-      <div
-        className={styles.modalContent}
-        ref={modalRef}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={styles.modalContent} ref={modalRef} onClick={e => e.stopPropagation()}>
         <h2>Create New Service Combo</h2>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
           <div className={styles.formGroup}>
@@ -238,7 +188,6 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
                 required
               />
             </label>
-
             <div>
               <p>Number of Services: {selectedServices.length}</p>
             </div>
@@ -258,12 +207,12 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
           <label>Services:</label>
           <div className={styles.dropdownWrapper}>
             <div ref={dropdownRef} className={styles.dropdownContainer}>
-              <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
+              <form onSubmit={e => { e.preventDefault(); fetchServices(); }} className={styles.searchForm}>
                 <input
                   type="text"
                   placeholder="Search services..."
                   value={searchQuery}
-                  onChange={handleSearchChange}
+                  onChange={e => setSearchQuery(e.target.value)}
                   onFocus={() => setShowDropdown(true)}
                   className={styles.searchInput}
                 />
@@ -279,7 +228,7 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
                     <div className={styles.noResults}>No services found</div>
                   ) : (
                     <ul className={styles.listGroup}>
-                      {services.map((service) => (
+                      {services.map(service => (
                         <li
                           key={service.serviceId}
                           className={styles.listItem}
@@ -298,7 +247,11 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
                 <button
                   type="button"
                   className={styles.resetButton}
-                  onClick={handleReset}
+                  onClick={() => {
+                    setSelectedServices([]);
+                    setSearchQuery("");
+                    fetchServices();
+                  }}
                 >
                   <p>Reset✖</p>
                 </button>
@@ -309,31 +262,23 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
           <div className={styles.selectedList}>
             {selectedServices
               .sort((a, b) => a.priority - b.priority)
-              .map((service) => (
+              .map(service => (
                 <div key={service.serviceId} className={styles.badge}>
                   <span className={styles.priorityControl}>
                     <button
                       type="button"
                       className={styles.priorityButton}
-                      onClick={() =>
-                        updatePriority(service.serviceId, service.priority - 1)
-                      }
+                      onClick={() => updatePriority(service.serviceId, service.priority - 1)}
                       disabled={service.priority === 0}
                     >
                       ↑
                     </button>
-                    <span className={styles.priorityValue}>
-                      {service.priority + 1}
-                    </span>
+                    <span className={styles.priorityValue}>{service.priority + 1}</span>
                     <button
                       type="button"
                       className={styles.priorityButton}
-                      onClick={() =>
-                        updatePriority(service.serviceId, service.priority + 1)
-                      }
-                      disabled={
-                        service.priority === selectedServices.length - 1
-                      }
+                      onClick={() => updatePriority(service.serviceId, service.priority + 1)}
+                      disabled={service.priority === selectedServices.length - 1}
                     >
                       ↓
                     </button>
@@ -356,16 +301,8 @@ const ServiceComboCreateModal = ({ onClose, refresh }) => {
           )}
 
           <div className={styles.buttonGroup}>
-            <button type="submit" className={styles.submitButton}>
-              Create
-            </button>
-            <button
-              type="button"
-              className={styles.cancelButton}
-              onClick={onClose}
-            >
-              Cancel
-            </button>
+            <button type="submit" className={styles.submitButton}>Create</button>
+            <button type="button" className={styles.cancelButton} onClick={onClose}>Cancel</button>
           </div>
         </form>
       </div>

@@ -331,139 +331,142 @@ const AppointmentPage = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div>
       <Header />
-
-      {loading ? (
-        <div className={styles.spinnerContainer || "spinner"}>
-          <Spin size="large" />
-          <p>Loading appointments...</p>
-        </div>
-      ) : (
-        <>
-          <div className={styles.calendarSection}>
-            <SlotBasedWeekView
-              slots={slots}
-              slotsLoading={slotsLoading}
-              currentWeekStart={currentWeekStart}
-              handlePreviousWeek={handlePreviousWeek}
-              handleNextWeek={handleNextWeek}
-              handleDateSelect={handleDateSelect}
-              handleAppointmentClick={handleAppointmentClick}
-              appointments={appointments}
-            />
-          </div>
-
-          <div className={styles.detailsSection}>
-            {selectedDate ? (
-              <>
-                <h3>Appointments on {selectedDate.format("MMMM D, YYYY")}</h3>
-                {selectedAppointments.length > 0 ? (
-                  <List
-                    dataSource={selectedAppointments}
-                    renderItem={(appointment) => {
-                      // Find matching slot
-                      const matchingSlot = appointment.slotId
-                        ? getSlotById(appointment.slotId)
-                        : slots.find((slot) =>
-                            doesAppointmentMatchSlot(appointment, slot)
-                          );
-
-                      return (
-                        <List.Item
-                          key={appointment.appointmentId || Math.random()}
-                        >
-                          <Card
-                            title={`Time: ${appointment.appointmentTime}`}
-                            className={styles.appointmentCard}
-                            hoverable
-                            onClick={() =>
-                              handleAppointmentClick(appointment.appointmentId)
-                            }
-                          >
-                            <p>
-                              <strong>Status:</strong>{" "}
-                              <span className={styles.status}>
-                                {appointment.status}
-                              </span>
-                            </p>
-                            {appointment.slotId && (
-                              <p>
-                                <strong>Slot ID:</strong> {appointment.slotId}
-                              </p>
-                            )}
-                            {matchingSlot && (
-                              <p>
-                                <strong>Slot Time:</strong>{" "}
-                                {matchingSlot.startTime} -{" "}
-                                {matchingSlot.endTime}
-                              </p>
-                            )}
-                          </Card>
-                        </List.Item>
-                      );
-                    }}
-                  />
-                ) : (
-                  <p>No appointments on this day</p>
-                )}
-              </>
-            ) : (
-              <p>Select a date to see appointments</p>
-            )}
-          </div>
-        </>
-      )}
-
-      <Modal
-        title="Appointment Details"
-        open={detailModalVisible}
-        onCancel={handleCloseModal}
-        footer={null}
-        width={700}
-      >
-        {detailLoading ? (
-          <div className={styles.modalLoading}>
-            <Spin />
-            <p>Loading appointment details...</p>
+      <div className={styles.container}>
+        {loading ? (
+          <div className={styles.spinnerContainer || "spinner"}>
+            <Spin size="large" />
+            <p>Loading appointments...</p>
           </div>
         ) : (
           <>
-            <AppointmentDetail appointment={selectedAppointment} />
-            {selectedAppointment && selectedAppointment.slotId && (
-              <div
-                style={{
-                  marginTop: "20px",
-                  padding: "10px",
-                  border: "1px solid #eee",
-                  borderRadius: "4px",
-                }}
-              >
-                <h4>Associated Slot Information</h4>
-                {(() => {
-                  const slotInfo = getSlotById(selectedAppointment.slotId);
-                  return slotInfo ? (
-                    <div>
-                      <p>
-                        <strong>Slot Time:</strong> {slotInfo.startTime} -{" "}
-                        {slotInfo.endTime}
-                      </p>
-                      <p>
-                        <strong>Slot Status:</strong> {slotInfo.status}
-                      </p>
-                      <p>
-                        <strong>Created By:</strong> {slotInfo.createdBy}
-                      </p>
-                    </div>
+            <div className={styles.calendarSection}>
+              <SlotBasedWeekView
+                slots={slots}
+                slotsLoading={slotsLoading}
+                currentWeekStart={currentWeekStart}
+                handlePreviousWeek={handlePreviousWeek}
+                handleNextWeek={handleNextWeek}
+                handleDateSelect={handleDateSelect}
+                handleAppointmentClick={handleAppointmentClick}
+                appointments={appointments}
+              />
+            </div>
+
+            <div className={styles.detailsSection}>
+              {selectedDate ? (
+                <>
+                  <h3>Appointments on {selectedDate.format("MMMM D, YYYY")}</h3>
+                  {selectedAppointments.length > 0 ? (
+                    <List
+                      dataSource={selectedAppointments}
+                      renderItem={(appointment) => {
+                        // Find matching slot
+                        const matchingSlot = appointment.slotId
+                          ? getSlotById(appointment.slotId)
+                          : slots.find((slot) =>
+                              doesAppointmentMatchSlot(appointment, slot)
+                            );
+
+                        return (
+                          <List.Item
+                            key={appointment.appointmentId || Math.random()}
+                          >
+                            <Card
+                              title={`Time: ${appointment.appointmentTime}`}
+                              className={styles.appointmentCard}
+                              hoverable
+                              onClick={() =>
+                                handleAppointmentClick(
+                                  appointment.appointmentId
+                                )
+                              }
+                            >
+                              <p>
+                                <strong>Status:</strong>{" "}
+                                <span className={styles.status}>
+                                  {appointment.status}
+                                </span>
+                              </p>
+                              {appointment.slotId && (
+                                <p>
+                                  <strong>Slot ID:</strong> {appointment.slotId}
+                                </p>
+                              )}
+                              {matchingSlot && (
+                                <p>
+                                  <strong>Slot Time:</strong>{" "}
+                                  {matchingSlot.startTime} -{" "}
+                                  {matchingSlot.endTime}
+                                </p>
+                              )}
+                            </Card>
+                          </List.Item>
+                        );
+                      }}
+                    />
                   ) : (
-                    <p>No matching slot information found.</p>
-                  );
-                })()}
-              </div>
-            )}
+                    <p>No appointments on this day</p>
+                  )}
+                </>
+              ) : (
+                <p>Select a date to see appointments</p>
+              )}
+            </div>
           </>
         )}
-      </Modal>
+
+        <Modal
+          title="Appointment Details"
+          open={detailModalVisible}
+          onCancel={handleCloseModal}
+          footer={null}
+          width={700}
+        >
+          {detailLoading ? (
+            <div className={styles.modalLoading}>
+              <Spin />
+              <p>Loading appointment details...</p>
+            </div>
+          ) : (
+            <>
+              <AppointmentDetail appointment={selectedAppointment} />
+              {selectedAppointment && selectedAppointment.slotId && (
+                <div
+                  style={{
+                    marginTop: "20px",
+                    padding: "10px",
+                    border: "1px solid #eee",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <h4>Associated Slot Information</h4>
+                  {(() => {
+                    const slotInfo = getSlotById(selectedAppointment.slotId);
+                    return slotInfo ? (
+                      <div>
+                        <p>
+                          <strong>Slot Time:</strong> {slotInfo.startTime} -{" "}
+                          {slotInfo.endTime}
+                        </p>
+                        <p>
+                          <strong>Slot Status:</strong> {slotInfo.status}
+                        </p>
+                        <p>
+                          <strong>Created By:</strong> {slotInfo.createdBy}
+                        </p>
+                      </div>
+                    ) : (
+                      <p>No matching slot information found.</p>
+                    );
+                  })()}
+                </div>
+              )}
+            </>
+          )}
+        </Modal>
+      </div>
     </div>
   );
 };

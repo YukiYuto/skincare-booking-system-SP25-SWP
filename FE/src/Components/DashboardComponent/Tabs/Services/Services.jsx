@@ -29,29 +29,25 @@ const Services = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      // Set up params for API call
       const params = new URLSearchParams();
       params.append("pageNumber", pagination.pageNumber);
       params.append("pageSize", pagination.pageSize);
-      
-      // Add service type filter if not "all"
       if (selectedServiceType !== "all") {
         params.append("filterOn", "service_type_id");
         params.append("filterQuery", selectedServiceType);
       }
-      
-      // Fetch services
       const response = await fetch(`${GET_ALL_SERVICES_API}?${params}`);
       const data = await response.json();
-      setServices(data.result.services);
-      setTotalPages(data.result.totalPages);
+      setServices(data.result?.services || []);
+      setTotalPages(data.result?.totalPages || 1);
 
-      // Fetch service types
       const serviceTypesResponse = await fetch(GET_ALL_SERVICE_TYPES_API);
       const serviceTypesData = await serviceTypesResponse.json();
-      setServiceTypes(serviceTypesData.result);
+      setServiceTypes(serviceTypesData.result || []);
     } catch (error) {
       setError(error);
+      setServices([]);
+      setServiceTypes([]);
     } finally {
       setLoading(false);
     }
@@ -61,7 +57,10 @@ const Services = () => {
     fetchData();
   }, [fetchData]);
 
-  // Function to get service type name based on serviceTypeId
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageNumber: DEFAULT_PAGE_NUMBER }));
+  }, [selectedServiceType]);
+
   const getServiceTypeName = (serviceTypeId) => {
     const serviceType = serviceTypes.find(
       (type) => type.serviceTypeId === serviceTypeId
@@ -69,72 +68,40 @@ const Services = () => {
     return serviceType ? serviceType.serviceTypeName : "Unknown";
   };
 
-  // Function to get the primary service type display
   const getServiceTypeDisplay = (service) => {
-    // Handle case where service might not have any service type
-    if (!service.serviceTypeIds || service.serviceTypeIds.length === 0) {
-      return "None";
-    }
-
-    // Get the first service type as primary
-    const firstTypeId = service.serviceTypeIds[0];
-    const firstTypeName = getServiceTypeName(firstTypeId);
-
-    // Show first type name with count if there are multiple
-    if (service.serviceTypeIds.length === 1) {
-      return firstTypeName;
-    }
-
-    return `${firstTypeName} +${service.serviceTypeIds.length - 1}`;
+    if (!service?.serviceTypeIds?.length) return "None";
+    const firstTypeName = getServiceTypeName(service.serviceTypeIds[0]);
+    return service.serviceTypeIds.length === 1
+      ? firstTypeName
+      : `${firstTypeName} +${service.serviceTypeIds.length - 1}`;
   };
 
-  // Function to get all service types for tooltip
   const getAllServiceTypeNames = (service) => {
-    if (!service.serviceTypeIds || service.serviceTypeIds.length === 0) {
-      return "No service types";
-    }
-
-    return service.serviceTypeIds
-      .map((id) => getServiceTypeName(id))
-      .join(", ");
+    return service?.serviceTypeIds?.length
+      ? service.serviceTypeIds.map(getServiceTypeName).join(", ")
+      : "No service types";
   };
-
-  // Reset to first page when changing service type filter
-  useEffect(() => {
-    setPagination((prev) => ({
-      ...prev,
-      pageNumber: DEFAULT_PAGE_NUMBER,
-    }));
-  }, [selectedServiceType]);
 
   return (
     <div className={styles.tabContainer}>
       <div className={styles.tabHeader}>
         <div className={styles.service}>
           <h2 className={styles.tabTitle}>Services</h2>
-          <button
-            onClick={() => setModal({ type: "create" })}
-            className={styles.iconButton}
-          >
+          <button onClick={() => setModal({ type: "create" })} className={styles.iconButton}>
             <img src={addIcon} alt="Add" />
           </button>
         </div>
-        <div className={styles.service}>
-          {" "}
-          Page
+        <div className={styles.service}>Page
           <button
-            onClick={() =>
-              setPagination((prev) => ({
-                ...prev,
-                pageSize: prev.pageSize === 10 ? 20 : 10,
-                pageNumber: DEFAULT_PAGE_NUMBER, 
-              }))
-            }
+            onClick={() => setPagination((prev) => ({
+              ...prev,
+              pageSize: prev.pageSize === 10 ? 20 : 10,
+              pageNumber: DEFAULT_PAGE_NUMBER,
+            }))}
             className={styles.iconButton}
           >
             {pagination.pageSize}
-          </button>{" "}
-          Size
+          </button> Size
         </div>
         <div className={styles.serviceType}>
           <select
@@ -149,10 +116,7 @@ const Services = () => {
               </option>
             ))}
           </select>
-          <button
-            onClick={() => setModal({ type: "createServiceType" })}
-            className={styles.iconButton}
-          >
+          <button onClick={() => setModal({ type: "createServiceType" })} className={styles.iconButton}>
             <img src={addIcon} alt="Add" />
           </button>
         </div>
@@ -171,25 +135,17 @@ const Services = () => {
           </thead>
           <tbody>
             {services.length === 0 ? (
-              <tr>
-                <td colSpan="4">No services found.</td>
-              </tr>
+              <tr><td colSpan="4">No service qualified.</td></tr>
             ) : (
               services.map((service) => (
-                <tr key={service.serviceId}>
-                  <td>{service.serviceName}</td>
-                  <td>{(service.price / 1000).toFixed(3)}₫</td>
-                  <td
-                    title={getAllServiceTypeNames(service)}
-                    className={styles.serviceTypeCell}
-                  >
+                <tr key={service?.serviceId || "unknown"}>
+                  <td>{service?.serviceName || "Unnamed Service"}</td>
+                  <td>{service?.price ? (service.price / 1000).toFixed(3) : 0}₫</td>
+                  <td title={getAllServiceTypeNames(service)} className={styles.serviceTypeCell}>
                     {getServiceTypeDisplay(service)}
                   </td>
                   <td>
-                    <button
-                      onClick={() => setModal({ type: "edit", data: service })}
-                      className={styles.iconButton}
-                    >
+                    <button onClick={() => setModal({ type: "edit", data: service })} className={styles.iconButton}>
                       <img src={editIcon} alt="Edit" />
                     </button>
                   </td>
@@ -199,54 +155,18 @@ const Services = () => {
           </tbody>
         </table>
       </div>
-
       <div className={styles.paginationControls}>
-        <button
-          disabled={pagination.pageNumber === 1}
-          onClick={() =>
-            setPagination((prev) => ({
-              ...prev,
-              pageNumber: prev.pageNumber - 1,
-            }))
-          }
-          className={styles.iconButton}
-        >
+        <button disabled={pagination.pageNumber === 1} onClick={() => setPagination((prev) => ({ ...prev, pageNumber: prev.pageNumber - 1 }))} className={styles.iconButton}>
           <b>&lt;</b>
         </button>
         <span>{pagination.pageNumber}</span>
-        <button
-          disabled={pagination.pageNumber === totalPages}
-          onClick={() =>
-            setPagination((prev) => ({
-              ...prev,
-              pageNumber: prev.pageNumber + 1,
-            }))
-          }
-          className={styles.iconButton}
-        >
+        <button disabled={pagination.pageNumber === totalPages} onClick={() => setPagination((prev) => ({ ...prev, pageNumber: prev.pageNumber + 1 }))} className={styles.iconButton}>
           <b>&gt;</b>
         </button>
       </div>
-
-      {modal.type === "create" && (
-        <ServiceCreateModal
-          onClose={() => setModal({ type: null })}
-          refresh={fetchData}
-        />
-      )}
-      {modal.type === "edit" && (
-        <ServiceEditModal
-          service={modal.data}
-          onClose={() => setModal({ type: null })}
-          refresh={fetchData}
-        />
-      )}
-      {modal.type === "createServiceType" && (
-        <ServiceTypeCreateModal
-          onClose={() => setModal({ type: null })}
-          refresh={fetchData}
-        />
-      )}
+      {modal.type === "create" && <ServiceCreateModal onClose={() => setModal({ type: null })} refresh={fetchData} />}
+      {modal.type === "edit" && <ServiceEditModal service={modal.data} onClose={() => setModal({ type: null })} refresh={fetchData} />}
+      {modal.type === "createServiceType" && <ServiceTypeCreateModal onClose={() => setModal({ type: null })} refresh={fetchData} />}
     </div>
   );
 };

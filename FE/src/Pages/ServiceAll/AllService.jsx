@@ -11,21 +11,28 @@ import {
 import Footer from "../../Components/Footer/Footer.jsx";
 
 const AllService = () => {
-  const [services, setServices] = useState([]);
-  const [serviceTypes, setServiceTypes] = useState([]);
-  const [sortBy, setSortBy] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [pagination, setPagination] = useState({
-    pageNumber: 1,
-    pageSize: 12,
-    totalPages: 1,
-    totalItems: 0,
+  const [state, setState] = useState({
+    services: [],
+    serviceTypes: [],
+    sortBy: "",
+    selectedType: "",
+    loading: false,
+    error: null,
+    searchQuery: "",
+    filterQuery: "",
+    filterOn: "",
+    pagination: {
+      pageNumber: 1,
+      pageSize: 12,
+      totalPages: 1,
+      totalItems: 0,
+    }
   });
-  const [filterQuery, setFilterQuery] = useState("");
-  const [filterOn, setFilterOn] = useState("");
+
+  const { 
+    services, serviceTypes, sortBy, selectedType, loading, error, 
+    searchQuery, filterQuery, filterOn, pagination 
+  } = state;
 
   const sortOptions = [
     { value: "", label: "Default" },
@@ -37,68 +44,55 @@ const AllService = () => {
 
   const pageSizeOptions = [6, 12, 24, 48];
 
+  const updateState = (newState) => setState(prev => ({ ...prev, ...newState }));
+  const updatePagination = (newPaginationState) => updateState({ 
+    pagination: { ...pagination, ...newPaginationState } 
+  });
+
   const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    updateState({ loading: true, error: null });
 
     try {
       const params = new URLSearchParams();
       params.append("pageNumber", pagination.pageNumber);
       params.append("pageSize", pagination.pageSize);
-
-      if (sortBy) {
-        params.append("sortBy", sortBy);
-      }
-
-      if (filterOn) {
-        params.append("filterOn", filterOn);
-      }
-
-      if (filterQuery) {
-        params.append("filterQuery", filterQuery);
-      }
-
-      // Use the selected service type if available
+      
+      if (sortBy) params.append("sortBy", sortBy);
+      if (filterOn) params.append("filterOn", filterOn);
+      if (filterQuery) params.append("filterQuery", filterQuery);
+      
       if (selectedType) {
         params.set("filterOn", "service_type_id");
         params.set("filterQuery", selectedType);
       }
 
       const [servicesResponse, serviceTypesResponse] = await Promise.all([
-        fetch(`${GET_ALL_SERVICES_API}?${params}`).then((res) => {
+        fetch(`${GET_ALL_SERVICES_API}?${params}`).then(res => {
           if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
           return res.json();
         }),
-        fetch(GET_ALL_SERVICE_TYPES_API).then((res) => {
+        fetch(GET_ALL_SERVICE_TYPES_API).then(res => {
           if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
           return res.json();
         }),
       ]);
 
-      if (servicesResponse.result) {
-        setServices(servicesResponse.result.services || []);
-        setPagination((prev) => ({
-          ...prev,
-          totalPages: servicesResponse.result.totalPages || 1,
-          totalItems: servicesResponse.result.totalItems || 0,
-        }));
-      }
-
-      setServiceTypes(serviceTypesResponse.result || []);
+      updateState({
+        services: servicesResponse.result?.services || [],
+        serviceTypes: serviceTypesResponse.result || [],
+        pagination: {
+          ...pagination,
+          totalPages: servicesResponse.result?.totalPages || 1,
+          totalItems: servicesResponse.result?.totalItems || 0,
+        }
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError(error.message);
+      updateState({ error: error.message });
     } finally {
-      setLoading(false);
+      updateState({ loading: false });
     }
-  }, [
-    pagination.pageNumber,
-    pagination.pageSize,
-    sortBy,
-    filterOn,
-    filterQuery,
-    selectedType,
-  ]);
+  }, [pagination.pageNumber, pagination.pageSize, sortBy, filterOn, filterQuery, selectedType]);
 
   useEffect(() => {
     fetchData();
@@ -106,66 +100,40 @@ const AllService = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setFilterOn("serviceName");
-    setFilterQuery(searchQuery);
-    setPagination((prev) => ({
-      ...prev,
-      pageNumber: 1,
-    }));
-    // Clear service type filter when searching
-    setSelectedType("");
+    updateState({
+      filterOn: "serviceName",
+      filterQuery: searchQuery,
+      selectedType: "",
+      pagination: { ...pagination, pageNumber: 1 }
+    });
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSortChange = (e) => {
-    setSortBy(e.target.value);
-    setPagination((prev) => ({
-      ...prev,
-      pageNumber: 1,
-    }));
-  };
-
-  const handlePageSizeChange = (e) => {
-    setPagination((prev) => ({
-      ...prev,
-      pageSize: Number(e.target.value),
-      pageNumber: 1,
-    }));
-  };
+  const handleSearchChange = (e) => updateState({ searchQuery: e.target.value });
+  
+  const handleSortChange = (e) => updateState({ 
+    sortBy: e.target.value, 
+    pagination: { ...pagination, pageNumber: 1 } 
+  });
+  
+  const handlePageSizeChange = (e) => updatePagination({ 
+    pageSize: Number(e.target.value), 
+    pageNumber: 1 
+  });
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
-      setPagination((prev) => ({
-        ...prev,
-        pageNumber: newPage,
-      }));
+      updatePagination({ pageNumber: newPage });
       window.scrollTo(0, 0);
     }
   };
 
-  const handleTypeSelect = (typeID) => {
-    if (selectedType === typeID) {
-      // If the same type is clicked again, clear the filter
-      setSelectedType("");
-    } else {
-      // Otherwise, set the new type
-      setSelectedType(typeID);
-    }
-    
-    // Clear other filters when selecting a type
-    setFilterOn("");
-    setFilterQuery("");
-    setSearchQuery("");
-    
-    // Reset to first page
-    setPagination((prev) => ({
-      ...prev,
-      pageNumber: 1,
-    }));
-  };
+  const handleTypeSelect = (typeID) => updateState({
+    selectedType: selectedType === typeID ? "" : typeID,
+    filterOn: "",
+    filterQuery: "",
+    searchQuery: "",
+    pagination: { ...pagination, pageNumber: 1 }
+  });
 
   const getCurrentSortLabel = () => {
     const option = sortOptions.find((opt) => opt.value === sortBy);
@@ -181,7 +149,6 @@ const AllService = () => {
   const renderPaginationButtons = () => {
     const buttons = [];
     const { pageNumber, totalPages } = pagination;
-
     const maxButtons = 5;
     let startPage = Math.max(1, pageNumber - Math.floor(maxButtons / 2));
     let endPage = Math.min(totalPages, startPage + maxButtons - 1);
@@ -191,47 +158,28 @@ const AllService = () => {
     }
 
     buttons.push(
-      <button
-        key="prev"
-        onClick={() => handlePageChange(pageNumber - 1)}
-        disabled={pageNumber === 1}
-        className={styles.pageButton}
-      >
+      <button key="prev" onClick={() => handlePageChange(pageNumber - 1)}
+        disabled={pageNumber === 1} className={styles.pageButton}>
         &laquo;
       </button>
     );
 
     if (startPage > 1) {
       buttons.push(
-        <button
-          key="1"
-          onClick={() => handlePageChange(1)}
-          className={
-            1 === pageNumber ? styles.activePageButton : styles.pageButton
-          }
-        >
+        <button key="1" onClick={() => handlePageChange(1)}
+          className={1 === pageNumber ? styles.activePageButton : styles.pageButton}>
           1
         </button>
       );
-
       if (startPage > 2) {
-        buttons.push(
-          <span key="ellipsis1" className={styles.ellipsis}>
-            ...
-          </span>
-        );
+        buttons.push(<span key="ellipsis1" className={styles.ellipsis}>...</span>);
       }
     }
 
     for (let i = startPage; i <= endPage; i++) {
       buttons.push(
-        <button
-          key={i}
-          onClick={() => handlePageChange(i)}
-          className={
-            i === pageNumber ? styles.activePageButton : styles.pageButton
-          }
-        >
+        <button key={i} onClick={() => handlePageChange(i)}
+          className={i === pageNumber ? styles.activePageButton : styles.pageButton}>
           {i}
         </button>
       );
@@ -239,35 +187,19 @@ const AllService = () => {
 
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
-        buttons.push(
-          <span key="ellipsis2" className={styles.ellipsis}>
-            ...
-          </span>
-        );
+        buttons.push(<span key="ellipsis2" className={styles.ellipsis}>...</span>);
       }
-
       buttons.push(
-        <button
-          key={totalPages}
-          onClick={() => handlePageChange(totalPages)}
-          className={
-            totalPages === pageNumber
-              ? styles.activePageButton
-              : styles.pageButton
-          }
-        >
+        <button key={totalPages} onClick={() => handlePageChange(totalPages)}
+          className={totalPages === pageNumber ? styles.activePageButton : styles.pageButton}>
           {totalPages}
         </button>
       );
     }
 
     buttons.push(
-      <button
-        key="next"
-        onClick={() => handlePageChange(pageNumber + 1)}
-        disabled={pageNumber === totalPages}
-        className={styles.pageButton}
-      >
+      <button key="next" onClick={() => handlePageChange(pageNumber + 1)}
+        disabled={pageNumber === totalPages} className={styles.pageButton}>
         &raquo;
       </button>
     );
@@ -276,10 +208,7 @@ const AllService = () => {
   };
 
   if (loading && services.length === 0) return <Loading />;
-  if (error)
-    return (
-      <p className={styles.errorMessage}>Error loading services: {error}</p>
-    );
+  if (error) return <p className={styles.errorMessage}>Error loading services: {error}</p>;
 
   return (
     <div>
@@ -303,31 +232,17 @@ const AllService = () => {
               </form>
 
               <div className={styles.sortContainer}>
-                <select
-                  id="sort-select"
-                  value={sortBy}
-                  onChange={handleSortChange}
-                  className={styles.sortSelect}
-                >
-                  {sortOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
+                <select id="sort-select" value={sortBy} onChange={handleSortChange} className={styles.sortSelect}>
+                  {sortOptions.map(option => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
               </div>
 
               <div className={styles.pageSizeContainer}>
-                <select
-                  id="page-size-select"
-                  value={pagination.pageSize}
-                  onChange={handlePageSizeChange}
-                  className={styles.pageSizeSelect}
-                >
-                  {pageSizeOptions.map((size) => (
-                    <option key={size} value={size}>
-                      {size}
-                    </option>
+                <select id="page-size-select" value={pagination.pageSize} onChange={handlePageSizeChange} className={styles.pageSizeSelect}>
+                  {pageSizeOptions.map(size => (
+                    <option key={size} value={size}>{size}</option>
                   ))}
                 </select>
               </div>
@@ -340,47 +255,29 @@ const AllService = () => {
                   {sortBy && (
                     <span className={styles.filterTag}>
                       Sort: {getCurrentSortLabel()}
-                      <button
-                        onClick={() => {
-                          setSortBy("");
-                          setPagination((prev) => ({ ...prev, pageNumber: 1 }));
-                        }}
-                        className={styles.removeFilter}
-                      >
-                        ×
-                      </button>
+                      <button onClick={() => updateState({ sortBy: "", pagination: { ...pagination, pageNumber: 1 } })} className={styles.removeFilter}>×</button>
                     </span>
                   )}
 
                   {filterQuery && (
                     <span className={styles.filterTag}>
                       Search: {filterQuery}
-                      <button
-                        onClick={() => {
-                          setFilterQuery("");
-                          setFilterOn("");
-                          setSearchQuery("");
-                          setPagination((prev) => ({ ...prev, pageNumber: 1 }));
-                        }}
-                        className={styles.removeFilter}
-                      >
-                        ×
-                      </button>
+                      <button onClick={() => updateState({ 
+                        filterQuery: "", 
+                        filterOn: "", 
+                        searchQuery: "", 
+                        pagination: { ...pagination, pageNumber: 1 } 
+                      })} className={styles.removeFilter}>×</button>
                     </span>
                   )}
 
                   {selectedType && (
                     <span className={styles.filterTag}>
                       Type: {getSelectedTypeName()}
-                      <button
-                        onClick={() => {
-                          setSelectedType("");
-                          setPagination((prev) => ({ ...prev, pageNumber: 1 }));
-                        }}
-                        className={styles.removeFilter}
-                      >
-                        ×
-                      </button>
+                      <button onClick={() => updateState({ 
+                        selectedType: "", 
+                        pagination: { ...pagination, pageNumber: 1 } 
+                      })} className={styles.removeFilter}>×</button>
                     </span>
                   )}
                 </div>
@@ -392,20 +289,15 @@ const AllService = () => {
             <div className={styles.filter}>
               <label>Filter by Type</label>
               <ul>
-                {Array.isArray(serviceTypes) &&
-                  serviceTypes.map((type) => (
-                    <li
-                      key={type.serviceTypeId}
-                      className={
-                        selectedType === type.serviceTypeId
-                          ? styles.selected
-                          : ""
-                      }
-                      onClick={() => handleTypeSelect(type.serviceTypeId)}
-                    >
-                      {type.serviceTypeName}
-                    </li>
-                  ))}
+                {Array.isArray(serviceTypes) && serviceTypes.map(type => (
+                  <li
+                    key={type.serviceTypeId}
+                    className={selectedType === type.serviceTypeId ? styles.selected : ""}
+                    onClick={() => handleTypeSelect(type.serviceTypeId)}
+                  >
+                    {type.serviceTypeName}
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -423,10 +315,7 @@ const AllService = () => {
                 </div>
               ) : (
                 <>
-                  <ServiceList
-                    services={services}
-                    serviceTypes={serviceTypes}
-                  />
+                  <ServiceList services={services} serviceTypes={serviceTypes} />
 
                   {pagination.totalPages > 1 && (
                     <div className={styles.paginationContainer}>
@@ -440,13 +329,8 @@ const AllService = () => {
                   )}
 
                   <div className={styles.resultsInfo}>
-                    Showing{" "}
-                    {(pagination.pageNumber - 1) * pagination.pageSize + 1}-
-                    {Math.min(
-                      pagination.pageNumber * pagination.pageSize,
-                      pagination.totalItems
-                    )}{" "}
-                    of {pagination.totalItems} services
+                    Showing {(pagination.pageNumber - 1) * pagination.pageSize + 1}-
+                    {Math.min(pagination.pageNumber * pagination.pageSize, pagination.totalItems)} of {pagination.totalItems} services
                   </div>
                 </>
               )}
