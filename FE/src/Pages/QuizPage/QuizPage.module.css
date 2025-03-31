@@ -1,0 +1,63 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #d1b0a1; /* Màu nền giống trong hình */
+    padding: 40px;
+    border-radius: 10px;
+    width: 70%;
+    height: 80%;
+    margin-top: 100px;
+    margin-left: 300px;
+  }
+  
+  .textSection {
+    flex: 1;
+    max-width: 50%;
+    color: white;
+    margin-left: 50px;
+  }
+  
+  h3 {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  h1 {
+    font-size: 42px;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  
+  .highlight {
+    color: #ffdbc5; /* Màu cam nhẹ cho chữ ROUTINE */
+  }
+  
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  
+  .quizButton {
+    background-color: black;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .quizButton:hover {
+    background-color: #333;
+  }
+  
+  .imageSection {
+    flex: 1;
+    background: url("https://plus.unsplash.com/premium_photo-1683134297492-cce5fc6dae31?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c3BhfGVufDB8fDB8fHww") center/cover no-repeat;
+    height: 500px;
+    border-radius: 10px;
+  }
+  

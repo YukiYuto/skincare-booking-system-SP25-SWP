@@ -1,93 +1,113 @@
-import React, { useState } from "react";
-import { Card, Radio, Button, Typography } from "antd";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import styles from "./SkinTest.module.css";
-import Footer from "../Footer/Footer";
+import { useNavigate } from "react-router-dom";
 import Header from "../Common/Header";
-
-const { Title } = Typography;
-
-const questions = [
-  { question: "Da bạn có bị khô sau khi rửa mặt không?", options: [{ text: "Rất khô", score: 3 }, { text: "Hơi khô", score: 2 }, { text: "Bình thường", score: 1 }, { text: "Bị dầu", score: 0 }] },
-  { question: "Lỗ chân lông của bạn như thế nào?", options: [{ text: "Rất to", score: 3 }, { text: "Hơi to", score: 2 }, { text: "Bình thường", score: 1 }, { text: "Nhỏ", score: 0 }] },
-  { question: "Bạn có dễ bị mụn không?", options: [{ text: "Rất dễ", score: 3 }, { text: "Thỉnh thoảng", score: 2 }, { text: "Hiếm khi", score: 1 }, { text: "Không bao giờ", score: 0 }] },
-  { question: "Vùng chữ T (trán, mũi) của bạn có bị dầu không?", options: [{ text: "Rất nhiều dầu", score: 3 }, { text: "Hơi dầu", score: 2 }, { text: "Không dầu", score: 1 }, { text: "Khô", score: 0 }] },
-  { question: "Bạn có dễ bị kích ứng không?", options: [{ text: "Rất dễ", score: 3 }, { text: "Thỉnh thoảng", score: 2 }, { text: "Hiếm khi", score: 1 }, { text: "Không bao giờ", score: 0 }] },
-  { question: "Bạn cảm thấy da mình như thế nào vào cuối ngày?", options: [{ text: "Bóng dầu", score: 3 }, { text: "Hơi nhờn", score: 2 }, { text: "Bình thường", score: 1 }, { text: "Khô căng", score: 0 }] },
-  { question: "Bạn có hay bị bong tróc da không?", options: [{ text: "Thường xuyên", score: 3 }, { text: "Thỉnh thoảng", score: 2 }, { text: "Hiếm khi", score: 1 }, { text: "Không bao giờ", score: 0 }] },
-  { question: "Da bạn có sáng bóng tự nhiên không?", options: [{ text: "Rất sáng", score: 3 }, { text: "Hơi sáng", score: 2 }, { text: "Bình thường", score: 1 }, { text: "Xỉn màu", score: 0 }] },
-  { question: "Bạn có thường xuyên dùng kem dưỡng ẩm không?", options: [{ text: "Mỗi ngày", score: 3 }, { text: "Thỉnh thoảng", score: 2 }, { text: "Rất ít", score: 1 }, { text: "Không bao giờ", score: 0 }] },
-  { question: "Bạn có thấy da mình thay đổi theo thời tiết không?", options: [{ text: "Rất nhiều", score: 3 }, { text: "Hơi nhiều", score: 2 }, { text: "Bình thường", score: 1 }, { text: "Không thay đổi", score: 0 }] },
-];
+import Footer from "../Footer/Footer";
 
 const SkinTest = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+  const [step, setStep] = useState(1);
+  const [progress, setProgress] = useState(50);
+  const [selectedAnswers, setSelectedAnswers] = useState({ step1: null, step2: null });
   const navigate = useNavigate();
 
-  const handleAnswer = (score) => {
-    const newAnswers = [...answers];
-    newAnswers[currentQuestion] = score;
-    setAnswers(newAnswers);
+  const steps = [
+    {
+      id: 1,
+      title: "STEP 1",
+      question: "Wash your face with a gentle cleanser and wait 15 - 30 minutes. Click the icon that matches what you see.",
+      options: [
+        { id: "dry", label: "Feels tight & dehydrated. Some flaky areas.", image: "https://www.paulaschoice.com/on/demandware.static/-/Library-Sites-paulachoice/default/dw0fae9daf/images/quiz/1_Dry.jpg" },
+        { id: "oily", label: "Looks shiny & feels slick to the touch.", image: "https://www.paulaschoice.com/on/demandware.static/-/Library-Sites-paulachoice/default/dw7ee69eb0/images/quiz/1_Oily.jpg" },
+        { id: "combo", label: "Looks dry in some areas, but shiny in others.", image: "https://www.paulaschoice.com/on/demandware.static/-/Library-Sites-paulachoice/default/dw8925484f/images/quiz/1_Combo.jpg" },
+        { id: "normal", label: "Feels smooth, balanced & healthy.", image: "https://www.paulaschoice.com/on/demandware.static/-/Library-Sites-paulachoice/default/dw5f514fbe/images/quiz/1_Normal.jpg" },
+      ],
+      key: "step1",
+    },
+    {
+      id: 2,
+      title: "STEP 2",
+      question: "What’s your main concern? If none of these apply, skip this part.",
+      options: [
+        { id: "breakouts", label: "Breakouts, blackheads or clogged pores", image: "https://www.paulaschoice.com/on/demandware.static/-/Library-Sites-paulachoice/default/dwc7c0dd51/images/quiz/acne.jpg" },
+        { id: "aging", label: "Aging, loss of firmness or wrinkles", image: "https://www.paulaschoice.com/on/demandware.static/-/Library-Sites-paulachoice/default/dw4066c95e/images/quiz/aging.jpg" },
+        { id: "uneven", label: "Uneven skin tone or discoloration", image: "https://www.paulaschoice.com/on/demandware.static/-/Library-Sites-paulachoice/default/dwd249b290/images/quiz/uneven.jpg" },
+        { id: "sensitivity", label: "Redness or sensitivity", image: "https://www.paulaschoice.com/on/demandware.static/-/Library-Sites-paulachoice/default/dwa22c01d7/images/quiz/sensitive.jpg" },
+      ],
+      key: "step2",
+    },
+  ];
+
+  const currentStep = steps.find((s) => s.id === step);
+
+  const handleSelectOption = (optionId) => {
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [currentStep.key]: prev[currentStep.key] === optionId ? null : optionId, // Nếu đã chọn thì hủy chọn
+    }));
   };
 
   const handleNext = () => {
-    if (answers[currentQuestion] !== null) {
-      setCurrentQuestion((prev) => prev + 1);
+    if (step < steps.length) {
+      setStep(step + 1);
+      setProgress(progress + 50);
     } else {
-      alert("Vui lòng chọn một đáp án!");
+      navigate("/result", { state: selectedAnswers });
     }
   };
 
-  const handlePrev = () => {
-    setCurrentQuestion((prev) => prev - 1);
-  };
-
-  const handleSubmit = () => {
-    if (answers.includes(null)) {
-      alert("Vui lòng trả lời tất cả các câu hỏi!");
-      return;
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1);
+      setProgress(progress - 50);
     }
-    const totalScore = answers.reduce((sum, score) => sum + (score || 0), 0);
-    navigate(`/result?score=${totalScore}`);
   };
 
   return (
     <>
     <Header />
     <div className={styles.container}>
-      <Card className={styles.card}>
-        <Title level={4}>{questions[currentQuestion].question}</Title>
-        <Radio.Group onChange={(e) => handleAnswer(e.target.value)} value={answers[currentQuestion]} className={styles.radioGroup}>
-          {questions[currentQuestion].options.map((option, index) => (
-            <Radio key={index} value={option.score} className={styles.radio}>
-              {option.text}
-            </Radio>
+      <div className={styles.leftPanel}>
+        <div className={styles.progressBar}>
+          <div className={styles.progress} style={{ width: `${progress}%` }} />
+        </div>
+        <h2>{steps[step - 1].title}</h2>
+        <p>{steps[step - 1].question}</p>
+      </div>
+
+      <div className={styles.rightPanel}>
+        <div className={styles.options}>
+          {steps[step - 1].options.map((option) => (
+            <div
+              key={option.id}
+              className={`${styles.option} ${
+                selectedAnswers[steps[step - 1].key] === option.id ? styles.selected : ""
+              }`}
+              onClick={() => handleSelectOption(option.id)}
+            >
+              <img src={option.image} alt={option.id} className={styles.optionImage} />
+              <p>{option.label}</p>
+            </div>
           ))}
-        </Radio.Group>
+        </div>
 
         <div className={styles.buttonGroup}>
-          {currentQuestion > 0 && (
-            <Button icon={<LeftOutlined />} onClick={handlePrev}>
-              Quay lại
-            </Button>
+          {step > 1 && (
+            <button className={styles.backButton} onClick={handleBack}>
+              BACK
+            </button>
           )}
-          {currentQuestion < questions.length - 1 ? (
-            <Button type="primary" icon={<RightOutlined />} onClick={handleNext}>
-              Tiếp tục
-            </Button>
-          ) : (
-            <Button type="primary" className={styles.submitBtn} onClick={handleSubmit}>
-              Xem kết quả
-            </Button>
-          )}
+          <button
+            className={styles.nextButton}
+            disabled={!selectedAnswers[steps[step - 1].key]}
+            onClick={handleNext}
+          >
+            {step === steps.length ? "See Result" : "NEXT"}
+          </button>
         </div>
-      </Card>
+      </div>
     </div>
     <Footer />
     </>
   );
 };
-
 export default SkinTest;
