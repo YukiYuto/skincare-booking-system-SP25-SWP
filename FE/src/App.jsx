@@ -41,6 +41,7 @@ import StaffBlogDetail from "./Pages/Staff/StaffBlogDetail/StaffBlogDetail";
 import ViewBlogCategory from "./Components/DashboardComponent/Tabs/BlogCategory/ViewBlogCategory/ViewBlogCategory";
 import ViewDetail from "./Components/DashboardComponent/Tabs/BlogCategory/ViewDetail/ViewDetail";
 import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTherapist";
+import FeedbackPage from "./Pages/FeedbackPage/FeedbackPage";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -57,7 +58,8 @@ const AppRoutes = () => {
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="blogs" element={<BlogForCus />} />
       <Route path="blogs/:categoryName?" element={<BlogForCus />} />
-      <Route path="blogs-detail/:title" element={<BlogForCusList />} /> 
+      <Route path="blogs-detail/:title" element={<BlogForCusList />} />
+      <Route path="feedback-page" element={<FeedbackPage />} />
       <Route path="error" element={<ErrorPage />} />
       <Route
         path="payment-confirmation"
