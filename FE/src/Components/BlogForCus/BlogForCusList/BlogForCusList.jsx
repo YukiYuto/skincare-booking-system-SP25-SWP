@@ -50,7 +50,7 @@ const BlogForCusList = () => {
       <h1 className={styles.title}>{blog.title}</h1>
 
       <div className={styles.meta}>
-      {blog.status.includes("PUBLISHED") ? (
+      {blog.status.includes("1") ? (
                   <>
                     ✍ {blog.createdBy} | 🕒 {new Date(blog.createdTime).toLocaleString("vi-VN", {
                       year: "numeric",

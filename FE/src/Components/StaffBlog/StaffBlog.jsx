@@ -238,7 +238,7 @@ const StaffBlog = () => {
                 description={
                   <>
                     <p className={styles.date}>
-                      {blog.status.includes("PUBLISHED") ? (
+                      {blog.status.includes("1") ? (
                         <>✍ {blog.createdBy} | 🕒 {new Date(blog.createdTime).toLocaleString("vi-VN", {
                           year: "numeric",
                           month: "2-digit",
