@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const CTASection = () => {
   const navigate = useNavigate();
   const handleClick = () => {
-      navigate("/appointments");
+      navigate("/services");
   }
   return (
     <div className={styles.ctaContainer}>
