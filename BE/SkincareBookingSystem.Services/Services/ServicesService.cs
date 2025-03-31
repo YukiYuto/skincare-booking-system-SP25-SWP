@@ -4,12 +4,7 @@ using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Services.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using SkincareBookingSystem.Utilities.Constants;
 using SkincareBookingSystem.Services.Helpers.Responses;
 
