@@ -73,7 +73,7 @@ const UserProfile = () => {
           ...prevData,
           imageUrl: data.result, // Cập nhật imageUrl vào userData để đảm bảo gửi đúng khi save
         }));
-        // dispatch(updateUser({ imageUrl: data.result })); // Cập nhật Redux store
+
         toast.success("Upload Successfully!");
       } else {
         toast.error("Upload Failed!");
@@ -124,7 +124,6 @@ const UserProfile = () => {
       }
       return errors;
     });
-    console.log("Final userData before sending:", userData);
 
     if (!validateProfileForm()) {
       setUpdateLoading(false);

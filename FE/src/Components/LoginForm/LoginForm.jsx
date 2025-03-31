@@ -178,7 +178,7 @@ export function LoginForm() {
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>
         <a
-          href="/terms"
+          href="/terms-conditions"
           className={`${styles.termsLink} ${
             loading ? styles.disabledLink : ""
           }`}
