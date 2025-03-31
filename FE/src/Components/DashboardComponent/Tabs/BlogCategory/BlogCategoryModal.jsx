@@ -71,8 +71,8 @@ const BlogCategoryModal = ({ show, handleClose, addCategory, editingCategory }) 
             <Input value={name} onChange={(e) => setName(e.target.value)} required />
           </Form.Item>
 
-          <Form.Item label="Description">
-            <ReactQuill value={description} onChange={setDescription} theme="snow" />
+          <Form.Item label="Description" required>
+            <ReactQuill value={description} onChange={setDescription} theme="snow" required />
           </Form.Item>
 
           <div style={{ textAlign: "right" }}>

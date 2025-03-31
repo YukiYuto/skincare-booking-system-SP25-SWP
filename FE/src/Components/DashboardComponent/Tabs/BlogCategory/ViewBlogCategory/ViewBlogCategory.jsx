@@ -94,6 +94,12 @@ const ViewBlogCategory = () => {
     setUploading(true);
   
     try {
+      if (!values.title || values.title.length < 5 || values.title.length > 30) {
+        throw new Error("Title must be between 5 and 30 characters.");
+      }
+      if (!values.content || values.content.length < 20 || values.content.length > 500) {
+        throw new Error("Content must be between 20 and 500 characters.");
+      }
       let imageUrl = values.imageUrl;
 
       if (imageFile) {
@@ -310,18 +316,14 @@ const ViewBlogCategory = () => {
                           year: "numeric",
                           month: "2-digit",
                           day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit"
+                          
                         })}</>
                       ) : blog.status.includes("MODIFIED") ? (
                         <>✍ {blog.updatedBy} | 🕒 {new Date(blog.updatedTime).toLocaleString("vi-VN", {
                           year: "numeric",
                           month: "2-digit",
                           day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit"
+                          
                         })}</>
                       ) : (
                         <>⚠ Unknown status</>
@@ -346,13 +348,22 @@ const ViewBlogCategory = () => {
         footer={null}
       >
         <Form form={form} layout="vertical" onFinish={handleAddBlog}>
-          <Form.Item name="title" label="Title" rules={[{ required: true, message: "Please enter title" }]}>
+          <Form.Item name="title" label="Title" rules={[
+            { required: true, message: "Please enter title" },
+            { min: 5, message: "Title must be at least 5 characters long" },
+            { max: 30, message: "Title cannot exceed 30 characters" }
+            ]}>
             <Input />
           </Form.Item>
 
-          <Form.Item name="content" label="Content" rules={[{ required: true, message: "Please enter content" }]}>
+          <Form.Item name="content" label="Content" rules={[
+            { required: true, message: "Please enter content" },
+            { min: 20, message: "Content must be at least 20 characters long" },
+            { max: 500, message: "Content cannot exceed 500 characters" }
+            ]}>
             <Input.TextArea rows={4} />
           </Form.Item>
+
 
           <Form.Item name="tags" label="Tag" rules={[{ required: true, message: "Please enter tag" }]}>
             <Input />

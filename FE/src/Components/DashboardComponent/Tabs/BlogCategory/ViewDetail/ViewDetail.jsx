@@ -89,6 +89,19 @@ const ViewDetail = () => {
   };
 
   const handleSaveEdit = async () => {
+    if (!editTitle.trim() || editTitle.length < 5 || editTitle.length > 30) {
+      toast.error("Title must be between 5 and 30 characters.");
+      return;
+    }
+  
+    if (!editContent.trim() || editContent.length < 20 || editContent.length > 500) {
+      toast.error("Content must be between 20 and 500 characters.");
+      return;
+    }
+    if (!editTags.trim()) {
+      toast.error("Tags cannot be empty.");
+      return;
+    }
     let finalImageUrl = editImageUrl; 
   
     if (imageFile) {
@@ -138,6 +151,7 @@ const ViewDetail = () => {
       okText: "Yes, Delete",
       cancelText: "Cancel",
       okType: "danger",
+      maskClosable: true,
       onOk: async () => {
         try {
           await axios.delete(`${DELETE_BLOG}/${blog.blogId}`, {
@@ -188,9 +202,7 @@ const ViewDetail = () => {
                       year: "numeric",
                       month: "2-digit",
                       day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit"
+                      
                     })}
                   </>
                 ) : blog.status.includes("MODIFIED") ? (
@@ -199,9 +211,7 @@ const ViewDetail = () => {
                       year: "numeric",
                       month: "2-digit",
                       day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit"
+                      
                     })}
                   </>
                 ) : (
@@ -229,13 +239,17 @@ const ViewDetail = () => {
         ]}
       >
         <label>Title:</label>
-        <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} className={styles.input} />
-
+        <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} className={styles.input} maxLength={30} />
+        {editTitle.length > 30 && <p className={styles.errorText}>Title cannot exceed 30 characters.</p>}
+        
         <label>Content:</label>
-        <TextArea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={6} className={styles.input} />
-
+        <TextArea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={6} className={styles.input} maxLength={500} />
+        {editContent.length > 500 && <p className={styles.errorText}>Content cannot exceed 500 characters.</p>}
+        
         <label>Tags:</label>
         <Input value={editTags} onChange={(e) => setEditTags(e.target.value)} className={styles.input} />
+        {!editTags.trim() && <p className={styles.errorText}>Tags cannot be empty.</p>}
+        
 
         <label>Current image:</label>
         <img src={editImageUrl} alt="Preview" className={styles.previewImage} />
