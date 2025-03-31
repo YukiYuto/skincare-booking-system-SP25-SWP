@@ -42,6 +42,9 @@ namespace SkincareBookingSystem.DataAccess.Repositories
                     "price" => double.TryParse(filterQuery, out double price)
                         ? query.Where(s => s.Price == price)
                         : query,
+                    "service_type_id" => Guid.TryParse(filterQuery, out Guid serviceTypeId) 
+                        ? query.Where(s => s.TypeItems.Any(t => t.ServiceTypeId == serviceTypeId)) 
+                        : query,
                     _ => query
                 };
             }
