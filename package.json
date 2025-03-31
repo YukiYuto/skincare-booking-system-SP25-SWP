@@ -10,6 +10,7 @@
     "npm": "^11.2.0",
     "react-quill": "^2.0.0",
     "react-redux": "^9.2.0",
+    "react-router-dom": "^7.4.1",
     "recharts": "^2.15.1",
     "validator": "^13.12.0"
   }
