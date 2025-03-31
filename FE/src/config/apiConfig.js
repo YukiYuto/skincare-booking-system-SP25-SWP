@@ -24,6 +24,7 @@ export const RESET_PASSWORD_API = `${BASE_URL}/auth/password/reset`;
 export const GET_CUSTOMER_PROFILE_API = `${BASE_URL}/auth/profile`;
 export const VERIFY_EMAIL_API = `${BASE_URL}/auth/email/verification/send`;
 export const CONFIRM_EMAIL_API = `${BASE_URL}/auth/email/verification/confirm`;
+export const SIGNIN_BY_GOOGLE_API = `${BASE_URL}/auth/signin-by-google`;
 
 // Thêm API cho Customer
 export const POST_CUSTOMER_AVATAR_API = `${BASE_URL}/UserManagement/avatar`;
@@ -35,6 +36,10 @@ export const PUT_APPOINTMENT_API = `${BASE_URL}/appointment`;
 export const GET_APPOINTMENT_BY_CUSTOMER_API = `${BASE_URL}/appointment/customer/appointments`;
 export const GET_APPOINTMENT_BY_ID_API = `${BASE_URL}/appointment/{appointmentId}`;
 export const DELETE_APPOINTMENT_API = `${BASE_URL}/appointment`;
+export const GET_TODAY_APPOINTMENTS_API = `${BASE_URL}/staff/today-appointments`;
+export const CHECK_IN_APPOINTMENT_API = `${BASE_URL}/staff/check-in`;
+export const CHECK_OUT_APPOINTMENT_API = `${BASE_URL}/staff/check-out`;
+export const CANCEL_APPOINTMENT_API = `${BASE_URL}/bookings/cancellation`;
 
 // Thêm API cho Booking
 export const POST_BOOKING_API = `${BASE_URL}/bookings/orders-bundles`;
@@ -54,6 +59,11 @@ export const GET_CUSTOMER_TIMETABLE_API = `${BASE_URL}/customer/timetable`;
 // Thêm API cho FileStorage
 export const POST_FILE_SERVICE_API = `${BASE_URL}/files/service`;
 export const POST_FILE_SERVICE_COMBO_API = `${BASE_URL}/files/service-combo`;
+
+// Thêm API cho Revenue
+export const GET_REVENUE_BY_ORDERS_API = `${BASE_URL}/revenue/orders`;
+export const GET_REVENUE_BY_PROFIT_API = `${BASE_URL}/revenue/profit`;
+export const GET_REVENUE_BY_TRANSACTIONS_API = `${BASE_URL}/revenue/transactions`;
 
 // Thêm API cho Order
 export const GET_ALL_ORDERS_API = `${BASE_URL}/order`;

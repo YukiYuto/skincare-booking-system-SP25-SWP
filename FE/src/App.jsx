@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { Provider, useSelector } from "react-redux";
 import { store } from "./redux/store";
 
@@ -26,16 +31,17 @@ import TableCustomer from "./Components/TableCustomer/TableCustomer";
 import PaymentConfirmationPage from "./Pages/Payment/PaymentConfirmationPage";
 import TherapistCard from "./Components/TherapistCard/TherapistCard";
 import TherapistDetail from "./Components/TherapistDetail/TherapistDetail";
-import StaffManagement from "./Pages/Staff/StaffManagement/StaffManagement";
 import ScheduleManagement from "./Pages/Staff/ScheduleManagement/ScheduleManagement";
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import TherapistSchedule from "./Pages/Therapist/TherapistSchedule/TherapistSchedule";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
+import StaffDashboard from "./Pages/Staff/Dashboard/StaffDashboard";
+import AppointmentDetailsPage from "./Pages/Staff/Appointment/AppointmentDetailsPage";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
   const roles = user?.roles || [];
-  
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -46,6 +52,10 @@ const AppRoutes = () => {
       <Route path="therapist" element={<TherapistCard />} />
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="error" element={<ErrorPage />} />
+      <Route
+        path="payment-confirmation"
+        element={<PaymentConfirmationPage />}
+      />
       {!accessToken && (
         <>
           <Route path="login" element={<LoginPage />} />
@@ -61,7 +71,6 @@ const AppRoutes = () => {
             <>
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="table-customer" element={<TableCustomer />} />
-              <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
               <Route path="appointments" element={<AppointmentPage />} />
             </>
           )}
@@ -82,15 +91,28 @@ const AppRoutes = () => {
           {roles.includes("STAFF") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="staff-management" element={<StaffManagement />} />
-              <Route path="schedule-management" element={<ScheduleManagement />} />
+              <Route
+                path="schedule-management"
+                element={<ScheduleManagement />}
+              />
+              <Route path="staff/dashboard" element={<StaffDashboard />} />
+              <Route
+                path="staff/appointments/:appointmentId"
+                element={<AppointmentDetailsPage />}
+              />
             </>
           )}
           {roles.includes("SKINTHERAPIST") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="therapist-management" element={<TherapistManagement />} />
-              <Route path="therapist-schedule" element={<TherapistSchedule />} />
+              <Route
+                path="therapist-management"
+                element={<TherapistManagement />}
+              />
+              <Route
+                path="therapist-schedule"
+                element={<TherapistSchedule />}
+              />
             </>
           )}
           {roles.includes("MANAGER") && (

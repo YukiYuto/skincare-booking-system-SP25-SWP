@@ -1,6 +1,7 @@
 ﻿using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.DataAccess.Repositories;
 using SkincareBookingSystem.Models.Domain;
+using SkincareBookingSystem.Models.Dto.Booking.Order;
 using SkincareBookingSystem.Models.Dto.OrderDetails;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.Helpers.Responses;
@@ -63,6 +64,43 @@ namespace SkincareBookingSystem.Services.Services
                 IsSuccess = true,
                 StatusCode = 200
             };
+        }
+
+        public async Task<ResponseDto> GetOrderDetailByOrderId(ClaimsPrincipal User, Guid orderId)
+        {
+            var orders = await _unitOfWork.Order.GetAsync(o => o.OrderId == orderId, includeProperties: 
+                $"{nameof(Order.OrderDetails)},{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}");
+            if (orders == null)
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Order.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound
+                );
+            }
+
+            // 3. Map sang DTO
+            var result = new GetOrderDetailByOrderIdDto
+            {
+                OrderId = orders.OrderId,
+                OrderDetails = orders.OrderDetails?.Select(od => new GetOrderDetailDto
+                {
+                    OrderDetailId = od.OrderDetailId,
+                    ServiceId = od.ServiceId ?? Guid.Empty,
+                    ServiceName = od.Services?.ServiceName ?? "Unknown Service",
+                    Price = od.Price,
+                    Description = od.Description
+                }).ToList()
+            };
+
+            // 4. Trả về response
+            return new ResponseDto
+            {
+                Result = result,
+                Message = "Hello",
+                IsSuccess = true,
+                StatusCode = 200
+            };
+
         }
 
         public async Task<ResponseDto> UpdateOrderDetail(ClaimsPrincipal User, UpdateOrderDetailDto orderDetailDto)

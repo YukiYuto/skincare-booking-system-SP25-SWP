@@ -22,6 +22,7 @@ using SkincareBookingSystem.Models.Dto.ServiceCombo;
 using SkincareBookingSystem.Models.Dto.ServiceDuration;
 using SkincareBookingSystem.Models.Dto.Services;
 using SkincareBookingSystem.Models.Dto.ServiceTypeDto;
+using SkincareBookingSystem.Models.Dto.SkinProfile;
 using SkincareBookingSystem.Models.Dto.SkinTest;
 using SkincareBookingSystem.Models.Dto.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.Slot;
@@ -31,6 +32,7 @@ using SkincareBookingSystem.Models.Dto.TestQuestion;
 using SkincareBookingSystem.Models.Dto.TherapistSchedules;
 using SkincareBookingSystem.Models.Dto.TherapistServiceTypes;
 using SkincareBookingSystem.Utilities.Constants;
+using ServiceDto = SkincareBookingSystem.Models.Dto.ServiceCombo.ServiceDto;
 
 namespace SkincareBookingSystem.Services.Mapping;
 
@@ -38,6 +40,21 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // SkinProfile
+        CreateMap<CreateSkinProfileDto, SkinProfile>()
+            .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
+            .ForMember(dest => dest.ParentSkin, opt => opt.MapFrom(src => src.ParentSkin))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.ScoreMin, opt => opt.MapFrom(src => src.ScoreMin))
+            .ForMember(dest => dest.ScoreMax, opt => opt.MapFrom(src => src.ScoreMax));
+        CreateMap<UpdateSkinProfileDto, SkinProfile>()
+            .ForMember(dest => dest.SkinProfileId, opt => opt.MapFrom(src => src.SkinProfileId))
+            .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
+            .ForMember(dest => dest.ParentSkin, opt => opt.MapFrom(src => src.ParentSkin))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.ScoreMin, opt => opt.MapFrom(src => src.ScoreMin))
+            .ForMember(dest => dest.ScoreMax, opt => opt.MapFrom(src => src.ScoreMax));
+
         // Skin test
         CreateMap<CreateSkinTestDto, SkinTest>()
             .ForMember(dest => dest.SkinTestName, opt => opt.MapFrom(src => src.SkinTestName))
@@ -179,7 +196,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CreatedTime,
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Service.Active));
-
+        CreateMap<ServiceCombo, ServiceComboDto>();
+        
         // TherapistSchedule to ScheduleDto
         CreateMap<TherapistSchedule, ScheduleDto>()
             .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentId))
@@ -260,12 +278,15 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
-        CreateMap<UpdateOrderDto, Order>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-
         //OrderDetail
-        CreateMap<UpdateOrderDto, Order>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<Order, GetOrderDetailByOrderIdDto>() 
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId));
+        CreateMap<OrderDetail, GetOrderDetailDto>()
+            .ForMember(dest => dest.OrderDetailId, opt => opt.MapFrom(src => src.OrderDetailId))
+            .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
+            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Services.ServiceName))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
 
         CreateMap<BundleOrderDto, Order>()
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => Guid.NewGuid()))
@@ -325,6 +346,7 @@ public class AutoMapperProfile : Profile
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
+        CreateMap<Models.Domain.Services, ServiceDto>();
         //SignUpCustomerDto to ApplicationUser
         CreateMap<SignUpCustomerDto, ApplicationUser>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
