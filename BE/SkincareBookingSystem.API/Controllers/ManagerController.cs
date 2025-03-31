@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.DataAccess.IRepositories;
+using SkincareBookingSystem.Models.Dto.LockUser;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Utilities.Constants;
 using Swashbuckle.AspNetCore.Annotations;
@@ -42,6 +43,24 @@ public class ManagerController : ControllerBase
     public async Task<IActionResult> GetRevenueTransactions(DateTime startDate, DateTime endDate, int pageNumber = 1, int pageSize = 10)
     {
         var response = await _managerService.GetRevenueTransactions(startDate, endDate, pageNumber, pageSize);
+        return StatusCode(response.StatusCode, response);
+    }
+    
+    [HttpPost("lock-user")]
+    [Authorize(Roles = StaticUserRoles.Manager)]
+    [SwaggerOperation(Summary = "API locks user", Description = "Requires Manager roles")]
+    public async Task<IActionResult> LockUser([FromBody] LockUserDto lockUserDto)
+    {
+        var response = await _managerService.LockUser(lockUserDto);
+        return StatusCode(response.StatusCode, response);
+    }
+    
+    [HttpPost("unlock-user")]
+    [Authorize(Roles = StaticUserRoles.Manager)]
+    [SwaggerOperation(Summary = "API unlocks user", Description = "Requires Manager roles")]
+    public async Task<IActionResult> UnlockUser([FromBody] UnLockUserDto unLockUserDto)
+    {
+        var response = await _managerService.UnlockUser(unLockUserDto);
         return StatusCode(response.StatusCode, response);
     }
 }
