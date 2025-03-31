@@ -1,27 +1,21 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import StatusProgress from "../../Appointment/Status/StatusProgress";
-import styles from "./AppointmentDetails.module.css";
+import StatusProgress from "../Appointment/Status/StatusProgress";
+import styles from "./TherapistAppointmentDetails.module.css";
 import { Avatar, Button, Card, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  cancelAppointment,
-  checkInAppointment,
-  checkOutAppointment,
-  getAppointmentById,
-} from "../../../services/staffService";
+import { getAppointmentById } from "../../services/staffService";
 import { toast } from "react-toastify";
-import { PLACEHOLDER_IMAGE_URL } from "../../../utils/avatarUtils";
-import CancellationModal from "./CancellationModal";
+import { PLACEHOLDER_IMAGE_URL } from "../../utils/avatarUtils";
+import { completeService } from "../../services/therapistService";
 const { Meta } = Card;
 
-const AppointmentDetails = () => {
+const TherapistAppointmentDetails = () => {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
   const [appointment, setAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
 
   useEffect(() => {
     const fetchAppointment = async () => {
@@ -40,57 +34,22 @@ const AppointmentDetails = () => {
     fetchAppointment();
   }, [appointmentId]);
 
-  const handleCheckIn = async () => {
+  const handleComplete = async () => {
     if (!appointment) return;
+    console.log(appointmentId);
     setUpdating(true);
     try {
-      await checkInAppointment(
-        appointment.customerInfo.customerId,
-        appointmentId
-      );
-      setAppointment((prev) => ({ ...prev, status: "CHECKEDIN" }));
-      toast.success("Check-in successfully!");
+      await completeService(appointmentId);
+      setAppointment((prev) => ({ ...prev, status: "COMPLETED" }));
+      toast.success("Service completed successfully!");
     } catch (error) {
-      toast.error("Check-in failed. " + error.message);
-      console.error("Check-in failed: ", error);
+      toast.error("Complete service failed. " + error.message);
+      console.error("Complete service failed: ", error);
     } finally {
       setUpdating(false);
     }
   };
 
-  const handleCheckOut = async () => {
-    if (!appointment) return;
-    setUpdating(true);
-    try {
-      await checkOutAppointment(
-        appointment.customerInfo.customerId,
-        appointmentId
-      );
-      setAppointment((prev) => ({ ...prev, status: "CHECKEDOUT" }));
-      toast.success("Check-out successfully!");
-    } catch (error) {
-      toast.error("Check-out failed. " + error.message);
-      console.error("Check-out failed: ", error);
-    } finally {
-      setUpdating(false);
-    }
-  };
-
-  const handleCancel = async (reason) => {
-    if (!appointment) return;
-    setUpdating(true);
-    try {
-      await cancelAppointment(appointmentId, reason);
-      setAppointment((prev) => ({ ...prev, status: "CANCELLED" }));
-      toast.success("Appointment has been cancelled.");
-      setShowCancelModal(false);
-    } catch (error) {
-      toast.error("Cancel appointment failed. " + error.message);
-      console.error("Cancel appointment failed: ", error);
-    } finally {
-      setUpdating(false);
-    }
-  };
   if (loading) return <Spin size="large" />;
   if (!appointment) return <div>Appointment not found</div>;
 
@@ -131,53 +90,18 @@ const AppointmentDetails = () => {
             <StatusProgress status={appointment.status} />
 
             <div className={styles.buttonGroup}>
-              {appointment.status === "CREATED" && (
-                <>
-                  <Button
-                    color="danger"
-                    variant="solid"
-                    onClick={() => setShowCancelModal(true)}
-                    loading={updating}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="primary"
-                    onClick={handleCheckIn}
-                    loading={updating}
-                  >
-                    Check-In
-                  </Button>
-                </>
-              )}
               {appointment.status === "CHECKEDIN" && (
                 <>
                   <Button
-                    color="danger"
-                    variant="solid"
-                    onClick={() => setShowCancelModal(true)}
+                    color='cyan'
+                    variant="filled"
+                    size="large"
+                    onClick={handleComplete}
                     loading={updating}
                   >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="primary"
-                    disabled={true}
-                    onClick={handleCheckOut}
-                    loading={updating}
-                  >
-                    Checked-in
+                    Complete Service
                   </Button>
                 </>
-              )}
-              {appointment.status === "COMPLETED" && (
-                <Button
-                  type="primary"
-                  onClick={handleCheckOut}
-                  loading={updating}
-                >
-                  Check-Out
-                </Button>
               )}
             </div>
           </Card>
@@ -251,13 +175,7 @@ const AppointmentDetails = () => {
           </Card>
         </div>
       </div>
-      <CancellationModal
-        visible={showCancelModal}
-        onCancel={() => setShowCancelModal(false)}
-        onConfirm={handleCancel}
-        appointment={appointment}
-      />
     </div>
   );
 };
-export default AppointmentDetails;
+export default TherapistAppointmentDetails;
