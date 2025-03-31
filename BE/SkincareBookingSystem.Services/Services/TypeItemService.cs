@@ -3,6 +3,8 @@ using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Models.Dto.TypeItem;
+using SkincareBookingSystem.Services.Helpers.Responses;
+using SkincareBookingSystem.Services.Helpers.Users;
 using SkincareBookingSystem.Services.IServices;
 using SkincareBookingSystem.Utilities.Constants;
 
@@ -88,7 +90,7 @@ public class TypeItemService : ITypeItemService
             filterQuery,
             sortBy
         );
-        
+
         if (!typeItemsFromDb.Any())
             return new ResponseDto
             {
@@ -113,5 +115,47 @@ public class TypeItemService : ITypeItemService
             IsSuccess = true,
             StatusCode = 200
         };
+    }
+
+    public async Task<ResponseDto> UpdateTypeItem(ClaimsPrincipal User, UpdateTypeItemDto updateTypeItemDto)
+    {
+        if (UserError.NotExists(User))
+            return ErrorResponse.Build(StaticResponseMessage.User.NotFound, StaticOperationStatus.StatusCode.NotFound);
+
+        if (updateTypeItemDto.ServiceTypeIdList == null || !updateTypeItemDto.ServiceTypeIdList.Any())
+            return ErrorResponse.Build(message: "Empty service type list.", StaticOperationStatus.StatusCode.BadRequest);
+
+        var typeItemsFromDb = await _unitOfWork.TypeItem.GetAllAsync(ti => ti.ServiceId == updateTypeItemDto.ServiceId);
+        if (!typeItemsFromDb.Any())
+            return ErrorResponse.Build(message: "Type Items not found.", StaticOperationStatus.StatusCode.NotFound);
+
+        await using var transaction = await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            var typeItemsToUpdate = updateTypeItemDto.ServiceTypeIdList.Select(st => new TypeItem
+            {
+                ServiceId = updateTypeItemDto.ServiceId,
+                ServiceTypeId = st
+            }).ToList();
+
+            _unitOfWork.TypeItem.RemoveRange(typeItemsFromDb);
+            await _unitOfWork.TypeItem.AddRangeAsync(typeItemsToUpdate);
+            await _unitOfWork.SaveAsync();
+
+            await transaction.CommitAsync();
+            return SuccessResponse.Build(
+                message: "Service types updated successfully.",
+                statusCode: StaticOperationStatus.StatusCode.Ok,
+                result: new
+                {
+                    ServiceId = updateTypeItemDto.ServiceId,
+                    ServiceTypeIdList = updateTypeItemDto.ServiceTypeIdList
+                });
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync();
+            return ErrorResponse.Build(message: "An error occurred updating service types: " + e.Message, StaticOperationStatus.StatusCode.InternalServerError);
+        }
     }
 }

@@ -1,25 +1,142 @@
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f5f5f5;
-  }
-  
-  .card {
-    width: 500px;
-    padding: 20px;
-  }
-  
-  .radioGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .buttonGroup {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1500px;
+  margin: auto;
+  padding: 20px;
+  margin-top: 200px;
+}
+
+.leftPanel {
+  flex: 1;
+  text-align: left;
+  padding-right: 20px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #ddd;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: #007bff;
+  transition: width 0.3s ease-in-out;
+}
+
+h2 {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+p {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.rightPanel {
+  flex: 1.5;
+  text-align: center;
+}
+
+.options {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.option {
+  width: 200px;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  background: #f4f4f4;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.option:hover {
+  background: #e0e0e0;
+}
+
+.selected {
+  border: 2px solid #007bff;
+  background: #d0e8ff;
+}
+
+.optionImage {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.buttonGroup {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.backButton,
+.nextButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.backButton {
+  background: white;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.backButton:hover {
+  background: #f0f0f0;
+}
+
+.nextButton {
+  background: #007bff;
+  color: white;
+}
+
+.nextButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.resultContainer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 2500px;
+}
+
+.restartButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.restartButton:hover {
+  background: #0056b3;
+}
+
