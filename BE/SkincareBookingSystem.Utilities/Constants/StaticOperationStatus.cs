@@ -2,7 +2,7 @@
 
 public static class StaticOperationStatus
 {
-    
+
     public static class OrderServiceTracking
     {
         public const string Pending = "PENDING";
@@ -72,6 +72,14 @@ public static class StaticOperationStatus
             public const string Found = "Order found";
             public const string EmptyList = "Order list is empty";
             public const string Invalid = "Invalid order";
+        }
+
+        public static class SkinTest
+        {
+            public const string Created = "CREATED";
+            public const string Updated = "UPDATED";
+            public const string Deleted = "DELETED";
+
         }
     }
 
@@ -224,5 +232,4 @@ public static class StaticOperationStatus
         public const string Updated = "UPDATED";
         public const string Deleted = "DELETED";
 
-    }
 }

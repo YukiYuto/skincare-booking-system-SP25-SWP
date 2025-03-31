@@ -208,7 +208,6 @@ namespace SkincareBookingSystem.Utilities.Constants
             public const string NotUpdated = "Failed to update blog category.";
         }
 
-
         public static class SkinTest
         {
             public const string Created = "Skin test created successfully";

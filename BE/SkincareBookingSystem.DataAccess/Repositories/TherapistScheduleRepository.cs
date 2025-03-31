@@ -24,22 +24,5 @@ namespace SkincareBookingSystem.DataAccess.Repositories
         {
             _context.TherapistSchedules.Update(therapistSchedule);
         }
-
-        //public async Task<TherapistSchedule?> GetTherapistScheduleByTherapistIdAsync(Guid therapistId, string? includeProperties = null)
-        //{
-        //    var query = _context.TherapistSchedules.AsQueryable();
-        //    if (therapistId != Guid.Empty)
-        //    {
-        //        query = query.Where(ts => ts.TherapistId == therapistId);
-        //    }
-        //    if (!string.IsNullOrEmpty(includeProperties))
-        //    {
-        //        foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-        //        {
-        //            query = query.Include(property);
-        //        }
-        //    }
-        //    return await query.FirstOrDefaultAsync();
-        //}
     }
 }
