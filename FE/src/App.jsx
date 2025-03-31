@@ -42,6 +42,8 @@ import ViewBlogCategory from "./Components/DashboardComponent/Tabs/BlogCategory/
 import ViewDetail from "./Components/DashboardComponent/Tabs/BlogCategory/ViewDetail/ViewDetail";
 import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTherapist";
 import FeedbackPage from "./Pages/FeedbackPage/FeedbackPage";
+import SkinTest from "./Components/SkinTest/SkinTest";
+import SkinTestResult from "./Components/SkinTest/SkinTestResult";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -49,6 +51,8 @@ const AppRoutes = () => {
 
   return (
     <Routes>
+      <Route path="skin-test" element={<SkinTest />} />
+      <Route path="result" element={<SkinTestResult />} />
       <Route path="/" element={<Home />} />
       <Route path="contact" element={<Contact />} />
       <Route path="about" element={<AboutPage />} />
