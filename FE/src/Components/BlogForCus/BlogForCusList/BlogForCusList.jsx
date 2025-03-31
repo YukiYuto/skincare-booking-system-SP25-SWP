@@ -4,6 +4,8 @@ import axios from "axios";
 import slugify from "slugify";
 import { GET_BLOG } from "../../../config/apiConfig";
 import styles from "./BlogForCusList.module.css";
+import Header from "../../Common/Header";
+import Footer from "../../Footer/Footer";
 
 const BlogForCusList = () => {
   const { title } = useParams();
@@ -43,46 +45,48 @@ const BlogForCusList = () => {
 
   return (
     <>
-    <button onClick={() => navigate(-1)} className={styles.backButton}>
+      <Header />
+      <div className={styles.container}>
+        <button onClick={() => navigate(-1)} className={styles.backButton}>
           ⬅ Back
-    </button>
-    <div className={styles.container}>
-      <h1 className={styles.title}>{blog.title}</h1>
+        </button>
+        <h1 className={styles.title}>{blog.title}</h1>
 
-      <div className={styles.meta}>
-      {blog.status.includes("1") ? (
-                  <>
-                    ✍ {blog.createdBy} | 🕒 {new Date(blog.createdTime).toLocaleString("vi-VN", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit"
-                    })}
-                  </>
-                ) : blog.status.includes("MODIFIED") ? (
-                  <>
-                    ✍ {blog.updatedBy} | 🕒 {new Date(blog.updatedTime).toLocaleString("vi-VN", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit"
-                    })}
-                  </>
-                ) : (
-                  <>
-                    ⚠ Unknown status
-                  </>
-                )}
+        <div className={styles.meta}>
+          {blog.status.includes("1") ? (
+            <>
+              ✍ {blog.createdBy} | 🕒{" "}
+              {new Date(blog.createdTime).toLocaleString("vi-VN", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </>
+          ) : blog.status.includes("MODIFIED") ? (
+            <>
+              ✍ {blog.updatedBy} | 🕒{" "}
+              {new Date(blog.updatedTime).toLocaleString("vi-VN", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </>
+          ) : (
+            <>⚠ Unknown status</>
+          )}
+        </div>
+        <div className={styles.imageContainer}>
+          <img src={blog.imageUrl} alt={blog.title} className={styles.image} />
+        </div>
+        <div className={styles.content}>{blog.content}</div>
       </div>
-      <div className={styles.imageContainer}>
-      <img src={blog.imageUrl} alt={blog.title} className={styles.image} />
-      </div>
-      <div className={styles.content}>{blog.content}</div>
-    </div>
+      <Footer />
     </>
   );
 };
