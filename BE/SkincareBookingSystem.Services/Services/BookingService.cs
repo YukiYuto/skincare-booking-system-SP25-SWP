@@ -22,17 +22,19 @@ public class BookingService : IBookingService
     private readonly IAutoMapperService _autoMapperService;
     private readonly ITherapistScheduleService _therapistScheduleService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEmailService _emailService;
 
-    public BookingService
-    (
+    public BookingService(
         IUnitOfWork unitOfWork,
         IAutoMapperService autoMapperService,
-        ITherapistScheduleService therapistScheduleService
+        ITherapistScheduleService therapistScheduleService,
+        IEmailService emailService
     )
     {
         _unitOfWork = unitOfWork;
         _autoMapperService = autoMapperService;
         _therapistScheduleService = therapistScheduleService;
+        _emailService = emailService;
     }
 
 
@@ -84,9 +86,6 @@ public class BookingService : IBookingService
 
     public async Task<ResponseDto> BundleOrder(BundleOrderDto bundleOrderDto, ClaimsPrincipal User)
     {
-        /*if (UserError.NotExists(User))
-            return ErrorResponse.Build(StaticOperationStatus.User.UserNotFound,
-                StaticOperationStatus.StatusCode.NotFound);*/
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId is null)
             return ErrorResponse.Build(StaticOperationStatus.User.UserNotFound,
@@ -259,7 +258,10 @@ public class BookingService : IBookingService
                     StaticOperationStatus.StatusCode.NotFound);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var customerFromDb = await _unitOfWork.Customer.GetAsync(c => c.UserId == userId).ConfigureAwait(false);
+            var customerFromDb = await _unitOfWork.Customer.GetAsync(
+                c => c.UserId == userId,
+                includeProperties: nameof(Customer.ApplicationUser)
+            ).ConfigureAwait(false);
 
             if (customerFromDb is null)
                 return ErrorResponse.Build(StaticResponseMessage.Customer.NotFound,
@@ -328,7 +330,50 @@ public class BookingService : IBookingService
 
                 await transaction.CommitAsync();
 
-                // 6. Return the customized response to avoid circular reference in the response JSON
+                // 6. Send booking success email to the customer
+                var order = paymentFromDb.Orders;
+                var userEmail = customerFromDb.ApplicationUser?.Email;
+                var userName = customerFromDb.ApplicationUser?.FullName ?? "Customer";
+
+
+                //handle appointment created but email not sent
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    return SuccessResponse.Build(
+                        StaticResponseMessage.Appointment.Created + " but email not sent due to missing email",
+                        StaticOperationStatus.StatusCode.Created,
+                        new
+                        {
+                            Appointment = _autoMapperService.Map<Appointments, AppointmentDto>(appointmentToCreate),
+                            Schedule = _autoMapperService.Map<TherapistSchedule, ScheduleDto>(
+                                (TherapistSchedule)scheduleResponse.Result!)
+                        });
+                }
+
+                var orderDetails = await _unitOfWork.OrderDetail.GetAllAsync(od => od.OrderId == order.OrderId,
+                    $"{nameof(OrderDetail.ServiceCombo)},{nameof(OrderDetail.Services)}");
+
+                var bookingServices = orderDetails
+                    .Where(od => od.Services != null)
+                    .Select(od => od.Services!.ServiceName)
+                    .ToList();
+
+                bookingServices.AddRange(orderDetails
+                    .Where(od => od.ServiceCombo != null)
+                    .Select(od => od.ServiceCombo!.ComboName));
+
+                var bookingDateTime = appointmentToCreate.AppointmentDate.ToString("yyyy-MM-dd");
+                var viewOrderLink = $"https://lumiconnect-beauty.vercel.app/orders/{order.OrderId}";
+
+                var emailSent = await _emailService.SendBookingSuccessEmailAsync(
+                    toEmail: userEmail,
+                    userName: userName,
+                    bookingDateTime: bookingDateTime,
+                    bookingServices: bookingServices,
+                    viewOrderLink: viewOrderLink
+                );
+
+                // 7. Return the customized response to avoid circular reference in the response JSON
                 var appointmentResponseDto = _autoMapperService.Map<Appointments, AppointmentDto>(appointmentToCreate);
                 var scheduleResponseDto = _autoMapperService.Map<TherapistSchedule, ScheduleDto>(
                     (TherapistSchedule)scheduleResponse.Result!);
@@ -730,7 +775,8 @@ public class BookingService : IBookingService
 
     private async Task<bool> IsRequestFromCustomer(ClaimsPrincipal User)
     {
-        return await _unitOfWork.Customer.GetAsync(c => c.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) is not null;
+        return await _unitOfWork.Customer.GetAsync(c => c.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) is
+            not null;
     }
 
 

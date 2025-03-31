@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Net.payOS;
 using Net.payOS.Types;
 using SkincareBookingSystem.DataAccess.IRepositories;
@@ -22,10 +23,10 @@ public class PaymentService : IPaymentService
         _unitOfWork = unitOfWork;
         _payOs = payOs;
         _mapper = mapper;
+
     }
 
-    public async Task<ResponseDto> GetAll
-    (
+    public async Task<ResponseDto> GetAll(
         ClaimsPrincipal User,
         int pageNumber = 1,
         int pageSize = 10,
@@ -160,10 +161,6 @@ public class PaymentService : IPaymentService
             var serviceDict = order.OrderDetails.Where(od => od.Services != null).Select(od => od.Services)
                 .ToDictionary(s => s.ServiceId);
 
-            // var serviceComboDict = order.OrderDetails.Where(od => od.ServiceCombo != null).Select(od => od.ServiceCombo)
-            //     .ToDictionary(sc => sc.ServiceComboId);*/
-            //
-            
             var serviceComboDict = order.OrderDetails
                 .Where(od => od.ServiceCombo != null)
                 .Select(od => od.ServiceCombo)
@@ -182,17 +179,6 @@ public class PaymentService : IPaymentService
                         1,
                         Convert.ToInt32(service.Price)
                     ));
-
-                /*
-                // Xử lý ServiceCombo
-                if (od.ServiceComboId != null &&
-                    serviceComboDict.TryGetValue(od.ServiceComboId.Value, out var serviceCombo))
-                    items.Add(new ItemData(
-                        serviceCombo.ComboName,
-                        1,
-                        Convert.ToInt32(serviceCombo.Price)
-                    ));
-                    */
 
                 return items;
             }).ToList();
