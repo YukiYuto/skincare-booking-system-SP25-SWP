@@ -151,6 +151,12 @@ namespace SkincareBookingSystem.Services.Services
             }
 
             var updateData = _autoMapperService.Map<UpdateSkinTestDto, SkinTest>(updateSkinTestDto);
+            updateData.UpdatedBy = User.FindFirstValue("Fullname");
+            updateData.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
+            updateData.Status = StaticOperationStatus.BaseEntity.Active;
+            updateData.CreatedBy = updateSkinTest.CreatedBy;
+            updateData.CreatedTime = updateSkinTest.CreatedTime;
+
             _unitOfWork.SkinTest.Update(updateSkinTest, updateData);
 
             return (await SaveChangesAsync()) ?

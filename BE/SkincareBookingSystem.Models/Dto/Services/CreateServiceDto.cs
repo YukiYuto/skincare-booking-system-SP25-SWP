@@ -8,7 +8,7 @@ namespace SkincareBookingSystem.Models.Dto.Services
         public string ServiceName { get; set; } = null!;
         public string Description { get; set; } = null!;
 
-        [Range(10000, double.MinValue, ErrorMessage = "Giá dịch vụ phải từ 10,000 trở lên.")]
+        [Range(10000, 1000000, ErrorMessage = "Service price must be between 10.000 and 1.000.000 VND.")]
         public double Price { get; set; }
         public string? ImageUrl { get; set; }
     }

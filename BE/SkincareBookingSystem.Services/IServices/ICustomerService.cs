@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using SkincareBookingSystem.Models.Dto.Customer;
 
 namespace SkincareBookingSystem.Services.IServices
 {
@@ -16,5 +17,6 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> GetCustomerTimeTable(ClaimsPrincipal User);
         
         Task<ResponseDto> GetOrderByCustomer(ClaimsPrincipal User);
+        Task<ResponseDto> GetRecommendationBySkinProfile(RecommendationDto recommendationDto);
     }
 }
