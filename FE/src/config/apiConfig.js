@@ -55,6 +55,7 @@ export const GET_ALL_CUSTOMERS_API = `${BASE_URL}/customer`;
 export const GET_CUSTOMER_BY_ID_API = `${BASE_URL}/customer/{customerId}`;
 export const GET_CUSTOMER_USER_API = `${BASE_URL}/customer/user`;
 export const GET_CUSTOMER_TIMETABLE_API = `${BASE_URL}/customer/timetable`;
+export const GET_CUSTOMER_ORDERS_API = `${BASE_URL}/customer/orders`;
 
 // Thêm API cho FileStorage
 export const POST_FILE_SERVICE_API = `${BASE_URL}/files/service`;
@@ -76,6 +77,7 @@ export const GET_ORDER_DETAILS_API = `${BASE_URL}/order-detail`;
 export const PUT_ORDER_DETAILS_API = `${BASE_URL}/order-detail`;
 export const DELETE_ORDER_DETAILS_API = `${BASE_URL}/order-detail`;
 export const GET_ORDER_DETAILS_API_BY_ID = `${BASE_URL}/order-detail/{id}`;
+export const GET_ORDER_DETAILS_BY_ORDER_ID = `${BASE_URL}/order-detail/orderId`;
 
 // Thêm API cho Payment
 export const POST_PAYMENT_API = `${BASE_URL}/payment/create-link`;

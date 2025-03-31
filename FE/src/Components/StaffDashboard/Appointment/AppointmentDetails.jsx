@@ -136,7 +136,7 @@ const AppointmentDetails = () => {
                   <Button
                     color="danger"
                     variant="solid"
-                    onClick={handleCancel}
+                    onClick={() => setShowCancelModal(true)}
                     loading={updating}
                   >
                     Cancel
