@@ -14,7 +14,7 @@ const Dashboard = () => {
   return (
     <div className={styles.dashboardContainer}>
       <Sidebar onExpandChange={handleSidebarExpand} />
-      <div className={`${styles.mainContent} ${sidebarExpanded ? styles.shifted : ''}`}>
+      <div className={styles.mainContent}>
         <Header />
         <div className={styles.contentArea}>
           <Outlet />

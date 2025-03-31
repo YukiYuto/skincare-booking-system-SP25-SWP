@@ -1,16 +1,15 @@
 .hero {
-  background-color: var(--primary-color);
+  background-image: transparent;
   background-size: 100% 100%;
   background-position: center;
   width: 100vw;
-  height: 16rem;
+  height: 12rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   color: white;
-  padding: 20px;
   margin-top: 92px;
 }
 
@@ -23,8 +22,10 @@
 }
 
 .hero p {
-  font-size: 1.5rem;
+  font-size: 1.7rem;
+  font-weight: 600;
   margin-top: 24px;
   font-family: Dancing Script;
   color: var(--accent-color);
+  text-decoration: underline;
 }

@@ -31,8 +31,12 @@ const Services = () => {
     try {
       // Fetch services
       const response = await fetch(
-        `${GET_ALL_SERVICES_API}?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}${
-          selectedServiceType !== "all" ? `&serviceTypeId=${selectedServiceType}` : ""
+        `${GET_ALL_SERVICES_API}?pageNumber=${pagination.pageNumber}&pageSize=${
+          pagination.pageSize
+        }${
+          selectedServiceType !== "all"
+            ? `&serviceTypeId=${selectedServiceType}`
+            : ""
         }`
       );
       const data = await response.json();
@@ -67,30 +71,27 @@ const Services = () => {
     if (!service.serviceTypeIds || service.serviceTypeIds.length === 0) {
       return "None";
     }
-    
+
     const firstTypeId = service.serviceTypeIds[0];
     const firstTypeName = getServiceTypeName(firstTypeId);
-    
+
     if (service.serviceTypeIds.length === 1) {
       return firstTypeName;
     }
-    
-    // If there are additional service types, show +1, +2, etc.
+
     return `${firstTypeName} +${service.serviceTypeIds.length - 1}`;
   };
 
-  // Function to get all service type names for tooltip
   const getAllServiceTypeNames = (service) => {
     if (!service.serviceTypeIds || service.serviceTypeIds.length === 0) {
       return "No service types";
     }
-    
+
     return service.serviceTypeIds
-      .map(id => getServiceTypeName(id))
+      .map((id) => getServiceTypeName(id))
       .join(", ");
   };
 
-  // Reset page number when changing service type filter
   useEffect(() => {
     setPagination((prev) => ({
       ...prev,
@@ -118,7 +119,7 @@ const Services = () => {
               setPagination((prev) => ({
                 ...prev,
                 pageSize: prev.pageSize === 10 ? 20 : 10,
-                pageNumber: DEFAULT_PAGE_NUMBER, // Reset to page 1 when changing page size
+                pageNumber: DEFAULT_PAGE_NUMBER, 
               }))
             }
             className={styles.iconButton}
@@ -170,7 +171,10 @@ const Services = () => {
                 <tr key={service.serviceId}>
                   <td>{service.serviceName}</td>
                   <td>{(service.price / 1000).toFixed(3)}₫</td>
-                  <td title={getAllServiceTypeNames(service)} className={styles.serviceTypeCell}>
+                  <td
+                    title={getAllServiceTypeNames(service)}
+                    className={styles.serviceTypeCell}
+                  >
                     {getServiceTypeDisplay(service)}
                   </td>
                   <td>

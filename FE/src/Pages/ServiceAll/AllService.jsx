@@ -8,6 +8,7 @@ import {
   GET_ALL_SERVICES_API,
   GET_ALL_SERVICE_TYPES_API,
 } from "../../config/apiConfig";
+import heroBanner from "../../assets/images/heroBanner.png";
 
 const AllService = () => {
   const [services, setServices] = useState([]);
@@ -35,7 +36,6 @@ const AllService = () => {
     { value: "serviceName_desc", label: "Name: Z-A" },
   ];
 
-  // Page size options
   const pageSizeOptions = [6, 12, 24, 48];
 
   const fetchData = useCallback(async () => {
@@ -43,7 +43,6 @@ const AllService = () => {
     setError(null);
 
     try {
-      // Build query parameters for services
       const params = new URLSearchParams();
       params.append("pageNumber", pagination.pageNumber);
       params.append("pageSize", pagination.pageSize);
@@ -60,9 +59,7 @@ const AllService = () => {
         params.append("filterQuery", filterQuery);
       }
 
-      // If service types are selected, add them as filter
       if (selectedTypes) {
-        // Override filterOn and filterQuery if types are selected
         params.set("filterOn", "serviceTypeIds");
         params.set("filterQuery", selectedTypes);
       }
@@ -77,9 +74,6 @@ const AllService = () => {
           return res.json();
         }),
       ]);
-
-      console.log("Services Data:", servicesResponse);
-      console.log("Service Types Data:", serviceTypesResponse);
 
       if (servicesResponse.result) {
         setServices(servicesResponse.result.services || []);
@@ -295,156 +289,163 @@ const AllService = () => {
   return (
     <div>
       <Header />
-      <Hero />
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <h1>Discover Our Services</h1>
+      <div className={styles.heroContainer}>
+        <Hero />
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <h1>Discover Our Services</h1>
 
-          <div className={styles.controlsRow}>
-            {/* Search Bar */}
-            <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
-              <input
-                type="text"
-                placeholder="Search services..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className={styles.searchInput}
-              />
-              <button type="submit" className={styles.searchButton}></button>
-            </form>
+            <div className={styles.controlsRow}>
+              {/* Search Bar */}
+              <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
+                <input
+                  type="text"
+                  placeholder="Search services..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className={styles.searchInput}
+                />
+                <button type="submit" className={styles.searchButton}></button>
+              </form>
 
-            {/* Sort Dropdown */}
-            <div className={styles.sortContainer}>
-              <select
-                id="sort-select"
-                value={sortBy}
-                onChange={handleSortChange}
-                className={styles.sortSelect}
-              >
-                {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {/* Sort Dropdown */}
+              <div className={styles.sortContainer}>
+                <select
+                  id="sort-select"
+                  value={sortBy}
+                  onChange={handleSortChange}
+                  className={styles.sortSelect}
+                >
+                  {sortOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* Page Size Selector */}
-            <div className={styles.pageSizeContainer}>
-              <select
-                id="page-size-select"
-                value={pagination.pageSize}
-                onChange={handlePageSizeChange}
-                className={styles.pageSizeSelect}
-              >
-                {pageSizeOptions.map((size) => (
-                  <option key={size} value={size}>
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Active Filters Display */}
-          {(sortBy || filterQuery) && (
-            <div className={styles.activeFilters}>
-              <h3>Active Filters:</h3>
-              <div className={styles.filterTags}>
-                {sortBy && (
-                  <span className={styles.filterTag}>
-                    Sort: {getCurrentSortLabel()}
-                    <button
-                      onClick={() => {
-                        setSortBy("");
-                        setPagination((prev) => ({ ...prev, pageNumber: 1 }));
-                      }}
-                      className={styles.removeFilter}
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
-
-                {filterQuery && (
-                  <span className={styles.filterTag}>
-                    Search: "{filterQuery}"
-                    <button
-                      onClick={() => {
-                        setFilterQuery("");
-                        setFilterOn("");
-                        setSearchQuery("");
-                        setPagination((prev) => ({ ...prev, pageNumber: 1 }));
-                      }}
-                      className={styles.removeFilter}
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
+              {/* Page Size Selector */}
+              <div className={styles.pageSizeContainer}>
+                <select
+                  id="page-size-select"
+                  value={pagination.pageSize}
+                  onChange={handlePageSizeChange}
+                  className={styles.pageSizeSelect}
+                >
+                  {pageSizeOptions.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
-          )}
-        </div>
 
-        <div className={styles.service}>
-          <div className={styles.filter}>
-            <label>Filter by Type</label>
-            <ul>
-              {Array.isArray(serviceTypes) &&
-                serviceTypes.map((type) => (
-                  <li
-                    key={type.serviceTypeId}
-                    className={
-                      isTypeSelected(type.serviceTypeId) ? styles.selected : ""
-                    }
-                    onClick={() => toggleType(type.serviceTypeId)}
-                  >
-                    {type.serviceTypeName}
-                  </li>
-                ))}
-            </ul>
-          </div>
+            {/* Active Filters Display */}
+            {(sortBy || filterQuery) && (
+              <div className={styles.activeFilters}>
+                <h3>Active Filters:</h3>
+                <div className={styles.filterTags}>
+                  {sortBy && (
+                    <span className={styles.filterTag}>
+                      Sort: {getCurrentSortLabel()}
+                      <button
+                        onClick={() => {
+                          setSortBy("");
+                          setPagination((prev) => ({ ...prev, pageNumber: 1 }));
+                        }}
+                        className={styles.removeFilter}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
 
-          <div className={styles.serviceListContainer}>
-            {loading && (
-              <div className={styles.loadingOverlay}>
-                <Loading />
-              </div>
-            )}
-
-            {services.length === 0 && !loading ? (
-              <div className={styles.noResults}>
-                <h3>No services found</h3>
-                <p>Try adjusting your search or filters</p>
-              </div>
-            ) : (
-              <>
-                <ServiceList services={services} serviceTypes={serviceTypes} />
-
-                {/* Pagination Controls */}
-                {pagination.totalPages > 1 && (
-                  <div className={styles.paginationContainer}>
-                    <div className={styles.paginationButtons}>
-                      {renderPaginationButtons()}
-                    </div>
-                    <div className={styles.paginationInfo}>
-                      Page {pagination.pageNumber} of {pagination.totalPages}
-                    </div>
-                  </div>
-                )}
-
-                <div className={styles.resultsInfo}>
-                  Showing{" "}
-                  {(pagination.pageNumber - 1) * pagination.pageSize + 1}-
-                  {Math.min(
-                    pagination.pageNumber * pagination.pageSize,
-                    pagination.totalItems
-                  )}{" "}
-                  of {pagination.totalItems} services
+                  {filterQuery && (
+                    <span className={styles.filterTag}>
+                      Search: "{filterQuery}"
+                      <button
+                        onClick={() => {
+                          setFilterQuery("");
+                          setFilterOn("");
+                          setSearchQuery("");
+                          setPagination((prev) => ({ ...prev, pageNumber: 1 }));
+                        }}
+                        className={styles.removeFilter}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
                 </div>
-              </>
+              </div>
             )}
+          </div>
+
+          <div className={styles.service}>
+            <div className={styles.filter}>
+              <label>Filter by Type</label>
+              <ul>
+                {Array.isArray(serviceTypes) &&
+                  serviceTypes.map((type) => (
+                    <li
+                      key={type.serviceTypeId}
+                      className={
+                        isTypeSelected(type.serviceTypeId)
+                          ? styles.selected
+                          : ""
+                      }
+                      onClick={() => toggleType(type.serviceTypeId)}
+                    >
+                      {type.serviceTypeName}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+
+            <div className={styles.serviceListContainer}>
+              {loading && (
+                <div className={styles.loadingOverlay}>
+                  <Loading />
+                </div>
+              )}
+
+              {services.length === 0 && !loading ? (
+                <div className={styles.noResults}>
+                  <h3>No services found</h3>
+                  <p>Try adjusting your search or filters</p>
+                </div>
+              ) : (
+                <>
+                  <ServiceList
+                    services={services}
+                    serviceTypes={serviceTypes}
+                  />
+
+                  {/* Pagination Controls */}
+                  {pagination.totalPages > 1 && (
+                    <div className={styles.paginationContainer}>
+                      <div className={styles.paginationButtons}>
+                        {renderPaginationButtons()}
+                      </div>
+                      <div className={styles.paginationInfo}>
+                        Page {pagination.pageNumber} of {pagination.totalPages}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={styles.resultsInfo}>
+                    Showing{" "}
+                    {(pagination.pageNumber - 1) * pagination.pageSize + 1}-
+                    {Math.min(
+                      pagination.pageNumber * pagination.pageSize,
+                      pagination.totalItems
+                    )}{" "}
+                    of {pagination.totalItems} services
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

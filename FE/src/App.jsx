@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { Provider, useSelector } from "react-redux";
 import { store } from "./redux/store";
 
@@ -19,6 +24,8 @@ import Revenue from "./Components/DashboardComponent/Tabs/Revenue/Revenue";
 import Customers from "./Components/DashboardComponent/Tabs/Customers/Customers";
 import SkinTherapists from "./Components/DashboardComponent/Tabs/Therapists/SkinTherapists";
 import Services from "./Components/DashboardComponent/Tabs/Services/Services";
+import ServiceCombo from "./Pages/ServiceComboAll/AllServiceCombo";
+import ServiceComboDetail from "./Pages/ServiceComboDetail/ServiceComboDetail";
 import Orders from "./Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "./Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage";
@@ -31,11 +38,12 @@ import ScheduleManagement from "./Pages/Staff/ScheduleManagement/ScheduleManagem
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import TherapistSchedule from "./Pages/Therapist/TherapistSchedule/TherapistSchedule";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
+import ServiceComboDB from "./Components/DashboardComponent/Tabs/Combo/ServiceComboDB";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
   const roles = user?.roles || [];
-  
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -43,6 +51,8 @@ const AppRoutes = () => {
       <Route path="about" element={<AboutPage />} />
       <Route path="services" element={<AllService />} />
       <Route path="services/:id" element={<ServiceDetail />} />
+      <Route path="service-combo/" element={<ServiceCombo />} />
+      <Route path="service-combo/:id" element={<ServiceComboDetail />} />
       <Route path="therapist" element={<TherapistCard />} />
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="error" element={<ErrorPage />} />
@@ -61,7 +71,10 @@ const AppRoutes = () => {
             <>
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="table-customer" element={<TableCustomer />} />
-              <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
+              <Route
+                path="payment-confirmation"
+                element={<PaymentConfirmationPage />}
+              />
               <Route path="appointments" element={<AppointmentPage />} />
             </>
           )}
@@ -74,6 +87,7 @@ const AppRoutes = () => {
                 <Route path="customers" element={<Customers />} />
                 <Route path="therapists" element={<SkinTherapists />} />
                 <Route path="services" element={<Services />} />
+                <Route path="combo" element={<ServiceComboDB />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
               </Route>
@@ -83,14 +97,23 @@ const AppRoutes = () => {
             <>
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="staff-management" element={<StaffManagement />} />
-              <Route path="schedule-management" element={<ScheduleManagement />} />
+              <Route
+                path="schedule-management"
+                element={<ScheduleManagement />}
+              />
             </>
           )}
           {roles.includes("SKINTHERAPIST") && (
             <>
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="therapist-management" element={<TherapistManagement />} />
-              <Route path="therapist-schedule" element={<TherapistSchedule />} />
+              <Route
+                path="therapist-management"
+                element={<TherapistManagement />}
+              />
+              <Route
+                path="therapist-schedule"
+                element={<TherapistSchedule />}
+              />
             </>
           )}
           {roles.includes("MANAGER") && (
@@ -102,6 +125,7 @@ const AppRoutes = () => {
                 <Route path="customers" element={<Customers />} />
                 <Route path="therapists" element={<SkinTherapists />} />
                 <Route path="services" element={<Services />} />
+                <Route path="combo" element={<ServiceComboDB />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
               </Route>

@@ -24,7 +24,6 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
   const dropdownRef = useRef(null);
   const { user } = useSelector((state) => state.auth);
 
-  // Fetch service types
   useEffect(() => {
     const fetchServiceTypes = async () => {
       try {
@@ -39,10 +38,8 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
     fetchServiceTypes();
   }, [user.accessToken]);
 
-  // Handle input change
   const handleChange = (e) => setFormState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  // Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -51,7 +48,6 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
     }
   };
 
-  // Handle selecting/deselecting service types
   const updateServiceTypes = useCallback((serviceType, add) => {
     setSelectedServiceTypes((prevSelected) =>
       add ? [...prevSelected, serviceType] : prevSelected.filter((st) => st.serviceTypeId !== serviceType.serviceTypeId)
@@ -61,7 +57,6 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
     );
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setShowDropdown(false);
@@ -70,13 +65,11 @@ const ServiceCreateModal = ({ onClose, refresh }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Reset service type selection
   const handleReset = () => {
     setServiceTypes((prev) => [...prev, ...selectedServiceTypes]);
     setSelectedServiceTypes([]);
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!imageFile) return alert("Please upload an image.");

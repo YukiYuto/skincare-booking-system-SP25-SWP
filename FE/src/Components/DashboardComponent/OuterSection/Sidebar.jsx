@@ -7,7 +7,8 @@ import {
   BarChart3,
   Users,
   UserCog,
-  Scissors,
+  Square,
+  Copy,
   ShoppingCart,
   Calendar,
 } from "lucide-react";
@@ -71,7 +72,12 @@ const Sidebar = ({ onExpandChange }) => {
     {
       path: "/dashboard/services",
       label: "Services",
-      icon: <Scissors size={20} />,
+      icon: <Square size={20} />,
+    },
+    {
+      path: "/dashboard/combo",
+      label: "Combo",
+      icon: <Copy size={20} />,
     },
     {
       path: "/dashboard/orders",
@@ -118,6 +124,9 @@ const Sidebar = ({ onExpandChange }) => {
             <span className={styles.label}>{item.label}</span>
           </NavLink>
         ))}
+      </nav>
+      <div className={styles.sidebarFooter}>
+        <div className={styles.footerLine}></div>
         <button
           onClick={handleLogout}
           className={styles.logoutButton}
@@ -130,7 +139,7 @@ const Sidebar = ({ onExpandChange }) => {
             {loading ? <Spin size="small" /> : "Logout"}
           </span>
         </button>
-      </nav>
+      </div>
     </div>
   );
 };
