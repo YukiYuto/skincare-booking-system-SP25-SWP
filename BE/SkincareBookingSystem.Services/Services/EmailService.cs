@@ -9,7 +9,6 @@ namespace SkincareBookingSystem.Services.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration _configuration;
         private readonly string _fromEmail;
         private readonly string _fromPassword;
         private readonly string _smtpHost;
@@ -18,12 +17,11 @@ namespace SkincareBookingSystem.Services.Services
 
         public EmailService(IConfiguration configuration)
         {
-            _configuration = configuration;
-            _fromEmail = _configuration[StaticEmailSettings.FromEmail];
-            _fromPassword = _configuration[StaticEmailSettings.FromPassword];
-            _smtpHost = _configuration[StaticEmailSettings.SmtpHost];
-            _smtpPort = int.Parse(_configuration[StaticEmailSettings.SmtpPort]);
-            _useSsl = bool.Parse(_configuration[StaticEmailSettings.UseSsl]);
+            _fromEmail = configuration[StaticEmailSettings.FromEmail]!;
+            _fromPassword = configuration[StaticEmailSettings.FromPassword]!;
+            _smtpHost = configuration[StaticEmailSettings.SmtpHost]!;
+            _smtpPort = int.Parse(configuration[StaticEmailSettings.SmtpPort]!);
+            _useSsl = bool.Parse(configuration[StaticEmailSettings.UseSsl]!);
         }
 
         public async Task<bool> SendPasswordResetEmailAsync(string toEmail, string resetPasswordLink)
@@ -35,15 +33,40 @@ namespace SkincareBookingSystem.Services.Services
             return await SendEmailFromTemplateAsync(toEmail, new PasswordResetEmailTemplate(), placeholders);
         }
 
-        public async Task<bool> SendVerificationEmailAsync(string toEmail, string emailConfirmationLink, string fullName)
+        public async Task<bool> SendBookingSuccessEmailAsync(string toEmail,
+            string userName,
+            string bookingDateTime,
+            List<string> bookingServices,
+            string viewOrderLink)
+        {
+            string serviceListFormatted = 
+                "<ul>" +
+                string.Join("", bookingServices.Select(service => $"<li>{service}</li>")) +
+                "</ul>";
+
+            var placeholders = new Dictionary<string, string>
+            {
+                { "{{UserName}}", userName },
+                { "{{ServiceList}}", serviceListFormatted },
+                { "{{AppointmentDateTime}}", bookingDateTime },
+                { "{{ViewOrderLink}}", viewOrderLink }
+            };
+
+            return await SendEmailFromTemplateAsync(toEmail, new BookingSuccessEmailTemplate(), placeholders);
+        }
+
+        public async Task<bool> SendVerificationEmailAsync(string toEmail,
+            string emailConfirmationLink,
+            string fullName)
         {
             var placeholders = new Dictionary<string, string>
             {
-                { "EmailConfirmationLink", emailConfirmationLink }, 
+                { "EmailConfirmationLink", emailConfirmationLink },
                 { "UserName", fullName }
             };
             return await SendEmailFromTemplateAsync(toEmail, new VerificationEmailTemplate(), placeholders);
         }
+
 
         public async Task<bool> SendEmailAsync(string toEmail, string subject, string body)
         {
@@ -74,7 +97,9 @@ namespace SkincareBookingSystem.Services.Services
             }
         }
 
-        private async Task<bool> SendEmailFromTemplateAsync(string toEmail, GenericEmailTemplate template, Dictionary<string, string> placeholders)
+        private async Task<bool> SendEmailFromTemplateAsync(string toEmail,
+            GenericEmailTemplate template,
+            Dictionary<string, string> placeholders)
         {
             string body = template.Render(placeholders);
             return await SendEmailAsync(toEmail, template.Subject, body);

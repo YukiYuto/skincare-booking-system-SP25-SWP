@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using Microsoft.AspNetCore.Identity;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Domain;
 using SkincareBookingSystem.Models.Dto.LockUser;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+
 
 namespace SkincareBookingSystem.Services.Services;
 
@@ -18,7 +23,9 @@ public class ManagerSerivce : IManagerSerivce
         _userManager = userManager;
     }
 
-    public async Task<ResponseDto> GetRevenueOrders(DateTime startDate, DateTime endDate, int pageNumber = 1,
+    public async Task<ResponseDto> GetRevenueOrders(DateTime startDate,
+        DateTime endDate,
+        int pageNumber = 1,
         int pageSize = 10)
     {
         var orders = await _unitOfWork.Order.GetOrdersAsync(startDate, endDate);
@@ -42,7 +49,9 @@ public class ManagerSerivce : IManagerSerivce
         };
     }
 
-    public async Task<ResponseDto> GetRevenueProfit(DateTime startDate, DateTime endDate, int pageNumber = 1,
+    public async Task<ResponseDto> GetRevenueProfit(DateTime startDate,
+        DateTime endDate,
+        int pageNumber = 1,
         int pageSize = 10)
     {
         var transactions = await _unitOfWork.Transaction.GetTransactionsAsync(startDate, endDate);
@@ -66,14 +75,16 @@ public class ManagerSerivce : IManagerSerivce
         };
     }
 
-    public async Task<ResponseDto> GetRevenueTransactions(DateTime startDate, DateTime endDate, int pageNumber = 1,
+    public async Task<ResponseDto> GetRevenueTransactions(DateTime startDate,
+        DateTime endDate,
+        int pageNumber = 1,
         int pageSize = 10)
     {
         var (startDateUtc, endDateUtc) = (startDate.ToUniversalTime(), endDate.ToUniversalTime());
 
         var transactionsFromDb = await _unitOfWork.Transaction.GetAllAsync(t =>
-           t.TransactionDateTime >= startDateUtc && t.TransactionDateTime <= endDateUtc,
-           includeProperties: $"{nameof(Transaction.Payment)}");
+                t.TransactionDateTime >= startDateUtc && t.TransactionDateTime <= endDateUtc,
+            includeProperties: $"{nameof(Transaction.Payment)}");
 
         var transactionList = transactionsFromDb.Select(t => new
         {
@@ -152,9 +163,9 @@ public class ManagerSerivce : IManagerSerivce
                     user.LockoutEnd,
                     lockUserDto.UserId
                 }
-
             };
         }
+
         return new ResponseDto
         {
             Message = "Failed to lock user. Please check logs for details.",
@@ -200,5 +211,98 @@ public class ManagerSerivce : IManagerSerivce
             StatusCode = 200,
             Result = unLockUserDto.UserId
         };
+    }
+
+    public async Task<byte[]> ExportRevenueTransactionsToPdf(DateTime startDate, DateTime endDate)
+    {
+        var (startDateUtc, endDateUtc) = (startDate.ToUniversalTime(), endDate.ToUniversalTime());
+
+        var transactionsFromDb = await _unitOfWork.Transaction.GetAllAsync(
+            t => t.TransactionDateTime >= startDateUtc && t.TransactionDateTime <= endDateUtc,
+            includeProperties: $"{nameof(Transaction.Payment)}"
+        );
+
+        var transactionList = transactionsFromDb.Select(t => new
+        {
+            t.TransactionId,
+            t.CustomerId,
+            t.TransactionDateTime,
+            t.OrderId,
+            t.Amount,
+            t.Payment.Status,
+            PaymentMethod = t.TransactionMethod,
+        }).ToList();
+
+        if (!transactionList.Any())
+        {
+            throw new Exception("No transactions found for the specified date range");
+        }
+
+        MemoryStream memoryStream = null;
+        PdfWriter writer = null;
+        PdfDocument pdf = null;
+        Document document = null;
+
+        try
+        {
+            memoryStream = new MemoryStream();
+            writer = new PdfWriter(memoryStream);
+            // Ensure the stream remains open after the writer is done
+            writer.SetCloseStream(false);
+
+            pdf = new PdfDocument(writer);
+            document = new Document(pdf);
+
+            // Add title
+            document.Add(new Paragraph("Revenue Transactions Report")
+                .SetTextAlignment(TextAlignment.CENTER)
+                .SetFontSize(20));
+
+            // Add From and To information
+            document.Add(
+                new Paragraph($"From: {startDate:yyyy-MM-dd} To: {endDate:yyyy-MM-dd}"));
+
+            // Create table
+            var table = new Table(UnitValue.CreatePercentArray(new float[] { 15, 15, 15, 15, 15, 15, 15 }))
+                .UseAllAvailableWidth();
+
+            // Add table headers
+            table.AddHeaderCell("Transaction ID");
+            table.AddHeaderCell("Customer ID");
+            table.AddHeaderCell("Order ID");
+            table.AddHeaderCell("Amount");
+            table.AddHeaderCell("Payment Status");
+            table.AddHeaderCell("Payment Method");
+            table.AddHeaderCell("Transaction Date");
+
+            // Add transaction data to the table
+            foreach (var transaction in transactionList)
+            {
+                table.AddCell(transaction.TransactionId.ToString());
+                table.AddCell(transaction.CustomerId.ToString());
+                table.AddCell(transaction.OrderId.ToString());
+                table.AddCell(transaction.Amount.ToString());
+                table.AddCell(transaction.Status.ToString());
+                table.AddCell(transaction.PaymentMethod);
+                table.AddCell(transaction.TransactionDateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
+
+            // Add table to document
+            document.Add(table);
+
+            // Close the document
+            document.Close();
+
+            // Get the byte array from the MemoryStream
+            return memoryStream.ToArray();
+        }
+        finally
+        {
+            // Clean up resources
+            document?.Close();
+            pdf?.Close();
+            writer?.Close();
+            memoryStream?.Dispose();
+        }
     }
 }
