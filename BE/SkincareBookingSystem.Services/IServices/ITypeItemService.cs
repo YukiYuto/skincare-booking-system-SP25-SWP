@@ -17,4 +17,6 @@ public interface ITypeItemService
         string? filterQuery = null,
         string? sortBy = null
     );
+
+    Task<ResponseDto> UpdateTypeItem(ClaimsPrincipal user, UpdateTypeItemDto updateTypeItemDto);
 }

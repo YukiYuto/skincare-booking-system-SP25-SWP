@@ -1,10 +1,7 @@
 .bodyPage {
   background-image: url("../../assets/images/background-spa.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 900px;
-  padding-top: 50px;
+  background-position-y: 100vh;
+  height: 100vh;
 }
 
 .profileContainer {
@@ -16,13 +13,30 @@
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   color: black;
-  margin-top: 100px;
+  margin-top: 48px;
   position: relative;
+}
+
+.genderContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 32px;
+}
+
+.gender {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gender p {
+  margin-bottom: 0;
 }
 
 .fileinput {
   padding: 8px;
-  border: 2px dashed #4caf50;
+  border: 2px dashed var(--primary-color);
   border-radius: 8px;
   background: #ffffff;
   cursor: pointer;
@@ -30,7 +44,7 @@
 }
 
 .fileinput:hover {
-  border-color: #388e3c;
+  border-color: var(--secondary-color);
 }
 
 .avatarpreview {
@@ -46,4 +60,19 @@
   color: red;
   font-size: 12px;
   margin-top: 4px;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.updateButton {
+  background-color: var(--primary-color);
+  font-weight: bold;
+  color: var(--text-color);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
 }

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.Models.Dto.TypeItem;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 
 namespace SkincareBookingSystem.API.Controllers;
 
@@ -30,6 +32,14 @@ public class TypeItemController : Controller
     {
         var response = await _typeItemService.CreateTypeItem(User, createTypeItemDto);
 
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [Authorize(Roles = StaticUserRoles.Manager)]
+    [HttpPut]
+    public async Task<IActionResult> UpdateTypeItem([FromBody] UpdateTypeItemDto updateTypeItemDto)
+    {
+        var response = await _typeItemService.UpdateTypeItem(User, updateTypeItemDto);
         return StatusCode(response.StatusCode, response);
     }
 }

@@ -10,12 +10,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin-left: 70px; /* Width of collapsed sidebar */
-  transition: margin-left 0.3s ease;
-}
-
-.mainContent.shifted {
-  margin-left: 250px; /* Width of expanded sidebar */
+  margin-left: 70px;
 }
 
 .contentArea {

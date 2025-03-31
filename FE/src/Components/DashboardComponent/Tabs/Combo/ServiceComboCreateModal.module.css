@@ -1,0 +1,181 @@
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: var(--background-color);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 90%;
+    max-height: 90vh;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.formContainer label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.formContainer input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.formGroup {
+    display: flex;
+    gap: 32px;
+}
+
+.formGroup label {
+    flex: 1;
+}
+
+.formGroup div {
+    align-items: end;
+    display: flex;
+}
+
+.dropdownWrapper{
+    display: flex;
+    gap: 16px;
+}
+
+.imagePreview {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 2px solid var(--secondary-color);
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.submitButton,
+.cancelButton {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submitButton {
+    background: var(--primary-color);
+    color: var(--text-color);
+    margin-right: 10px;
+}
+
+.cancelButton {
+    background: #ccc;
+}
+
+.submitButton:hover,
+.cancelButton:hover {
+    background: var(--accent-color);
+}
+
+.dropdownContainer {
+    position: relative;
+    width: 100%;
+}
+
+.listGroup {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: var(--background-color);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+    padding: 0;
+    list-style: none;
+    z-index: 10;
+}
+
+.listGroup li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.listGroup li:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.selectedContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.selectedList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    background: var(--primary-color);
+    color: var(--text-color);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+.removeIcon {
+    margin-left: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.priorityControl {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.priorityButton {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0 3px;
+    font-size: 10px;
+}
+
+.priorityButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.priorityValue {
+    margin: 0 3px;
+    font-size: 0.8em;
+}

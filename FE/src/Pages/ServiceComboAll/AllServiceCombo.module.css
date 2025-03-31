@@ -1,0 +1,46 @@
+.heroContainer {
+    background-image: url('../../assets/images/background-spa.jpg');
+    background-size: auto;
+    background-repeat: repeat; 
+    min-height: 100vh; 
+  }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 92px 48px 92px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    color: var(--accent-color);
+}
+
+.header h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0;
+}
+
+.serviceComboListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.noResults {
+    text-align: center;
+    color: var(--text-color);
+}
+
+.errorMessage {
+    color: red;
+    text-align: center;
+    font-weight: bold;
+}

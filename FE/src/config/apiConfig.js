@@ -50,11 +50,16 @@ export const GET_BOOKING_THERAPIST_API = `${BASE_URL}/bookings/therapists`;
 export const GET_BOOKING_SLOT_API = `${BASE_URL}/bookings/occupied-slots`;
 export const POST_BOOKING_AUTO_ASSIGN_API = `${BASE_URL}/bookings/auto-assign`;
 
+// Thêm API cho ComboItem 
+export const GET_COMBO_ITEM_API = `${BASE_URL}/combo-item`;
+export const POST_COMBO_ITEM_API = `${BASE_URL}/combo-item`;
+
 // Thêm API cho Customer
 export const GET_ALL_CUSTOMERS_API = `${BASE_URL}/customer`;
 export const GET_CUSTOMER_BY_ID_API = `${BASE_URL}/customer/{customerId}`;
 export const GET_CUSTOMER_USER_API = `${BASE_URL}/customer/user`;
 export const GET_CUSTOMER_TIMETABLE_API = `${BASE_URL}/customer/timetable`;
+export const GET_CUSTOMER_ORDERS_API = `${BASE_URL}/customer/orders`;
 
 // Thêm API cho FileStorage
 export const POST_FILE_SERVICE_API = `${BASE_URL}/files/service`;
@@ -76,14 +81,16 @@ export const GET_ORDER_DETAILS_API = `${BASE_URL}/order-detail`;
 export const PUT_ORDER_DETAILS_API = `${BASE_URL}/order-detail`;
 export const DELETE_ORDER_DETAILS_API = `${BASE_URL}/order-detail`;
 export const GET_ORDER_DETAILS_API_BY_ID = `${BASE_URL}/order-detail/{id}`;
+export const GET_ORDER_DETAILS_BY_ORDER_ID = `${BASE_URL}/order-detail/orderId`;
 
 // Thêm API cho Payment
 export const POST_PAYMENT_API = `${BASE_URL}/payment/create-link`;
 export const POST_CONFIRM_PAYMENT_API = `${BASE_URL}/payment/confirm-transaction`;
 
 // Thêm API cho Service Combo
-export const GET_SERVICE_COMBO_API = `${BASE_URL}/servicecombo`;
+export const GET_ALL_SERVICE_COMBO_API = `${BASE_URL}/servicecombo`;
 export const POST_SERVICE_COMBO_API = `${BASE_URL}/servicecombo`;
+export const GET_SERVICE_COMBO_DETAIL_BY_ID_API = `${BASE_URL}/servicecombo/{serviceComboId}`;
 
 // Thêm API cho Service Duration
 export const GET_SERVICE_DURATION_API = `${BASE_URL}/serviceDuration`;

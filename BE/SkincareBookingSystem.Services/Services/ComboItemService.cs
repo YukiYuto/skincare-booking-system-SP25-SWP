@@ -69,6 +69,7 @@ public class ComboItemService : IComboItemService
             };
 
         serviceCombo.Price = totalPrice;
+        serviceCombo.NumberOfService = services.Count();
 
         var comboItems = createComboItemDto.ServicePriorityDtos.Select(sp => new ComboItem
         {

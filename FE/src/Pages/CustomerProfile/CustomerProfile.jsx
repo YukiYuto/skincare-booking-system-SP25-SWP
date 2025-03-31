@@ -5,9 +5,7 @@ import Header from "../../Components/Common/Header";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { updateUser } from "../../redux/auth/slice";
-import {
-  POST_CUSTOMER_AVATAR_API,
-} from "../../config/apiConfig";
+import { POST_CUSTOMER_AVATAR_API } from "../../config/apiConfig";
 import {
   validateAddress,
   validateAge,
@@ -68,10 +66,10 @@ const UserProfile = () => {
       const data = await response.json();
 
       if (data.isSuccess && data.result) {
-        setImageUrl(data.result); // Cập nhật ảnh mới
+        setImageUrl(data.result);
         setUserData((prevData) => ({
           ...prevData,
-          imageUrl: data.result, // Cập nhật imageUrl vào userData để đảm bảo gửi đúng khi save
+          imageUrl: data.result,
         }));
 
         toast.success("Upload Successfully!");
@@ -85,7 +83,6 @@ const UserProfile = () => {
     }
   };
 
-  // Bắt đầu chỉnh sửa
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({
@@ -114,7 +111,6 @@ const UserProfile = () => {
     return !(fullNameError || phoneError || ageError || addressError);
   };
 
-  // Gửi API cập nhật profile
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setUpdateLoading(true);
@@ -135,7 +131,7 @@ const UserProfile = () => {
       const response = await updateUserProfile(userData);
 
       if (response.isSuccess) {
-        dispatch(updateUser(userData)); // Cập nhật Redux store
+        dispatch(updateUser(userData));
         localStorage.setItem("user", JSON.stringify(userData));
         toast.success("Update Successfully!");
       } else {
@@ -148,23 +144,19 @@ const UserProfile = () => {
     }
   };
 
-  // Hiển thị modal đổi mật khẩu
   const showChangePasswordModal = () => {
     setIsModalVisible(true);
   };
 
-  // Đóng modal
   const handleCancel = () => {
     setIsModalVisible(false);
     setPasswords({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
   };
 
-  // Xử lý input thay đổi
   const handlePasswordChange = (e) => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
   };
 
-  // Gửi yêu cầu đổi mật khẩu
   const handleChangePassword = async () => {
     if (passwords.newPassword !== passwords.confirmNewPassword) {
       toast.error("New Password and Confirm Password do not match!");
@@ -180,12 +172,11 @@ const UserProfile = () => {
         newPassword: passwords.newPassword,
         confirmNewPassword: passwords.confirmNewPassword,
       });
-      
+
       if (response.isSuccess) {
         toast.success("Change password successfully!");
         setIsModalVisible(false);
-      }
-      else {
+      } else {
         toast.error(response.message || "Error changing password!");
       }
     } catch (error) {
@@ -277,24 +268,40 @@ const UserProfile = () => {
             </Col>
             <Col span={12}>
               <Form.Item label="Gender">
-                <Input
-                  name="gender"
-                  value={userData.gender}
-                  onChange={handleInputChange}
-                />
+                <div className={styles.genderContainer}>
+                  <div className={styles.gender}>
+                    <Input
+                      type="radio"
+                      name="gender"
+                      value="Male"
+                      checked={userData.gender === "Male"}
+                      onChange={handleInputChange}
+                    />
+                    <p>Male</p>
+                  </div>
+                  <div className={styles.gender}>
+                    <Input
+                      type="radio"
+                      name="gender"
+                      value="Female"
+                      checked={userData.gender === "Female"}
+                      onChange={handleInputChange}
+                    />
+                    <p>Female</p>
+                  </div>
+                </div>
               </Form.Item>
             </Col>
           </Row>
         </Form>
-        <div style={{ marginTop: "20px" }}>
-          <Button type="primary" onClick={handleUpdateProfile}>
+        <div className={styles.buttonContainer}>
+          <Button className={styles.updateButton} onClick={handleUpdateProfile}>
             {updateLoading ? "Saving..." : "Save"}
           </Button>
-          <Button type="default" onClick={showChangePasswordModal}>
+          <Button className={styles.passwordButton} onClick={showChangePasswordModal}>
             Change password
           </Button>
         </div>
-        {/* Modal đổi mật khẩu */}
         <Modal
           title="Change Password"
           open={isModalVisible}
