@@ -65,6 +65,10 @@ const AppointmentDetail = ({ appointment }) => {
           <p>
             <strong>Email:</strong> {customerInfo.customerEmail || "N/A"}
           </p>
+          <p>
+            <strong>Status:</strong>{" "}
+            <span className={styles[getStatusClass()]}>{status || "N/A"}</span>
+          </p>
         </div>
 
         <div className={styles.detailSection}>
@@ -78,10 +82,7 @@ const AppointmentDetail = ({ appointment }) => {
           <p>
             <strong>Created:</strong> {createdTime || "N/A"}
           </p>
-          <p>
-            <strong>Status:</strong>{" "}
-            <span className={styles[getStatusClass()]}>{status || "N/A"}</span>
-          </p>
+
           {note && (
             <p>
               <strong>Note:</strong> {note}

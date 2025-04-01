@@ -1,5 +1,6 @@
 .appointmentDetail {
     margin-top: 12px;
+    width: 500px;
 }
 
 .appointmentDetail h3 {
@@ -18,7 +19,8 @@
 }
 
 .detailSection {
-    height: 15rem;
+    width: 100%;
+    height: 18rem;
     padding: 16px;
     background-color: var(--primary-color);
     border-radius: var(--border-radius);
@@ -26,7 +28,8 @@
 }
 
 .detailSection2 {
-    height: 9rem;
+    width: 100%;
+    height: 12rem;
     padding: 16px;
     background-color: var(--primary-color);
     border-radius: var(--border-radius);
