@@ -81,10 +81,6 @@ const TherapistAppointmentDetails = () => {
                   <strong>Service: </strong>{" "}
                   {appointment.serviceInfo?.serviceName}
                 </p>
-                <p>
-                  <strong>Duration: </strong>{" "}
-                  {appointment.serviceInfo?.serviceDuration}
-                </p>
               </div>
             </div>
             <StatusProgress status={appointment.status} />

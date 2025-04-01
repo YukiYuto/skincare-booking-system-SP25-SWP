@@ -53,7 +53,7 @@ public class TokenService : ITokenService
             issuer: _configuration["JWT:ValidIssuer"],
             audience: _configuration["JWT:ValidAudience"],
             notBefore: DateTime.Now,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddMinutes(60),
             claims: authClaims,
             signingCredentials: signingCredentials
         );

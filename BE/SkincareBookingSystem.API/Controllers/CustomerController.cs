@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SkincareBookingSystem.API.Controllers
 {
     [Route("api/customer")]
+    [Authorize]
     [ApiController]
     public class CustomerController : ControllerBase
     {

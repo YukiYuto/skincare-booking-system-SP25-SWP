@@ -207,14 +207,8 @@ useEffect(() => {
       <Card title="📅 Total Appointments This Month" className={styles.statsCard}>
         <h2>{monthlyAppointments}</h2>
       </Card>
-      <Card title="📆 Total Appointments This Year" className={styles.statsCard}>
-        <h2>{yearlyAppointments}</h2>
-      </Card>
       <Card title="💰 Revenue This Month" className={styles.statsCard}>
         <h2>{monthlyRevenue.toLocaleString()} VND</h2>
-      </Card>
-      <Card title="💵 Revenue This Year" className={styles.statsCard}>
-        <h2>{yearlyRevenue.toLocaleString()} VND</h2>
       </Card>
     </div>
       <Card title="📅 Appointment Today" className={styles.card}>
