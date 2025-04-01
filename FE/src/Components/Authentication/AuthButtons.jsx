@@ -109,15 +109,12 @@ const AuthButtons = () => {
         <Link to="/profile">Profile</Link>
       </Menu.Item>
 
-      {roleBasedItem && (
-        <Menu.Item
-          key={roleBasedItem.path}
-          icon={roleBasedItem.icon}
-          className={styles.menuIcon}
-        >
-          <Link to={roleBasedItem.path}>{roleBasedItem.label}</Link>
-        </Menu.Item>
-      )}
+      {roleBasedItem &&
+        roleBasedItem.map((item) => (
+          <Menu.Item key={item.path} icon={item.icon} className={item.menuIcon}>
+            <Link to={item.path}>{item.label}</Link>
+          </Menu.Item>
+        ))}
 
       <Divider className={styles.menuDivider} />
 
