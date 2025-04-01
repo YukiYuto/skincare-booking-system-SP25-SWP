@@ -12,7 +12,7 @@ namespace SkincareBookingSystem.Models.Domain
         [ForeignKey("TestQuestionId")]
         public virtual TestQuestion TestQuestion { get; set; } = null!;
 
-        [StringLength(100)] public string Content { get; set; } = null!;
+        [StringLength(255)] public string Content { get; set; } = null!;
         public int Score { get; set; }
     }
 }
