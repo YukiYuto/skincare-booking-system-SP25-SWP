@@ -21,6 +21,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = StaticUserRoles.ManagerStaff)]
         [SwaggerOperation(Summary = "API creates a new Blog", Description = "Requires user role")]
         public async Task<ActionResult<ResponseDto>> CreateBlog([FromBody] CreateBlogDto createBlogDto)
         {
@@ -55,6 +56,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = StaticUserRoles.ManagerStaff)]
         [SwaggerOperation(Summary = "API updates a Blog by its id", Description = "Requires user role")]
         public async Task<ActionResult<ResponseDto>> UpdateBlog([FromBody] UpdateBlogDto updateBlogDto)
         {
@@ -73,7 +75,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("delete/{blogId}")]
-        //[Authorize(Roles = StaticUserRoles.ManagerStaff)]
+        [Authorize(Roles = StaticUserRoles.ManagerStaff)]
         [SwaggerOperation(Summary = "API soft deletes an exist Blog", Description = "Requires staff, manager role")]
         public async Task<ActionResult<ResponseDto>> DeleteBlog(Guid blogId)
         {

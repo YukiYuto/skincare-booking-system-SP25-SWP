@@ -15,12 +15,6 @@ const Confirmation = ({
           {selectedService?.serviceName || "Not selected"}
         </p>
         <p>
-          <strong>Duration:</strong>{" "}
-          {selectedService?.duration
-            ? `${selectedService.duration} minutes`
-            : "Unspecified"}
-        </p>
-        <p>
           <strong>Price:</strong>{" "}
           {selectedService?.price
             ? `${selectedService.price} VND`
@@ -33,7 +27,7 @@ const Confirmation = ({
           {selectedTherapist?.fullName || "Not selected"}
         </p>
         <p>
-          <strong>Date:</strong> {selectedDate || "Not selected"}
+          <strong>Date:</strong> {new Date(selectedDate).toLocaleDateString('en-GB') || "Not selected"}
         </p>
         <p>
           <strong>Time:</strong> {selectedTime || "Not selected"}

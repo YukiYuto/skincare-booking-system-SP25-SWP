@@ -5,7 +5,8 @@
   max-width: 1500px;
   margin: auto;
   padding: 20px;
-  margin-top: 200px;
+  margin-top: 350px;
+  height: 400px;
 }
 
 .leftPanel {
@@ -139,4 +140,5 @@ p {
 .restartButton:hover {
   background: #0056b3;
 }
+
 

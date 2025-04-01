@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using SkincareBookingSystem.Models.Dto.Appointment;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SkincareBookingSystem.API.Controllers
 {
     [Route("api/appointment")]
+    [Authorize]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
@@ -20,6 +23,7 @@ namespace SkincareBookingSystem.API.Controllers
 
         // POST : api/Appointment
         [HttpPost]
+        [Authorize(Roles = $"{StaticUserRoles.Customer},{StaticUserRoles.ManagerStaff}")]
         [SwaggerOperation(Summary = "API creates a new Appointment", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> CreateAppointment([FromBody] CreateAppointmentDto appointmentDto)
         {
@@ -37,6 +41,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{StaticUserRoles.Customer},{StaticUserRoles.ManagerStaff}")]
         [SwaggerOperation(Summary = "API gets all available Appointments", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> GetAllAppointments()
         {
@@ -45,6 +50,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet("customer/appointments")]
+        [Authorize(Roles = $"{StaticUserRoles.Customer}")]
         [SwaggerOperation(Summary = "API gets all available Appointments by customer id", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> GetAppointmentsByCustomer()
         {

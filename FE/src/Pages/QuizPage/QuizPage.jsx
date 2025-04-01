@@ -2,22 +2,9 @@ import { useNavigate } from "react-router-dom";
 import styles from "./QuizPage.module.css";
 import Header from "../../Components/Common/Header";
 import Footer from "../../Components/Footer/Footer";
-import { useSelector } from "react-redux";
 
 const QuizPage = () => {
   const navigate = useNavigate();
-
-  const { user } = useSelector((state) => state.auth);
-    const isAuthenticated = user?.accessToken; 
-  
-    const handleClick = (e) => {
-      if (!isAuthenticated) {
-        e.preventDefault(); 
-        navigate("/login"); 
-      } else {
-        navigate("/skin-test");
-      }
-    };
 
   return (
     <>
@@ -32,7 +19,7 @@ const QuizPage = () => {
           Skin is complicated—this quiz isn’t. In just<br/> a few questions, we’ll
           determine your skin<br/> type & find the right collection for you.
         </p>
-        <button className={styles.quizButton} onClick={handleClick}>
+        <button className={styles.quizButton} onClick={() => navigate("/skin-test")}>
           TAKE THE QUIZ
         </button>
       </div>

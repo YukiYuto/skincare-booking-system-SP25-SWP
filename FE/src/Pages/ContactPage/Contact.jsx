@@ -1,4 +1,4 @@
-import { FaFacebookF, FaInstagram, FaPinterestP, FaTimes } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaTimes } from "react-icons/fa";
 import styles from "./Contact.module.css";
 import FAQ from "../../Components/FAQ/FAQ";
 import Header from "../../Components/Common/Header";
@@ -11,7 +11,7 @@ const Contact = () => {
     <section className={styles.contactSection}>
       <h2 className={styles.title}>Contact us</h2>
       <p className={styles.inquiryText}>
-        For press related inquiries, please get in touch via <strong>example@domain.com</strong>
+        For press related inquiries, please get in touch via <strong>lumiconnect.business@gmail.com</strong>
       </p>
       <p className={styles.phone}>Call us: <strong>+2 654 785 1245</strong></p>
       <p className={styles.address}>Visit store: Chicago HQ Estica Cop. Macomb, MI 48042</p>
@@ -19,7 +19,6 @@ const Contact = () => {
       <div className={styles.socialIcons}>
         <FaFacebookF />
         <FaInstagram />
-        <FaPinterestP />
         <FaTimes />
       </div>
     </section>

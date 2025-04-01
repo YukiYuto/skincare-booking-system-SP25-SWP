@@ -34,12 +34,8 @@ const PaymentConfirmation = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [appointmentSuccess, setAppointmentSuccess] = useState(false);
   const bookingDetails = useSelector((state) => state.booking);
 
-  useEffect(() => {
-    console.log("Updated Booking Details in Redux:", bookingDetails);
-  }, []);
   //~ 2. Validate the payment based on the parameters retrieved.
   useEffect(() => {
     if (status === PAYMENT_STATUS.PAID) {
@@ -55,37 +51,12 @@ const PaymentConfirmation = () => {
 
     try {
       const paymentResponse = await confirmPayment(orderCode);
-      if (!paymentResponse?.isSuccess) {
-        setPaymentSuccess(false);
-        message.error("Payment confirmation failed.");
-        return;
-      }
-      console.log(bookingDetails);
-      //~ 3.1. Retrieve booking data
-      const appointmentData = {
-        therapistId: bookingDetails.therapistId,
-        slotId: bookingDetails.slotId,
-        customerId: bookingDetails.customerId,
-        appointmentDate: bookingDetails.appointmentDate,
-        appointmentTime: bookingDetails.appointmentTime,
-        note: bookingDetails.note,
-        orderNumber: Number.parseInt(orderCode),
-      };
-
-      //~ 3.2. Call the API to create a new appointment
-      const appointmentResponse = await finalizeAppointment(appointmentData);
-      console.log(appointmentResponse);
-      if (appointmentResponse?.isSuccess) {
+      if (paymentResponse?.isSuccess) {
         setPaymentSuccess(true);
-        setAppointmentSuccess(true);
-        message.success("Appointment has been scheduled successfully!");
-      } else {
-        setPaymentSuccess(false);
-        throw new Error("Failed to create appointment.");
+        message.success("Payment confirmed successfully!");
       }
     } catch (error) {
       setPaymentSuccess(false);
-      setAppointmentSuccess(false);
     } finally {
       setIsLoading(false);
     }
@@ -106,29 +77,25 @@ const PaymentConfirmation = () => {
     <div style={{ display: "flex", justifyContent: "center", marginTop: 50 }}>
       {isLoading ? (
         <Spin size="large" />
-      ) : paymentSuccess && appointmentSuccess ? (
-        <>
-          <Result
-            status="success"
-            title="Payment & Appointment Confirmed!"
-            subTitle="Your appointment has been successfully scheduled. You will receive an email shortly."
-            extra={[
-              <Button type="primary" onClick={() => navigate("/appointments")}>
-                View Appointment
-              </Button>,
-              <Button onClick={() => navigate("/")}>Go Home</Button>,
-            ]}
-          />
-          {/* Order info card as invoice */}
-          
-        </>
+      ) : paymentSuccess ? (
+        <Result
+          status="success"
+          title="Payment Confirmed!"
+          subTitle="Your payment for service combo has been confirmed successfully."
+          extra={[
+            <Button type="primary" onClick={() => navigate("/appointments")}>
+              View Appointment
+            </Button>,
+            <Button onClick={() => navigate("/")}>Go Home</Button>,
+          ]}
+        />
       ) : (
         <Result
           status="error"
-          title="Payment or Appointment Failed"
-          subTitle="There was an issue with the booking process."
+          title="Payment confirmation failed"
+          subTitle="There was an issue with the payment process."
           extra={[
-            <Button type="primary" onClick={() => window.location.reload()}>
+            <Button type="primary" onClick={() => navigate("/")}>
               Try Again
             </Button>,
           ]}
