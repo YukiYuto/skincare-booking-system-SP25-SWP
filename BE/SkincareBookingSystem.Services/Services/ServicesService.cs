@@ -239,7 +239,7 @@ namespace SkincareBookingSystem.Services.Services
             var serviceTypeIds = serviceFromDb.TypeItems.Select(ti => ti.ServiceTypeId).ToList();
 
             var similarServices = await _unitOfWork.Services.GetAllAsync(
-                filter: s => s.TypeItems.Any(ti => serviceTypeIds.Contains(ti.ServiceTypeId)),
+                filter: s => s.TypeItems.Any(ti => serviceTypeIds.Contains(ti.ServiceTypeId)) && s.Status == StaticOperationStatus.Service.Active,
                 includeProperties: $"{nameof(Models.Domain.Services.TypeItems)}," +
                                    $"{nameof(Models.Domain.Services.DurationItems)}.{nameof(DurationItem.ServiceDuration)}");
 
