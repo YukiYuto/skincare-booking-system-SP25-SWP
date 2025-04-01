@@ -12,6 +12,7 @@ using SkincareBookingSystem.Models.Dto.Booking.SkinTherapist;
 using SkincareBookingSystem.Models.Dto.BookingSchedule;
 using SkincareBookingSystem.Models.Dto.ComboItem;
 using SkincareBookingSystem.Models.Dto.Customer;
+using SkincareBookingSystem.Models.Dto.CustomerSkinTest;
 using SkincareBookingSystem.Models.Dto.DurationItem;
 using SkincareBookingSystem.Models.Dto.Feedbacks;
 using SkincareBookingSystem.Models.Dto.GetCustomerInfo;
@@ -55,6 +56,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ScoreMin, opt => opt.MapFrom(src => src.ScoreMin))
             .ForMember(dest => dest.ScoreMax, opt => opt.MapFrom(src => src.ScoreMax));
 
+        CreateMap<SkinProfile, SkinProfileDto>();
+        
         // Skin test
         CreateMap<CreateSkinTestDto, SkinTest>()
             .ForMember(dest => dest.SkinTestId, opt => opt.MapFrom(src => Guid.NewGuid()))
