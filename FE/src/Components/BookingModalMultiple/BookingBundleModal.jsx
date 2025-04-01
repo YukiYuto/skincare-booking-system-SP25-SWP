@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { POST_BOOKING_API, GET_CUSTOMER_USER_API } from "../../config/apiConfig";
+import {
+  POST_BOOKING_API,
+  GET_CUSTOMER_USER_API,
+} from "../../config/apiConfig";
 import { apiCall } from "../../utils/apiUtils";
 import styles from "./BookingBundleModal.module.css";
+import { toast } from "react-toastify"; // Thêm toast để hiển thị thông báo
+import { createPaymentLink } from "../../services/paymentService"; // Import service thanh toán
+import {
+  PAYMENT_CANCEL_URL,
+  PAYMENT_CONFIRMATION_URL,
+} from "../../config/clientUrlConfig"; // Import URL cấu hình
 
-const BookingBundleModal = ({ services, onClose }) => {
-  const [totalPrice, setTotalPrice] = useState(0);
+const BookingBundleModal = ({
+  serviceComboId,
+  comboPrice,
+  services,
+  onClose,
+}) => {
   const [createdBy, setCreatedBy] = useState("");
   const [customerId, setCustomerId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (services && services.length > 0) {
-      const sum = services.reduce(
-        (total, service) => total + (service.price || 0),
-        0
-      );
-      setTotalPrice(sum);
-    }
-  }, [services]);
 
   useEffect(() => {
     const handleEscKey = (e) => {
@@ -43,7 +46,7 @@ const BookingBundleModal = ({ services, onClose }) => {
       setIsLoading(true);
       try {
         const response = await apiCall("GET", GET_CUSTOMER_USER_API);
-        
+
         if (response.isSuccess) {
           setCustomerId(response.result);
         } else {
@@ -74,26 +77,54 @@ const BookingBundleModal = ({ services, onClose }) => {
     const payload = {
       order: {
         customerId,
-        totalPrice,
+        totalPrice: comboPrice,
         createdDate: new Date().toISOString(),
         createdBy,
       },
-      orderDetails: services.map((service) => ({
-        serviceId: service.serviceId,
-        serviceComboId: service.serviceComboId,
-        price: service.price || 0,
-        description: service.description || "",
-      })),
+      orderDetails: [
+        {
+          serviceComboId: serviceComboId,
+          price: comboPrice,
+          description: "string",
+        },
+      ],
     };
 
     try {
       setIsLoading(true);
       const response = await apiCall("POST", POST_BOOKING_API, payload);
       console.log("Booking successful:", response);
-      onClose();
+      
+      if (response.isSuccess) {
+        const orderNumber = response.result.orderNumber;
+        localStorage.setItem("orderNumber", orderNumber);
+        
+        // Tạo liên kết thanh toán
+        const paymentResponse = await createPaymentLink(
+          orderNumber,
+          PAYMENT_CANCEL_URL,
+          PAYMENT_CONFIRMATION_URL
+        );
+        
+        if (paymentResponse.isSuccess && paymentResponse.result.result.checkoutUrl) {
+          const checkoutUrl = paymentResponse.result.result.checkoutUrl;
+          
+          toast.success("Booking successful! Redirecting to payment page...");
+          
+          // Đóng modal và chuyển hướng đến trang thanh toán
+          setTimeout(() => {
+            onClose();
+            window.open(checkoutUrl, "_blank");
+          }, 1000);
+        } else {
+          toast.error("Error occurred while initiating payment. Please try again.");
+        }
+      } else {
+        throw new Error(response.message || "Booking failed");
+      }
     } catch (error) {
       console.error("Error booking bundle:", error);
-      alert(`Failed to book services: ${error.message || "Please try again."}`);
+      toast.error(`Failed to book services: ${error.message || "Please try again."}`);
     } finally {
       setIsLoading(false);
     }
@@ -113,11 +144,11 @@ const BookingBundleModal = ({ services, onClose }) => {
         <div className={styles.stepContainer}>
           <div className={styles.detailContainer}>
             <p>
-              <strong>Customer ID:</strong>{" "}
-              {isLoading ? "Loading..." : customerId || "Not available"}
+              <strong>Customer Id: </strong>
+              {customerId}
             </p>
             <p>
-              <strong>Total Price:</strong> {totalPrice.toLocaleString()} VND
+              <strong>Total Price:</strong> {comboPrice.toLocaleString()} VND
             </p>
             <p>
               <strong>Created By:</strong>
@@ -132,15 +163,13 @@ const BookingBundleModal = ({ services, onClose }) => {
           </div>
           {services && services.length > 0 ? (
             <div>
-              <p><strong>Services:</strong></p>
+              <p>
+                <strong>Services:</strong>
+              </p>
               <ul>
                 {services.map((service, index) => (
                   <li key={index}>
-                    <strong>Name:</strong> {service.serviceName || `Service ${index + 1}`} <br />
-                    <strong>Service ID:</strong> {service.serviceId} <br />
-                    <strong>Combo ID:</strong> {service.serviceComboId} <br />
-                    <strong>Price:</strong> {(service.price || 0).toLocaleString()} VND <br />
-                    <strong>Description:</strong> {service.description || "N/A"}
+                    {service.serviceName || `Service ${index + 1}`} <br />
                   </li>
                 ))}
               </ul>
@@ -153,7 +182,9 @@ const BookingBundleModal = ({ services, onClose }) => {
           <button onClick={handleBooking} disabled={isLoading || !customerId}>
             {isLoading ? "Processing..." : "Confirm Booking"}
           </button>
-          <button onClick={onClose} disabled={isLoading}>Cancel</button>
+          <button onClick={onClose} disabled={isLoading}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>,
