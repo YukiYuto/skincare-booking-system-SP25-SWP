@@ -5,6 +5,7 @@ import Footer from "../Footer/Footer";
 import { useEffect, useState } from "react";
 import { getRecommendations } from "../../services/customerService";
 import { toast } from "react-toastify";
+import { Button } from "antd";
 
 const Result = () => {
   const location = useLocation();
@@ -17,7 +18,6 @@ const Result = () => {
     const fetchRecommendations = async () => {
       try {
         const response = await getRecommendations(skinProfileId);
-        console.log("Recommendations response:", response);
         setRecommendations(response?.result);
       } catch (error) {
         toast.error("Error fetching recommendations:", error);
@@ -45,18 +45,18 @@ const Result = () => {
         <div className={styles.recommendations}>
           <h3>Recommended Services</h3>
           <ul className={styles.recommendationList}>
-            {recommendations.length > 0 ? (
-              recommendations.map((item) => (
+            {recommendations.services ? (
+              recommendations.services.map((item) => (
                 <li key={item.serviceId} className={styles.recommendationItem}>
                   <div className={styles.recommendationContent}>
                     <h4>{item.serviceName}</h4>
                     <p>{item.description}</p>
-                    <button
+                    <Button
                       className={styles.bookButton}
-                      onClick={() => navigate(`/service/${item.serviceId}`)}
+                      onClick={() => navigate(`/services/${item.serviceId}`)}
                     >
                       Book Now
-                    </button>
+                    </Button>
                   </div>
                 </li>
               ))
