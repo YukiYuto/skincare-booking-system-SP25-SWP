@@ -52,18 +52,13 @@ const SideBarTherapist = ({ onToggle }) => {
                     </div>
                     <ul className={styles.menuList}>
                         <li>
-                            <Link to="/" className={styles.menuItem}>
-                                <span className={styles.menuText}>Home</span>
-                            </Link>
-                        </li>
-                        <li>
                             <Link to="/therapist-dashboard" className={styles.menuItem}>
                                 <span className={styles.menuText}>Dashboard</span>
                             </Link>
                         </li>
                         <li>
                             <Link to="/therapist-management" className={styles.menuItem}>
-                                <span className={styles.menuText}>Booking</span>
+                                <span className={styles.menuText}>Calendar</span>
                             </Link>
                         </li>
                     </ul>
