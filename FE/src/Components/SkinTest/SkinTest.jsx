@@ -109,6 +109,7 @@ const SkinTest = () => {
 
       navigate("/result", {
         state: {
+          skinProfileId: matchedSkin?.skinProfileId,
           totalScore,
           skinName: matchedSkin?.skinName || "Unknown",
           description: matchedSkin?.description || "No description available.",
@@ -146,7 +147,7 @@ const SkinTest = () => {
           <div className={styles.progressBar}>
             <div className={styles.progress} style={{ width: `${progress}%` }} />
           </div>
-          <h2>STEP {step} : {currentQuestion?.type}</h2>
+          <h2>QUESTION {step}:</h2>
           <p>{currentQuestion?.content}</p>
         </div>
 
