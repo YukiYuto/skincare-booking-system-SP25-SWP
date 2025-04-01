@@ -43,10 +43,10 @@ import ViewDetail from "./Components/DashboardComponent/Tabs/BlogCategory/ViewDe
 import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTherapist";
 import FeedbackPage from "./Pages/FeedbackPage/FeedbackPage";
 import SkinTest from "./Components/SkinTest/SkinTest";
-import SkinTestResult from "./Components/SkinTest/Result";
 import QuizPage from "./Pages/QuizPage/QuizPage";
 import TermsAndConditions from "./Components/TermsAndConditions/TermsAndConditions";
 import PrivacyPolicy from "./Components/PrivacyPolicy/PrivacyPolicy";
+import Result from "./Components/SkinTest/Result";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -58,7 +58,7 @@ const AppRoutes = () => {
       <Route path="terms-conditions" element={<TermsAndConditions />} />
       <Route path="quiz" element={<QuizPage />} />
       <Route path="skin-test" element={<SkinTest />} />
-      <Route path="result" element={<SkinTestResult />} />
+      <Route path="result" element={<Result />} />
       <Route path="/" element={<Home />} />
       <Route path="contact" element={<Contact />} />
       <Route path="about" element={<AboutPage />} />
