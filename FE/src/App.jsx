@@ -46,9 +46,10 @@ import ViewDetail from "./Components/DashboardComponent/Tabs/BlogCategory/ViewDe
 import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTherapist";
 import FeedbackPage from "./Pages/FeedbackPage/FeedbackPage";
 import SkinTest from "./Components/SkinTest/SkinTest";
-import SkinTestResult from "./Components/SkinTest/Result";
-import OrderListPage from "./Pages/OrderPage/OrderListPage";
 import QuizPage from "./Pages/QuizPage/QuizPage";
+import TermsAndConditions from "./Components/TermsAndConditions/TermsAndConditions";
+import PrivacyPolicy from "./Components/PrivacyPolicy/PrivacyPolicy";
+import Result from "./Components/SkinTest/Result";
 import TherapistAppointmentDetailsPage from "./Pages/Therapist/Appointment/TherapistAppointmentDetailsPage";
 
 const AppRoutes = () => {
@@ -57,7 +58,11 @@ const AppRoutes = () => {
 
   return (
     <Routes>
+      <Route path="privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="terms-conditions" element={<TermsAndConditions />} />
       <Route path="quiz" element={<QuizPage />} />
+      <Route path="skin-test" element={<SkinTest />} />
+      <Route path="result" element={<Result />} />
       <Route path="/" element={<Home />} />
       <Route path="contact" element={<Contact />} />
       <Route path="about" element={<AboutPage />} />
@@ -91,15 +96,12 @@ const AppRoutes = () => {
         <>
           {roles.includes("CUSTOMER") && (
             <>
-              <Route path="skin-test" element={<SkinTest />} />
-              <Route path="result" element={<SkinTestResult />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route
                 path="payment-confirmation"
                 element={<PaymentConfirmationPage />}
               />
               <Route path="appointments" element={<AppointmentPage />} />
-              <Route path="orders" element={<OrderListPage />} />
             </>
           )}
           {roles.includes("ADMIN") && (
