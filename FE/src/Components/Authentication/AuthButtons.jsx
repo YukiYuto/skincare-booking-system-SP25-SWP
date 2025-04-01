@@ -7,6 +7,7 @@ import {
   UserOutlined,
   DownOutlined,
   ShoppingCartOutlined,
+  CalendarOutlined,
   DashboardOutlined,
   LineChartOutlined,
   BarChartOutlined,
@@ -29,22 +30,28 @@ const AuthButtons = () => {
     try {
       dispatch(logoutAction());
       toast.success("Logout Successfully!");
-      navigate("/");
+      navigate("/login");
     } finally {
       setLoading(false);
     }
   };
 
-  // Xác định đường dẫn dựa trên quyền user
   const getRoleBasedPath = () => {
     if (!user?.roles || !Array.isArray(user.roles)) return null;
 
     if (user.roles.includes("CUSTOMER")) {
-      return {
-        path: "/appointments",
-        label: "Appointment",
-        icon: <ShoppingCartOutlined />,
-      };
+      return [
+        {
+          path: "/appointments",
+          label: "Appointment",
+          icon: <CalendarOutlined />,
+        },
+        {
+          path: "/orders",
+          label: "Orders",
+          icon: <ShoppingCartOutlined />,
+        },
+      ];
     }
 
     if (user.roles.includes("SKINTHERAPIST")) {
@@ -52,15 +59,19 @@ const AuthButtons = () => {
     }
 
     if (user.roles.includes("STAFF")) {
-      return { path: "/staff/dashboard", label: "Staff Management", icon: <LineChartOutlined /> };
+      return [{
+        path: "/staff/dashboard",
+        label: "Staff Management",
+        icon: <LineChartOutlined />,
+      }];
     }
 
     if (user.roles.includes("ADMIN") || user.roles.includes("MANAGER")) {
-      return {
+      return [{
         path: "/dashboard",
         label: "Dashboard",
         icon: <DashboardOutlined />,
-      };
+      }];
     }
 
     return null;
@@ -87,22 +98,16 @@ const AuthButtons = () => {
         <Link to="/profile">Profile</Link>
       </Menu.Item>
 
-      {roleBasedItem && (
-        <Menu.Item key={roleBasedItem.path} icon={roleBasedItem.icon} className={styles.menuIcon}>
-          <Link to={roleBasedItem.path}>{roleBasedItem.label}</Link>
-        </Menu.Item>
-      )}
-
-      {/* Nút mở modal feedback cho CUSTOMER */}
-      {user?.roles?.includes("CUSTOMER") && (
-        <Menu.Item
-          key="feedback"
-          icon={<MessageOutlined className={styles.menuIcon} />}
-          onClick={() => setFeedbackModalOpen(true)}
-        >
-          Feedback
-        </Menu.Item>
-      )}
+      {roleBasedItem &&
+        roleBasedItem.map((item) => (
+          <Menu.Item
+            key={item.path}
+            icon={item.icon}
+            className={styles.menuIcon}
+          >
+            <Link to={item.path}>{item.label}</Link>
+          </Menu.Item>
+        ))}
 
       <Divider className={styles.menuDivider} />
 
@@ -136,7 +141,6 @@ const AuthButtons = () => {
         </div>
       )}
 
-      {/* Hiển thị Modal Feedback nếu mở */}
       <FeedbackModal isOpen={isFeedbackModalOpen} onClose={() => setFeedbackModalOpen(false)} />
     </>
   );

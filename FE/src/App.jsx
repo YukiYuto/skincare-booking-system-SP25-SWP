@@ -24,6 +24,9 @@ import Revenue from "./Components/DashboardComponent/Tabs/Revenue/Revenue";
 import Customers from "./Components/DashboardComponent/Tabs/Customers/Customers";
 import SkinTherapists from "./Components/DashboardComponent/Tabs/Therapists/SkinTherapists";
 import Services from "./Components/DashboardComponent/Tabs/Services/Services";
+import ServiceComboDB from "./Components/DashboardComponent/Tabs/Combo/ServiceComboDB";
+import ServiceCombo from "./Pages/ServiceComboAll/AllServiceCombo";
+import ServiceComboDetail from "./Pages/ServiceComboDetail/ServiceComboDetail";
 import Orders from "./Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "./Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage";
@@ -43,6 +46,7 @@ import ViewDetail from "./Components/DashboardComponent/Tabs/BlogCategory/ViewDe
 import DashboardTherapist from "./Pages/Therapist/DashboardTherapist/DashboardTherapist";
 import FeedbackPage from "./Pages/FeedbackPage/FeedbackPage";
 import SkinTest from "./Components/SkinTest/SkinTest";
+import OrderListPage from "./Pages/OrderPage/OrderListPage";
 import QuizPage from "./Pages/QuizPage/QuizPage";
 import TermsAndConditions from "./Components/TermsAndConditions/TermsAndConditions";
 import PrivacyPolicy from "./Components/PrivacyPolicy/PrivacyPolicy";
@@ -64,6 +68,8 @@ const AppRoutes = () => {
       <Route path="about" element={<AboutPage />} />
       <Route path="services" element={<AllService />} />
       <Route path="services/:id" element={<ServiceDetail />} />
+      <Route path="service-combo/" element={<ServiceCombo />} />
+      <Route path="service-combo/:id" element={<ServiceComboDetail />} />
       <Route path="therapist" element={<TherapistCard />} />
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="blogs" element={<BlogForCus />} />
@@ -91,6 +97,7 @@ const AppRoutes = () => {
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
               <Route path="appointments" element={<AppointmentPage />} />
+              <Route path="orders" element={<OrderListPage />} />
             </>
           )}
           {roles.includes("ADMIN") && (
@@ -102,6 +109,7 @@ const AppRoutes = () => {
                 <Route path="customers" element={<Customers />} />
                 <Route path="therapists" element={<SkinTherapists />} />
                 <Route path="services" element={<Services />} />
+                <Route path="combo" element={<ServiceComboDB />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
                 <Route path="view-blogcategory" element={<ViewBlogCategory />} />
@@ -139,6 +147,7 @@ const AppRoutes = () => {
                 <Route path="customers" element={<Customers />} />
                 <Route path="therapists" element={<SkinTherapists />} />
                 <Route path="services" element={<Services />} />
+                <Route path="combo" element={<ServiceComboDB />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
                 <Route path="view-blogcategory" element={<ViewBlogCategory />} />
