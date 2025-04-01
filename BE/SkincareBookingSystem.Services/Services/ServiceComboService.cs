@@ -70,7 +70,10 @@ public class ServiceComboService : IServiceComboService
         var (serviceCombo, total) =
             await _unitOfWork.ServiceCombo.GetAll(pageNumber, pageSize, filterOn, filterQuery, sortBy, isManager);
 
-        if (!serviceCombo.Any())
+        var filteredServiceCombos = serviceCombo.Where(sc => sc.Status == StaticOperationStatus.Service.Active);
+        var filteredTotal = filteredServiceCombos.Count();
+
+        if (!filteredServiceCombos.Any())
             return new ResponseDto
             {
                 Result = serviceCombo,
@@ -83,11 +86,11 @@ public class ServiceComboService : IServiceComboService
         {
             Result = new
             {
-                TotalServiceCombos = total,
-                TotalPages = (int)Math.Ceiling((double)total / pageSize),
+                TotalServiceCombos = filteredTotal,
+                TotalPages = (int)Math.Ceiling((double)filteredTotal / pageSize),
                 PageSize = pageSize,
                 CurrentPage = pageNumber,
-                ServiceCombos = serviceCombo
+                ServiceCombos = filteredServiceCombos
             },
             Message = "ServiceCombo(s) retrieved successfully",
             IsSuccess = true,
