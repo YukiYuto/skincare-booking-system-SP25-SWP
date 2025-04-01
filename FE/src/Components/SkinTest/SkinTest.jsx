@@ -23,8 +23,6 @@ const SkinTest = () => {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
-        console.log("Questions API Response:", res.data);
-
         const questionData = res.data.result;
         setQuestions(questionData);
 
@@ -35,7 +33,6 @@ const SkinTest = () => {
               `https://lumiconnect.azurewebsites.net/api/TestAnswer/TestQuestion/${question.testQuestionId}`,
               { headers: { Authorization: `Bearer ${accessToken}` } }
             );
-            console.log(`Answers for Question ${question.testQuestionId}:`, resAnswers.data);
             answersData[question.testQuestionId] = resAnswers.data.result;
           })
         );
@@ -77,7 +74,6 @@ const SkinTest = () => {
         updatedAnswers = [testAnswerId];
       }
 
-      console.log(`✅ Câu hỏi ID: ${currentQuestion.testQuestionId}, Đáp án đã chọn:`, updatedAnswers);
       return { ...prev, [currentQuestion.testQuestionId]: updatedAnswers };
     });
   };

@@ -78,11 +78,11 @@ const AppRoutes = () => {
       <Route path="feedback-page" element={<FeedbackPage />} />
       <Route path="error" element={<ErrorPage />} />
       <Route path="skin-test" element={<SkinTest />} />
-      <Route path="result" element={<SkinTestResult />} />
       <Route
         path="payment-confirmation"
         element={<PaymentConfirmationPage />}
       />
+      <Route path="payment-confirmation-combo" element={<PaymentConfirmationPage />} />
       {!accessToken && (
         <>
           <Route path="login" element={<LoginPage />} />
