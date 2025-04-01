@@ -28,10 +28,17 @@ public class GenericEmailTemplate
     /// <param name="content"></param>
     /// <param name="placeholders"></param>
     /// <returns> The content with the placeholders set with actual values </returns>
-    protected string ReplacePlaceholders(string content, Dictionary<string, string> placeholders)
+    /*protected string ReplacePlaceholders(string content, Dictionary<string, string> placeholders)
     {
         foreach (var placeholder in placeholders)
             content = content.Replace($"{{{{{placeholder.Key}}}}}", placeholder.Value);
+
+        return content;
+    }*/
+    protected string ReplacePlaceholders(string content, Dictionary<string, string> placeholders)
+    {
+        foreach (var placeholder in placeholders)
+            content = content.Replace(placeholder.Key, placeholder.Value);
 
         return content;
     }
@@ -73,6 +80,11 @@ public class GenericEmailTemplate
                                 border-radius: 10px;
                                 overflow: hidden;
                                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                            }}
+
+                            li {{
+                            margin-bottom: 10px;
+                            font-size: 18px;
                             }}
 
                             .header {{

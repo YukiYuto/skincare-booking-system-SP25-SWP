@@ -10,9 +10,9 @@ namespace SkincareBookingSystem.Utilities.Templates.Email
     //! Dynamic placeholders: UserName, EmailVerificationLink
     public class VerificationEmailTemplate : GenericEmailTemplate
     {
-        public override string TemplateName { get; set; } = StaticEmailTemplates.Welcome;
+        public override string TemplateName { get; set; } = StaticEmailTemplates.Verification;
         public override string Subject { get; set; } = "Welcome to LumiConnect!";
-        public override string Category { get; set; } = "Welcome";
+        public override string Category { get; set; } = "Verification";
         public override string PreHeaderText { get; set; } = "Thank you for signing up!";
         public override string BodyContent { get; set; } = "Thank you for signing up, {{UserName}}! We are excited to have you on board.";
         public override string CallToAction { get; set; } = "{{EmailConfirmationLink}}";

@@ -63,4 +63,13 @@ public class ManagerController : ControllerBase
         var response = await _managerService.UnlockUser(unLockUserDto);
         return StatusCode(response.StatusCode, response);
     }
+    
+    [HttpGet("export")]
+    [Authorize(Roles = StaticUserRoles.Manager)]
+    [SwaggerOperation(Summary = "API exports revenue data", Description = "Requires Manager roles")]
+    public async Task<IActionResult> ExportRevenueData(DateTime startDate, DateTime endDate)
+    {
+        var response = await _managerService.ExportRevenueTransactionsToPdf(startDate, endDate);
+        return File(response, "application/pdf", $"RevenueReport_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}.pdf");
+    }
 }

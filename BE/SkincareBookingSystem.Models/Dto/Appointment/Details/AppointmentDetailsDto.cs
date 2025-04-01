@@ -9,6 +9,7 @@ namespace SkincareBookingSystem.Models.Dto.Appointment.Details
 {
     public class AppointmentDetailsDto
     {
+        public Guid AppointmentId { get; set; }
         public CustomerInfoDto CustomerInfo { get; set; } = null!;
         public ServiceInfoDto ServiceInfo { get; set; } = null!;
         public TherapistInfoDto TherapistInfo { get; set; } = null!;

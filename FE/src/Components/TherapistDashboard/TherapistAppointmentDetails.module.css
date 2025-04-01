@@ -1,0 +1,55 @@
+.container {
+  padding: 20px;
+  margin: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.title {
+  grid-column: span 2 / span 2;
+  margin-bottom: 1rem;
+}
+
+.customer {
+  grid-row: span 2 / span 2;
+  grid-row-start: 4;
+}
+
+.therapist {
+  grid-row: span 2 / span 2;
+  grid-row-start: 4;
+}
+
+.appointment {
+  grid-column: span 2 / span 2;
+  grid-row: span 2 / span 2;
+  grid-row-start: 2;
+}
+
+.appointmentInfoContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  gap: 8px;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.buttonGroup button {
+  /* flex-end here */
+  font-size: 16px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
