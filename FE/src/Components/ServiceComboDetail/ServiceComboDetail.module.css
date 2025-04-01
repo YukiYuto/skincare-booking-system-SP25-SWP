@@ -1,0 +1,98 @@
+
+.container {
+    display: flex;
+    flex-direction: row;
+    padding: 48px 92px;
+    color: var(--text-color);
+    font-family: "Poppins", sans-serif;
+    background-image: url("../../assets/images/background-spa.jpg");
+    gap: 16px;
+}
+
+.imageContainer {
+    flex: 1;
+    text-align: center;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.image {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+.detailContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.description {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.price {
+    font-size: 1.8rem;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.numberOfService,
+.status {
+    font-size: 1.2rem;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.loading,
+.error {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-top: 100px;
+}
+
+.order {
+    background-color: #e63946;
+    width: 360px;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.order:hover {
+    background-color: #d62839;
+}
+
+.servicesList {
+    margin-top: 20px;
+}
+
+.serviceItem {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.servicesList {
+    padding: 12px;
+}

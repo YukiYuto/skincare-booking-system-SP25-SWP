@@ -1,0 +1,8 @@
+.container {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    margin: 128px 64px;
+    gap: 20px;
+    height: inherit;
+}

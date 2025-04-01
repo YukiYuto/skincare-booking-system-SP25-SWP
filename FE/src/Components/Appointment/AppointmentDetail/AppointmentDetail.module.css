@@ -1,0 +1,89 @@
+.appointmentDetail {
+    margin-top: 12px;
+    width: 500px;
+}
+
+.appointmentDetail h3 {
+    color: var(--primary-dark);
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.gridContainer {
+    height: 38rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-auto-rows: 100px;
+    gap: 16px;
+}
+
+.detailSection {
+    width: 100%;
+    height: 18rem;
+    padding: 16px;
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.detailSection2 {
+    width: 100%;
+    height: 12rem;
+    padding: 16px;
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+h4 {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.detailSection p {
+    margin-bottom: 12px;
+    color: var(--text-color);
+    display: flex;
+    align-items: baseline;
+}
+
+.detailSection p strong {
+    min-width: 100px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.div5 {
+    grid-column: span 2 / span 2;
+}
+
+.status {
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+}
+
+.status.PENDING {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status.CONFIRMED {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status.CANCELED {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status.CHECKEDIN,
+.status.COMPLETED {
+    background-color: #cce5ff;
+    color: #004085;
+}

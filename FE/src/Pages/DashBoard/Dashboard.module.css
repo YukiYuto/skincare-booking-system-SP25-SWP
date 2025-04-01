@@ -1,0 +1,24 @@
+.dashboardContainer {
+  display: flex;
+  height: 100vh;
+  background-color: #f5f5f5;
+  position: relative;
+}
+
+.mainContent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-left: 70px;
+}
+
+.contentArea {
+  flex-grow: 1;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  margin: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+}

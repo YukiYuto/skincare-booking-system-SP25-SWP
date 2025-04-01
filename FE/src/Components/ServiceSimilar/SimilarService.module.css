@@ -1,0 +1,64 @@
+.container {
+    padding: 20px;
+    color: var(--text-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.container h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.header {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.itemList {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    padding: 20px 0 16px 12px;
+}
+
+.itemList>* {
+    border: 1px solid var(--accent-color);
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
+@media (max-width: 1320px) {
+    .itemList {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1098px) {
+    .itemList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 860px) {
+    .itemList {
+        grid-template-columns: 1fr;
+    }
+}
+
+.slider-gap .slick-slide {
+    margin-right: 20px;
+}
+
+.slick-list {
+    margin-right: -20px;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}

@@ -1,0 +1,54 @@
+/* Container chính */
+.container {
+    background-color: #fdf7f4; /* Màu nền */
+    color: #5a3d35; /* Màu chữ */
+    text-align: center;
+    padding: 50px 10%;
+  }
+  
+  /* Tiêu đề */
+  .title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #432c24;
+  }
+  
+  /* Nhóm bài viết */
+  .articles {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+  
+  /* Mỗi bài viết */
+  .article {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    max-width: 300px;
+  }
+  
+  /* Ảnh bài viết */
+  .image {
+    width: 100%;
+    height: 350px; /* Điều chỉnh kích thước */
+    object-fit: cover;
+    border-radius: 20px;
+  }
+  
+  /* Tiêu đề bài viết */
+  .articleTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 15px 0 5px;
+  }
+  
+  /* Ngày đăng */
+  .date {
+    font-size: 0.9rem;
+    color: #7a5d52;
+    display: flex;
+    align-items: center;
+  }
+  

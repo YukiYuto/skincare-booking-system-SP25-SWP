@@ -1,0 +1,167 @@
+.heroContainer {
+    background-image: url('../../assets/images/background-spa.jpg');
+    background-size: contain;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 92px 48px 92px;
+}
+
+.container button {
+    font-weight: 700;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    color: var(--accent-color);
+}
+
+.header h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0;
+}
+
+.service {
+    display: flex;
+}
+
+.controlsRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+}
+
+.searchInput {
+    height: 100%;
+    color: var(--text-color);
+}
+
+.activeFilters {
+    background-color: var(--primary-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.filter {
+    width: 20%;
+    min-width: 260px;
+    padding: 16px 24px 48px 16px;
+    background-color: var(--primary-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 16px;
+    border: 1px solid var(--accent-color);
+    height: fit-content;
+}
+
+.filter label {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: Poppins;
+    color: var(--text-color);
+}
+
+.filter ul {
+    list-style-type: none;
+    padding: 2px;
+    margin-top: 1.2rem;
+}
+
+.filter li {
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+
+.filter li:hover {
+    text-decoration: underline var(--accent-color);
+}
+
+.selected {
+    font-weight: 700;
+    color: var(--primary-color);
+    padding: 20px;
+}
+
+.unselected {
+    font-weight: 400;
+    color: var(--accent-color);
+}
+
+.controlsRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    color: var(--text-color);
+}
+
+.paginationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.paginationButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.pageButton {
+    background: transparent;
+    border: none;
+    padding: 4px 2px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.pageButton:hover {
+    background-color: var(--text-color);
+    color: white;
+}
+
+
+.activePageButton:hover {
+    background-color: var(--text-color);
+    color: white;
+}
+
+.ellipsis {
+    padding: 4px 2px;
+    color: var(--text-color);
+}
+
+.paginationInfo {
+    font-family: Raleway;
+    color: var(--text-color);
+}
+
+.activePageButton {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    width: 2.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-right: 8px;
+}

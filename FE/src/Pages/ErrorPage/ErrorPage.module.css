@@ -1,0 +1,29 @@
+  .errorContainer {
+    width: 100vw; /* Chiều rộng 100% viewport */
+    height: 100vh; /* Chiều cao 100% viewport */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+    background-image: url("../../assets/images/background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .styledButton {
+    margin: 8px;
+    padding: 12px 32px;
+    border-radius: 25px;
+    text-transform: none;
+    font-size: 1.1rem;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .styledButton:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  

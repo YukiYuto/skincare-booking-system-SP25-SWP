@@ -1,0 +1,149 @@
+.slotBasedWeekContainer {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.slotBasedCalendar {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    background-color: #fff;
+    margin-top: 20px;
+}
+
+.slotBasedCalendar th,
+.slotBasedCalendar td {
+    border: 1px solid var(--secondary-color);
+    padding: 12px;
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-color);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.slotBasedCalendar th {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.slotBasedCalendar th:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.slotBasedCalendar tr:nth-child(even) {
+    background-color: var(--secondary-color);
+}
+
+.slotBasedCalendar tr:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.dayHeaderRow {
+    display: flex;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.dayHeaders {
+    display: flex;
+    flex: 1;
+}
+
+.dayHeader {
+    text-align: center;
+    padding: 8px;
+    font-weight: bold;
+    border: 1px solid var(--secondary-color);
+}
+
+.dayHeader:hover {
+    background-color: #f5f5f5;
+}
+
+.today {
+    background-color: #e6f7ff;
+}
+
+.timeSlotLabel {
+    text-align: center;
+    padding: 8px;
+    font-weight: bold;
+    border: 1px solid var(--secondary-color);
+}
+
+.timeSlotRows {
+    display: flex;
+    flex-direction: column;
+}
+
+.timeSlotRow {
+    display: flex;
+    border-bottom: 1px solid #e8e8e8;
+    height: 60px;
+}
+
+.timeSlotRow:last-child {
+    border-bottom: none;
+}
+
+.timeSlotCells {
+    display: flex;
+    flex: 1;
+}
+
+.timeSlotCell {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid var(--secondary-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.timeSlotCell:hover {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+.hasAppointment {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.appointmentIndicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12px;
+}
+
+.weekNavigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.navButton {
+    padding: 8px 16px;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.navButton:hover {
+    color: var(--accent-color);
+    border-color: var(--primary-color);
+}
+
+.weekLabel {
+    font-weight: bold;
+    font-size: 16px;
+}

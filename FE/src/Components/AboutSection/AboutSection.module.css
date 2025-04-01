@@ -1,0 +1,134 @@
+.aboutSection {
+    background-color: #fdf9f7; /* Màu nền nhẹ */
+    padding: 80px 0;
+  }
+  
+  .container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  /* Phần "Who we are" */
+  .textBlock {
+    max-width: 700px;
+    margin-bottom: 80px;
+  }
+  
+  .textBlock h2 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #522d1b;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .textBlock p {
+    font-size: 18px;
+    color: #7d5d4a;
+    line-height: 1.6;
+    text-align: left;
+  }
+  
+  /* Phần "Our mission" */
+  .missionBlock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 100px;
+    margin-top: 100px;
+  }
+  
+  .missionText {
+    max-width: 450px;
+  }
+  
+  .missionText h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #522d1b;
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  .missionText p {
+    font-size: 16px;
+    color: #7d5d4a;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  /* Ảnh */
+  .imageContainer {
+    flex-shrink: 0;
+    width: 350px;
+  }
+  
+  .missionImage {
+    width: 100%;
+    height: auto;
+    border-radius: 30px;
+  }
+
+  .missionBlock1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    margin-top: 100px;
+  }
+  
+  .missionText1 {
+    max-width: 450px;
+  }
+  
+  .missionText1 h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #522d1b;
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  .missionText1 p {
+    font-size: 16px;
+    color: #7d5d4a;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .missionText1 ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 30px;
+  }
+  
+  .missionText1 ul li {
+    font-size: 16px;
+    color: #5a3a32;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  .missionText1 ul li::before {
+    content: "•";
+    color: #b65f50;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  
+  /* Ảnh */
+  .imageContainer1 {
+    flex-shrink: 0;
+    width: 350px;
+  }
+  
+  .missionImage1 {
+    width: 100%;
+    height: auto;
+    border-radius: 30px;
+  }
+  

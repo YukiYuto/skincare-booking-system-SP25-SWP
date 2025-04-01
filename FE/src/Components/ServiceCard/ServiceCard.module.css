@@ -1,0 +1,102 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    background-color: var(--primary-color);
+    transition: transform 0.3s ease;
+    width: 100%;
+    max-width: 360px;
+    min-width: 280px;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.card a:hover {
+    text-decoration: none;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background-color: #ffffff;
+}
+
+.image {
+    background-image: url("../../assets/images/trust-image.jpg");
+    background-size: cover;
+}
+
+.header {
+    height: calc(2em + 12px);
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333333;
+}
+
+.serviceType {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    color: #666666;
+    margin-top: auto;
+}
+
+.description {
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    height: calc(3.5rem + 16px);
+}
+
+.price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #B22222;
+    margin-bottom: 16px;
+}
+
+.popularity {
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.popularity img {
+    padding: 4px 2px;
+    max-width: 32px;
+    max-height: 24px;
+    background-color: var(--primary-color);
+}

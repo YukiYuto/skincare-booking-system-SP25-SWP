@@ -1,0 +1,75 @@
+.aboutSection {
+    background-color: #fdf9f7; 
+    padding: 50px 0;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    max-width: 1000px;
+    width: 90%;
+    text-align: center;
+  }
+  
+  .imageContainer {
+    width: 120%;
+  }
+  
+  .teamImage {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+  }
+  
+  .contentWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 200px; 
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .textContainer {
+    max-width: 500px; 
+  }
+  
+  .textContainer h2 {
+    font-size: 28px;
+    color: #522d1b;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .textContainer p {
+    font-size: 16px;
+    color: #7d5d4a;
+    margin-bottom: 20px;
+  }
+  
+  .experience {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 35px;
+  }
+  
+  .experience h3 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #522d1b;
+    text-align: left;
+    margin-right: 100px;
+  }
+  
+  .experience p {
+    font-size: 16px;
+    color: #7d5d4a;
+    text-align: left;
+  }
+  
