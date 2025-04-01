@@ -32,18 +32,20 @@ const SimilarService = ({ serviceId }) => {
   }, [serviceId]);
 
   return (
-    <>
-      <h2>Similar Services</h2>
+    <div className={styles.container}>
+      <h1>Similar Services</h1>
       <div className={styles.itemList}>
-        {similarServices.length === 0 && !loading ? (
+        {loading ? (
           <p>Loading...</p>
+        ) : similarServices.length === 0 ? (
+          <p>None similar service</p>
         ) : (
           similarServices.map((service) => (
             <ServiceCard key={service.serviceId} service={service} />
           ))
         )}
       </div>
-    </>
+    </div>
   );
 };
 

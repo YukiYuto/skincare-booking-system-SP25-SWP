@@ -1,24 +1,53 @@
-.container {
+.outerContainer {
+    margin: 12px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .scrollContainer {
+    overflow-x: auto; 
+    padding: 20px;
     display: flex;
     flex-direction: row;
     gap: 20px;
-    padding: 20px;
-    background-color: var(--background-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.viewMore,
-.viewAll {
-    margin-top: 20px;
+    white-space: nowrap; 
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: start;
+    gap: 20px;
+    padding: 10px 20px 20px;
+  }
+  
+  .viewMore, .viewAll {
     font-size: 1rem;
     color: var(--primary-color);
     cursor: pointer;
     text-decoration: underline;
     transition: color 0.3s ease-in-out;
-}
-
-.viewMore:hover,
-.viewAll:hover {
+  }
+  
+  .viewMore:hover, .viewAll:hover {
     color: var(--accent-color);
-}
+  }
+  
+  .scrollContainer::-webkit-scrollbar {
+    height: 8px; 
+  }
+  
+  .scrollContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .scrollContainer::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  
+  .scrollContainer::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

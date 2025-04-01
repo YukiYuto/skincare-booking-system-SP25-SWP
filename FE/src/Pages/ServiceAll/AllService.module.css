@@ -9,6 +9,10 @@
     padding: 12px 92px 48px 92px;
 }
 
+.container button {
+    font-weight: 700;
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -30,7 +34,7 @@
     display: flex;
 }
 
-.controlsRow{
+.controlsRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -38,7 +42,7 @@
     gap: 16px;
 }
 
-.searchInput{
+.searchInput {
     height: 100%;
     color: var(--text-color);
 }
@@ -131,12 +135,12 @@
 }
 
 .pageButton:hover {
-    padding: 4px;
     background-color: var(--text-color);
     color: white;
 }
 
-.activePageButton {
+
+.activePageButton:hover {
     background-color: var(--text-color);
     color: white;
 }
@@ -149,4 +153,15 @@
 .paginationInfo {
     font-family: Raleway;
     color: var(--text-color);
+}
+
+.activePageButton {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    width: 2.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-right: 8px;
 }

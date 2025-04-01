@@ -16,14 +16,12 @@ import {
 import { logout as logoutAction } from "../../redux/auth/thunks";
 import styles from "./AuthButtons.module.css";
 import { useState } from "react";
-import FeedbackModal from "../Feedback/FeedbackModal";
 
 const AuthButtons = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false); // State để mở modal
 
   const handleLogout = () => {
     setLoading(true);
@@ -55,23 +53,33 @@ const AuthButtons = () => {
     }
 
     if (user.roles.includes("SKINTHERAPIST")) {
-      return [{ path: "/therapist-management", label: "Therapist Management", icon: <BarChartOutlined /> }];
+      return [
+        {
+          path: "/therapist-management",
+          label: "Therapist Management",
+          icon: <BarChartOutlined />,
+        },
+      ];
     }
 
     if (user.roles.includes("STAFF")) {
-      return [{
-        path: "/staff/dashboard",
-        label: "Staff Management",
-        icon: <LineChartOutlined />,
-      }];
+      return [
+        {
+          path: "/staff/dashboard",
+          label: "Staff Management",
+          icon: <LineChartOutlined />,
+        },
+      ];
     }
 
     if (user.roles.includes("ADMIN") || user.roles.includes("MANAGER")) {
-      return [{
-        path: "/dashboard",
-        label: "Dashboard",
-        icon: <DashboardOutlined />,
-      }];
+      return [
+        {
+          path: "/dashboard",
+          label: "Dashboard",
+          icon: <DashboardOutlined />,
+        },
+      ];
     }
 
     return null;
@@ -94,24 +102,31 @@ const AuthButtons = () => {
 
       <Divider className={styles.menuDivider} />
 
-      <Menu.Item key="profile" icon={<UserOutlined className={styles.menuIcon} />}>
+      <Menu.Item
+        key="profile"
+        icon={<UserOutlined className={styles.menuIcon} />}
+      >
         <Link to="/profile">Profile</Link>
       </Menu.Item>
 
-      {roleBasedItem &&
-        roleBasedItem.map((item) => (
-          <Menu.Item
-            key={item.path}
-            icon={item.icon}
-            className={styles.menuIcon}
-          >
-            <Link to={item.path}>{item.label}</Link>
-          </Menu.Item>
-        ))}
+      {roleBasedItem && (
+        <Menu.Item
+          key={roleBasedItem.path}
+          icon={roleBasedItem.icon}
+          className={styles.menuIcon}
+        >
+          <Link to={roleBasedItem.path}>{roleBasedItem.label}</Link>
+        </Menu.Item>
+      )}
 
       <Divider className={styles.menuDivider} />
 
-      <Menu.Item key="logout" icon={<LogoutOutlined className={styles.menuIcon} />} onClick={handleLogout} disabled={loading}>
+      <Menu.Item
+        key="logout"
+        icon={<LogoutOutlined className={styles.menuIcon} />}
+        onClick={handleLogout}
+        disabled={loading}
+      >
         {loading ? <Spin size="small" /> : "Logout"}
       </Menu.Item>
     </Menu>
@@ -140,8 +155,6 @@ const AuthButtons = () => {
           </Link>
         </div>
       )}
-
-      <FeedbackModal isOpen={isFeedbackModalOpen} onClose={() => setFeedbackModalOpen(false)} />
     </>
   );
 };

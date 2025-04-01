@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { GET_SERVICE_COMBO_DETAIL_BY_ID_API } from "../../config/apiConfig";
 import styles from "./ServiceComboDetail.module.css";
 import Header from "../Common/Header";
-import BookingModal from "../BookingModal/BookingModal";
 import ComboInclude from "../ComboInclude/ComboInclude";
+import BookingBundleModal from "../BookingModalMultiple/BookingBundleModal";
 
 const ServiceComboLayout = () => {
   const { id } = useParams();
@@ -13,10 +13,11 @@ const ServiceComboLayout = () => {
     isLoading: true,
     error: null,
   });
-  const [visible, setVisible] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
 
   const handleBook = () => {
-    setVisible(true);
+    setShowModal(true);
   };
 
   const fetchComboData = async () => {
@@ -67,10 +68,11 @@ const ServiceComboLayout = () => {
     return <div className={styles.error}>Combo data not available</div>;
   }
 
+  // Extract service information from the combo
   const serviceIds = combo.services?.map((service) => service.serviceId) || [];
 
   return (
-    <>
+    <div className={styles.layoutContainer}>
       <Header />
       <div className={styles.container}>
         <div className={styles.imageContainer}>
@@ -87,7 +89,6 @@ const ServiceComboLayout = () => {
           <p className={styles.numberOfService}>
             Number of Services: {combo.numberOfService}
           </p>
-          <p className={styles.status}>Status: {combo.status}</p>
           <button className={styles.order} onClick={handleBook}>
             BOOK NOW
           </button>
@@ -97,12 +98,15 @@ const ServiceComboLayout = () => {
         <h2>Included Services:</h2>
         <ComboInclude serviceIds={serviceIds} />
       </div>
-      <BookingModal
-        visible={visible}
-        onClose={() => setVisible(false)}
-        selectedService={combo}
-      />
-    </>
+      {showModal && (
+        <BookingBundleModal
+          serviceComboId={combo.serviceComboId}
+          comboPrice={combo.price}
+          services={combo.services || []}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+    </div>
   );
 };
 

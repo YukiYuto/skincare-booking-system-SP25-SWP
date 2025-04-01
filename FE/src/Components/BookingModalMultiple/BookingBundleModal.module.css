@@ -1,0 +1,82 @@
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  .modalTitle {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  .content {
+    background: var(--background-color, white);
+    color: var(--text-color, black);
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 90%;
+    max-height: 90vh;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .stepContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .detailContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .buttons button:first-child {
+    background-color: var(--primary-color, #1890ff);
+    color: white;
+  }
+  
+  .buttons button:first-child:hover {
+    background-color: var(--accent-color, #096dd9);
+  }
+  
+  .buttons button:last-child {
+    background-color: var(--secondary-color, #f5f5f5);
+    color: var(--text-color, black);
+  }
+  
+  .buttons button:last-child:hover {
+    background-color: var(--accent-color, #ddd);
+  }
+  
+  .input {
+    margin-top: 5px;
+    padding: 8px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    width: 100%;
+  }

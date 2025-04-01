@@ -49,20 +49,22 @@ const ComboInclude = ({ serviceIds = [] }) => {
   }
 
   return (
-    <div className={style.container}>
-      {services.length > 0 ? (
-        services.map((service) => (
-          <ServiceCard key={service.serviceId} service={service} />
-        ))
-      ) : (
-        <p>No services included in this combo</p>
-      )}
+    <div className={style.outerContainer}>
+      <div className={style.scrollContainer}>
+        {services.length > 0 ? (
+          services.map((service) => (
+            <ServiceCard key={service.serviceId} service={service} />
+          ))
+        ) : (
+          <p>No services included in this combo</p>
+        )}
+      </div>
       
       {services.length > 0 && (
-        <>
+        <div className={style.actions}>
           <div className={style.viewMore}>View More</div>
           <div className={style.viewAll}>View All</div>
-        </>
+        </div>
       )}
     </div>
   );
