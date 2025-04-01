@@ -4,10 +4,16 @@
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     padding: 16px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: var(--primary-color);
     transition: transform 0.3s ease;
     width: 100%;
+    max-width: 360px;
+    min-width: 280px;
     box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
 }
 
 .card a {
@@ -31,6 +37,11 @@
     border-radius: 8px;
     margin-bottom: 12px;
     background-color: #ffffff;
+}
+
+.image {
+    background-image: url("../../assets/images/trust-image.jpg");
+    background-size: cover;
 }
 
 .header {
@@ -62,7 +73,7 @@
     margin-bottom: 12px;
     font-size: 0.9rem;
     line-height: 1.4;
-    height: calc(3em + 12px);
+    height: calc(3.5rem + 16px);
 }
 
 .price {
@@ -73,6 +84,10 @@
 }
 
 .popularity {
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+    font-size: 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;

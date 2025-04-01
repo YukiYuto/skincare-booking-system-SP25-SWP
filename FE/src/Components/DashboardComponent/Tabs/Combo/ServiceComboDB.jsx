@@ -26,9 +26,10 @@ const ServiceComboDB = () => {
       const response = await fetch(
         `${GET_ALL_SERVICE_COMBO_API}?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`
       );
-      const data = await response.json();
-      setServiceCombos(data.result.serviceCombos);
-      setTotalPages(data.result.totalPages);
+      const result = await response.json();
+      console.log("Fetched service combos:", result.result.serviceCombos);
+      setServiceCombos(result.result.serviceCombos);
+      setTotalPages(result.result.totalPages);
     } catch (error) {
       setError(error);
     } finally {
@@ -39,6 +40,16 @@ const ServiceComboDB = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleOpenDetail = (combo) => {
+    console.log("Opening detail for combo:", combo);
+    // Check if the combo has the correct ID property
+    if (!combo.serviceComboId) {
+      console.error("Combo has no serviceComboId:", combo);
+      console.log("Available properties:", Object.keys(combo));
+    }
+    setModal({ type: "detail", data: combo });
+  };
 
   return (
     <div className={styles.tabContainer}>
@@ -87,12 +98,12 @@ const ServiceComboDB = () => {
               </tr>
             ) : (
               serviceCombos.map((combo) => (
-                <tr key={combo.comboId}>
+                <tr key={combo.serviceComboId || `row-${Math.random()}`}>
                   <td>{combo.comboName}</td>
                   <td>{(combo.price / 1000).toFixed(3)}₫</td>
                   <td>
                     <button
-                      onClick={() => setModal({ type: "detail", data: combo })}
+                      onClick={() => handleOpenDetail(combo)}
                       className={styles.iconButton}
                     >
                       <img src={editIcon} alt="Detail" />

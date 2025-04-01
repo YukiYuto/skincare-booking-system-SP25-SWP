@@ -5,7 +5,7 @@ import {
   PUT_SERVICE_API,
   GET_ALL_SERVICE_TYPES_API,
   POST_FILE_SERVICE_API,
-  POST_TYPE_ITEM_API,
+  PUT_TYPE_ITEM_API,
 } from "../../../../config/apiConfig";
 import styles from "./ServiceEditModal.module.css";
 
@@ -20,7 +20,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
   const dropdownRef = useRef(null);
   const { user } = useSelector((state) => state.auth);
 
-  // Fetch all service types and initialize selected types
   useEffect(() => {
     axios
       .get(GET_ALL_SERVICE_TYPES_API, {
@@ -30,14 +29,12 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
         const serviceTypesData = res.data.result;
         setAllServiceTypes(serviceTypesData);
 
-        // Initialize selected service types
         if (service.serviceTypeIds && service.serviceTypeIds.length > 0) {
           const initialSelected = service.serviceTypeIds
             .map((id) => serviceTypesData.find((st) => st.serviceTypeId === id))
             .filter(Boolean);
           setSelectedServiceTypes(initialSelected);
 
-          // Remove selected types from available types
           setAllServiceTypes(
             serviceTypesData.filter(
               (st) => !service.serviceTypeIds.includes(st.serviceTypeId)
@@ -48,11 +45,9 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
       .catch((err) => console.error("Error fetching service types:", err));
   }, [user.accessToken, service.serviceTypeIds]);
 
-  // Handle regular form input changes
   const handleChange = (e) =>
     setFormState({ ...formState, [e.target.name]: e.target.value });
 
-  // Handle image file change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -61,7 +56,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
     }
   };
 
-  // Handle service type selection
   const handleSelect = (serviceType) => {
     setSelectedServiceTypes([...selectedServiceTypes, serviceType]);
     setAllServiceTypes(
@@ -71,8 +65,7 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
     );
     setShowDropdown(false);
   };
-
-  // Handle service type deselection
+  
   const handleDeselect = (serviceType) => {
     setSelectedServiceTypes(
       selectedServiceTypes.filter(
@@ -82,7 +75,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
     setAllServiceTypes([...allServiceTypes, serviceType]);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -93,13 +85,11 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle form submission
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
       let imageUrl = formState.imageUrl;
 
-      // Upload new image if provided
       if (imageFile) {
         const formData = new FormData();
         formData.append("file", imageFile);
@@ -123,23 +113,20 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
         }
       }
 
-      // Extract service type IDs from selected service types
       const serviceTypeIds = selectedServiceTypes.map((st) => st.serviceTypeId);
 
-      // Update service
       await axios.put(
         PUT_SERVICE_API,
         {
           ...formState,
           imageUrl,
-          serviceTypeIds, // Include service type IDs in the update
+          serviceTypeIds,
         },
         { headers: { Authorization: `Bearer ${user.accessToken}` } }
       );
 
-      // Associate service with types
-      await axios.post(
-        POST_TYPE_ITEM_API,
+      await axios.put(
+        PUT_TYPE_ITEM_API,
         { serviceId: service.serviceId, serviceTypeIdList: serviceTypeIds },
         { headers: { Authorization: `Bearer ${user.accessToken}` } }
       );
@@ -157,7 +144,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
     ]
   );
 
-  // Handle service deletion
   const handleDelete = useCallback(async () => {
     try {
       await axios.delete(`${PUT_SERVICE_API}/${service.serviceId}`, {
@@ -175,7 +161,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
       <div className={styles.modalContent}>
         <h2>Edit Service</h2>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
-          {/* Service name, description, price inputs */}
           {["serviceName", "description", "price"].map((name) => (
             <label key={name}>
               {name.charAt(0).toUpperCase() + name.slice(1)}:
@@ -198,7 +183,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
             </label>
           ))}
 
-          {/* Service Types Dropdown */}
           <label>Service Types:</label>
           <div ref={dropdownRef} className={styles.dropdownContainer}>
             <input
@@ -228,8 +212,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
               </ul>
             )}
           </div>
-
-          {/* Selected Service Types */}
           <div className={styles.selectedContainer}>
             <h5>Selected Service Types:</h5>
           </div>
@@ -247,7 +229,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
             ))}
           </div>
 
-          {/* Image upload */}
           <label>
             Image:
             <input type="file" onChange={handleFileChange} />
@@ -256,7 +237,6 @@ const ServiceEditModal = ({ service, onClose, refresh }) => {
             <img src={preview} alt="Preview" className={styles.imagePreview} />
           )}
 
-          {/* Action buttons */}
           <div className={styles.buttonGroup}>
             <button type="submit" className={styles.submitButton}>
               Update

@@ -5,6 +5,7 @@ import {
   POST_THERAPIST_API,
   POST_THERAPIST_SERVICE_TYPE_API,
   GET_ALL_SERVICE_TYPES_API,
+  GET_ALL_THERAPISTS_API,
 } from "../../../../config/apiConfig";
 import styles from "./TherapistAddModal.module.css";
 import RPG from "../../RandomPasswordGenerator/RPG";
@@ -93,6 +94,8 @@ const TherapistAddModal = ({ onClose, refresh }) => {
       return alert("Select at least one service type.");
 
     try {
+      console.log("Selected service types:", selectedServiceTypes);
+      
       // Create therapist
       const { data: therapistData } = await axios.post(
         POST_THERAPIST_API,
@@ -101,16 +104,48 @@ const TherapistAddModal = ({ onClose, refresh }) => {
           headers: { Authorization: `Bearer ${user.accessToken}` },
         }
       );
+      
+      console.log("Created therapist:", therapistData.result);
 
-      // Associate therapist with service types
-      await axios.post(
-        POST_THERAPIST_SERVICE_TYPE_API,
+      // Get the email of the created therapist
+      const createdEmail = therapistData.result.email;
+      
+      // Fetch all therapists to find the ID matching this email
+      const { data: allTherapists } = await axios.get(
+        GET_ALL_THERAPISTS_API,
         {
-          therapistId: therapistData.result.therapistId,
-          serviceTypeIdList: selectedServiceTypes.map((st) => st.serviceTypeId),
-        },
+          headers: { Authorization: `Bearer ${user.accessToken}` },
+        }
+      );
+      
+      console.log("Searching for therapist with email:", createdEmail);
+      
+      // Find the therapist ID by matching email
+      const therapist = allTherapists.result.find(t => t.email === createdEmail);
+      
+      if (!therapist) {
+        console.error("Therapist not found. All therapists:", allTherapists.result);
+        throw new Error("Newly created therapist not found in therapist list");
+      }
+      
+      console.log("Found therapist:", therapist);
+      
+      // Prepare service type payload
+      const serviceTypePayload = {
+        therapistId: therapist.skinTherapistId,
+        serviceTypeIdList: selectedServiceTypes.map((st) => st.serviceTypeId),
+      };
+      
+      console.log("Sending service type payload:", serviceTypePayload);
+      
+      // Associate therapist with service types using the correct ID
+      const serviceTypeResponse = await axios.post(
+        POST_THERAPIST_SERVICE_TYPE_API,
+        serviceTypePayload,
         { headers: { Authorization: `Bearer ${user.accessToken}` } }
       );
+      
+      console.log("Service type association response:", serviceTypeResponse.data);
 
       onClose();
       refresh();
@@ -119,6 +154,7 @@ const TherapistAddModal = ({ onClose, refresh }) => {
         "Error adding therapist:",
         err.response?.data || err.message
       );
+      alert("Error adding therapist: " + (err.response?.data?.message || err.message));
     }
   };
 

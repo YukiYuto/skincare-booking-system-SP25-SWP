@@ -5,26 +5,31 @@ const RPG = ({ onChange }) => {
   const [password, setPassword] = useState("");
 
   const generatePassword = () => {
-    const length = 8; 
+    const length = 8;
     const chars = {
       lower: "abcdefghijklmnopqrstuvwxyz",
       upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
       number: "0123456789",
-      special: "!@#$%^&*()-_+[]{}|;:,.?/",
+      special: "!@",
     };
 
     let newPassword = "";
     newPassword += chars.lower[Math.floor(Math.random() * chars.lower.length)];
     newPassword += chars.upper[Math.floor(Math.random() * chars.upper.length)];
-    newPassword += chars.number[Math.floor(Math.random() * chars.number.length)];
-    newPassword += chars.special[Math.floor(Math.random() * chars.special.length)];
+    newPassword +=
+      chars.number[Math.floor(Math.random() * chars.number.length)];
+    newPassword +=
+      chars.special[Math.floor(Math.random() * chars.special.length)];
 
     const allChars = chars.lower + chars.upper + chars.number + chars.special;
     for (let i = 4; i < length; i++) {
       newPassword += allChars[Math.floor(Math.random() * allChars.length)];
     }
 
-    newPassword = newPassword.split("").sort(() => Math.random() - 0.5).join("");
+    newPassword = newPassword
+      .split("")
+      .sort(() => Math.random() - 0.5)
+      .join("");
 
     setPassword(newPassword);
     onChange && onChange(newPassword);

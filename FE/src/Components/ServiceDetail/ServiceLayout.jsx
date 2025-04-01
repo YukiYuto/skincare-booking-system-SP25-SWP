@@ -87,7 +87,7 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
       toast.warn("Please Login!");
       return;
     }
-    onBookButtonClick(); // Gọi hàm đặt lịch khi đã đăng nhập
+    onBookButtonClick();
   };
 
   return (
@@ -99,11 +99,9 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
           className={styles.image}
         />
       </div>
-
       <div className={styles.infoContainer}>
         <h1 className={styles.title}>{service.serviceName}</h1>
         <p className={styles.description}>{service.description}</p>
-
         <div className={styles.detailsSection}>
           <span className={styles.serviceType} title={getAllServiceTypeNames()}>
             {loading ? "Loading..." : getServiceTypeDisplay()}
