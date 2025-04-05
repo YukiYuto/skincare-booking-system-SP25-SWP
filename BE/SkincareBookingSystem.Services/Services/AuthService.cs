@@ -396,9 +396,7 @@ public class AuthService : IAuthService
                 UserName = userInfo.Email,
                 ImageUrl = userInfo.AvatarUrl,
                 Address = userInfo.Address,
-                Age = userInfo.BirthDate != string.Empty
-                    ? DateTime.UtcNow.Year - DateTime.Parse(userInfo.BirthDate).Year
-                    : 18,
+                BirthDate = ParseBirthDate(userInfo.BirthDate),
                 Gender = userInfo.Gender,
                 PhoneNumber = userInfo.PhoneNumber,
                 EmailConfirmed = true
@@ -511,6 +509,25 @@ public class AuthService : IAuthService
 
         return new string(password);
     }
+    
+    // tryParseBirthdate
+    private DateTime? ParseBirthDate(string birthDateString)
+    {
+        if (string.IsNullOrEmpty(birthDateString))
+        {
+            return null;
+        }
+
+        string[] formats = { "yyyy-MM-dd", "MM/dd/yyyy", "dd/MM/yyyy" }; // Các định dạng có thể
+        if (DateTime.TryParseExact(birthDateString, formats, 
+                System.Globalization.CultureInfo.InvariantCulture, 
+                System.Globalization.DateTimeStyles.None, out DateTime birthDate))
+        {
+            return birthDate;
+        }
+
+        return null;
+    }
 
     public async Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,
         UpdateUserProfileDto updateUserProfileDto)
@@ -610,7 +627,7 @@ public class AuthService : IAuthService
             Gender = user.Gender,
             ImageUrl = principal.FindFirst("ImageUrl")?.Value,
             UserName = user.UserName!,
-            Age = user.Age,
+            BirthDate = user.BirthDate,
             Roles = roles.ToList()
         };
 
