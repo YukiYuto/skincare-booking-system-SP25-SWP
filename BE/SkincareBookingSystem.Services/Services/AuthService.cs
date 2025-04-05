@@ -25,8 +25,7 @@ public class AuthService : IAuthService
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public AuthService
-    (
+    public AuthService(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         ITokenService tokenService,
@@ -387,6 +386,9 @@ public class AuthService : IAuthService
         }
         else
         {
+            //Generate random password
+            var randomPassword = GenerateRandomPassword();
+
             user = new ApplicationUser
             {
                 Email = userInfo.Email,
@@ -402,7 +404,7 @@ public class AuthService : IAuthService
                 EmailConfirmed = true
             };
 
-            var createUserResult = await _userManager.CreateAsync(user);
+            var createUserResult = await _userManager.CreateAsync(user, randomPassword);
             if (!createUserResult.Succeeded)
             {
                 return new ResponseDto()
@@ -418,7 +420,7 @@ public class AuthService : IAuthService
             {
                 UserId = user.Id,
             };
-            
+
             await _unitOfWork.Customer.AddAsync(newCustomer);
             var isRoleExist = await _roleManager.RoleExistsAsync(StaticUserRoles.Customer);
             if (!isRoleExist) await _roleManager.CreateAsync(new IdentityRole(StaticUserRoles.Customer));
@@ -434,6 +436,9 @@ public class AuthService : IAuthService
                 };
             await _userManager.AddLoginAsync(user,
                 new UserLoginInfo(StaticLoginProvider.Google, userInfo.UserId, "GOOGLE"));
+
+            await _emailService.SendGooglePasswordEmailTemplate(userInfo.Email, userInfo.Name, randomPassword,
+                "https://lumiconnect-beauty.vercel.app");
         }
 
         var accessToken = await _tokenService.GenerateJwtAccessTokenAsync(user);
@@ -476,6 +481,37 @@ public class AuthService : IAuthService
         );
     }
 
+    //Generate password
+    private string GenerateRandomPassword()
+    {
+        // Define characters that can be used in the password
+        const string allowedChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
+        const string numericChars = "0123456789";
+        const string specialChars = "!@$?_-";
+
+        Random random = new Random();
+        int length = random.Next(8, 13); //12 characters
+
+        char[] password = new char[length];
+
+        password[0] = numericChars[random.Next(numericChars.Length)];
+
+        password[1] = specialChars[random.Next(specialChars.Length)];
+
+        for (int i = 2; i < length; i++)
+        {
+            password[i] = allowedChars[random.Next(allowedChars.Length)];
+        }
+
+        for (int i = 0; i < length; i++)
+        {
+            int swapIndex = random.Next(length);
+            (password[i], password[swapIndex]) = (password[swapIndex], password[i]);
+        }
+
+        return new string(password);
+    }
+
     public async Task<ResponseDto> UpdateUserProfile(ClaimsPrincipal userPrincipal,
         UpdateUserProfileDto updateUserProfileDto)
     {
@@ -500,7 +536,6 @@ public class AuthService : IAuthService
                 Result = null
             };
 
-        // Sử dụng mapping với overload có destination để cập nhật đối tượng user hiện có
         _mapperService.Map(updateUserProfileDto, user);
 
         var result = await _userManager.UpdateAsync(user);
@@ -513,7 +548,6 @@ public class AuthService : IAuthService
                 Result = result.Errors
             };
 
-        // Nếu muốn trả về dữ liệu cập nhật, bạn có thể map lại đối tượng user sang DTO trả về
         var updatedUserDto = _mapperService.Map<ApplicationUser, UpdateUserProfileDto>(user);
         return new ResponseDto
         {
@@ -788,15 +822,5 @@ public class AuthService : IAuthService
             StaticOperationStatus.Token.TokenRefreshed,
             StaticOperationStatus.StatusCode.Ok,
             newAccessToken);
-    }
-
-    public Task<ResponseDto> LockUser(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ResponseDto> UnlockUser(string id)
-    {
-        throw new NotImplementedException();
     }
 }
