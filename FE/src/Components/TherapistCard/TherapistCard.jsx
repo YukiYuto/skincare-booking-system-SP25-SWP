@@ -1,128 +1,64 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Card, Button, Spin, Alert, Pagination, Input, Select } from 'antd';
-import styles from './TherapistCard.module.css';
-import Header from '../Common/Header';
-import { useNavigate } from 'react-router-dom';
-import Footer from '../Footer/Footer';
+import { useEffect, useState } from "react";
+import styles from "./TherapistCard.module.css";
+import { useNavigate } from "react-router-dom";
+import { GET_THERAPIST_BY_ID_API } from "../../config/apiConfig";
+import axios from "axios";
 
-const { Meta } = Card;
-const { Search } = Input;
-const { Option } = Select;
-
-const TherapistCard = () => {
-  const [therapists, setTherapists] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState(null);
+const TherapistCard = ({ skinTherapistId }) => {
+  const [therapist, setTherapist] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setTherapists((prev) => [...prev].sort((a, b) => {
-      if (sortBy === "fullName") return a.fullName.localeCompare(b.fullName);
-      if (sortBy === "age") return Number(a.age || 0) - Number(b.age || 0);
-      return 0;
-    }));
-  }, [sortBy]);
-  
+    const fetchTherapist = async () => {
+      try {
+        const res = await axios.get(
+          GET_THERAPIST_BY_ID_API.replace("{therapistId}", skinTherapistId)
+        );
 
-  useEffect(() => {
-    axios
-      .get('https://lumiconnect.azurewebsites.net/api/therapists')
-      .then((response) => {
-        setTherapists(Array.isArray(response.data.result) ? response.data.result : []);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
-  }, []);
+        if (res.data?.isSuccess) {
+          setTherapist(res.data.result);
+        } else {
+          console.error("Failed to fetch therapist:", res.data?.message);
+        }
+      } catch (err) {
+        console.error("Error fetching therapist:", err);
+      }
+    };
 
-  if (loading) return <Spin size="large" className={styles.loading} />;
-  if (error) return <Alert message="Fail to load data!" description={error} type="error" showIcon />;
+    if (skinTherapistId) fetchTherapist();
+  }, [skinTherapistId]);
 
-  const filteredTherapists = therapists.filter((therapist) =>
-    therapist.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    therapist.phoneNumber.includes(searchQuery)
-  );
-
-  const handleSortChange = (value) => {
-    setSortBy(value);
-  
-    // Sắp xếp danh sách ngay lập tức
-    setTherapists((prev) => [...prev].sort((a, b) => {
-      if (value === "fullName") return a.fullName.localeCompare(b.fullName);
-      if (value === "age") return Number(a.age || 0) - Number(b.age || 0);
-      return 0;
-    }));
-  };
-
-  const sortedTherapists = [...filteredTherapists].sort((a, b) => {
-    if (sortBy === "fullName") return a.fullName.localeCompare(b.fullName);
-    if (sortBy === "age") return Number(a.age || 0) - Number(b.age || 0);
-    return 0;
-  });  
-
-  
-
-  const indexOfLastTherapist = currentPage * pageSize;
-  const indexOfFirstTherapist = indexOfLastTherapist - pageSize;
-  const currentTherapists = filteredTherapists.slice(indexOfFirstTherapist, indexOfLastTherapist);
+  if (!therapist) return <p>Loading...</p>;
 
   return (
-    <div className={styles.therapistList}>
-    <Header />
-    <h1 style={{ textAlign: 'center', marginTop: "130px" }}>Therapist</h1>
     <div className={styles.container}>
-      <div className={styles.controls}>
-        <Search
-            placeholder="Search..."
-            size="large"
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.search}
-        />
-        <Select
-              placeholder="Sort by"
-              onChange={handleSortChange}
-              className={styles.sort}
-              allowClear
-            >
-              <Option value="fullName">Name (A-Z)</Option>
-              <Option value="age">Age (Ascending)</Option>
-        </Select>
-      </div>
-      {currentTherapists.length > 0 ? (
-        <>
-        <div className={styles.grid}>
-        {currentTherapists.map((therapist) => (
-          <Card
-            key={therapist.id}
-            hoverable
-            className={styles.card}
-            cover={<img alt={therapist.fullName} src={therapist.imageUrl} className={styles.image} />}
-          >
-            <Meta title={therapist.fullName} />
-            <Button type="primary" className={styles.button} onClick={() => navigate(`/therapist/${therapist.skinTherapistId}`)}>Detail</Button>
-          </Card>
-        ))}
-        </div>
-        <Pagination
-            current={currentPage}
-            pageSize={pageSize}
-            total={sortedTherapists.length}
-            onChange={(page) => setCurrentPage(page)}
-            className={styles.pagination}
+      <div
+        className={styles.therapistCard}
+        onClick={() => navigate(`/therapist/${skinTherapistId}`)}
+      >
+        {therapist.imageUrl ? (
+          <img
+            src={therapist.imageUrl}
+            alt={therapist.fullName}
+            className={styles.therapistImage}
           />
-        </>
-      ) : (
-        <Alert message="Không có dữ liệu therapists" type="info" showIcon />
-      )}
-    </div>
-    <Footer />
+        ) : (
+          <img
+            src="https://www.shutterstock.com/image-vector/default-placeholder-doctor-halflength-portrait-600nw-1058724875.jpg"
+            alt={therapist.fullName}
+            className={styles.therapistImage}
+          />
+        )}
+        <h2 className={styles.therapistName}>
+          {therapist.fullName}{" "}
+          {therapist.gender === "Male" || therapist.gender === "male"
+            ? "M"
+            : "F"}
+        </h2>
+        <p className={styles.therapistDescription}>
+          Experience: {therapist.experience} years
+        </p>
+      </div>
     </div>
   );
 };

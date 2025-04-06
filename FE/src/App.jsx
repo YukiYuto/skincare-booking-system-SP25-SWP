@@ -31,7 +31,7 @@ import Orders from "./Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "./Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import PaymentConfirmationPage from "./Pages/Payment/PaymentConfirmationPage";
-import TherapistCard from "./Components/TherapistCard/TherapistCard";
+import TherapistList from "./Components/TherapistList/TherapistList";
 import TherapistDetail from "./Components/TherapistDetail/TherapistDetail";
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
@@ -71,7 +71,7 @@ const AppRoutes = () => {
       <Route path="services/:id" element={<ServiceDetail />} />
       <Route path="service-combo/" element={<ServiceCombo />} />
       <Route path="service-combo/:id" element={<ServiceComboDetail />} />
-      <Route path="therapist" element={<TherapistCard />} />
+      <Route path="therapist" element={<TherapistList />} />
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="blogs" element={<BlogForCus />} />
       <Route path="blogs/:categoryName?" element={<BlogForCus />} />
@@ -83,8 +83,11 @@ const AppRoutes = () => {
         path="payment-confirmation"
         element={<PaymentConfirmationPage />}
       />
-      <Route path='orders' element={<OrderListPage />} />
-      <Route path="payment-confirmation-combo" element={<PaymentConfirmationPage />} />
+      <Route path="orders" element={<OrderListPage />} />
+      <Route
+        path="payment-confirmation-combo"
+        element={<PaymentConfirmationPage />}
+      />
       {!accessToken && (
         <>
           <Route path="login" element={<LoginPage />} />
