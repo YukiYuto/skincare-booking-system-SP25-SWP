@@ -11,10 +11,14 @@ import {
   validatePassword,
 } from "../../utils/validationUtils";
 import { InputField } from "../InputField/InputField";
+import { useSelector } from "react-redux";
+import SignInWithGoogle from "../Authentication/Google/SignInWithGoogle";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
-
+  const { loading, error: reduxError } = useSelector((state) => state.auth);
   const [registerData, setRegisterData] = useState({
     email: "",
     password: "",
@@ -36,6 +40,22 @@ function RegisterForm() {
     age: "",
     gender: "",
   });
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const idTokenResult = await result.user?.getIdTokenResult();
+      const idToken = idTokenResult?.token;
+      const user = await dispatch(loginByGoogle(idToken)).unwrap();
+      setIsAccountVerified(true);
+      toast.success(`Welcome, ${user.fullName}!`);
+      navigate("/");
+    } catch (error) {
+      console.error("Google sign-in error", error.message);
+      toast.error("Google sign-in failed. Please try again.");
+    }
+  };
 
   const formatFullname = (fullName) => {
     return fullName
@@ -135,12 +155,14 @@ function RegisterForm() {
 
   return (
     <form
-      className={`${styles.registerForm} ${isLoading ? styles.disabledForm : ""}`}
+      className={`${styles.registerForm} ${
+        isLoading ? styles.disabledForm : ""
+      }`}
       aria-labelledby="register-title"
       onSubmit={handleRegisterSubmit}
     >
       <h1 id="register-title" className={styles.registerTitle}>
-        Register Account
+        Welcome Newcomer
       </h1>
       <div className={styles.flexContainer}>
         <InputField
@@ -151,6 +173,76 @@ function RegisterForm() {
           value={registerData.fullName}
           onChange={handleRegisterChange}
           error={errors.fullName}
+        />
+
+        <InputField
+          label="Phone"
+          type="text"
+          name="phoneNumber"
+          placeholder="Phone Number"
+          value={registerData.phoneNumber}
+          onChange={handleRegisterChange}
+          error={errors.phoneNumber}
+        />
+      </div>
+
+      <div className={styles.flexContainer}>
+        <InputField
+          label="Email"
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          value={registerData.email}
+          onChange={handleRegisterChange}
+          error={errors.email}
+        />
+
+        <InputField
+          label="Address"
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={registerData.address}
+          onChange={handleRegisterChange}
+          error={errors.address}
+        />
+      </div>
+
+      <div className={styles.flexContainer}>
+        <InputField
+          label="Password"
+          type="password"
+          name="password"
+          placeholder="Enter Password"
+          value={registerData.password}
+          onChange={handleRegisterChange}
+          showPasswordToggle
+          error={errors.password}
+        />
+
+        <InputField
+          label="Confirm"
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          value={registerData.confirmPassword}
+          onChange={handleRegisterChange}
+          showPasswordToggle
+          error={errors.confirmPassword}
+        />
+      </div>
+
+      <div className={styles.flexContainer}>
+        <InputField
+          label="Birthdate"
+          type="date"
+          name="age"
+          placeholder="Birthdate"
+          min="1900-01-01"
+          max={new Date().toISOString().split("T")[0]}
+          value={registerData.age}
+          onChange={handleRegisterChange}
+          error={errors.age}
         />
 
         <div className={styles.genderContainer}>
@@ -178,94 +270,14 @@ function RegisterForm() {
         {errors.gender && <span className={styles.error}>{errors.gender}</span>}
       </div>
 
-      <div className={styles.flexContainer}>
-        <InputField
-          label="Phone Number"
-          type="text"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={registerData.phoneNumber}
-          onChange={handleRegisterChange}
-          error={errors.phoneNumber}
-        />
-
-        <InputField
-          label="Email Address"
-          type="email"
-          name="email"
-          placeholder="Email Address"
-          value={registerData.email}
-          onChange={handleRegisterChange}
-          error={errors.email}
-        />
-      </div>
-
-      <div className={styles.flexContainer}>
-        <InputField
-          label="Password"
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          value={registerData.password}
-          onChange={handleRegisterChange}
-          showPasswordToggle
-          error={errors.password}
-        />
-
-        <InputField
-          label="Confirm Password"
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={registerData.confirmPassword}
-          onChange={handleRegisterChange}
-          showPasswordToggle
-          error={errors.confirmPassword}
-        />
-      </div>
-
-      <div className={styles.flexContainer}>
-        <InputField
-          label="Address"
-          type="text"
-          name="address"
-          placeholder="Address"
-          value={registerData.address}
-          onChange={handleRegisterChange}
-          error={errors.address}
-        />
-
-        <InputField
-          label="Age"
-          type="number"
-          name="age"
-          placeholder="Age"
-          value={registerData.age}
-          onChange={handleRegisterChange}
-          error={errors.age}
-        />
-      </div>
-
-      <div>
-                <p>Do you have an account? <a 
-                className={styles.loginLink}
-                href="/login" 
-                onClick={() => {
-                    if (!isLoading) {
-                      window.location.href = "/login";
-                    }
-                  }}
-                  disabled={isLoading} 
-                >Login
-                </a>
-              </p>
-            </div>
-
       <div className={styles.termsContainer}>
-        <span>By registering you agree to </span>
-        <a 
-        style={{ pointerEvents: isLoading ? "none" : "auto", opacity: isLoading ? 0.5 : 1 }}
-        href="/terms" className={styles.termsLink}>
+        <span>By signing in you agree to </span>
+        <a
+          href="/terms-conditions"
+          className={`${styles.termsLink} ${
+            loading ? styles.disabledLink : ""
+          }`}
+        >
           terms and conditions
         </a>
         <span> of our center.</span>
@@ -278,6 +290,21 @@ function RegisterForm() {
       >
         {isLoading ? "Registering..." : "Register"}
       </button>
+
+      <div className={styles.loginAccountContainer}>
+        <span
+          className={styles.loginAccountButton}
+          onClick={() => {
+            if (!loading) {
+              window.location.href = "/login";
+            }
+          }}
+          disabled={loading}
+        >
+          Have an account?
+        </span>
+        <SignInWithGoogle handleGoogleSignIn={handleGoogleSignIn} />
+      </div>
     </form>
   );
 }
