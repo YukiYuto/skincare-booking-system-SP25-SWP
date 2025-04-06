@@ -81,7 +81,7 @@ const PaymentConfirmation = () => {
         <Result
           status="success"
           title="Payment Confirmed!"
-          subTitle="Your payment for service combo has been confirmed successfully."
+          subTitle="Your payment for service combo has been confirmed successfully. "
           extra={[
             <Button type="primary" onClick={() => navigate("/appointments")}>
               View Appointment

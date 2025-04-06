@@ -4,4 +4,4 @@ export const BASE_CLIENT_URL = "https://lumiconnect-beauty.vercel.app";
 // export const PAYMENT_CONFIRMATION_URL = "https://chatgpt.com";
 export const PAYMENT_CONFIRMATION_URL = `${BASE_CLIENT_URL}/payment-confirmation`;
 export const PAYMENT_CONFIRMATION_COMBO_URL = `${BASE_CLIENT_URL}/payment-confirmation-combo`;
-export const PAYMENT_CANCEL_URL = `${BASE_CLIENT_URL}/payment-cancel`;
+export const PAYMENT_CANCEL_URL = `${BASE_CLIENT_URL}/services`;

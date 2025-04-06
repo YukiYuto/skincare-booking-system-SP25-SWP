@@ -55,3 +55,14 @@
 .backButton:hover {
   background-color: #388e3c;
 }
+
+.recommendationContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bookButton {
+  display: flex;
+  margin-left: 50px;
+}

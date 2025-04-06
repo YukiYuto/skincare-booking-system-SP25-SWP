@@ -61,6 +61,7 @@ export const GET_CUSTOMER_BY_ID_API = `${BASE_URL}/customer/{customerId}`;
 export const GET_CUSTOMER_USER_API = `${BASE_URL}/customer/user`;
 export const GET_CUSTOMER_TIMETABLE_API = `${BASE_URL}/customer/timetable`;
 export const GET_CUSTOMER_ORDERS_API = `${BASE_URL}/customer/orders`;
+export const GET_SERVICE_RECOMMENDATIONS_API = `${BASE_URL}/customer/recommendation`;
 
 // Thêm API cho FileStorage
 export const POST_FILE_SERVICE_API = `${BASE_URL}/files/service`;
