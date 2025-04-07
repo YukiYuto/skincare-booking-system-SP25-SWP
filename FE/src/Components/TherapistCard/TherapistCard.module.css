@@ -25,7 +25,7 @@
   height: 250px;
   object-fit: cover;
   margin-bottom: 15px;
-  clip-path: path("M0,0 H250 V220 Q125,250 0,220 Z");
+  clip-path: ellipse(200px 200px at 50% 20%);
 }
 
 .therapistName {

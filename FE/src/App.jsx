@@ -32,7 +32,7 @@ import Schedule from "./Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import PaymentConfirmationPage from "./Pages/Payment/PaymentConfirmationPage";
 import TherapistList from "./Components/TherapistList/TherapistList";
-import TherapistDetail from "./Components/TherapistDetail/TherapistDetail";
+import TherapistDetail from "./Components/TherapistDetail/TherapistDetailModal";
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
 import StaffDashboard from "./Pages/Staff/Dashboard/StaffDashboard";

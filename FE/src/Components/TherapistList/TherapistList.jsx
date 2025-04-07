@@ -8,8 +8,11 @@ import Footer from "../Footer/Footer";
 
 const TherapistList = () => {
   const [therapists, setTherapists] = useState([]);
+  const [filteredTherapists, setFilteredTherapists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortField, setSortField] = useState("");
 
   useEffect(() => {
     const fetchTherapists = async () => {
@@ -17,6 +20,7 @@ const TherapistList = () => {
         const res = await axios.get(GET_ALL_THERAPISTS_API);
         if (res.data?.isSuccess) {
           setTherapists(res.data.result);
+          setFilteredTherapists(res.data.result);
         } else {
           setError(res.data?.message || "Failed to fetch therapists.");
           console.error("Error:", res.data?.message);
@@ -31,6 +35,24 @@ const TherapistList = () => {
 
     fetchTherapists();
   }, []);
+
+  useEffect(() => {
+    let updatedTherapists = [...therapists];
+
+    if (searchTerm) {
+      updatedTherapists = updatedTherapists.filter((therapist) =>
+        therapist.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (sortField === "name") {
+      updatedTherapists.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    } else if (sortField === "experience") {
+      updatedTherapists.sort((a, b) => b.experience - a.experience);
+    }
+
+    setFilteredTherapists(updatedTherapists);
+  }, [searchTerm, sortField, therapists]);
 
   console.log("Therapists state:", therapists);
 
@@ -47,11 +69,29 @@ const TherapistList = () => {
       <Header />
       <div className={styles.container}>
         <h1 className={styles.title}>Therapist List</h1>
+        <div className={styles.controls}>
+          <input
+            type="text"
+            placeholder="Search by name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+          <select
+            value={sortField}
+            onChange={(e) => setSortField(e.target.value)}
+            className={styles.sortDropdown}
+          >
+            <option value="">Sort By</option>
+            <option value="name">Name</option>
+            <option value="experience">Experience</option>
+          </select>
+        </div>
         <div className={styles.grid}>
-          {therapists.length === 0 ? (
+          {filteredTherapists.length === 0 ? (
             <p>No therapists available</p>
           ) : (
-            therapists.map((therapist) => (
+            filteredTherapists.map((therapist) => (
               <TherapistCard
                 key={therapist.skinTherapistId}
                 skinTherapistId={therapist.skinTherapistId}
