@@ -50,6 +50,7 @@ import QuizPage from "./Pages/QuizPage/QuizPage";
 import TermsAndConditions from "./Components/TermsAndConditions/TermsAndConditions";
 import PrivacyPolicy from "./Components/PrivacyPolicy/PrivacyPolicy";
 import Result from "./Components/SkinTest/Result";
+import TherapistAppointmentDetailsPage from "./Pages/Therapist/Appointment/TherapistAppointmentDetailsPage";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -74,6 +75,8 @@ const AppRoutes = () => {
       <Route path="blogs-detail/:title" element={<BlogForCusList />} />
       <Route path="feedback-page" element={<FeedbackPage />} />
       <Route path="error" element={<ErrorPage />} />
+      <Route path="skin-test" element={<SkinTest />} />
+      <Route path="result" element={<SkinTestResult />} />
       <Route
         path="payment-confirmation"
         element={<PaymentConfirmationPage />}
@@ -94,7 +97,10 @@ const AppRoutes = () => {
               <Route path="skin-test" element={<SkinTest />} />
               <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
+              <Route
+                path="payment-confirmation"
+                element={<PaymentConfirmationPage />}
+              />
               <Route path="appointments" element={<AppointmentPage />} />
             </>
           )}
@@ -112,9 +118,15 @@ const AppRoutes = () => {
                 <Route path="combo" element={<ServiceComboDB />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
-                <Route path="view-blogcategory" element={<ViewBlogCategory />} />
-                <Route path="view-blogcategory/:categoryName?" element={<ViewBlogCategory />} />
-                <Route path="view-detail/:title" element={<ViewDetail />} /> 
+                <Route
+                  path="view-blogcategory"
+                  element={<ViewBlogCategory />}
+                />
+                <Route
+                  path="view-blogcategory/:categoryName?"
+                  element={<ViewBlogCategory />}
+                />
+                <Route path="view-detail/:title" element={<ViewDetail />} />
               </Route>
             </>
           )}
@@ -124,8 +136,11 @@ const AppRoutes = () => {
               <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="staff-blogs" element={<StaffBlogManagement />} />
-              <Route path="staff-blogs/:categoryName?" element={<StaffBlogManagement />} />
-              <Route path="detail/:title" element={<StaffBlogDetail />} /> 
+              <Route
+                path="staff-blogs/:categoryName?"
+                element={<StaffBlogManagement />}
+              />
+              <Route path="detail/:title" element={<StaffBlogDetail />} />
               <Route path="staff/dashboard" element={<StaffDashboard />} />
               <Route
                 path="staff/appointments/:appointmentId"
@@ -138,8 +153,18 @@ const AppRoutes = () => {
               <Route path="skin-test" element={<SkinTest />} />
               <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
-              <Route path="therapist-management" element={<TherapistManagement />} />
-              <Route path="therapist-dashboard" element={<DashboardTherapist />} />
+              <Route
+                path="therapist-management"
+                element={<TherapistManagement />}
+              />
+              <Route
+                path="therapist-dashboard"
+                element={<DashboardTherapist />}
+              />
+              <Route
+                path="therapist/appointments/:appointmentId"
+                element={<TherapistAppointmentDetailsPage />}
+              />
             </>
           )}
           {roles.includes("MANAGER") && (
@@ -156,11 +181,16 @@ const AppRoutes = () => {
                 <Route path="combo" element={<ServiceComboDB />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="schedule" element={<Schedule />} />
-                <Route path="view-blogcategory" element={<ViewBlogCategory />} />
-                <Route path="view-blogcategory/:categoryName?" element={<ViewBlogCategory />} />
-                <Route path="view-detail/:title" element={<ViewDetail />} /> 
+                <Route
+                  path="view-blogcategory"
+                  element={<ViewBlogCategory />}
+                />
+                <Route
+                  path="view-blogcategory/:categoryName?"
+                  element={<ViewBlogCategory />}
+                />
+                <Route path="view-detail/:title" element={<ViewDetail />} />
               </Route>
-              
             </>
           )}
         </>

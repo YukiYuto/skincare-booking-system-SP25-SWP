@@ -11,8 +11,8 @@ namespace SkincareBookingSystem.Models.Domain
         [StringLength(30)] public string SkinTestName { get; set; } = null!;
         [StringLength(30)] public string Description { get; set; } = null!;
         
-        public Guid CustomerSkinTestId { get; set; }
+        public Guid? CustomerSkinTestId { get; set; }
         [ForeignKey("CustomerSkinTestId")] 
-        public virtual CustomerSkinTest CustomerSkinTest { get; set; } = null!;
+        public virtual CustomerSkinTest? CustomerSkinTest { get; set; } = null!;
     }
 }

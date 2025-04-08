@@ -49,5 +49,13 @@ namespace SkincareBookingSystem.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpGet("today-appointments")]
+        [SwaggerOperation(Summary = "API gets therapists appointments for today", Description = "Requires therapist role")]
+        public async Task<ActionResult> GetTherapistTodayAppointments()
+        {
+            var response = await _skinTherapistService.GetTherapistTodayAppointments(User);
+            return StatusCode(response.StatusCode, response);
+        }
+
     }
 }

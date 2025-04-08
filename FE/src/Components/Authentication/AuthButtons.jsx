@@ -60,7 +60,7 @@ const AuthButtons = () => {
     }
 
     if (user.roles.includes("SKINTHERAPIST")) {
-      return { path: "/therapist-management", label: "Therapist Management", icon: <BarChartOutlined /> };
+      return [{ path: "/therapist-management", label: "Therapist Management", icon: <BarChartOutlined /> }];
     }
 
     if (user.roles.includes("STAFF")) {

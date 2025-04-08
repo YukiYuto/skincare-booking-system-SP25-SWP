@@ -49,6 +49,7 @@ export const DELETE_BOOKING_API = `${BASE_URL}/bookings/cancellation/{appointmen
 export const GET_BOOKING_THERAPIST_API = `${BASE_URL}/bookings/therapists`;
 export const GET_BOOKING_SLOT_API = `${BASE_URL}/bookings/occupied-slots`;
 export const POST_BOOKING_AUTO_ASSIGN_API = `${BASE_URL}/bookings/auto-assign`;
+export const COMPLETE_SERVICE_API = `${BASE_URL}/bookings/complete-service`;
 
 // Thêm API cho ComboItem 
 export const GET_COMBO_ITEM_API = `${BASE_URL}/combo-item`;

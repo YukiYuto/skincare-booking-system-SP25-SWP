@@ -13,7 +13,7 @@ namespace SkincareBookingSystem.Models.Domain
         [ForeignKey("SkinTestId")]
         public virtual SkinTest SkinTest { get; set; } = null!;
 
-        [StringLength(30)] public string Content { get; set; } = null!;
-        [StringLength(30)] public string Type { get; set; } = null!;
+        [StringLength(255)] public string Content { get; set; } = null!;
+        [StringLength(100)] public string Type { get; set; } = null!;
     }
 }

@@ -10,6 +10,6 @@ namespace SkincareBookingSystem.Models.Dto.SkinTest
     {
         public string SkinTestName { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public Guid CustomerSkinTestId { get; set; }
+        public Guid? CustomerSkinTestId { get; set; }
     }
 }
