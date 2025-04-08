@@ -29,6 +29,7 @@ public interface IUnitOfWork
     ITestQuestionRepository TestQuestion { get; }
     ITherapistScheduleRepository TherapistSchedule { get; }
     ITherapistServiceTypeRepository TherapistServiceType { get; }
+    ITherapistAdviceRepository TherapistAdvice { get; }
     ITypeItemRepository TypeItem { get; }
     IUserManagerRepository UserManager { get; }
     IPaymentRepository Payment { get; }

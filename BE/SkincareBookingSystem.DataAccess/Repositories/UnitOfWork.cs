@@ -59,6 +59,7 @@ public class UnitOfWork : IUnitOfWork
 
     public ITherapistScheduleRepository TherapistSchedule { get; private set; }
     public ITherapistServiceTypeRepository TherapistServiceType { get; private set; }
+    public ITherapistAdviceRepository TherapistAdvice { get; }
 
     public ITypeItemRepository TypeItem { get; private set; }
 
@@ -94,6 +95,7 @@ public class UnitOfWork : IUnitOfWork
         TestQuestion = new TestQuestionRepository(_context);
         TherapistSchedule = new TherapistScheduleRepository(_context);
         TherapistServiceType = new TherapistServiceTypeRepository(_context);
+        TherapistAdvice = new TherapistAdviceRepository(_context);
         TypeItem = new TypeItemRepository(_context);
         UserManager = new UserManagerRepository(userManager);
         Payment = new PaymentRepository(_context);
