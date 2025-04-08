@@ -11,9 +11,13 @@ const CustomerAppointment = ({ customerId }) => {
         console.log("GET_ALL_APPOINTMENTS_API:", GET_ALL_APPOINTMENTS_API);
         const res = await apiCall("GET", GET_ALL_APPOINTMENTS_API);
         if (res?.isSuccess) {
-          const filtered = res.result.filter(
-            (appt) => appt.customerId === customerId
-          );
+          const filtered = res.result
+            .filter((appt) => appt.customerId === customerId)
+            .sort(
+              (a, b) =>
+                new Date(b.appointmentDate).getTime() -
+                new Date(a.appointmentDate).getTime()
+            );
           setAppointments(filtered);
         }
       } catch (err) {
