@@ -38,6 +38,28 @@ const AppointmentTable = () => {
     navigate(`/staff/appointments/${appointmentId}`);
   };
 
+  const changeStatus = (status) => {
+    if (status == 0) {
+      return "Pending";
+    } else if (status == 1) {
+      return "Checked In";
+    } else if (status == 2) {
+      return "Checked Out";
+    } else {
+      return "Canceled";
+    }
+  };
+  const statusColor = (status) => {
+    if (status === 0) {
+      return "orange";
+    } else if (status === 1) {
+      return "blue";
+    } else if (status === 2) {
+      return "green";
+    } else {
+      return "red";
+    }
+  };
   const columns = [
     { title: "Therapist", dataIndex: "therapist", key: "therapist" },
     { title: "Customer", dataIndex: "customer", key: "customer" },
@@ -47,14 +69,17 @@ const AppointmentTable = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={status === "Completed" ? "green" : "orange"}>{status}</Tag>
+        <Tag color={statusColor(status)}>{changeStatus(status)}</Tag>
       ),
     },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Button type="link" onClick={() => handleViewDetails(record.appointmentId)}>
+        <Button
+          type="link"
+          onClick={() => handleViewDetails(record.appointmentId)}
+        >
           View Details
         </Button>
       ),
@@ -81,7 +106,13 @@ const AppointmentTable = () => {
             <h3 className={styles.title}>Today{`'`}s Appointments</h3>
           </div>
           <div className={styles.tableSection}>
-            <Table columns={columns} dataSource={appointments} loading={loading} rowKey="id" pagination={{ pageSize: 3 }} />
+            <Table
+              columns={columns}
+              dataSource={appointments}
+              loading={loading}
+              rowKey="id"
+              pagination={{ pageSize: 3 }}
+            />
           </div>
         </div>
       </ConfigProvider>
