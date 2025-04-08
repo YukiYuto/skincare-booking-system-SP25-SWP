@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import ServiceLayout from "../../Components/ServiceDetail/ServiceLayout";
 import styles from "./ServiceDetail.module.css";
-import { GET_SERVICE_BY_ID_API, HTTP_METHODS } from "../../config/apiConfig";
 import Header from "../../Components/Common/Header";
 import BookingModal from "../../Components/BookingModal/BookingModal";
 import SimilarService from "../../Components/ServiceSimilar/SimilarService";
+import { GET_SERVICE_BY_ID_API, HTTP_METHODS } from "../../config/apiConfig";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { clearUser } from "../../redux/auth/slice";

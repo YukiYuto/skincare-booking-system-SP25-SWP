@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { GET_CUSTOMER_BY_ID_API } from "../../../../config/apiConfig";
+import {
+  GET_CUSTOMER_BY_ID_API,
+  GET_ALL_APPOINTMENTS_API,
+} from "../../../../config/apiConfig";
 import styles from "./CustomerDetail.module.css";
 
 const CustomerDetail = ({ customer, onClose }) => {

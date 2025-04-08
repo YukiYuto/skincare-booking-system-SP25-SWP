@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import styles from "./ServiceLayout.module.css";
+import placeholder from "../../assets/images/trust-image.jpg";
+import { useState, useEffect } from "react";
 import { GET_ALL_SERVICE_TYPES_API } from "../../config/apiConfig";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -94,7 +96,11 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
     <div className={styles.layout}>
       <div className={styles.imageContainer}>
         <img
-          src={service.imageUrl}
+          src={
+            !service.imageUrl || service.imageUrl === "imageUrl"
+              ? placeholder
+              : service.imageUrl
+          }
           alt={service.serviceName}
           className={styles.image}
         />
