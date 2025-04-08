@@ -284,6 +284,49 @@ namespace SkincareBookingSystem.Services.Services
                     result: new List<Appointments>());
         }
 
+        public async Task<ResponseDto> GetAppointmentsByCustomerId(ClaimsPrincipal user, Guid customerId)
+        {
+            if (UserError.NotExists(user))
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+
+            var customerFromDb = await _unitOfWork.Customer.GetAsync(c => c.CustomerId == customerId);
+            if (customerFromDb is null)
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.Customer.Invalid,
+                    statusCode: StaticOperationStatus.StatusCode.BadRequest);
+
+            try
+            {
+                var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync(
+                    filter: a => a.CustomerId == customerFromDb.CustomerId,
+                    includeProperties: $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)},{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)},{nameof(Appointments.Order)}");
+
+                var appointmentDtos = appointmentsFromDb.Select(a => new AppointmentResponseDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    AppointmentDate = a.AppointmentDate,
+                    AppointmentTime = a.AppointmentTime,
+                    Status = a.Status ?? "Không xác định",
+                    CustomerId = a.CustomerId, // Thêm để debug
+                    CustomerName = a.Customer?.ApplicationUser?.FullName ?? "Not specified",
+                    TherapistName = a.TherapistSchedules?.FirstOrDefault()?.SkinTherapist?.ApplicationUser?.FullName ?? "Not specified"
+                }).ToList();
+
+                return SuccessResponse.Build(
+                    message: StaticResponseMessage.Appointment.RetrievedAll,
+                    statusCode: StaticOperationStatus.StatusCode.Ok,
+                    result: appointmentDtos);
+            }
+            catch (Exception e)
+            {
+                return ErrorResponse.Build(
+                    message: "An error occurred retrieving appointments: " + e.Message,
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
+        }
+
         public async Task<ResponseDto> UpdateAppointment(ClaimsPrincipal user, UpdateAppointmentDto appointmentDto)
         {
             if (user.FindFirstValue(ClaimTypes.NameIdentifier) is null)
