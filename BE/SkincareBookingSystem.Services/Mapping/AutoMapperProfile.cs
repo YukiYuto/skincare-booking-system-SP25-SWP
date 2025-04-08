@@ -41,6 +41,16 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        //Therapist Advice
+        CreateMap<CreateTherapistAdviceDto, TherapistAdvice>()
+            .ForMember(dest => dest.TherapistScheduleId, opt => opt.MapFrom(src => src.TherapistScheduleId))
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.AdviceContent, opt => opt.MapFrom(src => src.AdviceContent))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Appointment.Created));
+
+        CreateMap<TherapistAdvice, TherapistAdviceDto>();
+        
         // SkinProfile
         CreateMap<CreateSkinProfileDto, SkinProfile>()
             .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
