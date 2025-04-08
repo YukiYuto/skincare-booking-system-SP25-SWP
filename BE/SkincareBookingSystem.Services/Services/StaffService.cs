@@ -139,6 +139,7 @@ public class StaffService : IStaffService
                 includeProperties: $"{nameof(Appointments.TherapistSchedules)}," +
                                    $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}," +
                                    $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)}," +
+                                   $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.Slot)}," +
                                    $"{nameof(Appointments.Customer)}," +
                                    $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)}"
             );
@@ -171,7 +172,7 @@ public class StaffService : IStaffService
                 {
                     Therapist = activeSchedule?.SkinTherapist?.ApplicationUser?.FullName ?? "Not Assigned",
                     Customer = a.Customer?.ApplicationUser?.FullName ?? "Unknown Customer",
-                    Time = activeSchedule?.Slot?.StartTime.ToString("HH:mm") ?? "Not Scheduled",
+                    Time = activeSchedule?.Slot?.StartTime.ToString(@"hh\:mm") ?? "Not Scheduled",
                     Status = activeSchedule?.ScheduleStatus,
                     AppointmentId = a.AppointmentId,
                     CustomerId = a.CustomerId
