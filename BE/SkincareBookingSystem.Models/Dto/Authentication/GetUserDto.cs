@@ -8,7 +8,7 @@ public class GetUserDto
     public string PhoneNumber { get; set; } = null!;
     public string? Gender { get; set; } = null!;
     public string? Address { get; set; } = null!;
-    public int Age { get; set; }
+    public DateTime? BirthDate { get; set; }
     public string? ImageUrl { get; set; } = null!;
     public string UserName { get; set; } = null!;
     public List<string> Roles { get; set; } = new List<string>();

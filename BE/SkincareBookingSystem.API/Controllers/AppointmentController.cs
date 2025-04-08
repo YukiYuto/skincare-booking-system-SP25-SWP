@@ -41,7 +41,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = $"{StaticUserRoles.Customer},{StaticUserRoles.ManagerStaff}")]
+        [Authorize]
         [SwaggerOperation(Summary = "API gets all available Appointments", Description = "Requires customer, staff roles")]
         public async Task<ActionResult<ResponseDto>> GetAllAppointments()
         {
@@ -55,6 +55,15 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<ActionResult<ResponseDto>> GetAppointmentsByCustomer()
         {
             var result = await _appointmentService.GetAppointmentsByCustomer(User);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet("customer/{customerId}")]
+        [Authorize(Roles = $"{StaticUserRoles.Customer},{StaticUserRoles.ManagerStaff}")]
+        [SwaggerOperation(Summary = "API gets all available Appointments by customer id", Description = "Requires customer, staff roles")]
+        public async Task<ActionResult<ResponseDto>> GetAppointmentsByCustomerId(Guid customerId)
+        {
+            var result = await _appointmentService.GetAppointmentsByCustomerId(User, customerId);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -88,6 +97,15 @@ namespace SkincareBookingSystem.API.Controllers
         public async Task<ActionResult<ResponseDto>> DeleteAppointment(Guid appointmentId)
         {
             var result = await _appointmentService.DeleteAppointment(User, appointmentId);
+            return StatusCode(result.StatusCode, result);
+        }
+        
+        [HttpGet("by-date")]
+        [Authorize(Roles = $"{StaticUserRoles.Customer},{StaticUserRoles.ManagerStaff}")]
+        [SwaggerOperation(Summary = "API gets all available Appointments by date", Description = "Requires customer, staff roles")]
+        public async Task<ActionResult<ResponseDto>> GetAppointmentsByDate([FromQuery] AppointmentDateDto date)
+        {
+            var result = await _appointmentService.GetAppointmentByDate(User, date);
             return StatusCode(result.StatusCode, result);
         }
     }

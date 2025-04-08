@@ -41,7 +41,7 @@ public class ApplicationDbContextSeed
         {
             Id = adminUserId,
             FullName = "Admin",
-            Age = 30,
+            BirthDate = DateTime.UtcNow,
             ImageUrl = "https://example.com/avatar.png",
             Address = "123 Admin St",
             UserName = "admin@gmail.com",
@@ -64,7 +64,7 @@ public class ApplicationDbContextSeed
         {
             Id = managerUserId,
             FullName = "Manager",
-            Age = 30,
+            BirthDate = DateTime.UtcNow,
             ImageUrl = "https://example.com/avatarManager.png",
             Address = "123 Manager St",
             UserName = "manager@gmail.com",
