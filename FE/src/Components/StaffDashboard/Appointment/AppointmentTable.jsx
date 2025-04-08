@@ -80,11 +80,7 @@ const AppointmentTable = () => {
                     <tr key={a.id}>
                       <td>{a.therapist}</td>
                       <td
-                        style={{
-                          color: "#007bff",
-                          cursor: "pointer",
-                          textDecoration: "underline",
-                        }}
+                        className={styles.customerName}
                         onClick={() => handleCustomerClick(a)}
                       >
                         {a.customer}
