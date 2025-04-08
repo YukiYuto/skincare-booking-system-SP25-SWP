@@ -23,6 +23,4 @@ public interface IAuthService
     Task<ResponseDto> ChangePassword(ChangePasswordDto changePasswordDto);
     Task<ResponseDto> ForgotPassword(EmailDto forgotPasswordDto);
     Task<ResponseDto> ResetPassword(ResetPasswordDto resetPasswordDto);
-    Task<ResponseDto> LockUser(string id);
-    Task<ResponseDto> UnlockUser(string id);
 }

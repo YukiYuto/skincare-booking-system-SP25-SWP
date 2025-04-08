@@ -72,13 +72,13 @@ const SideBarStaff = ({ onToggle }) => {
           </div>
           <ul className={styles.menuList}>
             <li>
-              <Link to="/staff/dashboard" className={styles.menuItem}>
-                <span className={styles.menuText}>Dashboard</span>
+              <Link to="/" className={styles.menuItem}>
+                <span className={styles.menuText}>Home</span>
               </Link>
             </li>
             <li>
-              <Link to="/schedule-management" className={styles.menuItem}>
-                <span className={styles.menuText}>Schedule</span>
+              <Link to="/staff/dashboard" className={styles.menuItem}>
+                <span className={styles.menuText}>Dashboard</span>
               </Link>
             </li>
             <li>

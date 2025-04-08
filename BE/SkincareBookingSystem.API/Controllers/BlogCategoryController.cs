@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SkincareBookingSystem.DataAccess.IRepositories;
 using SkincareBookingSystem.Models.Dto.BlogCategories;
 using SkincareBookingSystem.Models.Dto.Response;
 using SkincareBookingSystem.Services.IServices;
+using SkincareBookingSystem.Utilities.Constants;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 
@@ -19,6 +21,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = $"{StaticUserRoles.ManagerStaff}")]
         [SwaggerOperation(Summary = "API creates a new Blog Category", Description = "Requires admin role")]
         public async Task<ActionResult<ResponseDto>> CreateBlogCategory([FromBody] CreateBlogCategoryDto blogCategoryDto)
         {

@@ -36,5 +36,5 @@ public class SignUpStaffDto
     public string Gender { get; set; } = null!;
 
     [Required]
-    public int Age { get; set; }
+    public DateTime? BirthDate { get; set; }
 }

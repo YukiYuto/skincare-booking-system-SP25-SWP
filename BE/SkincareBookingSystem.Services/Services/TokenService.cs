@@ -34,7 +34,7 @@ public class TokenService : ITokenService
             new Claim("FullName", user.FullName),
             new Claim("PhoneNumber", user.PhoneNumber),
             new Claim("Address", user.Address),
-            new Claim("Age", user.Age.ToString()),
+            new Claim("BirthDate", user.BirthDate.ToString()),
             new Claim("ImageUrl", user.ImageUrl)
         };
 
@@ -53,7 +53,7 @@ public class TokenService : ITokenService
             issuer: _configuration["JWT:ValidIssuer"],
             audience: _configuration["JWT:ValidAudience"],
             notBefore: DateTime.Now,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddMinutes(60),
             claims: authClaims,
             signingCredentials: signingCredentials
         );

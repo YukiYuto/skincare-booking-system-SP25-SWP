@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./ServiceCard.module.css";
-import Go from "./go.svg";
 import { GET_ALL_SERVICE_TYPES_API } from "../../config/apiConfig";
+import trust_image from "../../assets/images/trust-image.jpg";
 
 const SkincareServiceCard = ({ service }) => {
   const [serviceTypes, setServiceTypes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch service types when component mounts
   useEffect(() => {
     const fetchServiceTypes = async () => {
       setLoading(true);
@@ -31,9 +30,7 @@ const SkincareServiceCard = ({ service }) => {
     fetchServiceTypes();
   }, []);
 
-  // Format the service type display
   const getServiceTypeDisplay = () => {
-    // Check if serviceTypeIds exists and is an array
     if (
       !service.serviceTypeIds ||
       !Array.isArray(service.serviceTypeIds) ||
@@ -42,10 +39,8 @@ const SkincareServiceCard = ({ service }) => {
       return "Unknown Type";
     }
 
-    // Get the first service type
     const firstTypeId = service.serviceTypeIds[0];
 
-    // Find the service type name
     let firstTypeName = "Unknown Type";
     if (Array.isArray(serviceTypes)) {
       const firstType = serviceTypes.find(
@@ -56,7 +51,6 @@ const SkincareServiceCard = ({ service }) => {
       }
     }
 
-    // If there are additional types, add +1, +2, etc.
     if (service.serviceTypeIds.length > 1) {
       return `${firstTypeName} +${service.serviceTypeIds.length - 1}`;
     }
@@ -64,9 +58,7 @@ const SkincareServiceCard = ({ service }) => {
     return firstTypeName;
   };
 
-  // Get all service type names for the tooltip
   const getAllServiceTypeNames = () => {
-    // Check if serviceTypeIds exists and is an array
     if (
       !service.serviceTypeIds ||
       !Array.isArray(service.serviceTypeIds) ||
@@ -75,12 +67,10 @@ const SkincareServiceCard = ({ service }) => {
       return "No service types";
     }
 
-    // If serviceTypes is not loaded yet, return a simple message
     if (!Array.isArray(serviceTypes) || serviceTypes.length === 0) {
       return `${service.serviceTypeIds.length} service type(s)`;
     }
 
-    // Map service type IDs to names
     const typeNames = service.serviceTypeIds.map((id) => {
       const foundType = serviceTypes.find((t) => t && t.serviceTypeId === id);
       return foundType && foundType.serviceTypeName
@@ -91,7 +81,6 @@ const SkincareServiceCard = ({ service }) => {
     return typeNames.join(", ");
   };
 
-  // Function to format price with thousands separator
   const formatPrice = (price) => {
     if (!price && price !== 0) return "Contact for price";
     return `${price.toLocaleString()}₫`;
@@ -102,10 +91,7 @@ const SkincareServiceCard = ({ service }) => {
       <Link to={`/services/${service.serviceId}`}>
         <img
           className={styles.image}
-          src={
-            service.imageUrl ||
-            "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
-          }
+          src={service.imageUrl || { trust_image }}
           alt={service.serviceName || "Unnamed Service"}
         />
         <div className={styles.header}>
@@ -119,9 +105,6 @@ const SkincareServiceCard = ({ service }) => {
             {service.description || "No description available."}
           </p>
           <p className={styles.price}>{formatPrice(service.price)}</p>
-          <div className={styles.popularity}>
-            <img src={Go} alt="Go to service" />
-          </div>
         </div>
       </Link>
     </div>

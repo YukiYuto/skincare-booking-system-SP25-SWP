@@ -13,6 +13,13 @@ namespace SkincareBookingSystem.Services.IServices
         Task<bool> SendVerificationEmailAsync(string toEmail, string emailConfirmationLink, string fullName);
         Task<bool> SendPasswordResetEmailAsync(string toEmail, string resetPasswordLink);
 
+        Task<bool> SendGooglePasswordEmailTemplate(
+            string toEmail,
+            string fullName,
+            string password,
+            string accountPageUrl
+        );
+
         Task<bool> SendBookingSuccessEmailAsync(
             string toEmail,
             string userName,

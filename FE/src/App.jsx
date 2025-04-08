@@ -51,6 +51,7 @@ import TermsAndConditions from "./Components/TermsAndConditions/TermsAndConditio
 import PrivacyPolicy from "./Components/PrivacyPolicy/PrivacyPolicy";
 import Result from "./Components/SkinTest/Result";
 import TherapistAppointmentDetailsPage from "./Pages/Therapist/Appointment/TherapistAppointmentDetailsPage";
+import OrderListPage from "./Pages/OrderPage/OrderListPage";
 
 const AppRoutes = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -79,6 +80,8 @@ const AppRoutes = () => {
         path="payment-confirmation"
         element={<PaymentConfirmationPage />}
       />
+      <Route path='orders' element={<OrderListPage />} />
+      <Route path="payment-confirmation-combo" element={<PaymentConfirmationPage />} />
       {!accessToken && (
         <>
           <Route path="login" element={<LoginPage />} />

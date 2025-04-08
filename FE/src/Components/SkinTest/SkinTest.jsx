@@ -69,7 +69,6 @@ const SkinTest = () => {
           ? prevAnswers.filter((id) => id !== testAnswerId)
           : [...prevAnswers, testAnswerId]
         : [testAnswerId];
-
       return {
         ...prev,
         [currentQuestion.testQuestionId]: updatedAnswers,
@@ -154,6 +153,7 @@ const SkinTest = () => {
       // 👉 Chuyển đến trang kết quả
       navigate("/result", {
         state: {
+          skinProfileId: matchedSkin?.skinProfileId,
           totalScore,
           skinName: matchedSkin?.skinName || "Unknown",
           description: matchedSkin?.description || "No description available.",

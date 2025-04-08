@@ -363,7 +363,7 @@ public class BookingService : IBookingService
                     .Select(od => od.ServiceCombo!.ComboName));
 
                 var bookingDateTime = appointmentToCreate.AppointmentDate.ToString("yyyy-MM-dd");
-                var viewOrderLink = $"https://lumiconnect-beauty.vercel.app/orders/{order.OrderId}";
+                var viewOrderLink = $"https://lumiconnect-beauty.vercel.app/appointments";
 
                 var emailSent = await _emailService.SendBookingSuccessEmailAsync(
                     toEmail: userEmail,

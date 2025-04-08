@@ -54,6 +54,10 @@ p {
   --scrollbar-width: 8px;
   --scrollbar-track: var(--background-color);
   --scrollbar-thumb: var(--accent-color);
+  --border-color: #e1e4e8;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --border-radius: 8px;
+  --transition: all 0.3s ease;
 }
 
 @layer components {

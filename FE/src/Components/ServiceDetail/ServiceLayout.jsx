@@ -42,22 +42,20 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
       return "Unknown Type";
     }
 
-    const firstTypeId = service.serviceTypeIds[0];
-    let firstTypeName = "Unknown Type";
-    if (Array.isArray(serviceTypes)) {
-      const firstType = serviceTypes.find(
-        (type) => type && type.serviceTypeId === firstTypeId
-      );
-      if (firstType && firstType.serviceTypeName) {
-        firstTypeName = firstType.serviceTypeName;
-      }
+    if (!Array.isArray(serviceTypes) || serviceTypes.length === 0) {
+      return `${service.serviceTypeIds.length} service type(s)`;
     }
 
-    if (service.serviceTypeIds.length > 1) {
-      return `${firstTypeName} +${service.serviceTypeIds.length - 1}`;
-    }
+    const typeNames = service.serviceTypeIds
+      .map((id) => {
+        const foundType = serviceTypes.find((t) => t && t.serviceTypeId === id);
+        return foundType?.serviceTypeName || "Unknown";
+      })
+      .slice(0, 3);
 
-    return firstTypeName;
+    return typeNames.length < service.serviceTypeIds.length
+      ? `${typeNames.join(", ")} +${service.serviceTypeIds.length - 3}`
+      : typeNames.join(", ");
   };
 
   const getAllServiceTypeNames = () => {
@@ -101,11 +99,9 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
           className={styles.image}
         />
       </div>
-
       <div className={styles.infoContainer}>
         <h1 className={styles.title}>{service.serviceName}</h1>
         <p className={styles.description}>{service.description}</p>
-
         <div className={styles.detailsSection}>
           <span className={styles.serviceType} title={getAllServiceTypeNames()}>
             {loading ? "Loading..." : getServiceTypeDisplay()}

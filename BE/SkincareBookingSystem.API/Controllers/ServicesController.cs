@@ -71,6 +71,7 @@ namespace SkincareBookingSystem.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = StaticUserRoles.Manager)]
         [SwaggerOperation(Summary = "API soft delete a Service", Description = "Requires admin role")]
         public async Task<IActionResult> DeleteService(Guid id)
         {

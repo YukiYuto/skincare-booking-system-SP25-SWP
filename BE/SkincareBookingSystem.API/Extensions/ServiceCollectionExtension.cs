@@ -48,6 +48,7 @@ public static class ServiceCollectionExtension
 
         services.AddScoped<ISkinTherapistService, SkinTherapistService>();
         services.AddScoped<ITherapistServiceTypeService, TherapistServiceTypeService>();
+        services.AddScoped<ITherapistAdviceService, TherapistAdviceService>();
 
         services.AddScoped<IOrderDetailService, OrderDetailService>();
         services.AddScoped<IOrderService, OrderService>();
@@ -67,6 +68,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISkinTestService, SkinTestService>();
         services.AddScoped<IManagerSerivce, ManagerSerivce>();
         services.AddScoped<ISkinProfileService, SkinProfileService>();
+        services.AddScoped<ICustomerSkinTestService, CustomerSkinTestService>();
 
 
 

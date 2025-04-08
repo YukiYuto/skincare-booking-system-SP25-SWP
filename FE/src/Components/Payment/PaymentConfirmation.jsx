@@ -107,24 +107,28 @@ const PaymentConfirmation = () => {
       {isLoading ? (
         <Spin size="large" />
       ) : paymentSuccess && appointmentSuccess ? (
-        <Result
-          status="success"
-          title="Payment & Appointment Confirmed!"
-          subTitle="Your appointment has been successfully scheduled."
-          extra={[
-            <Button type="primary" onClick={() => navigate("/appointments")}>
-              View Appointment
-            </Button>,
-            <Button onClick={() => navigate("/")}>Go Home</Button>,
-          ]}
-        />
+        <>
+          <Result
+            status="success"
+            title="Payment & Appointment Confirmed!"
+            subTitle="Your appointment has been successfully scheduled. You will receive an email shortly."
+            extra={[
+              <Button type="primary" onClick={() => navigate("/appointments")}>
+                View Appointment
+              </Button>,
+              <Button onClick={() => navigate("/")}>Go Home</Button>,
+            ]}
+          />
+          {/* Order info card as invoice */}
+          
+        </>
       ) : (
         <Result
           status="error"
           title="Payment or Appointment Failed"
           subTitle="There was an issue with the booking process."
           extra={[
-            <Button type="primary" onClick={() => navigate("/")}>
+            <Button type="primary" onClick={() => window.location.reload()}>
               Try Again
             </Button>,
           ]}

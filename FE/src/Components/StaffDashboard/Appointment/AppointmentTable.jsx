@@ -75,14 +75,6 @@ const AppointmentTable = () => {
       >
         <div className={styles.headingSection}>
           <h2 className={styles.headingText}>Dashboard</h2>
-          <Button
-            size="large"
-            styles={styles.checkInButton}
-            type="primary"
-            icon={<PlusOutlined />}
-          >
-            Check-in Customer
-          </Button>
         </div>
         <div className={styles.appointmentCard}>
           <div className={styles.titleSection}>

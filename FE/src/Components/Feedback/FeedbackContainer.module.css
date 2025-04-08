@@ -1,0 +1,230 @@
+.feedbackContainer {
+  margin-top: 12px;
+}
+
+.feedbackSection {
+  margin-bottom: 24px;
+}
+
+.feedbackItem {
+  padding: 20px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: var(--transition);
+}
+
+.feedbackItem:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.feedbackItem h4 {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: a8px;
+}
+
+.flexGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.contentGroup {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.rating {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.rating::before {
+  content: "★";
+  color: #ffc107;
+  margin-right: 6px;
+}
+
+.content {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-bottom: 0;
+  text-align: center;
+
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.editButton, .saveButton {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.editButton:hover, .saveButton:hover {
+  background-color: var(--background-color);
+}
+
+.deleteButton, .cancelButton {
+  background-color: #f8f9fa;
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.deleteButton:hover, .cancelButton:hover {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.feedbackButton {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedbackButton::before {
+  content: "✓";
+  margin-right: 8px;
+}
+
+.feedbackButton:hover {
+  background-color: #218838;
+}
+
+.feedbackForm {
+  padding: 24px;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-top: 20px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.formGroup input, 
+.formGroup select, 
+.formGroup textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  color: var(--text-color);
+  transition: var(--transition);
+  background-color: white;
+}
+
+.formGroup input:focus, 
+.formGroup select:focus, 
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.formGroup textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.submitButton {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.submitButton:hover {
+  background-color: #218838;
+}
+
+.submitButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.editForm {
+  margin-top: 12px;
+}
+
+.loadingState {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .detailSection p {
+    flex-direction: column;
+  }
+  
+  .detailSection p strong {
+    min-width: unset;
+    margin-bottom: 4px;
+  }
+  
+  .buttonGroup {
+    flex-direction: column;
+  }
+  
+  .formActions {
+    flex-direction: column-reverse;
+  }
+}
