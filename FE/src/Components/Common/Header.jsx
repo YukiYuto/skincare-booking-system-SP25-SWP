@@ -39,6 +39,7 @@ const Header = () => {
       <li><Link className={styles.navLink} to="/about" onClick={() => isMobile && setMenuOpen(false)}>About</Link></li>
       <li><Link className={styles.navLink} to="/quiz" onClick={() => isMobile && setMenuOpen(false)}>Skin Test</Link></li>
       <li><Link className={styles.navLink} to="/blogs" onClick={() => isMobile && setMenuOpen(false)}>Blogs</Link></li>
+      <li><Link className={styles.navLink} to="/skin-test" onClick={() => isMobile && setMenuOpen(false)}>Skin Test</Link></li>
       <li><Link className={styles.navLink} to="/contact" onClick={() => isMobile && setMenuOpen(false)}>Contact</Link></li>
       <li>
       <Link 

@@ -75,8 +75,6 @@ const AppRoutes = () => {
       <Route path="blogs-detail/:title" element={<BlogForCusList />} />
       <Route path="feedback-page" element={<FeedbackPage />} />
       <Route path="error" element={<ErrorPage />} />
-      <Route path="skin-test" element={<SkinTest />} />
-      <Route path="result" element={<SkinTestResult />} />
       <Route
         path="payment-confirmation"
         element={<PaymentConfirmationPage />}
