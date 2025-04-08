@@ -36,6 +36,11 @@ const AuthButtons = () => {
     }
   };
 
+  const handleOpenFeedbackModal = () => {
+    setFeedbackModalOpen(true);
+  };
+  
+
   const getRoleBasedPath = () => {
     if (!user?.roles || !Array.isArray(user.roles)) return null;
 
@@ -108,6 +113,16 @@ const AuthButtons = () => {
             <Link to={item.path}>{item.label}</Link>
           </Menu.Item>
         ))}
+
+        {user?.roles?.includes("CUSTOMER") && (
+        <Menu.Item 
+          key="feedback" 
+          icon={<MessageOutlined className={styles.menuIcon} />} 
+          onClick={handleOpenFeedbackModal}
+        >
+          Feedback
+        </Menu.Item>
+      )}
 
       <Divider className={styles.menuDivider} />
 

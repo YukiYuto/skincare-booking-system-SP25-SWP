@@ -60,8 +60,6 @@ const AppRoutes = () => {
       <Route path="privacy-policy" element={<PrivacyPolicy />} />
       <Route path="terms-conditions" element={<TermsAndConditions />} />
       <Route path="quiz" element={<QuizPage />} />
-      <Route path="skin-test" element={<SkinTest />} />
-      <Route path="result" element={<Result />} />
       <Route path="/" element={<Home />} />
       <Route path="contact" element={<Contact />} />
       <Route path="about" element={<AboutPage />} />
@@ -93,6 +91,8 @@ const AppRoutes = () => {
         <>
           {roles.includes("CUSTOMER") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="payment-confirmation" element={<PaymentConfirmationPage />} />
               <Route path="appointments" element={<AppointmentPage />} />
@@ -100,6 +100,8 @@ const AppRoutes = () => {
           )}
           {roles.includes("ADMIN") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="dashboard" element={<Dashboard />}>
                 <Route index element={<Revenue />} />
@@ -118,6 +120,8 @@ const AppRoutes = () => {
           )}
           {roles.includes("STAFF") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="staff-blogs" element={<StaffBlogManagement />} />
               <Route path="staff-blogs/:categoryName?" element={<StaffBlogManagement />} />
@@ -128,9 +132,11 @@ const AppRoutes = () => {
                 element={<AppointmentDetailsPage />}
               />
             </>
-          )}
+          )}  
           {roles.includes("SKINTHERAPIST") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="therapist-management" element={<TherapistManagement />} />
               <Route path="therapist-dashboard" element={<DashboardTherapist />} />
@@ -138,6 +144,8 @@ const AppRoutes = () => {
           )}
           {roles.includes("MANAGER") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="dashboard" element={<Dashboard />}>
                 <Route index element={<Revenue />} />
