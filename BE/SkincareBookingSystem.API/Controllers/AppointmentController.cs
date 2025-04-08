@@ -90,5 +90,14 @@ namespace SkincareBookingSystem.API.Controllers
             var result = await _appointmentService.DeleteAppointment(User, appointmentId);
             return StatusCode(result.StatusCode, result);
         }
+        
+        [HttpGet("by-date")]
+        [Authorize(Roles = $"{StaticUserRoles.Customer},{StaticUserRoles.ManagerStaff}")]
+        [SwaggerOperation(Summary = "API gets all available Appointments by date", Description = "Requires customer, staff roles")]
+        public async Task<ActionResult<ResponseDto>> GetAppointmentsByDate([FromQuery] AppointmentDateDto date)
+        {
+            var result = await _appointmentService.GetAppointmentByDate(User, date);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

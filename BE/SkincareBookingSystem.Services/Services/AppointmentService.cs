@@ -25,6 +25,7 @@ namespace SkincareBookingSystem.Services.Services
             _unitOfWork = unitOfWork;
             _autoMapperService = autoMapperService;
         }
+
         public async Task<ResponseDto> CreateAppointment(ClaimsPrincipal user, CreateAppointmentDto appointmentDto)
         {
             var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -51,7 +52,8 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var payment = await _unitOfWork.Payment.GetAsync(p => p.OrderNumber == order.OrderNumber && p.Status == PaymentStatus.Paid);
+            var payment = await _unitOfWork.Payment.GetAsync(p =>
+                p.OrderNumber == order.OrderNumber && p.Status == PaymentStatus.Paid);
             if (payment == null)
             {
                 return ErrorResponse.Build(
@@ -74,6 +76,7 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.Appointment.NotCreated,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
             }
+
             return SuccessResponse.Build(
                 message: StaticResponseMessage.Appointment.Created,
                 statusCode: StaticOperationStatus.StatusCode.Ok,
@@ -88,6 +91,7 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.User.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
+
             var appointmentToDelete = await _unitOfWork.Appointments.GetAsync(a => a.AppointmentId == appointmentId);
             if (appointmentToDelete is null)
             {
@@ -100,15 +104,77 @@ namespace SkincareBookingSystem.Services.Services
             appointmentToDelete.UpdatedTime = StaticOperationStatus.Timezone.Vietnam;
             appointmentToDelete.UpdatedBy = user.FindFirstValue("FullName");
 
-            return (await SaveChangesAsync()) ?
-                SuccessResponse.Build(
+            return (await SaveChangesAsync())
+                ? SuccessResponse.Build(
                     message: StaticResponseMessage.Appointment.Deleted,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
                     result: appointmentToDelete)
-                :
-                ErrorResponse.Build(
+                : ErrorResponse.Build(
                     message: StaticResponseMessage.Appointment.NotDeleted,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+        }
+
+        public async Task<ResponseDto> GetAppointmentByDate(ClaimsPrincipal user, AppointmentDateDto appointmentDateDto)
+        {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return ErrorResponse.Build(
+                    message: StaticResponseMessage.User.NotFound,
+                    statusCode: StaticOperationStatus.StatusCode.NotFound);
+            }
+
+            DateOnly dateStart = appointmentDateDto.DateStart.HasValue
+                ? appointmentDateDto.DateStart.Value
+                : DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
+
+            DateOnly dateEnd = appointmentDateDto.DateEnd.HasValue
+                ? appointmentDateDto.DateEnd.Value
+                : DateOnly.FromDateTime(DateTime.Today.AddDays(7));
+
+
+            if (dateEnd < dateStart)
+            {
+                return ErrorResponse.Build(
+                    message: "DateEnd must be greater than or equal to DateStart",
+                    statusCode: StaticOperationStatus.StatusCode.BadRequest);
+            }
+
+            try
+            {
+                var appointments = await _unitOfWork.Appointments.GetAllAsync(
+                    filter: a => a.Status == StaticOperationStatus.Appointment.Created
+                                 && a.AppointmentDate >= dateStart
+                                 && a.AppointmentDate <= dateEnd,
+                    includeProperties: $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)},{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)},{nameof(Appointments.Order)}"
+                );
+
+                var appointmentDtos = appointments.Select(a => new AppointmentResponseDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    AppointmentDate = a.AppointmentDate,
+                    AppointmentTime = a.AppointmentTime,
+                    Status = a.Status ?? "Không xác định",
+                    CustomerId = a.CustomerId, // Thêm để debug
+                    CustomerName = a.Customer?.ApplicationUser?.FullName ?? "Khách hàng không xác định",
+                    TherapistName = a.TherapistSchedules?.FirstOrDefault()?.SkinTherapist?.ApplicationUser?.FullName ?? "Không có chuyên viên"
+                }).ToList();
+                return appointments.Any()
+                    ? SuccessResponse.Build(
+                        message: StaticResponseMessage.Appointment.RetrievedAll,
+                        statusCode: StaticOperationStatus.StatusCode.Ok,
+                        result: appointmentDtos)
+                    : SuccessResponse.Build(
+                        message: StaticResponseMessage.Appointment.NotFound,
+                        statusCode: StaticOperationStatus.StatusCode.Ok,
+                        result: new List<Appointments>());
+            }
+            catch (Exception e)
+            {
+                return ErrorResponse.Build(
+                    message: $"Error retrieving appointments: {e.Message}",
+                    statusCode: StaticOperationStatus.StatusCode.InternalServerError);
+            }
         }
 
         // TODO: Implement GetAllAppointments with pagination, sorting, and filtering
@@ -117,13 +183,12 @@ namespace SkincareBookingSystem.Services.Services
             var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync(
                 filter: a => a.Status != StaticOperationStatus.Appointment.Deleted);
 
-            return (appointmentsFromDb.Any()) ?
-                SuccessResponse.Build(
+            return (appointmentsFromDb.Any())
+                ? SuccessResponse.Build(
                     message: StaticResponseMessage.Appointment.RetrievedAll,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
                     result: appointmentsFromDb)
-                :
-                SuccessResponse.Build(
+                : SuccessResponse.Build(
                     message: StaticResponseMessage.Appointment.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
                     result: new List<Appointments>());
@@ -143,17 +208,17 @@ namespace SkincareBookingSystem.Services.Services
                 var appointmentFromDb = await _unitOfWork.Appointments.GetAsync(
                     filter: a => a.AppointmentId == appointmentId,
                     includeProperties:
-                       $"{nameof(Appointments.Customer)}," +
-                       $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)}," +
-                       $"{nameof(Appointments.TherapistSchedules)}," +
-                       $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}," +
-                       $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)}," +
-                       $"{nameof(Appointments.Order)}," +
-                       $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}," +
-                       $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}," +
-                       $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}.{nameof(Models.Domain.Services.DurationItems)}," +
-                       $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}.{nameof(Models.Domain.Services.DurationItems)}.{nameof(DurationItem.ServiceDuration)}"
-);
+                    $"{nameof(Appointments.Customer)}," +
+                    $"{nameof(Appointments.Customer)}.{nameof(Customer.ApplicationUser)}," +
+                    $"{nameof(Appointments.TherapistSchedules)}," +
+                    $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}," +
+                    $"{nameof(Appointments.TherapistSchedules)}.{nameof(TherapistSchedule.SkinTherapist)}.{nameof(SkinTherapist.ApplicationUser)}," +
+                    $"{nameof(Appointments.Order)}," +
+                    $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}," +
+                    $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}," +
+                    $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}.{nameof(Models.Domain.Services.DurationItems)}," +
+                    $"{nameof(Appointments.Order)}.{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Services)}.{nameof(Models.Domain.Services.DurationItems)}.{nameof(DurationItem.ServiceDuration)}"
+                );
 
                 if (appointmentFromDb is null)
                 {
@@ -170,7 +235,8 @@ namespace SkincareBookingSystem.Services.Services
                 var serviceInfoDto = _autoMapperService.Map<Models.Domain.Services, ServiceInfoDto>(serviceInfo!);
                 serviceInfoDto.ServiceDuration = appointmentFromDb.DurationMinutes;
 
-                var appointmentDetailsDto = _autoMapperService.Map<Appointments, AppointmentDetailsDto>(appointmentFromDb);
+                var appointmentDetailsDto =
+                    _autoMapperService.Map<Appointments, AppointmentDetailsDto>(appointmentFromDb);
                 appointmentDetailsDto.CustomerInfo = customerInfoDto;
                 appointmentDetailsDto.TherapistInfo = therapistInfoDto;
                 appointmentDetailsDto.ServiceInfo = serviceInfoDto;
@@ -204,15 +270,15 @@ namespace SkincareBookingSystem.Services.Services
                     message: StaticResponseMessage.Customer.Invalid,
                     statusCode: StaticOperationStatus.StatusCode.BadRequest);
 
-            var appointmentsFromDb = await _unitOfWork.Appointments.GetAllAsync(a => a.CustomerId == customerFromDb.CustomerId);
+            var appointmentsFromDb =
+                await _unitOfWork.Appointments.GetAllAsync(a => a.CustomerId == customerFromDb.CustomerId);
 
-            return (appointmentsFromDb.Any()) ?
-                SuccessResponse.Build(
+            return (appointmentsFromDb.Any())
+                ? SuccessResponse.Build(
                     message: StaticResponseMessage.Appointment.RetrievedAll,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
                     result: appointmentsFromDb)
-                :
-                SuccessResponse.Build(
+                : SuccessResponse.Build(
                     message: StaticResponseMessage.Appointment.NotFound,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
                     result: new List<Appointments>());
@@ -227,7 +293,8 @@ namespace SkincareBookingSystem.Services.Services
                     statusCode: StaticOperationStatus.StatusCode.NotFound);
             }
 
-            var appointmentFromDb = await _unitOfWork.Appointments.GetAsync(a => a.AppointmentId == appointmentDto.AppointmentId);
+            var appointmentFromDb =
+                await _unitOfWork.Appointments.GetAsync(a => a.AppointmentId == appointmentDto.AppointmentId);
             if (appointmentFromDb is null)
             {
                 return ErrorResponse.Build(
@@ -238,12 +305,11 @@ namespace SkincareBookingSystem.Services.Services
             var appointmentToUpdate = _autoMapperService.Map<UpdateAppointmentDto, Appointments>(appointmentDto);
             _unitOfWork.Appointments.Update(appointmentFromDb, appointmentToUpdate);
 
-            return (!await SaveChangesAsync()) ?
-                ErrorResponse.Build(
+            return (!await SaveChangesAsync())
+                ? ErrorResponse.Build(
                     message: StaticResponseMessage.Appointment.NotUpdated,
                     statusCode: StaticOperationStatus.StatusCode.InternalServerError)
-                :
-                SuccessResponse.Build(
+                : SuccessResponse.Build(
                     message: StaticResponseMessage.Appointment.Updated,
                     statusCode: StaticOperationStatus.StatusCode.Ok,
                     result: appointmentToUpdate);
