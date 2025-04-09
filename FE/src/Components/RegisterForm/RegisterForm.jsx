@@ -26,7 +26,7 @@ function RegisterForm() {
     phoneNumber: "",
     fullName: "",
     address: "",
-    age: "",
+    birthDate: "",
     gender: "",
   });
 
@@ -37,7 +37,7 @@ function RegisterForm() {
     phoneNumber: "",
     fullName: "",
     address: "",
-    age: "",
+    birthDate: "",
     gender: "",
   });
 
@@ -85,7 +85,6 @@ function RegisterForm() {
       registerData.confirmPassword
     );
     const phoneError = validatePhoneNumber(registerData.phoneNumber);
-    const ageError = validateAge(registerData.age);
     const fullNameError = registerData.fullName ? "" : "Full name is required.";
     const addressError = registerData.address ? "" : "Address is required.";
     const genderError = validateGender(registerData.gender);
@@ -97,7 +96,6 @@ function RegisterForm() {
       phoneNumber: phoneError,
       fullName: fullNameError,
       address: addressError,
-      age: ageError,
       gender: genderError,
     });
 
@@ -108,7 +106,6 @@ function RegisterForm() {
       phoneError ||
       fullNameError ||
       addressError ||
-      ageError ||
       genderError
     );
   };
@@ -127,6 +124,8 @@ function RegisterForm() {
     setIsLoading(true);
 
     const formattedFullname = formatFullname(registerData.fullName);
+    const formattedDate = new Date(registerData.birthDate).toISOString();
+    console.log("Formatted Date:", formattedDate);
 
     try {
       await register({
@@ -136,7 +135,8 @@ function RegisterForm() {
         phoneNumber: registerData.phoneNumber,
         fullName: formattedFullname,
         address: registerData.address,
-        age: Number(registerData.age),
+        // send the birthdate for DateTime format in C#
+        birthDate: formattedDate,
         gender: registerData.gender,
       });
 
@@ -236,11 +236,11 @@ function RegisterForm() {
         <InputField
           label="Birthdate"
           type="date"
-          name="age"
+          name="birthDate"
           placeholder="Birthdate"
           min="1900-01-01"
           max={new Date().toISOString().split("T")[0]}
-          value={registerData.age}
+          value={registerData.birthDate}
           onChange={handleRegisterChange}
           error={errors.age}
         />
