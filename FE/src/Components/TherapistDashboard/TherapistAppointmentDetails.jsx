@@ -28,6 +28,7 @@ import { GiAges } from "react-icons/gi";
 import { IoMaleFemaleOutline } from "react-icons/io5";
 import { LuBadgeCheck } from "react-icons/lu";
 import { PiNotePencilDuotone } from "react-icons/pi";
+import { formatDate } from "../../utils/formatDate.js";
 
 const TherapistAppointmentDetails = () => {
   const { appointmentId } = useParams();
@@ -360,10 +361,10 @@ const TherapistAppointmentDetails = () => {
               >
                 <div style={{ display: "flex", gap: "10px" }}>
                   <GiAges style={{ color: "#1167f2" }} />
-                  <span style={{ fontWeight: 500 }}>Age:</span>
+                  <span style={{ fontWeight: 500 }}>BirthDate:</span>
                 </div>
                 <span style={{ fontSize: "16px" }}>
-                  {appointment?.customerInfo?.customerAge || "Unknown"}
+                  {formatDate(appointment?.customerInfo?.customerAge)}
                 </span>
               </div>
 
