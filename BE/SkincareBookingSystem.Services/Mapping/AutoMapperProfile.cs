@@ -41,6 +41,16 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        //Therapist Advice
+        CreateMap<CreateTherapistAdviceDto, TherapistAdvice>()
+            .ForMember(dest => dest.TherapistScheduleId, opt => opt.MapFrom(src => src.TherapistScheduleId))
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.AdviceContent, opt => opt.MapFrom(src => src.AdviceContent))
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(7.0)))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => StaticOperationStatus.Appointment.Created));
+
+        CreateMap<TherapistAdvice, TherapistAdviceDto>();
+        
         // SkinProfile
         CreateMap<CreateSkinProfileDto, SkinProfile>()
             .ForMember(dest => dest.SkinName, opt => opt.MapFrom(src => src.SkinName))
@@ -86,7 +96,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
             .ForMember(dest => dest.CustomerPhone, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
             .ForMember(dest => dest.CustomerEmail, opt => opt.MapFrom(src => src.ApplicationUser.Email))
-            .ForMember(dest => dest.CustomerAge, opt => opt.MapFrom(src => src.ApplicationUser.Age))
+            .ForMember(dest => dest.CustomerAge, opt => opt.MapFrom(src => src.ApplicationUser.BirthDate))
             .ForMember(dest => dest.CustomerGender, opt => opt.MapFrom(src => src.ApplicationUser.Gender))
             .ForMember(dest => dest.CustomerAvatar, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl));
         //.ForMember(dest => dest.SkinProfileName , opt => opt.MapFrom(src => src.SkinProfile.SkinProfileName))
@@ -98,7 +108,7 @@ public class AutoMapperProfile : Profile
         CreateMap<SkinTherapist, TherapistInfoDto>()
             .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.SkinTherapistId))
             .ForMember(dest => dest.TherapistName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
-            .ForMember(dest => dest.TherapistAge, opt => opt.MapFrom(src => src.ApplicationUser.Age))
+            .ForMember(dest => dest.TherapistAge, opt => opt.MapFrom(src => src.ApplicationUser.BirthDate))
             .ForMember(dest => dest.TherapistAvatarUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))
             .ForMember(dest => dest.TherapistExperience, opt => opt.MapFrom(src => src.Experience))
             .ForMember(dest => dest.TherapistGender, opt => opt.MapFrom(src => src.ApplicationUser.Gender));
@@ -324,7 +334,7 @@ public class AutoMapperProfile : Profile
         CreateMap<SkinTherapist, PreviewTherapistDto>()
             .ForMember(dest => dest.TherapistId, opt => opt.MapFrom(src => src.SkinTherapistId))
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
-            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.ApplicationUser.Age))
+            .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.ApplicationUser.BirthDate))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))
             .ForMember(dest => dest.Experience, opt => opt.MapFrom(src => src.Experience));
 
@@ -372,7 +382,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
-            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+            .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
@@ -393,7 +403,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
-            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+            .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
@@ -407,7 +417,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
-            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+            .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => string.Empty))
             .ForMember(dest => dest.LockoutEnabled, opt => opt.MapFrom(src => false))
@@ -419,7 +429,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
-            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+            .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
             .ReverseMap();
 
@@ -428,7 +438,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
-            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.ApplicationUser.Age))
+            .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.ApplicationUser.BirthDate))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.ApplicationUser.Gender))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.ApplicationUser.Address))
@@ -439,7 +449,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.SkinTherapistId, opt => opt.MapFrom(src => src.SkinTherapistId))
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ApplicationUser.Email))
-            .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.ApplicationUser.Age))
+            .ForMember(dest => dest.BirthDay, opt => opt.MapFrom(src => src.ApplicationUser.BirthDate))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.ApplicationUser.Gender))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ApplicationUser.PhoneNumber))
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ApplicationUser.ImageUrl))

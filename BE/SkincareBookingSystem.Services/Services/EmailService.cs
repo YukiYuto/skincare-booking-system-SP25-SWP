@@ -24,13 +24,32 @@ namespace SkincareBookingSystem.Services.Services
             _useSsl = bool.Parse(configuration[StaticEmailSettings.UseSsl]!);
         }
 
-        public async Task<bool> SendPasswordResetEmailAsync(string toEmail, string resetPasswordLink)
+
+        public async Task<bool> SendGooglePasswordEmailTemplate(
+            string toEmail,
+            string fullName,
+            string password,
+            string accountPageUrl
+        )
         {
+            var template = new GooglePasswordEmailTemplate();
             var placeholders = new Dictionary<string, string>
             {
-                { "ResetPasswordLink", resetPasswordLink }
+                { "{{FullName}}", fullName },
+                { "{{Password}}", password },
+                { "{{AccountPageUrl}}", accountPageUrl }
             };
-            return await SendEmailFromTemplateAsync(toEmail, new PasswordResetEmailTemplate(), placeholders);
+            return await SendEmailFromTemplateAsync(toEmail, template, placeholders);
+        }
+
+        public async Task<bool> SendPasswordResetEmailAsync(string toEmail, string resetPasswordLink)
+        {
+            var template = new PasswordResetEmailTemplate();
+            var placeholders = new Dictionary<string, string>
+            {
+                { "{{ResetPasswordLink}}", resetPasswordLink }
+            };
+            return await SendEmailFromTemplateAsync(toEmail, template, placeholders);
         }
 
         public async Task<bool> SendBookingSuccessEmailAsync(string toEmail,
@@ -39,11 +58,11 @@ namespace SkincareBookingSystem.Services.Services
             List<string> bookingServices,
             string viewOrderLink)
         {
-            string serviceListFormatted = 
+            string serviceListFormatted =
                 "<ul>" +
                 string.Join("", bookingServices.Select(service => $"<li>{service}</li>")) +
                 "</ul>";
-
+            var template = new BookingSuccessEmailTemplate();
             var placeholders = new Dictionary<string, string>
             {
                 { "{{UserName}}", userName },
@@ -52,19 +71,20 @@ namespace SkincareBookingSystem.Services.Services
                 { "{{ViewOrderLink}}", viewOrderLink }
             };
 
-            return await SendEmailFromTemplateAsync(toEmail, new BookingSuccessEmailTemplate(), placeholders);
+            return await SendEmailFromTemplateAsync(toEmail, template, placeholders);
         }
 
         public async Task<bool> SendVerificationEmailAsync(string toEmail,
             string emailConfirmationLink,
             string fullName)
         {
+            var template = new VerificationEmailTemplate();
             var placeholders = new Dictionary<string, string>
             {
-                { "EmailConfirmationLink", emailConfirmationLink },
-                { "UserName", fullName }
+                { "{{EmailConfirmationLink}}", emailConfirmationLink },
+                { "{{UserName}}", fullName }
             };
-            return await SendEmailFromTemplateAsync(toEmail, new VerificationEmailTemplate(), placeholders);
+            return await SendEmailFromTemplateAsync(toEmail, template, placeholders);
         }
 
 

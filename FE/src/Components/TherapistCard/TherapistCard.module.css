@@ -1,66 +1,60 @@
 .container {
-  max-width: 1200px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.controls {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  align-items: center;
-}
-
-.search {
-  width: 60%;
-}
-
-.sort {
-  width: 200px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
   justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.therapistList h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  font-family: Playfair Display;
-  color: var(--text-color);
+.therapistCard {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-width: 350px;
+  text-align: center;
+  padding: 20px;
+  transition: transform 0.3s ease;
 }
-  
-.card {
-  width: 100%;
-  max-width: 300px;
-  margin: auto;
-  background-color: antiquewhite;
+
+.therapistCard:hover {
+  transform: scale(1.05);
 }
-  
-.image {
-  width: 100%;
-  height: 200px;
+
+.therapistImage {
+  width: 250px;
+  height: 250px;
   object-fit: cover;
-}
-  
-.button {
-  width: 50%;
-  margin-top: 10px;
-}
-  
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  margin-bottom: 15px;
+  clip-path: ellipse(200px 200px at 50% 20%);
 }
 
-.pagination {
-  margin-top: 20px;
-  text-align: center;
+.therapistName {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 10px 0;
 }
-  
+
+.therapistDescription {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.bookButton {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.bookButton:hover {
+  background-color: #45a049;
+}
+
+.therapistCard p {
+  margin: 0;
+}

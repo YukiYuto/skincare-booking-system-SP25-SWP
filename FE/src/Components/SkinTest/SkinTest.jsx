@@ -13,15 +13,19 @@ const SkinTest = () => {
   const [answers, setAnswers] = useState({});
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [loading, setLoading] = useState(true);
+
+  const { accessToken, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const { accessToken } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await axios.get("https://lumiconnect.azurewebsites.net/api/TestQuestion/all", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const res = await axios.get(
+          "https://lumiconnect.azurewebsites.net/api/TestQuestion/all",
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
 
         const questionData = res.data.result;
         setQuestions(questionData);
@@ -31,17 +35,19 @@ const SkinTest = () => {
           questionData.map(async (question) => {
             const resAnswers = await axios.get(
               `https://lumiconnect.azurewebsites.net/api/TestAnswer/TestQuestion/${question.testQuestionId}`,
-              { headers: { Authorization: `Bearer ${accessToken}` } }
+              {
+                headers: { Authorization: `Bearer ${accessToken}` },
+              }
             );
             answersData[question.testQuestionId] = resAnswers.data.result;
           })
         );
 
         setAnswers(answersData);
-        setLoading(false);
         setStep(1);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Lỗi khi load câu hỏi:", error);
         setLoading(false);
       }
     };
@@ -49,32 +55,24 @@ const SkinTest = () => {
     fetchQuestions();
   }, []);
 
-  if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
-
   const currentQuestion = questions[step - 1];
 
   const handleSelectOption = (testAnswerId) => {
-    if (!currentQuestion) {
-      console.error("❌ Lỗi: currentQuestion bị undefined");
-      return;
-    }
+    if (!currentQuestion) return;
 
     setSelectedAnswers((prev) => {
-      const prevAnswers = prev[currentQuestion.testQuestionId] || [];
       const allowMultipleSelection = false;
+      const prevAnswers = prev[currentQuestion.testQuestionId] || [];
 
-      let updatedAnswers;
-      if (allowMultipleSelection) {
-        updatedAnswers = prevAnswers.includes(testAnswerId)
+      const updatedAnswers = allowMultipleSelection
+        ? prevAnswers.includes(testAnswerId)
           ? prevAnswers.filter((id) => id !== testAnswerId)
-          : [...prevAnswers, testAnswerId];
-      } else {
-        updatedAnswers = [testAnswerId];
-      }
-
-      return { ...prev, [currentQuestion.testQuestionId]: updatedAnswers };
+          : [...prevAnswers, testAnswerId]
+        : [testAnswerId];
+      return {
+        ...prev,
+        [currentQuestion.testQuestionId]: updatedAnswers,
+      };
     });
   };
 
@@ -83,14 +81,15 @@ const SkinTest = () => {
 
     Object.entries(selectedAnswers).forEach(([questionId, selectedOptionIds]) => {
       selectedOptionIds.forEach((testAnswerId) => {
-        const answerOption = answers[questionId]?.find((opt) => opt.testAnswerId === testAnswerId);
+        const answerOption = answers[questionId]?.find(
+          (opt) => opt.testAnswerId === testAnswerId
+        );
         if (answerOption) {
           totalScore += parseInt(answerOption.score, 10);
         }
       });
     });
 
-    console.log("Total Score Calculated:", totalScore);
     return totalScore;
   };
 
@@ -98,15 +97,60 @@ const SkinTest = () => {
     const totalScore = calculateTotalScore();
 
     try {
-      const res = await axios.get("https://lumiconnect.azurewebsites.net/api/skin-profile/all", {
+      // 🔍 Lấy customerId theo phone number
+      const customerRes = await axios.get("https://lumiconnect.azurewebsites.net/api/customer", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      const skinProfiles = res.data.result;
+      const matchedCustomer = customerRes.data.result.find(
+        (c) => c.phoneNumber === user.phoneNumber
+      );
+      const customerId = matchedCustomer?.customerId;
+      if (!customerId) throw new Error("Không tìm thấy customerId");
+
+      // 🔍 Lấy skinTestId
+      const skinTestRes = await axios.get("https://lumiconnect.azurewebsites.net/api/skintest/all", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      const skinTestId = skinTestRes.data.result[0]?.skinTestId;
+      if (!skinTestId) throw new Error("Không tìm thấy skinTestId");
+
+      // 🔄 Format dữ liệu câu trả lời
+      const formattedAnswers = Object.entries(selectedAnswers).flatMap(([questionId, answerIds]) =>
+        answerIds.map((answerId) => ({
+          testQuestionId: questionId,
+          testAnswerId: answerId,
+        }))
+      );
+
+      // 📤 Gửi dữ liệu lên customer-skin-test
+      await axios.post(
+        "https://lumiconnect.azurewebsites.net/api/customer-skin-test",
+        {
+          customerId,
+          skinTestId,
+          answers: formattedAnswers,
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+      // 🔍 Lấy kết quả phân tích da từ điểm số
+      const skinProfileRes = await axios.get(
+        "https://lumiconnect.azurewebsites.net/api/skin-profile/all",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+      const skinProfiles = skinProfileRes.data.result;
       const matchedSkin = skinProfiles.find(
         (skin) => totalScore >= skin.scoreMin && totalScore <= skin.scoreMax
       );
 
+      // 👉 Chuyển đến trang kết quả
       navigate("/result", {
         state: {
           skinProfileId: matchedSkin?.skinProfileId,
@@ -115,10 +159,14 @@ const SkinTest = () => {
           description: matchedSkin?.description || "No description available.",
         },
       });
-    } catch (error) {
-      console.error("Error fetching skin profile:", error);
+    } catch (err) {
+      console.error("Lỗi khi gửi dữ liệu hoặc lấy kết quả:", err);
       navigate("/result", {
-        state: { totalScore, skinName: "Error", description: "Could not determine skin type." },
+        state: {
+          totalScore,
+          skinName: "Error",
+          description: "Không thể xác định loại da.",
+        },
       });
     }
   };
@@ -128,7 +176,7 @@ const SkinTest = () => {
       setStep(step + 1);
       setProgress(((step + 1) / questions.length) * 100);
     } else {
-      handleFinishTest();
+      handleFinishTest(); // ✅ Gửi kết quả & chuyển trang
     }
   };
 
@@ -139,6 +187,8 @@ const SkinTest = () => {
     }
   };
 
+  if (loading) return <div className={styles.loading}>Loading...</div>;
+
   return (
     <>
       <Header />
@@ -147,8 +197,8 @@ const SkinTest = () => {
           <div className={styles.progressBar}>
             <div className={styles.progress} style={{ width: `${progress}%` }} />
           </div>
-          <h2>QUESTION {step}:</h2>
-          <p>{currentQuestion?.content}</p>
+          <h2>STEP {step}: {currentQuestion?.content}</h2>
+          <p>{currentQuestion?.type}</p>
         </div>
 
         <div className={styles.rightPanel}>
@@ -157,11 +207,15 @@ const SkinTest = () => {
               <div
                 key={option.testAnswerId}
                 className={`${styles.option} ${
-                  selectedAnswers[currentQuestion.testQuestionId]?.includes(option.testAnswerId) ? styles.selected : ""
+                  selectedAnswers[currentQuestion.testQuestionId]?.includes(option.testAnswerId)
+                    ? styles.selected
+                    : ""
                 }`}
                 onClick={() => handleSelectOption(option.testAnswerId)}
               >
-                <p>{option.content}<br /> (Score: {option.score})</p>
+                <p>
+                  {option.content} <br /> (Score: {option.score})
+                </p>
               </div>
             ))}
           </div>
@@ -174,7 +228,10 @@ const SkinTest = () => {
             )}
             <button
               className={styles.nextButton}
-              disabled={!selectedAnswers[currentQuestion?.testQuestionId] || selectedAnswers[currentQuestion?.testQuestionId].length === 0}
+              disabled={
+                !selectedAnswers[currentQuestion?.testQuestionId] ||
+                selectedAnswers[currentQuestion?.testQuestionId].length === 0
+              }
               onClick={handleNext}
             >
               {step === questions.length ? "See Result" : "NEXT"}
@@ -182,7 +239,8 @@ const SkinTest = () => {
           </div>
         </div>
       </div>
-      <div style={{marginTop: "80px"}}>
+
+      <div style={{ marginTop: "80px" }}>
         <Footer />
       </div>
     </>

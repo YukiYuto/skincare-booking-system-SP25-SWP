@@ -10,7 +10,7 @@ namespace SkincareBookingSystem.Models.Dto.Booking.SkinTherapist
     {
         public Guid TherapistId { get; set; }
         public string FullName { get; set; }
-        public int Age { get; set; }
+        public DateTime? BirthDate { get; set; }
         public string ImageUrl { get; set; }
         public string Experience { get; set; }
     }

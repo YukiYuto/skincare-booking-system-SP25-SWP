@@ -6,7 +6,8 @@ import axios from "axios";
 import styles from "./TableTherapist.module.css";
 import { GET_ALL_THERAPISTS_API } from "../../config/apiConfig";
 
-const API_SCHEDULES = "https://lumiconnect.azurewebsites.net/api/therapist-schedules/therapist";
+const API_SCHEDULES =
+  "https://lumiconnect.azurewebsites.net/api/therapist-schedules/therapist";
 const API_APPOINTMENT = "https://lumiconnect.azurewebsites.net/api/appointment";
 
 const TableTherapist = () => {
@@ -23,21 +24,32 @@ const TableTherapist = () => {
       try {
         if (!token) throw new Error("Please login!");
 
-        const { data: therapistsData } = await axios.get(GET_ALL_THERAPISTS_API, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const { data: therapistsData } = await axios.get(
+          GET_ALL_THERAPISTS_API,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-        const therapistsList = Array.isArray(therapistsData.result) ? therapistsData.result : [];
-        if (!therapistsList.length) throw new Error("Therapist is not available!");
+        const therapistsList = Array.isArray(therapistsData.result)
+          ? therapistsData.result
+          : [];
+        if (!therapistsList.length)
+          throw new Error("Therapist is not available!");
 
-        const matchedTherapist = therapistsList.find((t) => t.phoneNumber === user.phoneNumber);
+        const matchedTherapist = therapistsList.find(
+          (t) => t.phoneNumber === user.phoneNumber
+        );
         if (!matchedTherapist) throw new Error("No found therpist!");
 
         const therapistId = matchedTherapist.skinTherapistId;
 
-        const { data: scheduleData } = await axios.get(`${API_SCHEDULES}/${therapistId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const { data: scheduleData } = await axios.get(
+          `${API_SCHEDULES}/${therapistId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         const scheduleList = scheduleData.result || [];
         if (!scheduleList.length) {
@@ -48,9 +60,12 @@ const TableTherapist = () => {
         const formattedBookings = await Promise.all(
           scheduleList.map(async (booking) => {
             try {
-              const { data: appointmentData } = await axios.get(`${API_APPOINTMENT}/${booking.appointmentId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
+              const { data: appointmentData } = await axios.get(
+                `${API_APPOINTMENT}/${booking.appointmentId}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
 
               const customerInfo = appointmentData.result?.customerInfo || {};
               const serviceInfo = appointmentData.result?.serviceInfo || {};
@@ -58,7 +73,7 @@ const TableTherapist = () => {
               const status = appointmentData.result?.status || {};
 
               return {
-                id: booking.appointmentId, 
+                id: booking.appointmentId,
                 date: dayjs(booking.appointmentDate).format("YYYY-MM-DD"),
                 service: {
                   serviceName: serviceInfo.serviceName || "Không xác định",
@@ -118,15 +133,15 @@ const TableTherapist = () => {
       case "CREATED":
         return "gold";
       case "CHECKEDIN":
-        return "blue"; 
+        return "blue";
       case "CHECKEDOUT":
-        return "orange"; 
+        return "orange";
       case "COMPLETED":
-        return "green"; 
+        return "green";
       case "CANCELLED":
-        return "red"; 
+        return "red";
       default:
-        return "default"; 
+        return "default";
     }
   };
 
@@ -137,7 +152,12 @@ const TableTherapist = () => {
     return bookingsOnDate.length > 0 ? (
       <div>
         {bookingsOnDate.map((booking, index) => (
-          <Badge key={index} color={getStatusColor(booking.status)} text={`Appointment: ${booking.customer.fullName}`} className={styles.badge} />
+          <Badge
+            key={index}
+            color={getStatusColor(booking.status)}
+            text={`Appointment: ${booking.customer.fullName}`}
+            className={styles.badge}
+          />
         ))}
       </div>
     ) : null;
@@ -154,24 +174,47 @@ const TableTherapist = () => {
     <div className={styles.container}>
       <div className={styles.calendarSection}>
         <h2 className={styles.title}>Booking Calendar</h2>
-        <Calendar cellRender={cellRender} onSelect={onSelectDate} className={styles.calendar} />
+        <Calendar
+          cellRender={cellRender}
+          onSelect={onSelectDate}
+          className={styles.calendar}
+        />
       </div>
       <div className={styles.detailSection}>
-        <Card title={<span className={styles.cardTitle}>Booking Details</span>} className={styles.card}>
+        <Card
+          title={<span className={styles.cardTitle}>Booking Details</span>}
+          className={styles.card}
+        >
           {selectedBookings.length > 0 ? (
             selectedBookings.map((booking, index) => (
               <div key={index} className={styles.bookingItem}>
                 <h3 style={{ textAlign: "center" }}>
                   <strong>Appointment with:</strong> {booking.customer.fullName}
                 </h3>
-                <p><strong>Date:</strong> {booking.date}</p>
-                <p><strong>Service:</strong> {booking.service.serviceName}</p>
-                <p><strong>Price:</strong> {booking.service.servicePrice}</p>
-                <p><strong>Customer:</strong> {booking.customer.fullName}</p>
-                <p><strong>Email:</strong> {booking.customer.email}</p>
-                <p><strong>Phone:</strong> {booking.customer.phone}</p>
-                <p><strong>Time:</strong> {booking.time}</p>
-                <p><strong>Status:</strong> {getStatusTag(booking.status)}</p>
+                <p>
+                  <strong>Date:</strong> {booking.date}
+                </p>
+                <p>
+                  <strong>Service:</strong> {booking.service.serviceName}
+                </p>
+                <p>
+                  <strong>Price:</strong> {booking.service.servicePrice}
+                </p>
+                <p>
+                  <strong>Customer:</strong> {booking.customer.fullName}
+                </p>
+                <p>
+                  <strong>Email:</strong> {booking.customer.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {booking.customer.phone}
+                </p>
+                <p>
+                  <strong>Time:</strong> {booking.time}
+                </p>
+                <p>
+                  <strong>Status:</strong> {getStatusTag(booking.status)}
+                </p>
                 <hr />
               </div>
             ))

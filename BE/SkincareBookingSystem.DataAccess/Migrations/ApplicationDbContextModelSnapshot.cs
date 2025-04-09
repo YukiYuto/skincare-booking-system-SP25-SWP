@@ -272,7 +272,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Admin St",
                             Age = 30,
-                            ConcurrencyStamp = "dc06665e-e716-439c-be67-4f0a861aada4",
+                            ConcurrencyStamp = "871908ce-b6ba-4f02-8e33-66b55c3e394e",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Admin",
@@ -280,10 +280,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDp16/VGJZ7raa8m4AM0Tjs/A1Fvpqd6JDEoErR2l5iALr2+yJv1EHXxG5hRD6rwpA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECPYYn6xAhPIZxaq6MM43d0mLdoAHYJn0Y/6oX7LLI+vBBrwjf4bwoi4WCnK04HmmA==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "318e9305-a7a0-40a9-8590-d0ba66332eac",
+                            SecurityStamp = "d965aa15-0f1a-46b0-9c71-7fc792ab65c9",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         },
@@ -293,7 +293,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Manager St",
                             Age = 30,
-                            ConcurrencyStamp = "a43f6854-48eb-49cd-ae5b-61dc87e8d557",
+                            ConcurrencyStamp = "f94f6095-4b83-4352-aceb-416aa0244443",
                             Email = "manager@gmail.com",
                             EmailConfirmed = true,
                             FullName = "Manager",
@@ -301,10 +301,10 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "MANAGER@GMAIL.COM",
                             NormalizedUserName = "MANAGER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGqvZj4ijLOLDGZzD25bx3mQr8YbB32uU9uPNViQzZbdgWkksxESSJUmImQPhRmwHg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHogGEme/ntgg1tFsFfbbhE4hxO118Ds8r+QCNBPZ4LHbBNz4BkS7vlWEHChJyBnDw==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "68b8759d-a33e-437a-8f75-7b28c7eff13e",
+                            SecurityStamp = "e5bdf26f-c423-4bd1-9180-8ab27b046cc1",
                             TwoFactorEnabled = false,
                             UserName = "manager@gmail.com"
                         });
@@ -369,7 +369,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Blog", b =>
@@ -425,7 +425,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("BlogCategoryId");
 
-                    b.ToTable("Blogs");
+                    b.ToTable("Blogs", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.BlogCategory", b =>
@@ -461,7 +461,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasKey("BlogCategoryId");
 
-                    b.ToTable("BlogCategory");
+                    b.ToTable("BlogCategory", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.ComboItem", b =>
@@ -479,7 +479,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("ServiceComboId");
 
-                    b.ToTable("ComboItem");
+                    b.ToTable("ComboItem", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Customer", b =>
@@ -501,7 +501,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.CustomerSkinTest", b =>
@@ -523,7 +523,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("CustomerSkinTest");
+                    b.ToTable("CustomerSkinTest", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.DurationItem", b =>
@@ -538,7 +538,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("ServiceDurationId");
 
-                    b.ToTable("DurationItem");
+                    b.ToTable("DurationItem", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Feedbacks", b =>
@@ -582,7 +582,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Order", b =>
@@ -622,7 +622,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.HasIndex("OrderNumber")
                         .IsUnique();
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.OrderDetail", b =>
@@ -664,7 +664,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("ComboItemServiceId", "ComboItemServiceComboId");
 
-                    b.ToTable("OrderDetail");
+                    b.ToTable("OrderDetail", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.OrderServiceTracking", b =>
@@ -696,7 +696,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                     b.HasIndex("OrderDetailId")
                         .IsUnique();
 
-                    b.ToTable("OrderServiceTracking");
+                    b.ToTable("OrderServiceTracking", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Payment", b =>
@@ -731,7 +731,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("OrderNumber");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.ServiceCombo", b =>
@@ -777,7 +777,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasKey("ServiceComboId");
 
-                    b.ToTable("ServiceCombo");
+                    b.ToTable("ServiceCombo", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.ServiceDuration", b =>
@@ -791,7 +791,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasKey("ServiceDurationId");
 
-                    b.ToTable("ServiceDurations");
+                    b.ToTable("ServiceDurations", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.ServiceType", b =>
@@ -827,7 +827,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasKey("ServiceTypeId");
 
-                    b.ToTable("ServiceType");
+                    b.ToTable("ServiceType", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Services", b =>
@@ -870,7 +870,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasKey("ServiceId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.SkinProfile", b =>
@@ -915,7 +915,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasKey("SkinProfileId");
 
-                    b.ToTable("SkinProfile");
+                    b.ToTable("SkinProfile", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.SkinServiceType", b =>
@@ -935,7 +935,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("SkinTherapistId");
 
-                    b.ToTable("SkinServiceType");
+                    b.ToTable("SkinServiceType", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.SkinTest", b =>
@@ -976,7 +976,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("CustomerSkinTestId");
 
-                    b.ToTable("SkinTest");
+                    b.ToTable("SkinTest", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.SkinTherapist", b =>
@@ -998,7 +998,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SkinTherapist");
+                    b.ToTable("SkinTherapist", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Slot", b =>
@@ -1030,7 +1030,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasKey("SlotId");
 
-                    b.ToTable("Slot");
+                    b.ToTable("Slot", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Staff", b =>
@@ -1052,7 +1052,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Staff");
+                    b.ToTable("Staff", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TestAnswer", b =>
@@ -1091,7 +1091,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("TestQuestionId");
 
-                    b.ToTable("TestAnswer");
+                    b.ToTable("TestAnswer", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TestQuestion", b =>
@@ -1132,7 +1132,48 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("SkinTestId");
 
-                    b.ToTable("TestQuestion");
+                    b.ToTable("TestQuestion", (string)null);
+                });
+
+            modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TherapistAdvice", b =>
+                {
+                    b.Property<Guid>("AdviceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AdviceContent")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TherapistScheduleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("AdviceId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("TherapistScheduleId");
+
+                    b.ToTable("TherapistAdvice", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TherapistSchedule", b =>
@@ -1181,7 +1222,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("TherapistId");
 
-                    b.ToTable("TherapistSchedules");
+                    b.ToTable("TherapistSchedules", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TherapistServiceType", b =>
@@ -1211,7 +1252,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("ServiceTypeId");
 
-                    b.ToTable("TherapistServiceTypes");
+                    b.ToTable("TherapistServiceTypes", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.Transaction", b =>
@@ -1247,7 +1288,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("PaymentId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TypeItem", b =>
@@ -1262,7 +1303,7 @@ namespace SkincareBookingSystem.DataAccess.Migrations
 
                     b.HasIndex("ServiceTypeId");
 
-                    b.ToTable("TypeItem");
+                    b.ToTable("TypeItem", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1571,6 +1612,25 @@ namespace SkincareBookingSystem.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("SkinTest");
+                });
+
+            modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TherapistAdvice", b =>
+                {
+                    b.HasOne("SkincareBookingSystem.Models.Domain.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SkincareBookingSystem.Models.Domain.TherapistSchedule", "TherapistSchedule")
+                        .WithMany()
+                        .HasForeignKey("TherapistScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("TherapistSchedule");
                 });
 
             modelBuilder.Entity("SkincareBookingSystem.Models.Domain.TherapistSchedule", b =>

@@ -31,8 +31,8 @@ import Orders from "./Components/DashboardComponent/Tabs/Orders/Orders";
 import Schedule from "./Components/DashboardComponent/Tabs/Schedule/Schedule";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import PaymentConfirmationPage from "./Pages/Payment/PaymentConfirmationPage";
-import TherapistCard from "./Components/TherapistCard/TherapistCard";
-import TherapistDetail from "./Components/TherapistDetail/TherapistDetail";
+import TherapistList from "./Components/TherapistList/TherapistList";
+import TherapistDetail from "./Components/TherapistDetail/TherapistDetailModal";
 import TherapistManagement from "./Pages/Therapist/TherapistManagement/TherapistManagement";
 import AppointmentPage from "./Pages/Appointment/AppointmentPage";
 import StaffDashboard from "./Pages/Staff/Dashboard/StaffDashboard";
@@ -62,8 +62,6 @@ const AppRoutes = () => {
       <Route path="privacy-policy" element={<PrivacyPolicy />} />
       <Route path="terms-conditions" element={<TermsAndConditions />} />
       <Route path="quiz" element={<QuizPage />} />
-      <Route path="skin-test" element={<SkinTest />} />
-      <Route path="result" element={<Result />} />
       <Route path="/" element={<Home />} />
       <Route path="contact" element={<Contact />} />
       <Route path="about" element={<AboutPage />} />
@@ -71,20 +69,22 @@ const AppRoutes = () => {
       <Route path="services/:id" element={<ServiceDetail />} />
       <Route path="service-combo/" element={<ServiceCombo />} />
       <Route path="service-combo/:id" element={<ServiceComboDetail />} />
-      <Route path="therapist" element={<TherapistCard />} />
+      <Route path="therapist" element={<TherapistList />} />
       <Route path="therapist/:therapistId" element={<TherapistDetail />} />
       <Route path="blogs" element={<BlogForCus />} />
       <Route path="blogs/:categoryName?" element={<BlogForCus />} />
       <Route path="blogs-detail/:title" element={<BlogForCusList />} />
       <Route path="feedback-page" element={<FeedbackPage />} />
       <Route path="error" element={<ErrorPage />} />
-      <Route path="skin-test" element={<SkinTest />} />
       <Route
         path="payment-confirmation"
         element={<PaymentConfirmationPage />}
       />
-      <Route path='orders' element={<OrderListPage />} />
-      <Route path="payment-confirmation-combo" element={<PaymentConfirmationPage />} />
+      <Route path="orders" element={<OrderListPage />} />
+      <Route
+        path="payment-confirmation-combo"
+        element={<PaymentConfirmationPage />}
+      />
       {!accessToken && (
         <>
           <Route path="login" element={<LoginPage />} />
@@ -98,6 +98,8 @@ const AppRoutes = () => {
         <>
           {roles.includes("CUSTOMER") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route
                 path="payment-confirmation"
@@ -108,6 +110,8 @@ const AppRoutes = () => {
           )}
           {roles.includes("ADMIN") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="dashboard" element={<Dashboard />}>
                 <Route index element={<Revenue />} />
@@ -132,6 +136,8 @@ const AppRoutes = () => {
           )}
           {roles.includes("STAFF") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="staff-blogs" element={<StaffBlogManagement />} />
               <Route
@@ -145,9 +151,11 @@ const AppRoutes = () => {
                 element={<AppointmentDetailsPage />}
               />
             </>
-          )}
+          )}  
           {roles.includes("SKINTHERAPIST") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route
                 path="therapist-management"
@@ -165,6 +173,8 @@ const AppRoutes = () => {
           )}
           {roles.includes("MANAGER") && (
             <>
+              <Route path="skin-test" element={<SkinTest />} />
+              <Route path="result" element={<Result />} />
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="dashboard" element={<Dashboard />}>
                 <Route index element={<Revenue />} />

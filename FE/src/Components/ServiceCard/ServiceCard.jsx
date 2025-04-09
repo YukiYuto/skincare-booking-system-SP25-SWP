@@ -91,7 +91,11 @@ const SkincareServiceCard = ({ service }) => {
       <Link to={`/services/${service.serviceId}`}>
         <img
           className={styles.image}
-          src={service.imageUrl || { trust_image }}
+          src={
+            !service.imageUrl || service.imageUrl === "imageUrl"
+              ? trust_image
+              : service.imageUrl
+          }
           alt={service.serviceName || "Unnamed Service"}
         />
         <div className={styles.header}>

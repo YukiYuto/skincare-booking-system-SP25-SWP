@@ -14,8 +14,10 @@ namespace SkincareBookingSystem.Services.IServices
         Task<ResponseDto> CreateAppointment(ClaimsPrincipal user, CreateAppointmentDto appointmentDto);
         Task<ResponseDto> GetAllAppointments();
         Task<ResponseDto> GetAppointmentsByCustomer(ClaimsPrincipal User);
+        Task<ResponseDto> GetAppointmentsByCustomerId(ClaimsPrincipal user, Guid customerId);
         Task<ResponseDto> GetAppointmentById(ClaimsPrincipal user, Guid appointmentId);
         Task<ResponseDto> UpdateAppointment(ClaimsPrincipal user, UpdateAppointmentDto appointmentDto);
         Task<ResponseDto> DeleteAppointment(ClaimsPrincipal user, Guid appointmentId);
+        Task<ResponseDto> GetAppointmentByDate(ClaimsPrincipal user, AppointmentDateDto appointmentDateDto);
     }
 }

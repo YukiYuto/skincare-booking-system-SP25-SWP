@@ -1,0 +1,36 @@
+.appointmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.appointmentItem {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.appointmentItem:hover {
+  transform: translateY(-2px);
+}
+
+.appointmentItem p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.appointmentItem strong {
+  color: #555;
+}
+
+.emptyMessage {
+  padding: 2rem;
+  text-align: center;
+  color: #777;
+}

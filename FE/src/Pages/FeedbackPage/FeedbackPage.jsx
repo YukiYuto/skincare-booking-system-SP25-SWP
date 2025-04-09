@@ -97,7 +97,7 @@ const FeedbackPage = () => {
         content: updateContent,
         rating: updateRating,
         appointmentId: updatingFeedback.appointmentId,
-      };
+      }; 
 
       await axios.put(
         "https://lumiconnect.azurewebsites.net/api/Feedback/update",

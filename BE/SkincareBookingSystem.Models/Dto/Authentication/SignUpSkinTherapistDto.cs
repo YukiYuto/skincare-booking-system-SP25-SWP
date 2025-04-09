@@ -31,7 +31,7 @@ public class SignUpSkinTherapistDto
 
     [Required] public string Address { get; set; } = null!;
 
-    [Required] public int Age { get; set; }
+    [Required] public DateTime BirthDate { get; set; }
     [Required] public string Gender { get; set; } = null!;
 
     [Required] public string Experience { get; set; } = null!;

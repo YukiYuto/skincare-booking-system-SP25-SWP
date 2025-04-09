@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { GET_SERVICE_COMBO_DETAIL_BY_ID_API } from "../../config/apiConfig";
 import styles from "./ServiceComboDetail.module.css";
 import Header from "../Common/Header";
 import ComboInclude from "../ComboInclude/ComboInclude";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import BookingBundleModal from "../BookingModalMultiple/BookingBundleModal";
 
 const ServiceComboLayout = () => {
   const { id } = useParams();
+  const { accessToken } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [state, setState] = useState({
     combo: null,
     isLoading: true,
@@ -50,6 +54,15 @@ const ServiceComboLayout = () => {
     }
   };
 
+  const handleBookNow = () => {
+      if (!accessToken) {
+        navigate("/login");
+        toast.warn("Please Login!");
+        return;
+      }
+      handleBook(); 
+    };
+
   useEffect(() => {
     fetchComboData();
   }, [id]);
@@ -89,7 +102,8 @@ const ServiceComboLayout = () => {
           <p className={styles.numberOfService}>
             Number of Services: {combo.numberOfService}
           </p>
-          <button className={styles.order} onClick={handleBook}>
+          <p className={styles.status}>Status: {combo.status}</p>
+          <button className={styles.order} onClick={handleBookNow}>
             BOOK NOW
           </button>
         </div>

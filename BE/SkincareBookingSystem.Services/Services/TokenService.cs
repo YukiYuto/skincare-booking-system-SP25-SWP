@@ -34,7 +34,7 @@ public class TokenService : ITokenService
             new Claim("FullName", user.FullName),
             new Claim("PhoneNumber", user.PhoneNumber),
             new Claim("Address", user.Address),
-            new Claim("Age", user.Age.ToString()),
+            new Claim("BirthDate", user.BirthDate.ToString()),
             new Claim("ImageUrl", user.ImageUrl)
         };
 

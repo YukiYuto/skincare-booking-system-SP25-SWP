@@ -12,7 +12,7 @@ namespace SkincareBookingSystem.Models.Dto.Appointment.Details
         public string? CustomerName { get; set; }
         public string? CustomerPhone { get; set; }
         public string? CustomerEmail { get; set; }
-        public string? CustomerAge { get; set; }
+        public DateTime? CustomerAge { get; set; }
         public string? CustomerGender { get; set; }
         public string? CustomerAvatar { get; set; }
         public string? SkinProfileName { get; set; }

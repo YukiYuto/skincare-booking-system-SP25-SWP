@@ -1,12 +1,12 @@
 import styles from "./BrandLogo.module.css";
-import background1 from "./background1.jpg";
+import background from "../../assets/images/background.jpg";
 import Brand from "../Brand/Brand.jsx";
 
 export function BrandLogo() {
   return (
     <div className={styles.brandContainer}>
       <img
-        src={background1}
+        src={background}
         alt="Skincare Background"
         className={styles.backgroundImage}
         loading="lazy"
