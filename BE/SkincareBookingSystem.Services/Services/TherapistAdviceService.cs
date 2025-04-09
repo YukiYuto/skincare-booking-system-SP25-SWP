@@ -121,10 +121,10 @@ public async Task<ResponseDto> GetTherapistAdviceByAppointment(ClaimsPrincipal U
     {
         return new ResponseDto
         {
-            StatusCode = StatusCodes.Status404NotFound,
+            StatusCode = StatusCodes.Status200OK,
             Message = "No therapist advice found for this appointment",
             IsSuccess = false,
-            Result = null
+            Result = ""
         };
     }
     

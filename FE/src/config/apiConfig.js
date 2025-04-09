@@ -6,7 +6,6 @@ export const HTTP_METHODS = {
 };
 
 const BASE_URL = "https://lumiconnect.azurewebsites.net/api";
-// const BASE_URL = "https://localhost:7037/api";
 
 export const BASE_API_URL = BASE_URL;
 // !IMPORTANT: Update the API endpoint exports here to match the backend routes
@@ -127,6 +126,8 @@ export const GET_THERAPIST_BY_ID_API = `${BASE_URL}/therapists/details/{therapis
 export const GET_ALL_THERAPISTS_API = `${BASE_URL}/therapists`;
 export const GET_THERAPIST_BY_SERVICE_TYPE_API = `${BASE_URL}/therapists/service-type/{serviceTypeId}`;
 export const GET_THERAPIST_BY_SERVICE_API = `${BASE_URL}/therapists/service/{serviceId}`;
+export const POST_THERAPIST_ADVICE_API = `${BASE_URL}/therapist-advice`;
+export const GET_THERAPIST_ADVICE_BY_APPOINTMENT_API = `${BASE_URL}/therapist-advice/{appointmentId}`;
 
 // Thêm API cho Slot
 export const POST_SLOT_API = `${BASE_URL}/slot`;
@@ -170,6 +171,10 @@ export const GET_BLOG = `${BASE_URL}/blog/all`;
 export const POST_BLOG = `${BASE_URL}/blog/create`;
 export const UPDATE_BLOG = `${BASE_URL}/blog/update`;
 export const DELETE_BLOG = `${BASE_URL}/blog/delete`;
+
+//Thêm API cho TherapistAdviceService
+export const POST_THERAPIST_ADVICE = `${BASE_URL}/therapist-advice`;
+export const GET_THERAPIST_ADVICE = `${BASE_URL}/therapist-advice`;
 
 // // Thêm hàm hỗ trợ headers chứa token (nếu cần đăng nhập)
 export const AUTH_HEADERS = (token) => ({
