@@ -1,12 +1,12 @@
 .bodyPage {
   background-image: url("../../assets/images/background-spa.jpg");
-  background-position-y: 100vh;
-  height: 100vh;
+  background-position-y: 110vh;
+  height: 110vh;
 }
 
 .profileContainer {
   max-width: 800px;
-  max-height: 800px;
+  max-height: 850px;
   margin: 0 auto;
   padding: 20px;
   background: rgba(255, 255, 255, 0.8);
@@ -76,3 +76,4 @@
   padding: 8px 16px;
   border-radius: 8px;
 }
+

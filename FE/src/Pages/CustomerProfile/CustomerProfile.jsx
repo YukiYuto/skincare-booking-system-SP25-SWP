@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Modal, Row, Spin } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Spin, DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./CustomerProfile.module.css";
 import Header from "../../Components/Common/Header";
@@ -8,11 +8,11 @@ import { updateUser } from "../../redux/auth/slice";
 import { POST_CUSTOMER_AVATAR_API } from "../../config/apiConfig";
 import {
   validateAddress,
-  validateAge,
   validatePhoneNumber,
 } from "../../utils/validationUtils";
 import { updateUserProfile } from "../../services/userService";
 import { changePassword } from "../../services/authService";
+import dayjs from "dayjs";
 
 const UserProfile = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -21,7 +21,23 @@ const UserProfile = () => {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(user.imageUrl);
-  const [userData, setUserData] = useState({ ...user });
+
+  const calculateAge = (birthDateStr) => {
+    const birthDate = new Date(birthDateStr);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const [userData, setUserData] = useState({
+    ...user,
+    age: user.birthDate ? calculateAge(user.birthDate) : "",
+  });
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [passwords, setPasswords] = useState({
     oldPassword: "",
@@ -32,7 +48,6 @@ const UserProfile = () => {
   const [errors, setErrors] = useState({
     fullName: "",
     phoneNumber: "",
-    age: "",
     address: "",
   });
 
@@ -44,7 +59,6 @@ const UserProfile = () => {
       .trim();
   };
 
-  // Khi chọn file, upload luôn avatar
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -71,7 +85,6 @@ const UserProfile = () => {
           ...prevData,
           imageUrl: data.result,
         }));
-
         toast.success("Upload Successfully!");
       } else {
         toast.error("Upload Failed!");
@@ -98,47 +111,44 @@ const UserProfile = () => {
   const validateProfileForm = () => {
     const fullNameError = userData.fullName ? "" : "Full Name is required!";
     const phoneError = validatePhoneNumber(userData.phoneNumber);
-    const ageError = validateAge(userData.age.toString());
     const addressError = validateAddress(userData.address);
 
     setErrors({
       fullName: fullNameError,
       phoneNumber: phoneError,
-      age: ageError,
       address: addressError,
     });
 
-    return !(fullNameError || phoneError || ageError || addressError);
+    return !(fullNameError || phoneError || addressError);
   };
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setUpdateLoading(true);
-    setErrors((errors) => {
-      for (const key in errors) {
-        errors[key] = "";
-      }
-      return errors;
-    });
 
     if (!validateProfileForm()) {
       setUpdateLoading(false);
       return;
     }
 
-    setUserData({ ...userData, fullName: formatFullname(userData.fullName) });
+    const updatedData = {
+      ...userData,
+      fullName: formatFullname(userData.fullName),
+      imageUrl,
+    };
+
     try {
-      const response = await updateUserProfile(userData);
+      const response = await updateUserProfile(updatedData);
 
       if (response.isSuccess) {
-        dispatch(updateUser(userData));
-        localStorage.setItem("user", JSON.stringify(userData));
+        dispatch(updateUser(updatedData));
+        localStorage.setItem("user", JSON.stringify(updatedData));
         toast.success("Update Successfully!");
       } else {
-        toast.error("Update Failed!");
+        toast.error(response.message || "Update Failed!");
       }
     } catch (error) {
-      toast.error("Error updating information!");
+      toast.error("Error updating information: " + error.message);
     } finally {
       setUpdateLoading(false);
     }
@@ -180,7 +190,7 @@ const UserProfile = () => {
         toast.error(response.message || "Error changing password!");
       }
     } catch (error) {
-      toast.error("Error changing password. " + error.message);
+      toast.error("Error changing password: " + error.message);
     } finally {
       setPasswordLoading(false);
     }
@@ -257,16 +267,38 @@ const UserProfile = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Age">
-                <Input
-                  name="age"
-                  value={userData.age}
-                  onChange={handleInputChange}
+              <Form.Item label="Birth Date">
+                <DatePicker
+                  value={userData.birthDate ? dayjs(userData.birthDate) : null}
+                  onChange={(date) => {
+                    if (date) {
+                      const isoDate = date.toISOString(); // send ISO format
+                      setUserData((prev) => ({
+                        ...prev,
+                        birthDate: isoDate,
+                        age: calculateAge(isoDate),
+                      }));
+                    } else {
+                      setUserData((prev) => ({
+                        ...prev,
+                        birthDate: "",
+                        age: "",
+                      }));
+                    }
+                  }}
+                  format="YYYY-MM-DD"
                 />
-                {errors.age && <p className={styles.error}>{errors.age}</p>}
               </Form.Item>
             </Col>
             <Col span={12}>
+              <Form.Item label="Age">
+                <p>{userData.age}</p>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={24}>
               <Form.Item label="Gender">
                 <div className={styles.genderContainer}>
                   <div className={styles.gender}>
@@ -294,6 +326,7 @@ const UserProfile = () => {
             </Col>
           </Row>
         </Form>
+
         <div className={styles.buttonContainer}>
           <Button className={styles.updateButton} onClick={handleUpdateProfile}>
             {updateLoading ? "Saving..." : "Save"}
@@ -302,6 +335,7 @@ const UserProfile = () => {
             Change password
           </Button>
         </div>
+
         <Modal
           title="Change Password"
           open={isModalVisible}
