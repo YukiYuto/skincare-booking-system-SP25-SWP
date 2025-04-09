@@ -22,14 +22,11 @@ export function LoginForm() {
     email: "",
     password: "",
   });
-
   const [errors, setErrors] = useState({
     email: "",
     password: "",
   });
-
   const [isAccountVerified, setIsAccountVerified] = useState(true);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error: reduxError } = useSelector((state) => state.auth);
@@ -43,7 +40,6 @@ export function LoginForm() {
   const handleLoginDataChange = (e) => {
     const { name, value } = e.target;
     setLoginData((prevData) => ({ ...prevData, [name]: value }));
-    // Reset errors for the field being updated
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
@@ -56,12 +52,11 @@ export function LoginForm() {
       email: emailError,
       password: passwordFormatError,
     }));
-
     return !emailError && !passwordFormatError;
   };
 
   const handleVerifyEmail = async () => {
-    reduxError && toast.dismiss(); // Dismiss any previous error to show new error
+    reduxError && toast.dismiss();
     try {
       await sendVerificationEmail(loginData.email);
       toast.success(
@@ -97,11 +92,8 @@ export function LoginForm() {
       password: loginData.password.trim(),
     };
     setLoginData(trimmedData);
-    setErrors({ email: "", password: "" }); // Reset errors
-
-    // If form is invalid, return early
+    setErrors({ email: "", password: "" });
     if (!validateLoginForm()) return;
-    // If form is valid, call the auth service to login
     try {
       const userData = await dispatch(loginAction(trimmedData)).unwrap();
       setIsAccountVerified(true);
@@ -131,9 +123,8 @@ export function LoginForm() {
       onSubmit={handleSubmit}
     >
       <h1 id="login-title" className={styles.loginTitle}>
-        Login Account
+        Welcome Back
       </h1>
-
       <EmailInputField
         label="Email"
         placeholder="Email address"
@@ -175,6 +166,7 @@ export function LoginForm() {
           </span>
         </div>
       )}
+
       <div className={styles.termsContainer}>
         <span>By signing in you agree to </span>
         <a
@@ -187,24 +179,25 @@ export function LoginForm() {
         </a>
         <span> of our center.</span>
       </div>
-      <SignInWithGoogle handleGoogleSignIn={handleGoogleSignIn} />
+
       <button type="submit" className={styles.loginButton} disabled={loading}>
         {loading ? "Logging in..." : "Login"}
       </button>
 
-      <button
-        type="button"
-        className={styles.createAccountButton}
-        onClick={() => {
-          if (!loading) {
-            window.location.href = "/register";
-          }
-        }}
-        disabled={loading}
-      >
-        Create Account
-      </button>
-      
+      <div className={styles.createAccountContainer}>
+        <span
+          className={styles.createAccountButton}
+          onClick={() => {
+            if (!loading) {
+              window.location.href = "/register";
+            }
+          }}
+          disabled={loading}
+        >
+          Create Account
+        </span>
+        <SignInWithGoogle handleGoogleSignIn={handleGoogleSignIn} />
+      </div>
     </form>
   );
 }

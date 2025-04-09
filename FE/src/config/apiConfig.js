@@ -33,6 +33,7 @@ export const POST_APPOINTMENT_API = `${BASE_URL}/appointment`;
 export const GET_ALL_APPOINTMENTS_API = `${BASE_URL}/appointment`;
 export const PUT_APPOINTMENT_API = `${BASE_URL}/appointment`;
 export const GET_APPOINTMENT_BY_CUSTOMER_API = `${BASE_URL}/appointment/customer/appointments`;
+export const GET_APPOINTMENT_BY_CUSTOMER_ID_API = `${BASE_URL}/appointment/customer/{customerId}`; //req staff/cus
 export const GET_APPOINTMENT_BY_ID_API = `${BASE_URL}/appointment/{appointmentId}`;
 export const DELETE_APPOINTMENT_API = `${BASE_URL}/appointment`;
 export const GET_TODAY_APPOINTMENTS_API = `${BASE_URL}/staff/today-appointments`;

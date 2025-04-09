@@ -4,6 +4,7 @@ import { GET_ALL_CUSTOMERS_API } from "../../../../config/apiConfig";
 import styles from "./Customers.module.css";
 import infoIcon from "../../../../assets/icon/infoIcon.svg";
 import CustomerDetail from "./CustomerDetail";
+import { apiCall } from "../../../../utils/apiUtils";
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
@@ -18,10 +19,10 @@ const Customers = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get(GET_ALL_CUSTOMERS_API);
-        setCustomers(response.data.result);
+        const response = await apiCall("get", GET_ALL_CUSTOMERS_API);
+        setCustomers(response.result);
       } catch (err) {
-        if (err.response && err.response.status === 404) {
+        if (err.status === 404) {
           setError("Customers not found (404)");
         } else {
           setError(err.message);
@@ -45,7 +46,7 @@ const Customers = () => {
   const sortedCustomers = [...customers].sort((a, b) => {
     if (!sortConfig.key) return 0;
 
-    let valueA = a[sortConfig.key] ?? ""; // Ensure a valid value
+    let valueA = a[sortConfig.key] ?? "";
     let valueB = b[sortConfig.key] ?? "";
 
     if (typeof valueA === "string") valueA = valueA.toLowerCase();
@@ -77,20 +78,15 @@ const Customers = () => {
           <table className={styles.customerTable}>
             <thead>
               <tr>
-                {[
-                  "fullName",
-                  "email",
-                  "age",
-                  "gender",
-                  "phoneNumber",
-                  "address",
-                ].map((key) => (
-                  <th key={key} onClick={() => handleSort(key)}>
-                    {key.charAt(0).toUpperCase() + key.slice(1)}{" "}
-                    {sortConfig.key === key &&
-                      (sortConfig.direction === "ascending" ? "↑" : "↓")}
-                  </th>
-                ))}
+                {["fullName", "email", "gender", "phone", "address"].map(
+                  (key) => (
+                    <th key={key} onClick={() => handleSort(key)}>
+                      {key.charAt(0).toUpperCase() + key.slice(1)}{" "}
+                      {sortConfig.key === key &&
+                        (sortConfig.direction === "ascending" ? "↑" : "↓")}
+                    </th>
+                  )
+                )}
                 <th>Action</th>
               </tr>
             </thead>
@@ -101,7 +97,6 @@ const Customers = () => {
                     {[
                       "fullName",
                       "email",
-                      "age",
                       "gender",
                       "phoneNumber",
                       "address",

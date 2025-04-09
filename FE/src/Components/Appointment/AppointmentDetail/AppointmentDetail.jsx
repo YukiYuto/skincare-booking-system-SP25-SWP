@@ -69,6 +69,9 @@ const AppointmentDetail = ({ appointment }) => {
             <strong>Status:</strong>{" "}
             <span className={styles[getStatusClass()]}>{status || "N/A"}</span>
           </p>
+          <p>
+            <strong>Note:</strong> {note ? note : "none"}
+          </p>
         </div>
 
         <div className={styles.detailSection}>
@@ -82,12 +85,6 @@ const AppointmentDetail = ({ appointment }) => {
           <p>
             <strong>Created:</strong> {createdTime || "N/A"}
           </p>
-
-          {note && (
-            <p>
-              <strong>Note:</strong> {note}
-            </p>
-          )}
         </div>
 
         <div className={styles.detailSection2}>

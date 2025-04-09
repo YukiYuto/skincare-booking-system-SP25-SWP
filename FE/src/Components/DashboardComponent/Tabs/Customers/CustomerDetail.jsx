@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { GET_CUSTOMER_BY_ID_API } from "../../../../config/apiConfig";
 import styles from "./CustomerDetail.module.css";
+import CustomerAppointment from "./CustomerAppointment/CustomerAppointment";
 
 const CustomerDetail = ({ customer, onClose }) => {
   const [customerDetail, setCustomerDetail] = useState(null);
@@ -10,6 +11,7 @@ const CustomerDetail = ({ customer, onClose }) => {
   const [error, setError] = useState(null);
   const modalRef = useRef(null);
   const { user } = useSelector((state) => state.auth);
+  const [showAppointments, setShowAppointments] = useState(false);
 
   useEffect(() => {
     const fetchCustomerDetail = async () => {
@@ -54,57 +56,78 @@ const CustomerDetail = ({ customer, onClose }) => {
       document.removeEventListener("mousedown", handleOutsideClick);
       document.body.style.overflow = "auto";
     };
-  }, [customer.customerId, onClose]);
+  }, [customer.customerId, onClose, user.accessToken]);
 
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalOverlay}></div>
-      <div className={styles.modalWrapper}>
-        <div className={styles.modal} ref={modalRef}>
-          <div className={styles.modalHeader}>
-            <h2>Customer Detail</h2>
-            <button
-              className={styles.closeButton}
-              onClick={onClose}
-              aria-label="Close modal"
-            >
-              &times;
-            </button>
+      <div
+        className={`${styles.modalWrapper} ${
+          showAppointments ? styles.expanded : ""
+        }`}
+      >
+        <div className={styles.modalLayout} ref={modalRef}>
+          {/* Main Customer Details Section */}
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2>Customer Detail</h2>
+              <button
+                className={styles.closeButton}
+                onClick={onClose}
+                aria-label="Close modal"
+              >
+                &times;
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              {loading ? (
+                <p>Loading customer details...</p>
+              ) : error ? (
+                <p>{error}</p>
+              ) : customerDetail ? (
+                <div className={styles.customerInfo}>
+                  {[
+                    "fullName",
+                    "email",
+                    "gender",
+                    "phoneNumber",
+                    "address",
+                  ].map((key) => (
+                    <div key={key} className={styles.infoRow}>
+                      <span className={styles.infoLabel}>
+                        {key.charAt(0).toUpperCase() + key.slice(1)}:
+                      </span>
+                      <span className={styles.infoValue}>
+                        {customerDetail[key]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>No customer data available</p>
+              )}
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                className={`${styles.toggleBtn} ${
+                  showAppointments ? styles.active : ""
+                }`}
+                onClick={() => setShowAppointments(!showAppointments)}
+              >
+                {showAppointments ? "Hide Appointments" : "Show Appointments"}
+              </button>
+              <button className={styles.closeBtn} onClick={onClose}>
+                Close
+              </button>
+            </div>
           </div>
-          <div className={styles.modalBody}>
-            {loading ? (
-              <p>Loading customer details...</p>
-            ) : error ? (
-              <p>{error}</p>
-            ) : customerDetail ? (
-              <div className={styles.customerInfo}>
-                {[
-                  "fullName",
-                  "email",
-                  "age",
-                  "gender",
-                  "phoneNumber",
-                  "address",
-                ].map((key) => (
-                  <div key={key} className={styles.infoRow}>
-                    <span className={styles.infoLabel}>
-                      {key.charAt(0).toUpperCase() + key.slice(1)}:
-                    </span>
-                    <span className={styles.infoValue}>
-                      {customerDetail[key]}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>No customer data available</p>
-            )}
-          </div>
-          <div className={styles.modalFooter}>
-            <button className={styles.closeBtn} onClick={onClose}>
-              Close
-            </button>
-          </div>
+
+          {/* Appointments Panel with appointment details */}
+          {showAppointments && customerDetail && (
+            <div className={styles.appointmentSidePanel}>
+              <CustomerAppointment customerId={customerDetail.customerId} />
+            </div>
+          )}
         </div>
       </div>
     </div>
