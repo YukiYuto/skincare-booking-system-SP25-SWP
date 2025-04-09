@@ -89,7 +89,7 @@ const ServiceLayout = ({ service, serviceType, onBookButtonClick }) => {
       toast.warn("Please Login!");
       return;
     }
-    onBookButtonClick();
+    onBookButtonClick(); 
   };
 
   return (
